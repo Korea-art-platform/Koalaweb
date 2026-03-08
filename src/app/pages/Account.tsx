@@ -1,6 +1,6 @@
 import { Link, useLocation } from 'react-router';
 import { User, MapPin, CreditCard, Package, Heart, Settings, LogOut } from 'lucide-react';
-import Navigation from '../components/Navigation';
+import Navigation from '../components/layouts/Header';
 
 const menuItems = [
   { icon: User, label: 'Profile', path: '/account' },

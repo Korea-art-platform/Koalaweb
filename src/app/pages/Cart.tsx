@@ -1,6 +1,6 @@
 import { Link } from 'react-router';
 import { Minus, Plus, Trash2, ShoppingBag } from 'lucide-react';
-import Navigation from '../components/Navigation';
+import Navigation from '../components/layouts/Header';
 import { useState } from 'react';
 
 interface CartItem {

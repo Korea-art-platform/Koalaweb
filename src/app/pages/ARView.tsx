@@ -1,4 +1,4 @@
-import Navigation from '../components/Navigation';
+import Navigation from '../components/layouts/Header';
 import { useState } from 'react';
 import { RotateCcw, Move, ZoomIn, ZoomOut, Maximize2 } from 'lucide-react';
 import { ImageWithFallback } from '../components/figma/ImageWithFallback';

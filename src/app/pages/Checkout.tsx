@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router';
 import { CreditCard, MapPin, ChevronRight, Plus } from 'lucide-react';
-import Navigation from '../components/Navigation';
+import Navigation from '../components/layouts/Header';
 
 // Mock saved addresses
 const savedAddresses = [

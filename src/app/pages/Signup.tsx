@@ -1,6 +1,6 @@
 import { Link, useNavigate } from 'react-router';
 import { Mail, Lock, User, Chrome } from 'lucide-react';
-import Navigation from '../components/Navigation';
+import Navigation from '../components/layouts/Header';
 
 export default function Signup() {
   const navigate = useNavigate();

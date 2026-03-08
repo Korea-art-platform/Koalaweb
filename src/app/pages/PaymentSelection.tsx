@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router';
 import { ArrowLeft, CreditCard, Smartphone, Wallet, Building2, Check } from 'lucide-react';
-import Navigation from '../components/Navigation';
+import Navigation from '../components/layouts/Header';
 
 // Payment method types
 type PaymentMethodType = 'card' | 'toss' | 'kakao' | 'naver' | 'payco' | 'samsung';

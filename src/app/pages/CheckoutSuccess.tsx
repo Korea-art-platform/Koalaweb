@@ -1,6 +1,6 @@
 import { Link, useLocation } from 'react-router';
 import { CheckCircle, Package, MapPin, CreditCard } from 'lucide-react';
-import Navigation from '../components/Navigation';
+import Navigation from '../components/layouts/Header';
 
 const paymentMethodNames: Record<string, { name: string, nameKo: string, icon: string }> = {
   toss: { name: 'Toss Pay', nameKo: '토스페이', icon: '💙' },

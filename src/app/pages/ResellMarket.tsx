@@ -1,4 +1,4 @@
-import Navigation from '../components/Navigation';
+import Navigation from '../components/layouts/Header';
 import { Filter, TrendingUp, Shield, Globe } from 'lucide-react';
 import { Link } from 'react-router';
 import { useState } from 'react';

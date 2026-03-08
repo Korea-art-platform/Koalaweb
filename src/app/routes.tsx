@@ -1,11 +1,11 @@
 import { Route, Routes } from "react-router";
 import Home from "./pages/Home";
-import ArtistLab from "./pages/ArtistLab";
+import ArtistLab from "./pages/Artist/ArtistLab";
 import SmartStore from "./pages/SmartStore";
 import ARView from "./pages/ARView";
 import ResellMarket from "./pages/ResellMarket";
 import ProductDetail from "./pages/ProductDetail";
-import ArtistDetail from "./pages/ArtistDetail";
+import ArtistDetail from "./pages/Artist/ArtistDetail";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Onboarding from "./pages/Onboarding";

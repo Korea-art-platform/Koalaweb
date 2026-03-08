@@ -1,6 +1,6 @@
 import { Link } from 'react-router';
 import { Mail, Lock, Chrome } from 'lucide-react';
-import Navigation from '../components/Navigation';
+import Navigation from '../components/layouts/Header';
 
 export default function Login() {
   return (

@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router';
 import { ArrowLeft, RotateCw, ZoomIn, ZoomOut, Maximize2, X, Info } from 'lucide-react';
-import Navigation from '../components/Navigation';
+import Navigation from '../components/layouts/Header';
 
 // Mock product data with multiple angle images
 const productData = {
