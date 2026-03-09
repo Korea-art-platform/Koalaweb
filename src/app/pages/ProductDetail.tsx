@@ -5,12 +5,10 @@ import {
   ShoppingCart,
   Heart,
   Share2,
-  Package,
   Shield,
   Globe,
-  Box,
   ExternalLink,
-  CheckCircle2, // Toast용 아이콘 추가
+  CheckCircle2,
   X,
 } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
@@ -18,7 +16,7 @@ import { ImageWithFallback } from '../components/figma/ImageWithFallback';
 import { artworks } from '../../data/artworks/artworks';
 import type { Artwork } from './type/artwork';
 
-// --- 유틸리티 함수 (기존과 동일) ---
+// --- 유틸리티 함수 ---
 function formatPrice(price?: number, currency: 'KRW' | 'USD' = 'KRW') {
   if (!price) return 'Price on Request';
   return currency === 'KRW' ? `₩${price.toLocaleString()}` : `$${price.toLocaleString()}`;
@@ -65,7 +63,7 @@ export default function ProductDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [selectedImage, setSelectedImage] = useState(0);
-  const [showToast, setShowToast] = useState(false); // Toast 노출 상태
+  const [showToast, setShowToast] = useState(false);
 
   const productData = useMemo(() => artworks.find((item) => item.id === id), [id]);
 
@@ -79,11 +77,10 @@ export default function ProductDetail() {
     return findRelatedOriginalArtwork(productData);
   }, [productData]);
 
-  // --- 장바구니 담기 핵심 로직 ---
+  // --- 장바구니 담기 핵심 로직 수정 ---
   const handleAddToCart = () => {
     if (!productData) return;
 
-    // 1. 저장할 아이템 객체 생성
     const newItem = {
       id: productData.id,
       name: productData.title,
@@ -94,11 +91,9 @@ export default function ProductDetail() {
       size: formatDimensions(productData),
     };
 
-    // 2. localStorage에서 기존 카트 데이터 가져오기
     const savedCart = localStorage.getItem('cart');
     let cartList = savedCart ? JSON.parse(savedCart) : [];
 
-    // 3. 중복 확인
     const existingItemIndex = cartList.findIndex((item: any) => item.id === newItem.id);
     if (existingItemIndex > -1) {
       cartList[existingItemIndex].quantity += 1;
@@ -106,12 +101,13 @@ export default function ProductDetail() {
       cartList.push(newItem);
     }
 
-    // 4. localStorage에 다시 저장
     localStorage.setItem('cart', JSON.stringify(cartList));
 
-    // 5. Toast 메시지 표시
+    // ⭐ 핵심: 헤더에게 장바구니가 업데이트되었음을 알림
+    window.dispatchEvent(new Event('cart-updated'));
+
     setShowToast(true);
-    setTimeout(() => setShowToast(false), 3000); // 3초 후 사라짐
+    setTimeout(() => setShowToast(false), 3000);
   };
 
   if (!productData) {
@@ -119,8 +115,10 @@ export default function ProductDetail() {
       <div className="min-h-screen bg-white">
         <Navigation />
         <div className="pt-32 pb-32 px-8 flex flex-col items-center">
-          <h1 className="text-3xl mb-8">상품 정보를 찾을 수 없습니다.</h1>
-          <Link to="/store" className="px-6 py-3 bg-black text-white rounded-full">스토어로 돌아가기</Link>
+          <h1 className="text-3xl mb-8 font-medium">상품 정보를 찾을 수 없습니다.</h1>
+          <Link to="/store" className="px-8 py-4 bg-black text-white rounded-full font-medium transition-transform active:scale-95">
+            스토어로 돌아가기
+          </Link>
         </div>
       </div>
     );
@@ -136,17 +134,17 @@ export default function ProductDetail() {
 
       {/* --- Toast UI --- */}
       {showToast && (
-        <div className="fixed bottom-10 left-1/2 -translate-x-1/2 z-50 animate-in fade-in slide-in-from-bottom-4 duration-300">
-          <div className="bg-black text-white px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-4 min-w-[320px]">
-            <CheckCircle2 className="w-5 h-5 text-green-400" />
+        <div className="fixed bottom-10 left-1/2 -translate-x-1/2 z-[100] animate-in fade-in slide-in-from-bottom-4 duration-300">
+          <div className="bg-black text-white px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-4 min-w-[340px]">
+            <CheckCircle2 className="w-5 h-5 text-green-400 flex-shrink-0" />
             <div className="flex-1">
-              <p className="text-sm font-medium">장바구니에 담겼습니다.</p>
+              <p className="text-sm font-semibold">장바구니에 담겼습니다.</p>
               <Link to="/cart" className="text-xs text-gray-400 underline hover:text-white transition-colors">
-                장바구니로 이동하기
+                장바구니로 이동하여 결제하기
               </Link>
             </div>
-            <button onClick={() => setShowToast(false)}>
-              <X className="w-4 h-4 text-gray-500 hover:text-white" />
+            <button onClick={() => setShowToast(false)} className="p-1 hover:bg-white/10 rounded-lg transition-colors">
+              <X className="w-4 h-4 text-gray-400" />
             </button>
           </div>
         </div>
@@ -156,31 +154,37 @@ export default function ProductDetail() {
         <div className="max-w-[1600px] mx-auto">
           <button
             onClick={() => navigate(-1)}
-            className="inline-flex items-center gap-2 text-sm text-gray-400 hover:text-black transition-colors mb-12"
+            className="inline-flex items-center gap-2 text-sm text-gray-400 hover:text-black transition-colors mb-12 group"
           >
-            <ArrowLeft className="w-4 h-4" />
-            Back
+            <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
+            뒤로가기
           </button>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
-            {/* Images Left */}
-            <div className="space-y-4">
-              <div className="relative overflow-hidden rounded-3xl bg-gray-50 aspect-square">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-20">
+            {/* 왼쪽: 이미지 영역 */}
+            <div className="space-y-6">
+              <div className="relative overflow-hidden rounded-[32px] bg-gray-50 aspect-square border border-gray-100">
                 <ImageWithFallback src={images[selectedImage]} alt={productData.title} className="w-full h-full object-cover" />
                 <div className="absolute top-6 left-6 flex flex-col gap-2">
-                  <div className="px-4 py-2.5 rounded-full bg-white/90 backdrop-blur-sm text-sm font-medium">{saleTypeLabel}</div>
+                  <div className="px-4 py-2 rounded-full bg-white/90 backdrop-blur-md text-xs font-bold shadow-sm uppercase tracking-wider text-black border border-gray-100">
+                    {saleTypeLabel}
+                  </div>
                 </div>
                 <div className="absolute top-6 right-6">
-                  <div className={`px-4 py-2.5 rounded-full backdrop-blur-sm text-sm ${statusBadge.className}`}>{statusBadge.label}</div>
+                  <div className={`px-4 py-2 rounded-full backdrop-blur-md text-xs font-bold shadow-sm border border-white/20 ${statusBadge.className}`}>
+                    {statusBadge.label}
+                  </div>
                 </div>
               </div>
 
-              <div className="grid grid-cols-3 gap-4">
+              <div className="grid grid-cols-4 gap-4">
                 {images.map((image, index) => (
                   <button
                     key={`${productData.id}-${index}`}
                     onClick={() => setSelectedImage(index)}
-                    className={`relative overflow-hidden rounded-xl aspect-square ${selectedImage === index ? 'ring-2 ring-black' : 'opacity-60'}`}
+                    className={`relative overflow-hidden rounded-2xl aspect-square transition-all duration-300 border-2 ${
+                      selectedImage === index ? 'border-black scale-[0.98]' : 'border-transparent opacity-50 hover:opacity-100'
+                    }`}
                   >
                     <ImageWithFallback src={image} alt={`${productData.title} ${index}`} className="w-full h-full object-cover" />
                   </button>
@@ -188,76 +192,77 @@ export default function ProductDetail() {
               </div>
             </div>
 
-            {/* Product Info Right */}
-            <div className="space-y-8">
-              <div>
-                <div className="text-sm text-gray-400 tracking-wide uppercase mb-3">{productData.category}</div>
-                <h1 className="text-4xl mb-4">{productData.title}</h1>
-                <Link to={`/artist/${productData.artistId}`} className="text-lg text-gray-500 hover:text-black transition-colors">
+            {/* 오른쪽: 정보 및 구매 영역 */}
+            <div className="flex flex-col">
+              <div className="mb-8">
+                <div className="text-[11px] font-bold text-gray-400 tracking-[0.2em] uppercase mb-4">{productData.category}</div>
+                <h1 className="text-5xl font-medium tracking-tight mb-4 leading-tight">{productData.title}</h1>
+                <Link to={`/artist/${productData.artistId}`} className="text-xl text-gray-500 hover:text-black transition-colors inline-block">
                   by {productData.artistName}
                 </Link>
               </div>
 
-              <div className="text-3xl font-medium">{formatPrice(productData.price, productData.currency)}</div>
+              <div className="text-4xl font-bold mb-10 tracking-tight">{formatPrice(productData.price, productData.currency)}</div>
 
-              <div className="flex flex-wrap gap-3 pt-4">
-                <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-purple-50">
-                  <Shield className="w-4 h-4 text-purple-500" />
-                  <span className="text-sm">{saleTypeLabel}</span>
+              <div className="flex flex-wrap gap-3 mb-10">
+                <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-gray-50 border border-gray-100">
+                  <Shield className="w-4 h-4 text-gray-400" />
+                  <span className="text-xs font-medium text-gray-600">진품 보증</span>
                 </div>
-                <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50">
-                  <Globe className="w-4 h-4 text-blue-500" />
-                  <span className="text-sm">Global Shipping</span>
+                <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-gray-50 border border-gray-100">
+                  <Globe className="w-4 h-4 text-gray-400" />
+                  <span className="text-xs font-medium text-gray-600">전 세계 배송 가능</span>
                 </div>
               </div>
 
-              <p className="text-lg text-gray-600 leading-relaxed border-t border-gray-100 pt-6">
-                {productData.description}
-              </p>
-
-              {/* Specs */}
-              <div className="space-y-3 pt-6">
-                <div className="flex justify-between text-sm"><span className="text-gray-500">Materials</span><span>{productData.material ?? 'Preparing info'}</span></div>
-                <div className="flex justify-between text-sm"><span className="text-gray-500">Dimensions</span><span>{formatDimensions(productData)}</span></div>
-                <div className="flex justify-between text-sm"><span className="text-gray-500">Year</span><span>{productData.year ?? '2024'}</span></div>
+              <div className="space-y-6 border-t border-gray-100 pt-8 mb-10">
+                <p className="text-lg text-gray-600 leading-relaxed max-w-xl">
+                  {productData.description}
+                </p>
+                <div className="grid grid-cols-2 gap-y-4 pt-4 max-w-sm">
+                  <span className="text-sm text-gray-400 font-medium tracking-wide">소재</span>
+                  <span className="text-sm font-semibold">{productData.material ?? '정보 준비 중'}</span>
+                  <span className="text-sm text-gray-400 font-medium tracking-wide">크기</span>
+                  <span className="text-sm font-semibold">{formatDimensions(productData)}</span>
+                  <span className="text-sm text-gray-400 font-medium tracking-wide">제작 연도</span>
+                  <span className="text-sm font-semibold">{productData.year ?? '2024'}</span>
+                </div>
               </div>
 
-              {/* Action Buttons */}
-              <div className="flex gap-4 pt-10">
+              <div className="mt-auto flex gap-4 pt-6">
                 <button
                   onClick={handleAddToCart}
-                  className="flex-1 flex items-center justify-center gap-2 px-8 py-5 bg-black text-white rounded-full hover:bg-gray-800 transition-transform active:scale-95"
+                  className="flex-1 flex items-center justify-center gap-3 px-10 py-5 bg-black text-white rounded-2xl font-bold hover:bg-gray-800 transition-all active:scale-[0.98] shadow-lg shadow-black/10"
                 >
                   <ShoppingCart className="w-5 h-5" />
-                  Add to Cart
+                  장바구니 담기
                 </button>
-                <button className="p-5 border border-gray-200 rounded-full hover:bg-gray-50 transition-colors">
-                  <Heart className="w-5 h-5" />
-                </button>
-                <button className="p-5 border border-gray-200 rounded-full hover:bg-gray-50 transition-colors">
-                  <Share2 className="w-5 h-5" />
+                <button className="p-5 border border-gray-200 rounded-2xl hover:bg-gray-50 hover:border-gray-300 transition-all active:scale-[0.98]">
+                  <Heart className="w-6 h-6 text-gray-400 hover:text-red-500" />
                 </button>
               </div>
             </div>
           </div>
           
-          {/* Related Artwork (기존 로직 유지) */}
+          {/* 연관 작품 추천 */}
           {relatedOriginalArtwork && (
-             <div className="mt-32">
-                <h2 className="text-3xl mb-8">View Related Artwork</h2>
-                <div className="bg-gray-50 rounded-3xl p-8 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-                    <div className="aspect-[4/3] rounded-2xl overflow-hidden bg-white">
-                        <ImageWithFallback src={relatedOriginalArtwork.thumbnailImage} alt={relatedOriginalArtwork.title} className="w-full h-full object-cover" />
-                    </div>
-                    <div>
-                        <h3 className="text-2xl mb-2">{relatedOriginalArtwork.title}</h3>
-                        <p className="text-gray-500 mb-6">by {relatedOriginalArtwork.artistName}</p>
-                        <Link to={`/product/${relatedOriginalArtwork.id}`} className="px-6 py-3 bg-black text-white rounded-full inline-flex items-center gap-2">
-                            View Details <ExternalLink className="w-4 h-4" />
-                        </Link>
-                    </div>
+            <div className="mt-40 border-t border-gray-100 pt-24">
+              <h2 className="text-3xl font-medium tracking-tight mb-12">작가의 다른 작품 둘러보기</h2>
+              <div className="bg-gray-50 rounded-[40px] p-12 flex flex-col md:flex-row items-center gap-16">
+                <div className="w-full md:w-1/2 aspect-video rounded-3xl overflow-hidden shadow-2xl">
+                  <ImageWithFallback src={relatedOriginalArtwork.thumbnailImage} alt={relatedOriginalArtwork.title} className="w-full h-full object-cover" />
                 </div>
-             </div>
+                <div className="w-full md:w-1/2 space-y-6">
+                  <div>
+                    <h3 className="text-3xl font-medium mb-2 leading-tight">{relatedOriginalArtwork.title}</h3>
+                    <p className="text-lg text-gray-400 font-medium">by {relatedOriginalArtwork.artistName}</p>
+                  </div>
+                  <Link to={`/product/${relatedOriginalArtwork.id}`} className="inline-flex items-center gap-3 px-8 py-4 bg-white border border-gray-200 text-black font-bold rounded-2xl hover:bg-gray-50 transition-all shadow-sm">
+                    작품 상세보기 <ExternalLink className="w-4 h-4" />
+                  </Link>
+                </div>
+              </div>
+            </div>
           )}
         </div>
       </div>

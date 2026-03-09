@@ -12,7 +12,6 @@ import Onboarding from "./pages/Onboarding";
 import Search from "./pages/Search";
 import Cart from "./pages/Cart";
 import Checkout from "./pages/Checkout";
-import PaymentSelection from "./pages/PaymentSelection";
 import OrderConfirmation from "./pages/OrderConfirmation";
 import CheckoutSuccess from "./pages/CheckoutSuccess";
 import Account from "./pages/Account";
@@ -39,7 +38,6 @@ export function AppRoutes() {
       <Route path="/onboarding" element={<Onboarding />} />
       <Route path="/cart" element={<Cart />} />
       <Route path="/checkout" element={<Checkout />} />
-      <Route path="/checkout/payment" element={<PaymentSelection />} />
       <Route path="/checkout/confirm" element={<OrderConfirmation />} />
       <Route path="/checkout/success" element={<CheckoutSuccess />} />
       <Route path="/account" element={<Account />} />

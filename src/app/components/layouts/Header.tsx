@@ -10,21 +10,22 @@ export function Header() {
   
   // --- 장바구니 관련 상태 ---
   const [cartCount, setCartCount] = useState(0);
-  const [isPop, setIsPop] = useState(false); // 애니메이션 트리거
+  const [isPop, setIsPop] = useState(false); // 수량 변경 시 애니메이션
 
   // 장바구니 수량 계산 함수
   const updateCartCount = () => {
     const savedCart = localStorage.getItem('cart');
     if (savedCart) {
       const cartItems = JSON.parse(savedCart);
-      const total = cartItems.reduce((sum: number, item: any) => sum + item.quantity, 0);
+      // 각 아이템의 quantity를 모두 더함
+      const total = cartItems.reduce((sum: number, item: any) => sum + (item.quantity || 1), 0);
       setCartCount(total);
     } else {
       setCartCount(0);
     }
   };
 
-  // 1. 헤더 스크롤/경로 감지 로직
+  // 1. 헤더 배경 상태 제어 (스크롤 감지)
   useEffect(() => {
     const updateHeaderState = () => {
       const isHome = location.pathname === '/';
@@ -38,8 +39,7 @@ export function Header() {
         return;
       }
       const heroRect = hero.getBoundingClientRect();
-      const headerHeight = 88;
-      setIsHeroActive(heroRect.bottom > headerHeight);
+      setIsHeroActive(heroRect.bottom > 88);
     };
 
     updateHeaderState();
@@ -52,13 +52,14 @@ export function Header() {
     };
   }, [location.pathname]);
 
-  // 2. 장바구니 실시간 동기화 로직
+  // 2. ⭐ 장바구니 실시간 동기화 (핵심 로직)
   useEffect(() => {
     updateCartCount(); // 초기 로드 시 실행
 
-    // 커스텀 이벤트 및 스토리지 이벤트 리스너 등록
+    // 'cart-updated' 커스텀 이벤트를 들으면 즉시 수량 업데이트
     window.addEventListener('cart-updated', updateCartCount);
-    window.addEventListener('storage', updateCartCount); // 다른 탭 대응
+    // 다른 탭에서 변경했을 때를 대비한 storage 이벤트
+    window.addEventListener('storage', updateCartCount);
 
     return () => {
       window.removeEventListener('cart-updated', updateCartCount);
@@ -66,111 +67,83 @@ export function Header() {
     };
   }, []);
 
-  // 3. 수량이 변할 때 톡톡 튀는 애니메이션 효과
+  // 3. 수량이 변할 때 톡톡 튀는 애니메이션
   useEffect(() => {
-    if (cartCount > 0) {
+    if (cartCount >= 0) {
       setIsPop(true);
-      const timer = setTimeout(() => setIsPop(false), 300); // 0.3초 후 클래스 제거
+      const timer = setTimeout(() => setIsPop(false), 300);
       return () => clearTimeout(timer);
     }
   }, [cartCount]);
 
-  // 스타일 관련 변수들
+  // --- 스타일 관련 변수 (투명/불투명 제어) ---
   const isTransparent = location.pathname === '/' && isHeroActive;
 
   const navBgClass = isTransparent
     ? 'bg-transparent border-transparent backdrop-blur-0'
-    : 'bg-white/95 border-gray-100 backdrop-blur-sm shadow-[0_1px_0_rgba(0,0,0,0.04)]';
+    : 'bg-white/95 border-gray-100 backdrop-blur-sm shadow-sm';
 
-  const logoTextClass = isTransparent ? 'text-white' : 'text-black';
-  const subLogoTextClass = isTransparent ? 'text-white/70' : 'text-gray-400';
-
-  const getNavLinkClass = (active: boolean) => {
-    if (isTransparent) {
-      return active ? 'text-white' : 'text-white/70 hover:text-white';
-    }
-    return active ? 'text-black' : 'text-gray-400 hover:text-black';
-  };
-
-  const iconClass = isTransparent
-    ? 'text-white/80 hover:text-white'
-    : 'text-gray-400 hover:text-black';
-
-  const modeWrapClass = isTransparent
-    ? 'bg-white/10 border border-white/15 backdrop-blur-sm'
-    : 'bg-gray-50';
-
-  const activeModeClass = isTransparent
-    ? 'bg-white text-black shadow-sm'
-    : 'bg-white shadow-sm text-black';
-
-  const inactiveModeClass = isTransparent
-    ? 'text-white/70 hover:text-white'
-    : 'text-gray-400 hover:text-black';
-
-  const cartBadgeClass = isTransparent
-    ? 'bg-white text-black'
-    : 'bg-black text-white';
+  const logoClass = isTransparent ? 'text-white' : 'text-black';
+  const iconClass = isTransparent ? 'text-white/80 hover:text-white' : 'text-gray-400 hover:text-black';
 
   return (
     <nav className={`fixed top-0 left-0 right-0 z-50 border-b transition-all duration-300 ${navBgClass}`}>
       <div className="max-w-[1600px] mx-auto px-8 py-4">
         <div className="flex items-center justify-between">
-          {/* Logo */}
+          
+          {/* 로고 */}
           <Link to="/" className="flex items-center gap-3">
-            <div className={`text-2xl tracking-tight transition-colors duration-300 ${logoTextClass}`}>KoALa</div>
-            <div className={`text-xs tracking-wide transition-colors duration-300 ${subLogoTextClass}`}>Korean Art Lab</div>
+            <span className={`text-2xl font-bold tracking-tight ${logoClass}`}>KoALa</span>
+            <span className={`text-[10px] uppercase tracking-widest hidden sm:block ${isTransparent ? 'text-white/50' : 'text-gray-400'}`}>
+              Korean Art Lab
+            </span>
           </Link>
 
-          {/* Main Navigation */}
-          <div className="flex items-center gap-12">
-            <Link to="/" className={`text-sm transition-colors duration-300 ${getNavLinkClass(location.pathname === '/')}`}>작품 갤러리</Link>
-            <Link to="/artist-lab" className={`text-sm transition-colors duration-300 ${getNavLinkClass(location.pathname.startsWith('/artist'))}`}>작가의 연구소</Link>
-            <Link to="/store" className={`text-sm transition-colors duration-300 ${getNavLinkClass(location.pathname.startsWith('/store') || location.pathname.startsWith('/product'))}`}>스마트 스토어</Link>
-            <Link to="/ar-view" className={`text-sm transition-colors duration-300 ${getNavLinkClass(location.pathname === '/ar-view')}`}>AR 뷰어</Link>
-            <Link to="/resell" className={`text-sm transition-colors duration-300 ${getNavLinkClass(location.pathname === '/resell')}`}>리셀 마켓</Link>
+          {/* 중앙 메뉴 */}
+          <div className="flex items-center gap-10">
+            {['작품 갤러리', '작가의 연구소', '스마트 스토어', 'AR 뷰어'].map((menu, i) => {
+              const paths = ['/', '/artist-lab', '/store', '/ar-view'];
+              const isActive = location.pathname === paths[i];
+              return (
+                <Link 
+                  key={menu} 
+                  to={paths[i]} 
+                  className={`text-sm font-medium transition-colors ${
+                    isActive 
+                      ? (isTransparent ? 'text-white' : 'text-black') 
+                      : (isTransparent ? 'text-white/60 hover:text-white' : 'text-gray-400 hover:text-black')
+                  }`}
+                >
+                  {menu}
+                </Link>
+              );
+            })}
           </div>
 
-          {/* Right Section */}
+          {/* 오른쪽 아이콘 섹션 */}
           <div className="flex items-center gap-6">
-            {/* Mode Toggle */}
-            <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full transition-all duration-300 ${modeWrapClass}`}>
-              <button onClick={() => setMode('gallery')} className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-xs transition-all duration-300 ${mode === 'gallery' ? activeModeClass : inactiveModeClass}`}>
-                <Eye className="w-3.5 h-3.5" />Gallery
-              </button>
-              <button onClick={() => setMode('shop')} className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-xs transition-all duration-300 ${mode === 'shop' ? activeModeClass : inactiveModeClass}`}>
-                <ShoppingBag className="w-3.5 h-3.5" />Shop
-              </button>
+            {/* 모드 토글 */}
+            <div className={`flex items-center p-1 rounded-full ${isTransparent ? 'bg-white/10' : 'bg-gray-100'}`}>
+              <button onClick={() => setMode('gallery')} className={`px-3 py-1 rounded-full text-[11px] transition-all ${mode === 'gallery' ? 'bg-white text-black shadow-sm' : 'text-gray-400'}`}>갤러리</button>
+              <button onClick={() => setMode('shop')} className={`px-3 py-1 rounded-full text-[11px] transition-all ${mode === 'shop' ? 'bg-white text-black shadow-sm' : 'text-gray-400'}`}>스토어</button>
             </div>
 
-            {/* Search Icon */}
-            <Link to="/search" className={`transition-colors duration-300 ${iconClass}`}>
-              <Search className="w-5 h-5" />
-            </Link>
+            <Search className={`w-5 h-5 cursor-pointer ${iconClass}`} />
 
-            {/* Cart Icon - 수정된 부분 */}
-            <Link to="/cart" className={`relative transition-colors duration-300 ${iconClass}`}>
+            {/* 장바구니 아이콘 (숫자 배지 포함) */}
+            <Link to="/cart" className={`relative transition-transform ${iconClass} ${isPop ? 'scale-110' : 'scale-100'}`}>
               <ShoppingCart className="w-5 h-5" />
               {cartCount > 0 && (
-                <span
-                  className={`absolute -top-1.5 -right-1.5 min-w-[18px] h-[18px] text-[10px] font-bold rounded-full flex items-center justify-center transition-all duration-300 
-                  ${cartBadgeClass} 
-                  ${isPop ? 'scale-125 animate-pulse' : 'scale-100'}`}
-                >
-                  {cartCount > 99 ? '99+' : cartCount}
+                <span className={`absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full flex items-center justify-center text-[9px] font-bold animate-in zoom-in ${
+                  isTransparent ? 'bg-white text-black' : 'bg-black text-white'
+                }`}>
+                  {cartCount}
                 </span>
               )}
             </Link>
 
-            {/* User Menu */}
-            <Link to="/account" className={`transition-colors duration-300 ${iconClass}`}>
-              <User className="w-5 h-5" />
-            </Link>
-
-            {/* Language Selector */}
-            <button className={`flex items-center gap-1.5 text-xs transition-colors duration-300 ${iconClass}`}>
-              <Globe className="w-4 h-4" />EN
-            </button>
+            <Link to="/account/orders"><User className={`w-5 h-5 ${iconClass}`} /></Link>
+            <Globe className={`w-5 h-5 cursor-pointer ${iconClass}`} />
           </div>
         </div>
       </div>
@@ -178,6 +151,7 @@ export function Header() {
   );
 }
 
+// Context Provider로 감싼 최종 Export
 export default function Navigation() {
   return (
     <ViewModeProvider>
