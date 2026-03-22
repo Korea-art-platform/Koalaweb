@@ -1,61 +1,59 @@
-**Add your own guidelines here**
+**여기에 가이드라인을 추가하세요**
 <!--
 
-System Guidelines
+시스템 가이드라인
 
-Use this file to provide the AI with rules and guidelines you want it to follow.
-This template outlines a few examples of things you can add. You can add your own sections and format it to suit your needs
+이 파일을 사용하여 AI가 따르기를 원하는 규칙과 가이드라인을 제공하세요.
+이 템플릿에는 추가할 수 있는 몇 가지 예시가 설명되어 있습니다. 자신만의 섹션을 추가하고 필요에 맞게 형식을 지정할 수 있습니다.
 
-TIP: More context isn't always better. It can confuse the LLM. Try and add the most important rules you need
+팁: 더 많은 컨텍스트가 항상 좋은 것은 아닙니다. LLM을 혼란스럽게 할 수 있습니다. 필요한 가장 중요한 규칙을 추가해 보세요.
 
-# General guidelines
+# 일반적인 가이드라인
 
-Any general rules you want the AI to follow.
-For example:
+AI가 따르기를 원하는 일반적인 규칙.
+예를 들어:
 
-* Only use absolute positioning when necessary. Opt for responsive and well structured layouts that use flexbox and grid by default
-* Refactor code as you go to keep code clean
-* Keep file sizes small and put helper functions and components in their own files.
+* 절대적인 위치 지정(absolute positioning)은 필요한 경우에만 사용하세요. 기본적으로 flexbox와 grid를 사용하여 반응형이고 잘 구조화된 레이아웃을 사용하세요.
+* 코드를 깔끔하게 유지하기 위해 코드를 작성하면서 리팩터링하세요.
+* 파일 크기를 작게 유지하고 헬퍼 함수와 컴포넌트를 자체 파일에 분리하세요.
 
 --------------
 
-# Design system guidelines
-Rules for how the AI should make generations look like your company's design system
+# 디자인 시스템 가이드라인
+AI가 생성하는 결과물이 회사의 디자인 시스템처럼 보이도록 하는 규칙
 
-Additionally, if you select a design system to use in the prompt box, you can reference
-your design system's components, tokens, variables and components.
-For example:
+추가로, 프롬프트 입력란에서 사용할 디자인 시스템을 선택하면,
+디자인 시스템의 컴포넌트, 토큰, 변수 등을 참조할 수 있습니다.
+예를 들어:
 
-* Use a base font-size of 14px
-* Date formats should always be in the format “Jun 10”
-* The bottom toolbar should only ever have a maximum of 4 items
-* Never use the floating action button with the bottom toolbar
-* Chips should always come in sets of 3 or more
-* Don't use a dropdown if there are 2 or fewer options
+* 기본 폰트 크기로 14px을 사용하세요.
+* 날짜 형식은 항상 "Jun 10"과 같은 형식을 사용해야 합니다.
+* 하단 툴바에는 최대 4개의 항목만 있어야 합니다.
+* 하단 툴바와 함께 플로팅 액션 버튼(FAB)을 절대 사용하지 마세요.
+* 칩(Chip)은 항상 3개 이상의 세트로 제공되어야 합니다.
+* 옵션이 2개 이하인 경우에는 드롭다운을 사용하지 마세요.
 
-You can also create sub sections and add more specific details
-For example:
+하위 섹션을 만들고 더 구체적인 세부 정보를 추가할 수도 있습니다.
+예를 들어:
 
 
-## Button
-The Button component is a fundamental interactive element in our design system, designed to trigger actions or navigate
-users through the application. It provides visual feedback and clear affordances to enhance user experience.
+## 버튼 (Button)
+버튼 컴포넌트는 사용자가 작업을 트리거하거나 애플리케이션 내에서 이동할 수 있도록 설계된 우리 디자인 시스템의 기본적인 대화형 요소입니다. 이는 사용자 경험을 향상시키기 위해 시각적 피드백과 명확한 어포던스(affordance)를 제공합니다.
 
-### Usage
-Buttons should be used for important actions that users need to take, such as form submissions, confirming choices,
-or initiating processes. They communicate interactivity and should have clear, action-oriented labels.
+### 사용법
+버튼은 양식 제출, 선택 확인 또는 프로세스 시작과 같이 사용자가 취해야 할 중요한 작업에 사용되어야 합니다. 버튼은 상호작용성을 소통하며 명확하고 행동 지향적인 레이블을 가져야 합니다.
 
-### Variants
-* Primary Button
-  * Purpose : Used for the main action in a section or page
-  * Visual Style : Bold, filled with the primary brand color
-  * Usage : One primary button per section to guide users toward the most important action
-* Secondary Button
-  * Purpose : Used for alternative or supporting actions
-  * Visual Style : Outlined with the primary color, transparent background
-  * Usage : Can appear alongside a primary button for less important actions
-* Tertiary Button
-  * Purpose : Used for the least important actions
-  * Visual Style : Text-only with no border, using primary color
-  * Usage : For actions that should be available but not emphasized
+### 변형 (Variants)
+* 기본 버튼 (Primary Button)
+  * 목적: 섹션이나 페이지에서 주요 작업을 위해 사용됨
+  * 시각적 스타일: 굵고(bold), 기본 브랜드 색상으로 채워짐
+  * 사용법: 사용자가가 가장 중요한 작업을 하도록 유도하기 위해 섹션당 하나의 기본 버튼 사용
+* 보조 버튼 (Secondary Button)
+  * 목적: 대안적이거나 지원하는 작업을 위해 사용됨
+  * 시각적 스타일: 기본 색상으로 테두리가 있고 윤곽선이 있음(outlined), 투명한 배경
+  * 사용법: 덜 중요한 작업을 위해 기본 버튼과 함께 표시될 수 있음
+* 3차 버튼 (Tertiary Button)
+  * 목적: 가장 덜 중요한 작업을 위해 사용됨
+  * 시각적 스타일: 테두리가 없는 텍스트 전용이며, 기본 색상 사용
+  * 사용법: 사용할 수 있어야 하지만 강조되지 않아야 하는 작업을 위해
 -->

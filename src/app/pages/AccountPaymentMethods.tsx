@@ -1,228 +1,107 @@
-import { Link, useLocation } from 'react-router';
-import { User, MapPin, CreditCard, Package, Heart, Settings, LogOut, Plus, Edit2, Trash2 } from 'lucide-react';
+import { useLocation, useNavigate } from 'react-router';
+import { CreditCard, Plus, Smartphone } from 'lucide-react';
 import Navigation from '../components/layouts/Header';
+import AccountSidebar from '../components/layouts/AccountSidebar';
+import { useEffect, useState } from 'react';
+import { getMyProfile } from '../../api/user';
 
-const menuItems = [
-  { icon: User, label: 'Profile', path: '/account' },
-  { icon: Package, label: 'Orders', path: '/account/orders' },
-  { icon: MapPin, label: 'Addresses', path: '/account/addresses' },
-  { icon: CreditCard, label: 'Payment Methods', path: '/account/payment-methods' },
-  { icon: Heart, label: 'Wishlist', path: '/account/wishlist' },
-  { icon: Settings, label: 'Settings', path: '/account/settings' },
+const paymentOptions = [
+  { id: 'toss', name: '토스페이', icon: '💙', description: '토스 앱 간편 결제', color: 'bg-blue-50 border-blue-100' },
+  { id: 'kakao', name: '카카오페이', icon: '💛', description: '카카오톡 간편 결제', color: 'bg-yellow-50 border-yellow-100' },
+  { id: 'naver', name: '네이버페이', icon: '💚', description: '네이버 포인트 적립', color: 'bg-green-50 border-green-100' },
+  { id: 'card', name: '신용/체크카드', icon: '💳', description: '일반 카드 직접 입력', color: 'bg-gray-50 border-gray-100' },
 ];
-
-// Mock payment methods data
-const paymentMethods = [
-  {
-    id: 1,
-    type: 'card',
-    brand: 'Visa',
-    last4: '4242',
-    expiry: '12/25',
-    holder: 'Kim Min-ji',
-    isDefault: true,
-  },
-  {
-    id: 2,
-    type: 'card',
-    brand: 'Mastercard',
-    last4: '8888',
-    expiry: '09/26',
-    holder: 'Kim Min-ji',
-    isDefault: false,
-  },
-  {
-    id: 3,
-    type: 'card',
-    brand: 'American Express',
-    last4: '1234',
-    expiry: '03/27',
-    holder: 'Kim Min-ji',
-    isDefault: false,
-  },
-];
-
-const getCardGradient = (brand: string) => {
-  const gradients: { [key: string]: string } = {
-    'Visa': 'from-blue-600 to-blue-800',
-    'Mastercard': 'from-orange-500 to-red-600',
-    'American Express': 'from-gray-700 to-gray-900',
-  };
-  return gradients[brand] || 'from-gray-700 to-gray-900';
-};
 
 export default function AccountPaymentMethods() {
   const location = useLocation();
+  const navigate = useNavigate();
+  const [user, setUser] = useState<any>(null);
+
+  useEffect(() => {
+    const token = localStorage.getItem('accessToken');
+    if (!token) {
+      navigate('/login');
+      return;
+    }
+    getMyProfile()
+      .then((res) => setUser(res.data.data))
+      .catch(console.error);
+  }, []);
 
   return (
     <div className="min-h-screen bg-[#FAFAFA]">
       <Navigation />
-      
-      <div className="pt-24 pb-16 px-8">
+
+      <div className="pt-24 pb-16 px-4 md:px-8 lg:px-12">
         <div className="max-w-[1400px] mx-auto">
-          {/* Header */}
-          <div className="mb-12">
-            <h1 className="text-3xl tracking-tight mb-2">My Account</h1>
-            <p className="text-sm text-gray-400">
-              Manage your payment methods
+          <div className="mb-8 md:mb-12">
+            <h1 className="text-2xl md:text-3xl font-bold tracking-tight mb-2">마이페이지</h1>
+            <p className="text-xs md:text-sm text-gray-400 font-medium">
+              결제 수단을 관리하세요.
             </p>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-            {/* Sidebar Menu */}
             <div className="lg:col-span-1">
-              <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-                {/* User Info */}
-                <div className="flex items-center gap-4 pb-6 mb-6 border-b border-gray-100">
-                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-gray-800 to-gray-600 flex items-center justify-center text-white">
-                    KM
-                  </div>
-                  <div>
-                    <p className="font-medium">Kim Min-ji</p>
-                    <p className="text-xs text-gray-400">kim@example.com</p>
-                  </div>
-                </div>
-
-                {/* Menu Items */}
-                <nav className="space-y-2">
-                  {menuItems.map((item) => {
-                    const Icon = item.icon;
-                    const isActive = location.pathname === item.path;
-                    
-                    return (
-                      <Link
-                        key={item.path}
-                        to={item.path}
-                        className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
-                          isActive
-                            ? 'bg-gray-50 text-black'
-                            : 'text-gray-400 hover:text-black hover:bg-gray-50'
-                        }`}
-                      >
-                        <Icon className="w-4 h-4" />
-                        <span className="text-sm">{item.label}</span>
-                      </Link>
-                    );
-                  })}
-                </nav>
-
-                {/* Logout */}
-                <button className="flex items-center gap-3 px-4 py-3 mt-6 w-full text-gray-400 hover:text-red-500 transition-colors">
-                  <LogOut className="w-4 h-4" />
-                  <span className="text-sm">Sign Out</span>
-                </button>
-              </div>
+              <AccountSidebar currentPath={location.pathname} user={user} />
             </div>
 
-            {/* Main Content */}
             <div className="lg:col-span-3">
-              {/* Header with Add Button */}
-              <div className="flex items-center justify-between mb-8">
-                <div>
-                  <h2 className="text-2xl mb-1">Payment Methods</h2>
-                  <p className="text-sm text-gray-400">
-                    Manage your saved payment methods
-                  </p>
-                </div>
-                <button className="flex items-center gap-2 px-6 py-3 bg-black text-white rounded-xl hover:bg-gray-900 transition-colors">
-                  <Plus className="w-4 h-4" />
-                  Add Card
-                </button>
+              <div className="mb-6 md:mb-8 px-1">
+                <h2 className="text-xl md:text-2xl font-bold mb-1 italic">Payment Methods</h2>
+                <p className="text-xs md:text-sm text-gray-400 font-medium">
+                  결제 시 사용할 수단을 선택하세요
+                </p>
               </div>
 
-              {/* Payment Methods Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {paymentMethods.map((method) => (
+              {/* 지원 결제 수단 */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+                {paymentOptions.map((method) => (
                   <div
                     key={method.id}
-                    className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100"
+                    className={`bg-white rounded-2xl p-6 border ${method.color} flex items-center gap-4`}
                   >
-                    {/* Card Visual */}
-                    <div className={`bg-gradient-to-br ${getCardGradient(method.brand)} rounded-xl p-6 mb-6 relative overflow-hidden`}>
-                      {/* Decorative circles */}
-                      <div className="absolute -right-8 -top-8 w-32 h-32 bg-white/10 rounded-full"></div>
-                      <div className="absolute -left-4 -bottom-4 w-24 h-24 bg-white/10 rounded-full"></div>
-                      
-                      {/* Card Content */}
-                      <div className="relative z-10">
-                        <div className="flex justify-between items-start mb-8">
-                          <CreditCard className="w-8 h-8 text-white/80" />
-                          {method.isDefault && (
-                            <span className="text-xs px-2 py-1 bg-white/20 text-white rounded-full">
-                              Default
-                            </span>
-                          )}
-                        </div>
-                        
-                        <div className="mb-6">
-                          <p className="text-white text-lg tracking-wider font-mono">
-                            •••• •••• •••• {method.last4}
-                          </p>
-                        </div>
-                        
-                        <div className="flex justify-between items-end">
-                          <div>
-                            <p className="text-white/60 text-xs mb-1">Card Holder</p>
-                            <p className="text-white text-sm">{method.holder}</p>
-                          </div>
-                          <div>
-                            <p className="text-white/60 text-xs mb-1">Expires</p>
-                            <p className="text-white text-sm">{method.expiry}</p>
-                          </div>
-                        </div>
-                      </div>
+                    <div className="text-4xl">{method.icon}</div>
+                    <div className="flex-1">
+                      <p className="font-bold text-gray-900 mb-0.5">{method.name}</p>
+                      <p className="text-xs text-gray-400">{method.description}</p>
                     </div>
-
-                    {/* Card Info */}
-                    <div className="mb-4">
-                      <p className="font-medium mb-1">{method.brand}</p>
-                      <p className="text-sm text-gray-400">
-                        Ending in {method.last4}
-                      </p>
-                    </div>
-
-                    {/* Actions */}
-                    <div className="flex gap-3 pt-4 border-t border-gray-100">
-                      <button className="flex-1 flex items-center justify-center gap-2 py-2 text-sm border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
-                        <Edit2 className="w-4 h-4" />
-                        Edit
-                      </button>
-                      {!method.isDefault && (
-                        <button className="flex-1 py-2 text-sm border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
-                          Set as Default
-                        </button>
-                      )}
-                      <button className="px-4 py-2 text-sm text-red-500 border border-red-200 rounded-lg hover:bg-red-50 transition-colors">
-                        <Trash2 className="w-4 h-4" />
-                      </button>
+                    <div className="px-3 py-1 bg-green-100 text-green-600 text-xs font-bold rounded-full">
+                      지원
                     </div>
                   </div>
                 ))}
-
-                {/* Add New Card */}
-                <button className="bg-white rounded-2xl p-6 shadow-sm border-2 border-dashed border-gray-200 hover:border-gray-300 transition-colors flex flex-col items-center justify-center min-h-[360px]">
-                  <div className="w-12 h-12 rounded-full bg-gray-50 flex items-center justify-center mb-4">
-                    <Plus className="w-6 h-6 text-gray-400" />
-                  </div>
-                  <p className="text-sm text-gray-600 mb-1">Add New Card</p>
-                  <p className="text-xs text-gray-400">
-                    Secure checkout with saved cards
-                  </p>
-                </button>
               </div>
 
-              {/* Security Note */}
-              <div className="mt-8 bg-blue-50 rounded-2xl p-6 border border-blue-100">
+              {/* 저장된 카드 — 추후 토스 연동 예정 */}
+              <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 mb-6">
+                <div className="flex items-center justify-between mb-6">
+                  <h3 className="text-lg font-bold">저장된 카드</h3>
+                  <button className="flex items-center gap-2 px-4 py-2 bg-black text-white rounded-xl text-sm font-bold hover:bg-gray-800 transition-colors">
+                    <Plus className="w-4 h-4" />
+                    카드 추가
+                  </button>
+                </div>
+                <div className="text-center py-12 border border-dashed border-gray-200 rounded-2xl">
+                  <CreditCard className="w-12 h-12 text-gray-200 mx-auto mb-4" />
+                  <p className="text-gray-400 mb-1">저장된 카드가 없습니다.</p>
+                  <p className="text-xs text-gray-300">
+                    토스 페이먼츠 연동 후 카드를 등록할 수 있습니다.
+                  </p>
+                </div>
+              </div>
+
+              {/* 보안 안내 */}
+              <div className="bg-blue-50 rounded-2xl p-6 border border-blue-100">
                 <div className="flex gap-4">
                   <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
-                    <CreditCard className="w-5 h-5 text-blue-600" />
+                    <Smartphone className="w-5 h-5 text-blue-600" />
                   </div>
                   <div>
-                    <h3 className="font-medium mb-1">Secure Payment</h3>
-                    <p className="text-sm text-gray-600">
-                      Your payment information is encrypted and stored securely. 
-                      We never store your full card number and use industry-standard 
-                      security measures to protect your data.
+                    <h3 className="font-bold mb-1 text-blue-900">안전한 결제 시스템</h3>
+                    <p className="text-sm text-blue-700 leading-relaxed">
+                      모든 결제 정보는 토스 페이먼츠의 PCI-DSS 인증 보안 시스템으로 암호화되어 보호됩니다.
+                      카드 번호는 저장되지 않으며 결제 시 토스 페이먼츠 서버에서 직접 처리됩니다.
                     </p>
                   </div>
                 </div>

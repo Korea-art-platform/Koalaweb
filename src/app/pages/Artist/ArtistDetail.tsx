@@ -1,41 +1,156 @@
 import Navigation from '../../components/layouts/Header';
 import { useParams, Link, useNavigate } from 'react-router';
-import { ArrowLeft, ExternalLink, Play } from 'lucide-react';
+import { ArrowLeft, Play, Share2 } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import { ImageWithFallback } from '../../components/figma/ImageWithFallback';
-import { artists } from  '../type/artist';
+import { getArtist } from '../../../api/artist';
 
+// ── 유튜브/Vimeo/S3 URL → 임베드 URL 변환 ──────────────
+function getVideoEmbedUrl(url: string): string | null {
+  if (!url) return null;
+
+  const youtubeMatch = url.match(
+    /(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\n?#]+)/
+  );
+  if (youtubeMatch) {
+    return `https://www.youtube.com/embed/${youtubeMatch[1]}`;
+  }
+
+  const vimeoMatch = url.match(/vimeo\.com\/(\d+)/);
+  if (vimeoMatch) {
+    return `https://player.vimeo.com/video/${vimeoMatch[1]}`;
+  }
+
+  if (url.endsWith('.mp4') || url.endsWith('.webm')) {
+    return url;
+  }
+
+  return null;
+}
+
+// ── 영상 플레이어 컴포넌트 ─────────────────────────────
+function VideoPlayer({
+  url,
+  thumbnail,
+  title,
+}: {
+  url: string;
+  thumbnail?: string;
+  title?: string;
+}) {
+  const [playing, setPlaying] = useState(false);
+  const embedUrl = getVideoEmbedUrl(url);
+  const isDirectVideo = url.endsWith('.mp4') || url.endsWith('.webm');
+
+  if (!embedUrl) return null;
+
+  return (
+    <div className="relative overflow-hidden rounded-[2rem] bg-gray-900 aspect-video group shadow-2xl">
+      {playing ? (
+        isDirectVideo ? (
+          <video
+            src={embedUrl}
+            controls
+            autoPlay
+            className="w-full h-full object-cover"
+          />
+        ) : (
+          <iframe
+            src={`${embedUrl}?autoplay=1`}
+            className="w-full h-full"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+          />
+        )
+      ) : (
+        <>
+          <ImageWithFallback
+            src={thumbnail ?? 'https://via.placeholder.com/800x450'}
+            alt={title ?? ''}
+            className="w-full h-full object-cover opacity-80"
+          />
+          <div
+            className="absolute inset-0 flex items-center justify-center bg-black/20 cursor-pointer"
+            onClick={() => setPlaying(true)}
+          >
+            <div className="w-16 h-16 md:w-24 md:h-24 rounded-full bg-white flex items-center justify-center shadow-2xl transform transition-transform group-hover:scale-110">
+              <Play
+                className="w-6 h-6 md:w-10 md:h-10 text-black ml-1"
+                fill="currentColor"
+              />
+            </div>
+          </div>
+          {title && (
+            <div className="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-black/80 to-transparent pointer-events-none">
+              <div className="text-white text-xs md:text-sm font-bold">
+                {title}
+              </div>
+            </div>
+          )}
+        </>
+      )}
+    </div>
+  );
+}
+
+// ── 메인 컴포넌트 ──────────────────────────────────────
 export default function ArtistDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const [artist, setArtist] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
 
-  const artistData = artists.find((artist) => artist.id === id);
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const artistRes = await getArtist(id!);
+        setArtist(artistRes.data.data);
+      } catch (e) {
+        console.error('아티스트 로딩 실패:', e);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, [id]);
 
-  if (!artistData) {
+  // 미디어 분류
+  const videos = artist?.mediaList?.filter(
+    (m: any) => m.mediaType === 'VIDEO'
+  ) ?? [];
+  const images = artist?.mediaList?.filter(
+    (m: any) => m.mediaType === 'IMAGE'
+  ) ?? [];
+
+  if (loading) {
     return (
       <div className="min-h-screen bg-white">
         <Navigation />
-        <div className="pt-32 pb-32 px-8">
-          <div className="max-w-[1600px] mx-auto">
-            <button
-              onClick={() => navigate(-1)}
-              className="inline-flex items-center gap-2 text-sm text-gray-400 hover:text-black transition-colors mb-12"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              Back
-            </button>
-
-            <div className="rounded-3xl border border-gray-200 p-12 text-center">
-              <h1 className="text-3xl mb-4">작가 정보를 찾을 수 없습니다.</h1>
-              <p className="text-gray-500 mb-8">
-                존재하지 않거나 삭제된 작가 페이지입니다.
-              </p>
-              <Link
-                to="/artist-lab"
-                className="inline-flex items-center gap-2 px-6 py-3 bg-black text-white rounded-full hover:bg-gray-800 transition-colors"
-              >
-                작가 목록으로 돌아가기
-              </Link>
+        <div className="pt-32 pb-32 px-6 animate-pulse">
+          <div className="max-w-[1600px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16">
+            <div className="aspect-[3/4] bg-gray-100 rounded-[3rem]" />
+            <div className="space-y-6 pt-8">
+              <div className="h-8 bg-gray-100 rounded w-1/4" />
+              <div className="h-16 bg-gray-100 rounded w-3/4" />
+              <div className="h-24 bg-gray-100 rounded" />
             </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!artist) {
+    return (
+      <div className="min-h-screen bg-white">
+        <Navigation />
+        <div className="pt-32 pb-32 px-6 text-center">
+          <div className="max-w-md mx-auto">
+            <h1 className="text-2xl font-bold mb-4">작가를 찾을 수 없습니다.</h1>
+            <Link to="/artist-lab" className="text-sm underline text-gray-500">
+              목록으로 돌아가기
+            </Link>
           </div>
         </div>
       </div>
@@ -46,159 +161,124 @@ export default function ArtistDetail() {
     <div className="min-h-screen bg-white">
       <Navigation />
 
-      <div className="pt-32 pb-32 px-8">
+      <main className="pt-24 md:pt-32 pb-24 px-5 md:px-8">
         <div className="max-w-[1600px] mx-auto">
-          {/* Back Button */}
-          <button
-            onClick={() => navigate(-1)}
-            className="inline-flex items-center gap-2 text-sm text-gray-400 hover:text-black transition-colors mb-12"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            Back
-          </button>
+
+          {/* 상단 컨트롤 바 */}
+          <div className="flex items-center justify-between mb-8 md:mb-12">
+            <button
+              onClick={() => navigate(-1)}
+              className="inline-flex items-center gap-2 py-2 text-sm text-gray-500 hover:text-black transition-colors"
+            >
+              <ArrowLeft className="w-5 h-5" />
+              <span className="font-medium">Back</span>
+            </button>
+            <button className="p-2 text-gray-500 md:hidden">
+              <Share2 className="w-5 h-5" />
+            </button>
+          </div>
 
           {/* Artist Header */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 mb-32">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 md:gap-16 lg:gap-24 mb-20 md:mb-32">
             {/* Portrait */}
-            <div className="relative overflow-hidden rounded-3xl bg-gray-50 aspect-[3/4]">
+            <div className="relative overflow-hidden rounded-[2rem] md:rounded-[3rem] bg-gray-50 aspect-[3/4] shadow-xl">
               <ImageWithFallback
-                src={artistData.image}
-                alt={artistData.name}
-                className="w-full h-full object-cover"
+                src={artist.profileImageUrl ?? 'https://via.placeholder.com/400'}
+                alt={artist.name}
+                className="w-full h-full object-cover transition-transform duration-1000 hover:scale-105"
               />
             </div>
 
             {/* Info */}
-            <div className="flex flex-col justify-center space-y-8">
-              <div>
-                <div className="text-sm text-gray-400 tracking-wide uppercase mb-3">
-                  {artistData.specialty}
+            <div className="flex flex-col justify-center">
+              <div className="mb-8 md:mb-10">
+                <div className="text-[10px] md:text-xs text-gray-400 tracking-[0.3em] uppercase mb-4 font-bold">
+                  Artist
                 </div>
-                <h1 className="text-5xl mb-4">{artistData.name}</h1>
-                <p className="text-lg text-gray-500 mb-6">{artistData.location}</p>
-                <p className="text-lg text-gray-600 leading-relaxed">
-                  {artistData.bio}
+                <h1 className="text-4xl md:text-6xl lg:text-7xl font-black mb-4 tracking-tighter leading-none">
+                  {artist.name}
+                </h1>
+                <p className="text-base md:text-xl text-gray-600 leading-relaxed break-keep">
+                  {artist.description ?? '작가 소개가 없습니다.'}
                 </p>
               </div>
 
-              <div className="flex items-center gap-2 text-sm text-gray-500 pt-6 border-t border-gray-100">
-                <span className="font-medium text-black text-2xl">
-                  {artistData.collectors.toLocaleString()}
-                </span>
-                collectors worldwide
-              </div>
-
-              <div className="flex gap-4">
-                <button className="flex-1 px-8 py-4 bg-black text-white rounded-full hover:bg-gray-800 transition-colors">
-                  Start Collecting
-                </button>
-                <button className="px-8 py-4 border border-gray-200 rounded-full hover:bg-gray-50 transition-colors">
+              {/* CTA Buttons */}
+              <div className="flex flex-col sm:flex-row gap-3">
+                <Link
+                  to="/smart-store"
+                  className="flex-1 py-4 md:py-5 bg-black text-white rounded-full font-bold text-sm md:text-base hover:bg-gray-800 transition-all active:scale-95 text-center"
+                >
+                  작품 보러가기
+                </Link>
+                <button className="px-10 py-4 md:py-5 border border-gray-200 rounded-full font-bold text-sm md:text-base hover:bg-gray-50 transition-all hidden sm:block">
                   Share
                 </button>
               </div>
             </div>
           </div>
 
-          {/* Studio Video */}
-          <div className="mb-32">
-            <h2 className="text-3xl mb-8">Inside the Studio</h2>
-            <div className="relative overflow-hidden rounded-3xl bg-gray-50 aspect-video">
-              <ImageWithFallback
-                src={artistData.studioImage}
-                alt={`${artistData.name} studio`}
-                className="w-full h-full object-cover"
-              />
-              <div className="absolute inset-0 flex items-center justify-center bg-black/20">
-                <button className="flex items-center justify-center w-20 h-20 rounded-full bg-white/90 backdrop-blur-sm hover:bg-white transition-colors">
-                  <Play className="w-8 h-8 text-black ml-1" fill="currentColor" />
-                </button>
+          {/* 인터뷰 영상 섹션 */}
+          {videos.length > 0 && (
+            <div className="mb-20 md:mb-32">
+              <div className="flex items-end justify-between mb-6 md:mb-8 px-1">
+                <h2 className="text-2xl md:text-4xl font-bold tracking-tight italic">
+                  Inside the Studio
+                </h2>
+                <span className="text-[10px] text-gray-400 uppercase tracking-widest font-bold">
+                  Interview
+                </span>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {videos.map((video: any) => (
+                  <VideoPlayer
+                    key={video.id}
+                    url={video.fileUrl}
+                    thumbnail={video.thumbnailUrl}
+                    title={video.title}
+                  />
+                ))}
               </div>
             </div>
-          </div>
+          )}
 
-          {/* IP Expansion Section */}
-          <div className="mb-32">
-            <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-3xl p-12">
-              <div className="max-w-3xl">
-                <div className="flex items-center gap-3 mb-6">
-                  <ExternalLink className="w-6 h-6 text-purple-500" />
-                  <h2 className="text-3xl">IP Expansion Journey</h2>
-                </div>
-
-                <p className="text-lg text-gray-600 leading-relaxed mb-8">
-                  {artistData.expansionDescription}
-                </p>
-
-                <div className="flex items-center gap-4 text-sm flex-wrap">
-                  <div className="px-4 py-2 bg-white rounded-full">Original Art</div>
-                  <div className="text-gray-400">→</div>
-                  <div className="px-4 py-2 bg-white rounded-full">Art Goods</div>
-                  <div className="text-gray-400">→</div>
-                  <div className="px-4 py-2 bg-white rounded-full">Limited Editions</div>
-                </div>
+          {/* 갤러리 이미지 섹션 */}
+          {images.length > 0 && (
+            <div className="mb-20 md:mb-32">
+              <div className="flex items-end justify-between mb-6 md:mb-8 px-1">
+                <h2 className="text-2xl md:text-4xl font-bold tracking-tight">
+                  Gallery
+                </h2>
+                <span className="text-[10px] text-gray-400 uppercase tracking-widest font-bold">
+                  Works
+                </span>
               </div>
-            </div>
-          </div>
-
-          {/* Portfolio Grid */}
-          <div>
-            <h2 className="text-3xl mb-8">Portfolio</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {artistData.portfolio.map((work) => (
-                <Link
-                  key={work.id}
-                  to={work.type === 'available' ? `/product/${work.id}` : '#'}
-                  className="group block"
-                >
-                  <div className="relative overflow-hidden rounded-2xl bg-gray-50 aspect-square mb-4">
+              <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+                {images.map((image: any) => (
+                  <div
+                    key={image.id}
+                    className="relative overflow-hidden rounded-2xl bg-gray-50 aspect-square"
+                  >
                     <ImageWithFallback
-                      src={work.image}
-                      alt={work.title}
-                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                      src={image.fileUrl}
+                      alt={image.title ?? artist.name}
+                      className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
                     />
-
-                    {/* Status Badge */}
-                    <div className="absolute top-4 right-4">
-                      <div
-                        className={`px-3 py-1.5 rounded-full text-xs backdrop-blur-sm ${
-                          work.type === 'available'
-                            ? 'bg-green-500/90 text-white'
-                            : work.type === 'sold'
-                            ? 'bg-gray-900/90 text-white'
-                            : 'bg-blue-500/90 text-white'
-                        }`}
-                      >
-                        {work.type === 'available'
-                          ? 'Available'
-                          : work.type === 'sold'
-                          ? 'Sold'
-                          : 'On Exhibition'}
+                    {image.title && (
+                      <div className="absolute inset-x-0 bottom-0 p-3 bg-gradient-to-t from-black/60 to-transparent">
+                        <p className="text-white text-xs font-bold">
+                          {image.title}
+                        </p>
                       </div>
-                    </div>
-
-                    {/* Overlay */}
-                    {work.type === 'available' && (
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                     )}
                   </div>
-
-                  <div className="px-1">
-                    <div className="text-xs text-gray-400 tracking-wide uppercase mb-1">
-                      {work.category}
-                    </div>
-                    <h3 className="text-lg mb-2 group-hover:text-gray-600 transition-colors">
-                      {work.title}
-                    </h3>
-                    {work.price && (
-                      <p className="text-sm">${work.price.toLocaleString()}</p>
-                    )}
-                  </div>
-                </Link>
-              ))}
+                ))}
+              </div>
             </div>
-          </div>
+          )}
+
         </div>
-      </div>
+      </main>
     </div>
   );
 }

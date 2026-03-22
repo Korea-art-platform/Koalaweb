@@ -1,12 +1,48 @@
-import { Link } from 'react-router';
-import { Mail, Lock, Chrome } from 'lucide-react';
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router';
+import { Mail, Lock } from 'lucide-react';
 import Navigation from '../components/layouts/Header';
+import { login } from '../../api/auth';
 
 export default function Login() {
+  const navigate = useNavigate();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+    setLoading(true);
+
+    try {
+      const res = await login({ email, password });
+      const { accessToken, refreshToken } = res.data.data;
+
+      localStorage.setItem('accessToken', accessToken);
+      localStorage.setItem('refreshToken', refreshToken);
+
+      navigate('/');
+    } catch (err: any) {
+      setError(err.response?.data?.message || '로그인에 실패했습니다.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleKakaoLogin = () => {
+    window.location.href = 'http://localhost:8080/oauth2/authorization/kakao';
+  };
+
+  const handleNaverLogin = () => {
+    window.location.href = 'http://localhost:8080/oauth2/authorization/naver';
+  };
+
   return (
     <div className="min-h-screen bg-[#FAFAFA]">
       <Navigation />
-      
+
       <div className="pt-24 pb-16 px-8">
         <div className="max-w-md mx-auto">
           {/* Header */}
@@ -19,7 +55,15 @@ export default function Login() {
 
           {/* Login Form */}
           <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100">
-            <form className="space-y-6">
+            <form className="space-y-6" onSubmit={handleSubmit}>
+
+              {/* 에러 메시지 */}
+              {error && (
+                <div className="p-3 bg-red-50 border border-red-100 rounded-xl text-sm text-red-500">
+                  {error}
+                </div>
+              )}
+
               {/* Email Field */}
               <div>
                 <label className="block text-sm mb-2 text-gray-700">
@@ -30,6 +74,9 @@ export default function Login() {
                   <input
                     type="email"
                     placeholder="your@email.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
                     className="w-full pl-12 pr-4 py-3 bg-[#F4F4F4] border border-transparent rounded-xl focus:outline-none focus:border-gray-300 transition-colors"
                   />
                 </div>
@@ -45,6 +92,9 @@ export default function Login() {
                   <input
                     type="password"
                     placeholder="Enter your password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
                     className="w-full pl-12 pr-4 py-3 bg-[#F4F4F4] border border-transparent rounded-xl focus:outline-none focus:border-gray-300 transition-colors"
                   />
                 </div>
@@ -70,9 +120,10 @@ export default function Login() {
               {/* Sign In Button */}
               <button
                 type="submit"
-                className="w-full py-3 bg-black text-white rounded-xl hover:bg-gray-900 transition-colors"
+                disabled={loading}
+                className="w-full py-3 bg-black text-white rounded-xl hover:bg-gray-900 transition-colors disabled:opacity-50"
               >
-                Sign In
+                {loading ? 'Signing in...' : 'Sign In'}
               </button>
             </form>
 
@@ -90,9 +141,21 @@ export default function Login() {
 
             {/* Social Login */}
             <div className="space-y-3">
-              <button className="w-full flex items-center justify-center gap-3 py-3 border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors">
-                <Chrome className="w-5 h-5" />
-                <span className="text-sm">Continue with Google</span>
+              <button
+                onClick={handleKakaoLogin}
+                className="w-full flex items-center justify-center gap-3 py-3 bg-[#FEE500] rounded-xl hover:bg-[#FDD800] transition-colors"
+              >
+                <span className="text-sm font-medium text-black">
+                  카카오로 로그인
+                </span>
+              </button>
+              <button
+                onClick={handleNaverLogin}
+                className="w-full flex items-center justify-center gap-3 py-3 bg-[#03C75A] rounded-xl hover:bg-[#02b350] transition-colors"
+              >
+                <span className="text-sm font-medium text-white">
+                  네이버로 로그인
+                </span>
               </button>
             </div>
           </div>
@@ -101,10 +164,7 @@ export default function Login() {
           <div className="text-center mt-6">
             <p className="text-sm text-gray-400">
               Don't have an account?{' '}
-              <Link
-                to="/signup"
-                className="text-black hover:underline"
-              >
+              <Link to="/signup" className="text-black hover:underline">
                 Sign up
               </Link>
             </p>

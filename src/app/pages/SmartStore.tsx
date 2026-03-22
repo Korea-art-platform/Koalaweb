@@ -1,157 +1,103 @@
 import Navigation from '../components/layouts/Header';
 import { Filter, Grid3x3, LayoutGrid } from 'lucide-react';
 import { Link } from 'react-router';
-import { useMemo, useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { ImageWithFallback } from '../components/figma/ImageWithFallback';
-import { useViewMode } from '../context/ViewModeContext';
-import { artworks } from '../../data/artworks/artworks';
-import type { Artwork } from './type/artwork';
+import { getSkus } from '../../api/sku';
 
-function getModeItems(mode: 'gallery' | 'shop'): Artwork[] {
-  if (mode === 'gallery') {
-    return artworks.filter(
-      (item) =>
-        item.saleType === 'original' ||
-        item.saleType === 'sculpture' ||
-        item.saleType === 'limited'
-    );
-  }
+const categories = ['All', 'ART_TOY', 'SCULPTURE', 'CERAMIC', 'PAINTING', 'GOODS'];
 
-  return artworks.filter(
-    (item) =>
-      item.saleType === 'goods' ||
-      item.saleType === 'digital' ||
-      item.saleType === 'limited'
-  );
-}
-
-function getStatusBadge(status: Artwork['status']) {
-  switch (status) {
-    case 'available':
-      return {
-        label: 'Available',
-        className: 'bg-green-500/90 text-white',
-      };
-    case 'sold':
-      return {
-        label: 'Sold',
-        className: 'bg-gray-900/90 text-white',
-      };
-    case 'exhibition':
-      return {
-        label: 'On Exhibition',
-        className: 'bg-blue-500/90 text-white',
-      };
-    default:
-      return {
-        label: 'Unknown',
-        className: 'bg-black/80 text-white',
-      };
-  }
-}
-
-function getSaleTypeLabel(saleType: Artwork['saleType']) {
-  switch (saleType) {
-    case 'original':
-      return 'Original';
-    case 'limited':
-      return 'Limited Edition';
-    case 'goods':
-      return 'Art Goods';
-    case 'sculpture':
-      return 'Sculpture';
-    case 'digital':
-      return 'Digital';
-    default:
-      return 'Artwork';
-  }
-}
+const categoryLabel: Record<string, string> = {
+  All: 'All',
+  ART_TOY: 'Art Toys',
+  SCULPTURE: 'Sculptures',
+  CERAMIC: 'Ceramics',
+  PAINTING: 'Paintings',
+  GOODS: 'Art Goods',
+};
 
 export default function SmartStore() {
-  const { mode } = useViewMode();
+  const [skus, setSkus] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [viewMode, setViewMode] = useState<'grid' | 'large'>('grid');
-
-  const items = useMemo(() => getModeItems(mode), [mode]);
-
-  const categories = useMemo(() => {
-    const uniqueCategories = Array.from(new Set(items.map((item) => item.category)));
-    return ['All', ...uniqueCategories];
-  }, [items]);
-
-  const filteredItems = useMemo(() => {
-    if (selectedCategory === 'All') return items;
-    return items.filter((item) => item.category === selectedCategory);
-  }, [items, selectedCategory]);
+  const [page, setPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
 
   useEffect(() => {
-    if (!categories.includes(selectedCategory)) {
-      setSelectedCategory('All');
-    }
-  }, [categories, selectedCategory]);
+    const fetchSkus = async () => {
+      setLoading(true);
+      try {
+        const res = await getSkus(page, 12);
+        const data = res.data.data;
+        setSkus(data.content ?? []);
+        setTotalPages(data.totalPages ?? 0);
+      } catch (e) {
+        console.error('SKU 로딩 실패:', e);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchSkus();
+  }, [page]);
+
+  const filteredSkus = selectedCategory === 'All'
+    ? skus
+    : skus.filter((sku) => sku.genre === selectedCategory);
 
   return (
     <div className="min-h-screen bg-white">
       <Navigation />
 
-      <section className="pt-32 pb-12 px-8">
+      {/* Hero Section */}
+      <section className="pt-24 md:pt-32 pb-8 md:pb-12 px-5 md:px-8 lg:px-12">
         <div className="max-w-[1600px] mx-auto">
           <div className="max-w-2xl">
-            <div className="text-sm text-gray-400 tracking-wide mb-4 uppercase">
-              {mode === 'gallery' ? 'The Gallery' : 'Smart Store'}
+            <div className="text-[10px] md:text-xs text-gray-400 tracking-[0.2em] mb-3 md:mb-4 uppercase font-bold">
+              Smart Store
             </div>
-
-            <h1 className="text-6xl mb-6 tracking-tight">
-              {mode === 'gallery' ? 'Original Artworks' : 'Art You Can Own'}
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl mb-4 md:mb-6 tracking-tight font-bold leading-[1.1]">
+              Art You Can Own
             </h1>
-
-            <p className="text-xl text-gray-500 leading-relaxed">
-              {mode === 'gallery'
-                ? "Discover original paintings, sculptures, and fine art pieces from Korea's finest artists."
-                : 'Curated collection of premium art goods, collectible objects, and lifestyle art pieces.'}
+            <p className="text-sm md:text-lg lg:text-xl text-gray-500 leading-relaxed max-w-lg break-keep">
+              Curated collection of premium art goods, collectible objects, and lifestyle art pieces.
             </p>
           </div>
         </div>
       </section>
 
-      <section className="px-8 pb-12">
+      {/* Filter Section */}
+      <section className="px-5 md:px-8 lg:px-12 pb-8 md:pb-12">
         <div className="max-w-[1600px] mx-auto">
-          <div className="flex items-center justify-between gap-6 pb-8 border-b border-gray-100">
-            <div className="flex items-center gap-3 flex-wrap">
-              <Filter className="w-5 h-5 text-gray-400" />
-
+          <div className="flex items-center justify-between gap-6 pb-6 border-b border-gray-100">
+            <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-1 shrink-1">
+              <Filter className="w-4 h-4 text-gray-400 shrink-0 mr-1" />
               {categories.map((category) => (
                 <button
                   key={category}
                   onClick={() => setSelectedCategory(category)}
-                  className={`px-4 py-2 rounded-full text-sm transition-all ${
-                    selectedCategory === category
-                      ? 'bg-black text-white'
-                      : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
-                  }`}
+                  className={`px-4 py-1.5 rounded-full text-xs md:text-sm transition-all whitespace-nowrap border ${selectedCategory === category
+                      ? 'bg-black text-white border-black'
+                      : 'bg-white text-gray-500 border-gray-200 hover:border-gray-900'
+                    }`}
                 >
-                  {category}
+                  {categoryLabel[category]}
                 </button>
               ))}
             </div>
 
-            <div className="flex items-center gap-2 shrink-0">
+            <div className="hidden md:flex items-center gap-2 shrink-0">
               <button
                 onClick={() => setViewMode('grid')}
-                className={`p-2 rounded-lg transition-colors ${
-                  viewMode === 'grid' ? 'bg-gray-100' : 'hover:bg-gray-50'
-                }`}
-                aria-label="Grid view"
+                className={`p-2 rounded-lg transition-colors ${viewMode === 'grid' ? 'bg-gray-100 text-black' : 'text-gray-400 hover:bg-gray-50'
+                  }`}
               >
                 <Grid3x3 className="w-5 h-5" />
               </button>
-
               <button
                 onClick={() => setViewMode('large')}
-                className={`p-2 rounded-lg transition-colors ${
-                  viewMode === 'large' ? 'bg-gray-100' : 'hover:bg-gray-50'
-                }`}
-                aria-label="Large view"
+                className={`p-2 rounded-lg transition-colors ${viewMode === 'large' ? 'bg-gray-100 text-black' : 'text-gray-400 hover:bg-gray-50'
+                  }`}
               >
                 <LayoutGrid className="w-5 h-5" />
               </button>
@@ -160,104 +106,116 @@ export default function SmartStore() {
         </div>
       </section>
 
-      <section className="px-8 pb-32">
+      {/* Products Grid */}
+      <section className="px-5 md:px-8 lg:px-12 pb-32">
         <div className="max-w-[1600px] mx-auto">
-          {filteredItems.length === 0 ? (
-            <div className="rounded-3xl border border-gray-200 bg-gray-50 px-8 py-20 text-center">
-              <h2 className="text-2xl mb-3">해당 카테고리의 작품이 없습니다.</h2>
-              <p className="text-gray-500">다른 카테고리를 선택해보세요.</p>
+
+          {/* 로딩 */}
+          {loading ? (
+            <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8">
+              {[...Array(6)].map((_, i) => (
+                <div key={i} className="animate-pulse">
+                  <div className="aspect-square bg-gray-100 rounded-2xl mb-4" />
+                  <div className="h-4 bg-gray-100 rounded mb-2 w-3/4" />
+                  <div className="h-3 bg-gray-100 rounded w-1/2" />
+                </div>
+              ))}
+            </div>
+          ) : filteredSkus.length === 0 ? (
+            <div className="rounded-3xl border border-dashed border-gray-200 bg-gray-50 px-8 py-20 text-center">
+              <h2 className="text-xl mb-2 font-medium">해당 작품이 없습니다.</h2>
+              <p className="text-sm text-gray-400">다른 필터를 선택해 보세요.</p>
             </div>
           ) : (
-            <div
-              className={`grid gap-8 ${
-                viewMode === 'grid'
-                  ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'
-                  : 'grid-cols-1 md:grid-cols-2'
-              }`}
-            >
-              {filteredItems.map((item) => {
-                const statusBadge = getStatusBadge(item.status);
-                const saleTypeLabel = getSaleTypeLabel(item.saleType);
-
-                return (
+            <>
+              <div className={`grid ${viewMode === 'grid'
+                  ? 'grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-10 md:gap-8 lg:gap-12'
+                  : 'grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-12'
+                }`}>
+                {filteredSkus.map((sku) => (
                   <Link
-                    key={item.id}
-                    to={`/product/${item.id}`}
+                    key={sku.skuCode}
+                    to={`/product/${sku.skuCode}`}
                     className="group block"
                   >
-                    <div className="relative overflow-hidden rounded-2xl bg-gray-50">
-                      <div
-                        className={`relative ${
-                          viewMode === 'grid' ? 'aspect-square' : 'aspect-[4/3]'
-                        }`}
-                      >
+                    <div className="relative overflow-hidden rounded-xl md:rounded-2xl bg-gray-100">
+                      <div className={`relative w-full ${viewMode === 'grid' ? 'aspect-[3/4] sm:aspect-square' : 'aspect-[4/3]'
+                        }`}>
                         <ImageWithFallback
-                          src={item.thumbnailImage}
-                          alt={item.title}
-                          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                          src={sku.primaryImageUrl ?? 'https://via.placeholder.com/400'}
+                          alt={sku.name}
+                          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                         />
 
-                        <div className="absolute top-4 left-4 flex flex-col gap-2">
-                          <div className="px-3 py-1.5 rounded-full bg-white/90 backdrop-blur-sm text-xs font-medium">
-                            {saleTypeLabel}
+                        {/* 뱃지 */}
+                        <div className="absolute top-2.5 left-2.5 md:top-4 md:left-4 flex flex-col gap-1.5">
+                          <div className="px-2 py-1 md:px-3 md:py-1.5 rounded-md bg-white/90 backdrop-blur-sm text-[9px] md:text-xs font-bold tracking-tight uppercase shadow-sm">
+                            {categoryLabel[sku.genre] ?? sku.genre}
                           </div>
-
-                          {item.isNew && (
-                            <div className="px-3 py-1.5 rounded-full bg-white/90 backdrop-blur-sm text-xs">
-                              New
-                            </div>
-                          )}
-
-                          {item.isFeatured && (
-                            <div className="px-3 py-1.5 rounded-full bg-white/90 backdrop-blur-sm text-xs">
-                              Featured
-                            </div>
-                          )}
-
-                          {item.isBestSeller && (
-                            <div className="px-3 py-1.5 rounded-full bg-white/90 backdrop-blur-sm text-xs">
-                              Best Seller
+                          {sku.isLimitedEdition && (
+                            <div className="w-fit px-2 py-1 md:px-3 md:py-1.5 rounded-md bg-black text-white text-[9px] md:text-xs font-bold uppercase shadow-sm">
+                              Limited
                             </div>
                           )}
                         </div>
 
-                        <div className="absolute top-4 right-4">
-                          <div
-                            className={`px-3 py-1.5 rounded-full text-xs backdrop-blur-sm ${statusBadge.className}`}
-                          >
-                            {statusBadge.label}
+                        {/* 상태 뱃지 */}
+                        <div className="absolute top-2.5 right-2.5 md:top-4 md:right-4">
+                          <div className={`px-2 py-1 md:px-3 md:py-1.5 rounded-md text-[9px] md:text-xs font-bold backdrop-blur-sm shadow-sm ${sku.status === 'ACTIVE'
+                              ? 'bg-green-500/90 text-white'
+                              : sku.status === 'OUT_OF_STOCK'
+                                ? 'bg-gray-900/90 text-white'
+                                : 'bg-blue-500/90 text-white'
+                            }`}>
+                            {sku.status === 'ACTIVE' ? 'Available'
+                              : sku.status === 'OUT_OF_STOCK' ? 'Sold Out'
+                                : sku.status}
                           </div>
                         </div>
-
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                       </div>
                     </div>
 
-                    <div className="mt-4 px-1">
-                      <div className="text-xs text-gray-400 tracking-wide uppercase mb-1">
-                        {item.category}
+                    <div className="mt-4 px-0.5">
+                      <div className="text-[10px] md:text-xs text-gray-400 tracking-wider uppercase mb-1.5 font-medium">
+                        {categoryLabel[sku.genre] ?? sku.genre}
                       </div>
-
-                      <h3 className="text-lg mb-1 group-hover:text-gray-600 transition-colors">
-                        {item.title}
+                      <h3 className="text-sm md:text-lg lg:text-xl font-bold mb-1 group-hover:text-gray-600 transition-colors truncate">
+                        {sku.name}
                       </h3>
-
-                      <p className="text-sm text-gray-500 mb-2">
-                        by {item.artistName}
+                      <p className="text-[12px] md:text-sm text-gray-500 mb-2 font-medium">
+                        {sku.artistName}
                       </p>
-
-                      <p className="text-lg font-medium">
-                        {item.price
-                          ? item.currency === 'KRW'
-                            ? `₩${item.price.toLocaleString()}`
-                            : `$${item.price.toLocaleString()}`
-                          : 'Price on Request'}
+                      <p className="text-sm md:text-lg font-black tracking-tight">
+                        ₩{(sku.salePrice ?? sku.listPrice).toLocaleString()}
                       </p>
                     </div>
                   </Link>
-                );
-              })}
-            </div>
+                ))}
+              </div>
+
+              {/* 페이지네이션 */}
+              {totalPages > 1 && (
+                <div className="flex justify-center gap-2 mt-16">
+                  <button
+                    onClick={() => setPage((p) => Math.max(0, p - 1))}
+                    disabled={page === 0}
+                    className="px-6 py-2 rounded-full border border-gray-200 text-sm disabled:opacity-30 hover:border-black transition-colors"
+                  >
+                    이전
+                  </button>
+                  <span className="px-6 py-2 text-sm text-gray-500">
+                    {page + 1} / {totalPages}
+                  </span>
+                  <button
+                    onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))}
+                    disabled={page === totalPages - 1}
+                    className="px-6 py-2 rounded-full border border-gray-200 text-sm disabled:opacity-30 hover:border-black transition-colors"
+                  >
+                    다음
+                  </button>
+                </div>
+              )}
+            </>
           )}
         </div>
       </section>

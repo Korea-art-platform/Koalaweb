@@ -1,26 +1,65 @@
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router';
-import { Mail, Lock, User, Chrome } from 'lucide-react';
+import { Mail, Lock, User } from 'lucide-react';
 import Navigation from '../components/layouts/Header';
+import { signup } from '../../api/auth';
 
 export default function Signup() {
   const navigate = useNavigate();
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [agreed, setAgreed] = useState(false);
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Here you would normally handle the signup logic
-    // For now, we'll just redirect to onboarding
-    navigate('/onboarding');
+    setError('');
+
+    // 유효성 검사
+    if (password !== confirmPassword) {
+      setError('비밀번호가 일치하지 않습니다.');
+      return;
+    }
+    if (password.length < 8) {
+      setError('비밀번호는 8자 이상이어야 합니다.');
+      return;
+    }
+    if (!agreed) {
+      setError('이용약관에 동의해주세요.');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const res = await signup({ name, email, password });
+      const { accessToken, refreshToken } = res.data.data;
+
+      localStorage.setItem('accessToken', accessToken);
+      localStorage.setItem('refreshToken', refreshToken);
+
+      navigate('/onboarding');
+    } catch (err: any) {
+      setError(err.response?.data?.message || '회원가입에 실패했습니다.');
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleGoogleSignup = () => {
-    // Handle Google signup
-    navigate('/onboarding');
+  const handleKakaoSignup = () => {
+    window.location.href = 'http://localhost:8080/oauth2/authorization/kakao';
+  };
+
+  const handleNaverSignup = () => {
+    window.location.href = 'http://localhost:8080/oauth2/authorization/naver';
   };
 
   return (
     <div className="min-h-screen bg-[#FAFAFA]">
       <Navigation />
-      
+
       <div className="pt-24 pb-16 px-8">
         <div className="max-w-md mx-auto">
           {/* Header */}
@@ -34,6 +73,14 @@ export default function Signup() {
           {/* Signup Form */}
           <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100">
             <form className="space-y-6" onSubmit={handleSubmit}>
+
+              {/* 에러 메시지 */}
+              {error && (
+                <div className="p-3 bg-red-50 border border-red-100 rounded-xl text-sm text-red-500">
+                  {error}
+                </div>
+              )}
+
               {/* Name Field */}
               <div>
                 <label className="block text-sm mb-2 text-gray-700">
@@ -44,6 +91,9 @@ export default function Signup() {
                   <input
                     type="text"
                     placeholder="Enter your name"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    required
                     className="w-full pl-12 pr-4 py-3 bg-[#F4F4F4] border border-transparent rounded-xl focus:outline-none focus:border-gray-300 transition-colors"
                   />
                 </div>
@@ -59,6 +109,9 @@ export default function Signup() {
                   <input
                     type="email"
                     placeholder="your@email.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
                     className="w-full pl-12 pr-4 py-3 bg-[#F4F4F4] border border-transparent rounded-xl focus:outline-none focus:border-gray-300 transition-colors"
                   />
                 </div>
@@ -74,6 +127,9 @@ export default function Signup() {
                   <input
                     type="password"
                     placeholder="Create a password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
                     className="w-full pl-12 pr-4 py-3 bg-[#F4F4F4] border border-transparent rounded-xl focus:outline-none focus:border-gray-300 transition-colors"
                   />
                 </div>
@@ -92,6 +148,9 @@ export default function Signup() {
                   <input
                     type="password"
                     placeholder="Confirm your password"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    required
                     className="w-full pl-12 pr-4 py-3 bg-[#F4F4F4] border border-transparent rounded-xl focus:outline-none focus:border-gray-300 transition-colors"
                   />
                 </div>
@@ -102,6 +161,8 @@ export default function Signup() {
                 <label className="flex items-start gap-3 cursor-pointer">
                   <input
                     type="checkbox"
+                    checked={agreed}
+                    onChange={(e) => setAgreed(e.target.checked)}
                     className="w-4 h-4 mt-0.5 rounded border-gray-300"
                   />
                   <span className="text-xs text-gray-600 leading-relaxed">
@@ -120,9 +181,10 @@ export default function Signup() {
               {/* Sign Up Button */}
               <button
                 type="submit"
-                className="w-full py-3 bg-black text-white rounded-xl hover:bg-gray-900 transition-colors"
+                disabled={loading}
+                className="w-full py-3 bg-black text-white rounded-xl hover:bg-gray-900 transition-colors disabled:opacity-50"
               >
-                Create Account
+                {loading ? 'Creating Account...' : 'Create Account'}
               </button>
             </form>
 
@@ -140,13 +202,23 @@ export default function Signup() {
 
             {/* Social Signup */}
             <div className="space-y-3">
-              <button 
+              <button
                 type="button"
-                onClick={handleGoogleSignup}
-                className="w-full flex items-center justify-center gap-3 py-3 border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors"
+                onClick={handleKakaoSignup}
+                className="w-full flex items-center justify-center gap-3 py-3 bg-[#FEE500] rounded-xl hover:bg-[#FDD800] transition-colors"
               >
-                <Chrome className="w-5 h-5" />
-                <span className="text-sm">Continue with Google</span>
+                <span className="text-sm font-medium text-black">
+                  카카오로 시작하기
+                </span>
+              </button>
+              <button
+                type="button"
+                onClick={handleNaverSignup}
+                className="w-full flex items-center justify-center gap-3 py-3 bg-[#03C75A] rounded-xl hover:bg-[#02b350] transition-colors"
+              >
+                <span className="text-sm font-medium text-white">
+                  네이버로 시작하기
+                </span>
               </button>
             </div>
           </div>
@@ -155,10 +227,7 @@ export default function Signup() {
           <div className="text-center mt-6">
             <p className="text-sm text-gray-400">
               Already have an account?{' '}
-              <Link
-                to="/login"
-                className="text-black hover:underline"
-              >
+              <Link to="/login" className="text-black hover:underline">
                 Sign in
               </Link>
             </p>
