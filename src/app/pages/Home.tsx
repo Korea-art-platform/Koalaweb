@@ -1,18 +1,27 @@
 import { ArrowRight, ChevronRight } from 'lucide-react';
 import { Link } from 'react-router';
 import { useRef, useEffect, useState } from 'react';
-import { getSkus } from '../../api/sku';
+import { getSkus, getGenreCounts } from '../../api/sku';
 import { getBanners } from '../../api/banner';
 
-// 카테고리는 백엔드 API 없으므로 유지
-const categories = [
-  { id: 'all', name: 'All Collections', count: 247 },
-  { id: 'art-toys', name: 'Art Toys', count: 89 },
-  { id: 'sculptures', name: 'Sculptures', count: 52 },
-  { id: 'ceramics', name: 'Ceramics', count: 34 },
-  { id: 'paintings', name: 'Paintings', count: 41 },
-  { id: 'limited-editions', name: 'Limited Editions', count: 21 },
-  { id: 'home-decor', name: 'Home Décor', count: 10 },
+// 백엔드 genre 값 → 카테고리 ID 매핑
+const GENRE_TO_CATEGORY: Record<string, string> = {
+  ART_TOY: 'art-toys',
+  SCULPTURE: 'sculptures',
+  CERAMIC: 'ceramics',
+  PAINTING: 'paintings',
+  LIMITED_EDITION: 'limited-editions',
+  HOME_DECOR: 'home-decor',
+};
+
+const DEFAULT_CATEGORIES = [
+  { id: 'all', name: 'All Collections', count: 0 },
+  { id: 'art-toys', name: 'Art Toys', count: 0 },
+  { id: 'sculptures', name: 'Sculptures', count: 0 },
+  { id: 'ceramics', name: 'Ceramics', count: 0 },
+  { id: 'paintings', name: 'Paintings', count: 0 },
+  { id: 'limited-editions', name: 'Limited Editions', count: 0 },
+  { id: 'home-decor', name: 'Home Décor', count: 0 },
 ];
 
 export default function Home() {
@@ -20,6 +29,7 @@ export default function Home() {
   const [skus, setSkus] = useState<any[]>([]);
   const [banner, setBanner] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [categories, setCategories] = useState(DEFAULT_CATEGORIES);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -32,6 +42,15 @@ export default function Home() {
         const bannerRes = await getBanners('MAIN');
         const banners = bannerRes.data.data ?? [];
         if (banners.length > 0) setBanner(banners[0]);
+
+        // 장르별 카운트 조회
+        const genreRes = await getGenreCounts();
+        const counts: Record<string, number> = genreRes.data.data ?? {};
+        setCategories(DEFAULT_CATEGORIES.map((cat) => {
+          if (cat.id === 'all') return { ...cat, count: counts['ALL'] ?? 0 };
+          const genreKey = Object.entries(GENRE_TO_CATEGORY).find(([, id]) => id === cat.id)?.[0];
+          return { ...cat, count: genreKey ? (counts[genreKey] ?? 0) : 0 };
+        }));
 
       } catch (e) {
         console.error('홈 데이터 로딩 실패:', e);

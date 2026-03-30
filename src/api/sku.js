@@ -8,6 +8,10 @@ export const getSkus = (page = 0, size = 20) =>
 export const getSku = (skuCode) =>
     instance.get(`/api/v1/skus/${skuCode}`);
 
+// 장르별 상품 수
+export const getGenreCounts = () =>
+    instance.get('/api/v1/skus/genre-counts');
+
 // SKU 리뷰 목록
 export const getSkuReviews = (skuCode, page = 0, size = 10) =>
     instance.get(`/api/v1/skus/${skuCode}/reviews`, { params: { page, size } });

@@ -1,9 +1,11 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router';
-import { ArrowLeft, MapPin, CreditCard, Package, Plus, Check, ChevronRight } from 'lucide-react';
+import { ArrowLeft, MapPin, CreditCard, Package, Check, ChevronRight } from 'lucide-react';
 import Navigation from '../components/layouts/Header';
 import { createOrder } from '../../api/order';
 import { getCart } from '../../api/cart';
+import { preparePayment } from '../../api/payment';
+import { loadTossPayments, ANONYMOUS } from '@tosspayments/tosspayments-sdk';
 
 type PaymentMethodType = 'TOSS' | 'KAKAOPAY' | 'NAVERPAY' | 'CARD';
 
@@ -88,7 +90,8 @@ export default function Checkout() {
 
     setIsProcessing(true);
     try {
-      const res = await createOrder({
+      // 1단계: 주문 생성
+      const orderRes = await createOrder({
         ordererName: form.ordererName,
         ordererEmail: form.ordererEmail,
         ordererPhone: form.ordererPhone,
@@ -102,30 +105,47 @@ export default function Checkout() {
         },
         cartItemIds: [],
       });
+      const order = orderRes.data.data;
 
-      const order = res.data.data;
-      window.dispatchEvent(new Event('cart-updated'));
+      // 2단계: 결제 준비 (결제 방법 매핑)
+      const tossMethod = selectedMethod === 'CARD' ? 'CARD' : 'EASY_PAY';
+      await preparePayment(order.orderNo, 'TOSS', tossMethod);
 
-      navigate('/checkout/success', {
-        state: {
-          orderNo: order.orderNo,
-          orderInfo: {
-            subtotal,
-            shipping,
-            total,
-            items: cartItems,
-          },
-          shippingAddress: {
-            recipient: form.recipientName,
-            phone: form.recipientPhone,
-            address: form.address1,
-            address2: form.address2,
-          },
-          paymentMethod: selectedMethod,
-        },
-      });
+      // 3단계: Toss 결제창 호출
+      const tossPayments = await loadTossPayments(import.meta.env.VITE_TOSS_CLIENT_KEY);
+      const payment = tossPayments.payment({ customerKey: ANONYMOUS });
+
+      const orderName = cartItems.length > 0
+        ? `${cartItems[0].skuName}${cartItems.length > 1 ? ` 외 ${cartItems.length - 1}건` : ''}`
+        : '주문';
+
+      const successUrl = `${window.location.origin}/payment/success`;
+      const failUrl = `${window.location.origin}/payment/fail`;
+
+      if (selectedMethod === 'CARD') {
+        await payment.requestPayment({
+          method: 'CARD',
+          amount: { currency: 'KRW', value: total },
+          orderId: order.orderNo,
+          orderName,
+          successUrl,
+          failUrl,
+          card: { useEscrow: false, useCardPoint: false },
+        });
+      } else {
+        const easyPayType = selectedMethod as string;
+        await payment.requestPayment({
+          method: 'EASY_PAY',
+          amount: { currency: 'KRW', value: total },
+          orderId: order.orderNo,
+          orderName,
+          successUrl,
+          failUrl,
+          easyPay: { easyPayType },
+        });
+      }
     } catch (e: any) {
-      alert(e.response?.data?.message || '주문 생성에 실패했습니다.');
+      alert(e.response?.data?.message || e.message || '결제 처리에 실패했습니다.');
     } finally {
       setIsProcessing(false);
     }

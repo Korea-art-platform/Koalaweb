@@ -145,28 +145,28 @@ export default function AccountOrders() {
                         {/* 주문 상품 */}
                         <div className="p-5 md:p-8">
                           <div className="space-y-4">
-                            {order.items?.map((item: any, idx: number) => (
-                              <div key={idx} className="flex gap-4 md:gap-5 items-center">
-                                <div className="w-16 h-16 md:w-20 md:h-20 rounded-xl overflow-hidden bg-gray-100 flex-shrink-0 border border-gray-50">
-                                  <img
-                                    src={item.primaryImageUrl ?? 'https://via.placeholder.com/80'}
-                                    alt={item.skuName}
-                                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                                  />
-                                </div>
-                                <div className="flex-1 min-w-0">
-                                  <h4 className="font-bold text-gray-900 text-sm md:text-base mb-0.5 truncate">
-                                    {item.skuName}
-                                  </h4>
-                                  <span className="text-[9px] md:text-[10px] text-gray-500 bg-gray-100 px-1.5 py-0.5 rounded font-bold">
-                                    QTY: {item.quantity}
-                                  </span>
-                                </div>
-                                <div className="text-right font-black text-gray-900 text-sm md:text-base">
-                                  ₩{item.lineTotalAmount.toLocaleString()}
-                                </div>
+                            <div className="flex gap-4 md:gap-5 items-center">
+                              <div className="w-16 h-16 md:w-20 md:h-20 rounded-xl overflow-hidden bg-gray-100 flex-shrink-0 border border-gray-50">
+                                <img
+                                  src={order.firstSkuImageUrl ?? 'https://via.placeholder.com/80'}
+                                  alt={order.firstSkuName}
+                                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                />
                               </div>
-                            ))}
+                              <div className="flex-1 min-w-0">
+                                <h4 className="font-bold text-gray-900 text-sm md:text-base mb-0.5 truncate">
+                                  {order.firstSkuName}
+                                </h4>
+                                {order.itemCount > 1 && (
+                                  <span className="text-[9px] md:text-[10px] text-gray-500 bg-gray-100 px-1.5 py-0.5 rounded font-bold">
+                                    외 {order.itemCount - 1}개
+                                  </span>
+                                )}
+                              </div>
+                              <div className="text-right font-black text-gray-900 text-sm md:text-base">
+                                ₩{order.totalAmount.toLocaleString()}
+                              </div>
+                            </div>
                           </div>
 
                           {/* 버튼 */}

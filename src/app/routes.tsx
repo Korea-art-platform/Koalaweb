@@ -21,6 +21,9 @@ import AccountOrders from "./pages/AccountOrders";
 import Product360View from "./pages/Product360View";
 import OAuth2Callback from "./pages/OAuth2Callback";
 import AccountWishlist from "./pages/AccountWishlist";
+import ForgotPassword from "./pages/ForgotPassword";
+import PaymentSuccess from "./pages/PaymentSuccess";
+import PaymentFail from "./pages/PaymentFail";
 export function AppRoutes() {
   return (
     <Routes>
@@ -45,6 +48,9 @@ export function AppRoutes() {
       <Route path="/account/addresses" element={<AccountAddresses />} />
       <Route path="/account/payment-methods" element={<AccountPaymentMethods />} />
       <Route path="/account/orders" element={<AccountOrders />} />
+      <Route path="/forgot-password" element={<ForgotPassword />} />
+      <Route path="/payment/success" element={<PaymentSuccess />} />
+      <Route path="/payment/fail" element={<PaymentFail />} />
       <Route path="/oauth2/callback" element={<OAuth2Callback />} />
       <Route path="/account/wishlist" element={<AccountWishlist />} />
     </Routes>

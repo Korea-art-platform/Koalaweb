@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router';
 import { Mail, Lock } from 'lucide-react';
 import Navigation from '../components/layouts/Header';
-import { login } from '../../api/auth';
+import { login, loginWithKakao, loginWithNaver } from '../../api/auth';
 
 export default function Login() {
   const navigate = useNavigate();
@@ -31,13 +31,8 @@ export default function Login() {
     }
   };
 
-  const handleKakaoLogin = () => {
-    window.location.href = 'http://localhost:8080/oauth2/authorization/kakao';
-  };
-
-  const handleNaverLogin = () => {
-    window.location.href = 'http://localhost:8080/oauth2/authorization/naver';
-  };
+  const handleKakaoLogin = () => loginWithKakao();
+  const handleNaverLogin = () => loginWithNaver();
 
   return (
     <div className="min-h-screen bg-[#FAFAFA]">
