@@ -115,7 +115,7 @@ export default function Onboarding() {
             </div>
             <h2 className="text-3xl font-medium tracking-tight mb-3">닉네임을 정해주세요</h2>
             <p className="text-gray-400 mb-8">커뮤니티와 서비스 내에서 사용될 이름입니다.</p>
-            
+
             <div className="mb-8">
               <label className="block text-sm font-medium mb-2 text-gray-700">닉네임</label>
               <input
@@ -146,7 +146,7 @@ export default function Onboarding() {
             </div>
             <h2 className="text-3xl font-medium tracking-tight mb-3">배송지 미리 등록</h2>
             <p className="text-gray-400 mb-8">빠른 결제를 위해 배송 정보를 미리 등록할 수 있습니다. (건너뛰기 가능)</p>
-            
+
             <div className="space-y-4 mb-8">
               <div className="grid grid-cols-2 gap-4">
                 <input
@@ -207,7 +207,7 @@ export default function Onboarding() {
             </div>
             <h2 className="text-3xl font-medium tracking-tight mb-3">어떤 작품을 좋아하시나요?</h2>
             <p className="text-gray-400 mb-8">관심사를 선택해주시면 취향에 맞는 작품을 추천해드려요.</p>
-            
+
             <div className="space-y-3 mb-8">
               {[
                 { key: 'artworks', label: '원화 및 조형물', desc: '회화, 판화 등 고유한 예술 작품' },
@@ -256,7 +256,7 @@ export default function Onboarding() {
             </div>
             <h2 className="text-3xl font-medium tracking-tight mb-3">소식을 받아보시겠어요?</h2>
             <p className="text-gray-400 mb-8">놓치면 아쉬운 작품 소식들을 가장 먼저 보내드려요.</p>
-            
+
             <div className="space-y-4 mb-8">
               {[
                 { key: 'newReleases', label: '신규 출시 소식', desc: '새로운 작품과 한정판 드랍 소식' },

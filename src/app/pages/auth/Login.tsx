@@ -1,19 +1,21 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router';
 import { Mail, Lock } from 'lucide-react';
-import Navigation from '../components/layouts/Header';
-import { login, loginWithKakao, loginWithNaver } from '../../api/auth';
+import Navigation from '../../components/layouts/Header';
+import { login, loginWithKakao, loginWithNaver } from '../../../api/auth';
 
 export default function Login() {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+    setSuccess('');
     setLoading(true);
 
     try {
@@ -23,7 +25,11 @@ export default function Login() {
       localStorage.setItem('accessToken', accessToken);
       localStorage.setItem('refreshToken', refreshToken);
 
-      navigate('/');
+      setSuccess('로그인이 완료되었습니다. 홈으로 이동합니다.');
+
+      setTimeout(() => {
+        navigate('/');
+      }, 1500);
     } catch (err: any) {
       setError(err.response?.data?.message || '로그인에 실패했습니다.');
     } finally {
@@ -51,6 +57,13 @@ export default function Login() {
           {/* Login Form */}
           <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100">
             <form className="space-y-6" onSubmit={handleSubmit}>
+
+              {/* 성공 메시지 */}
+              {success && (
+                <div className="p-3 bg-green-50 border border-green-100 rounded-xl text-sm text-green-600">
+                  {success}
+                </div>
+              )}
 
               {/* 에러 메시지 */}
               {error && (

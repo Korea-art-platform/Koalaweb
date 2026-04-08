@@ -1,22 +1,25 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router';
 import { Mail, Lock, User } from 'lucide-react';
-import Navigation from '../components/layouts/Header';
-import { signup, loginWithKakao, loginWithNaver } from '../../api/auth';
+import Navigation from '../../components/layouts/Header';
+import { signup, loginWithKakao, loginWithNaver } from '../../../api/auth';
 
 export default function Signup() {
   const navigate = useNavigate();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [agreed, setAgreed] = useState(false);
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+    setSuccess('');
 
     // 유효성 검사
     if (password !== confirmPassword) {
@@ -34,13 +37,12 @@ export default function Signup() {
 
     setLoading(true);
     try {
-      const res = await signup({ name, email, password });
-      const { accessToken, refreshToken } = res.data.data;
+      await signup({ name, email, phone, password });
+      setSuccess('회원가입이 완료되었습니다. 로그인 화면으로 이동합니다.');
 
-      localStorage.setItem('accessToken', accessToken);
-      localStorage.setItem('refreshToken', refreshToken);
-
-      navigate('/onboarding');
+      setTimeout(() => {
+        navigate('/login');
+      }, 1500);
     } catch (err: any) {
       setError(err.response?.data?.message || '회원가입에 실패했습니다.');
     } finally {
@@ -68,6 +70,13 @@ export default function Signup() {
           {/* Signup Form */}
           <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100">
             <form className="space-y-6" onSubmit={handleSubmit}>
+
+              {/* 성공 메시지 */}
+              {success && (
+                <div className="p-3 bg-green-50 border border-green-100 rounded-xl text-sm text-green-600">
+                  {success}
+                </div>
+              )}
 
               {/* 에러 메시지 */}
               {error && (
@@ -108,6 +117,23 @@ export default function Signup() {
                     onChange={(e) => setEmail(e.target.value)}
                     required
                     className="w-full pl-12 pr-4 py-3 bg-[#F4F4F4] border border-transparent rounded-xl focus:outline-none focus:border-gray-300 transition-colors"
+                  />
+                </div>
+              </div>
+
+              {/* Phone Field */}
+              <div>
+                <label className="block text-sm mb-2 text-gray-700">
+                  Phone Number
+                </label>
+                <div className="relative">
+                  <input
+                    type="tel"
+                    placeholder="010-1234-5678"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    required
+                    className="w-full px-4 py-3 bg-[#F4F4F4] border border-transparent rounded-xl focus:outline-none focus:border-gray-300 transition-colors"
                   />
                 </div>
               </div>

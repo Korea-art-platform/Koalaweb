@@ -1,4 +1,4 @@
-import Navigation from '../components/layouts/Header';
+import Navigation from '../../components/layouts/Header';
 import { useParams, Link, useNavigate } from 'react-router';
 import {
   ArrowLeft,
@@ -12,10 +12,10 @@ import {
   X,
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { ImageWithFallback } from '../components/figma/ImageWithFallback';
-import { getSku, getSkuReviews } from '../../api/sku';
-import { addCartItem } from '../../api/cart';
-import { addWishlist, removeWishlist, checkWishlist } from '../../api/wishlist';
+import { ImageWithFallback } from '../../components/figma/ImageWithFallback';
+import { getSku, getSkuReviews } from '../../../api/sku';
+import { addCartItem } from '../../../api/cart';
+import { addWishlist, removeWishlist, checkWishlist } from '../../../api/wishlist';
 
 function formatPrice(price?: number) {
   if (!price) return 'Price on Request';

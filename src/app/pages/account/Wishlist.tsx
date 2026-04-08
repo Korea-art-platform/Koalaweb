@@ -1,11 +1,11 @@
 import { Link, useLocation, useNavigate } from 'react-router';
 import { Heart, ShoppingCart, Trash2 } from 'lucide-react';
-import Navigation from '../components/layouts/Header';
-import AccountSidebar from '../components/layouts/AccountSidebar';
+import Navigation from '../../components/layouts/Header';
+import AccountSidebar from '../../components/layouts/AccountSidebar';
 import { useEffect, useState } from 'react';
-import { getMyProfile } from '../../api/user';
-import { getWishlist, removeWishlist } from '../../api/wishlist';
-import { addCartItem } from '../../api/cart';
+import { getMyProfile } from '../../../api/user';
+import { getWishlist, removeWishlist } from '../../../api/wishlist';
+import { addCartItem } from '../../../api/cart';
 
 export default function AccountWishlist() {
     const location = useLocation();
@@ -143,7 +143,7 @@ export default function AccountWishlist() {
                                                         </h3>
                                                     </Link>
                                                     <p className="text-sm font-black tracking-tight mb-4">
-                                                        ₩{(item.salePrice ?? item.listPrice).toLocaleString()}
+                                                        ₩{(item.effectivePrice ?? 0).toLocaleString()}
                                                     </p>
 
                                                     {/* 버튼 */}

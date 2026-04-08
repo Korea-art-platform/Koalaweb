@@ -1,6 +1,6 @@
 import { Link, useLocation, useNavigate } from 'react-router';
 import { CheckCircle, Package, MapPin, CreditCard, ChevronRight, Home } from 'lucide-react';
-import Navigation from '../components/layouts/Header';
+import Navigation from '../../components/layouts/Header';
 import { useEffect, useState } from 'react';
 
 export default function CheckoutSuccess() {

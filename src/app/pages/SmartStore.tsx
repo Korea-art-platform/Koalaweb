@@ -1,9 +1,10 @@
 import Navigation from '../components/layouts/Header';
-import { Filter, Grid3x3, LayoutGrid } from 'lucide-react';
-import { Link } from 'react-router';
+import { Filter, Grid3x3, LayoutGrid, Heart } from 'lucide-react';
+import { Link, useNavigate } from 'react-router';
 import { useState, useEffect } from 'react';
 import { ImageWithFallback } from '../components/figma/ImageWithFallback';
 import { getSkus } from '../../api/sku';
+import { getWishlist, addWishlist, removeWishlist } from '../../api/wishlist';
 
 const categories = ['All', 'ART_TOY', 'SCULPTURE', 'CERAMIC', 'PAINTING', 'GOODS'];
 
@@ -17,12 +18,15 @@ const categoryLabel: Record<string, string> = {
 };
 
 export default function SmartStore() {
+  const navigate = useNavigate();
   const [skus, setSkus] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [viewMode, setViewMode] = useState<'grid' | 'large'>('grid');
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
+  const [wishlistedCodes, setWishlistedCodes] = useState<Set<string>>(new Set());
+  const [wishlistLoading, setWishlistLoading] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     const fetchSkus = async () => {
@@ -40,6 +44,55 @@ export default function SmartStore() {
     };
     fetchSkus();
   }, [page]);
+
+  // 로그인 사용자의 위시리스트 목록을 한 번에 불러와 Set으로 관리
+  useEffect(() => {
+    const token = localStorage.getItem('accessToken');
+    if (!token) return;
+    getWishlist(0, 100)
+      .then((res) => {
+        const items = res.data?.data?.content ?? [];
+        setWishlistedCodes(new Set(items.map((item: any) => item.skuCode)));
+      })
+      .catch(() => {});
+  }, []);
+
+  const handleWishlist = async (e: React.MouseEvent, skuCode: string) => {
+    e.preventDefault();       // Link 이동 방지
+    e.stopPropagation();      // 이벤트 버블링 방지
+
+    const token = localStorage.getItem('accessToken');
+    if (!token) {
+      navigate('/login');
+      return;
+    }
+
+    // 이미 처리 중이면 무시
+    if (wishlistLoading.has(skuCode)) return;
+
+    setWishlistLoading((prev) => new Set(prev).add(skuCode));
+    try {
+      if (wishlistedCodes.has(skuCode)) {
+        await removeWishlist(skuCode);
+        setWishlistedCodes((prev) => {
+          const next = new Set(prev);
+          next.delete(skuCode);
+          return next;
+        });
+      } else {
+        await addWishlist(skuCode);
+        setWishlistedCodes((prev) => new Set(prev).add(skuCode));
+      }
+    } catch (err) {
+      console.error('위시리스트 처리 실패:', err);
+    } finally {
+      setWishlistLoading((prev) => {
+        const next = new Set(prev);
+        next.delete(skuCode);
+        return next;
+      });
+    }
+  };
 
   const filteredSkus = selectedCategory === 'All'
     ? skus
@@ -172,6 +225,22 @@ export default function SmartStore() {
                                 : sku.status}
                           </div>
                         </div>
+
+                        {/* 위시리스트 버튼 */}
+                        <button
+                          onClick={(e) => handleWishlist(e, sku.skuCode)}
+                          disabled={wishlistLoading.has(sku.skuCode)}
+                          className={`absolute bottom-2.5 right-2.5 md:bottom-4 md:right-4 p-2 md:p-2.5 rounded-full backdrop-blur-sm shadow-sm transition-all duration-200 ${
+                            wishlistedCodes.has(sku.skuCode)
+                              ? 'bg-red-500 text-white'
+                              : 'bg-white/90 text-gray-500 hover:bg-white hover:text-red-400'
+                          } ${wishlistLoading.has(sku.skuCode) ? 'opacity-60 cursor-wait' : ''}`}
+                        >
+                          <Heart
+                            className="w-4 h-4 md:w-4.5 md:h-4.5"
+                            fill={wishlistedCodes.has(sku.skuCode) ? 'currentColor' : 'none'}
+                          />
+                        </button>
                       </div>
                     </div>
 

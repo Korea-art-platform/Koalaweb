@@ -1,9 +1,9 @@
 import { useState, useRef, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router';
 import { ArrowLeft, RotateCw, ZoomIn, ZoomOut, Maximize2, X, Info, ShoppingCart } from 'lucide-react';
-import Navigation from '../components/layouts/Header';
-import { getSku } from '../../api/sku';
-import { addCartItem } from '../../api/cart';
+import Navigation from '../../components/layouts/Header';
+import { getSku } from '../../../api/sku';
+import { addCartItem } from '../../../api/cart';
 
 export default function Product360View() {
   const { id } = useParams();

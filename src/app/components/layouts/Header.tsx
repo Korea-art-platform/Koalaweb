@@ -2,8 +2,11 @@ import { Link, useLocation } from 'react-router';
 import { Globe, ShoppingCart, User, Menu, X, Search, ChevronRight } from 'lucide-react';
 import { ViewModeProvider, useViewMode } from '../../context/ViewModeContext';
 import { useEffect, useState } from 'react';
+import { getCart } from '../../../api/cart';
+import { useTranslation } from 'react-i18next'; // i18n 훅 추가
 
 export function Header() {
+  const { t } = useTranslation(); // 번역 함수 가져오기
   const location = useLocation();
   const { mode, setMode } = useViewMode();
   const [isHeroActive, setIsHeroActive] = useState(false);
@@ -11,15 +14,33 @@ export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isPop, setIsPop] = useState(false);
 
-  // 1. 장바구니 수량 업데이트
-  const updateCartCount = () => {
-    const savedCart = localStorage.getItem('cart');
-    if (savedCart) {
-      const cartItems = JSON.parse(savedCart);
-      const total = cartItems.reduce((sum: number, item: any) => sum + (item.quantity || 1), 0);
-      setCartCount(total);
-    } else {
-      setCartCount(0);
+  // 1. 장바구니 수량 업데이트 (API 기반)
+  const updateCartCount = async () => {
+    try {
+      const token = localStorage.getItem('accessToken');
+      if (token) {
+        const res = await getCart();
+        const items = res?.data?.data?.items ?? [];
+        const total = items.reduce((sum: number, item: any) => sum + (item.quantity || 1), 0);
+        setCartCount(total);
+      } else {
+        const savedCart = localStorage.getItem('cart');
+        if (savedCart) {
+          const cartItems = JSON.parse(savedCart);
+          const total = cartItems.reduce((sum: number, item: any) => sum + (item.quantity || 1), 0);
+          setCartCount(total);
+        } else {
+          setCartCount(0);
+        }
+      }
+    } catch (e) {
+      console.error('장바구니 조회 실패:', e);
+      const savedCart = localStorage.getItem('cart');
+      if (savedCart) {
+        const cartItems = JSON.parse(savedCart);
+        const total = cartItems.reduce((sum: number, item: any) => sum + (item.quantity || 1), 0);
+        setCartCount(total);
+      }
     }
   };
 
@@ -48,11 +69,14 @@ export function Header() {
   // 3. 장바구니 동기화
   useEffect(() => {
     updateCartCount();
-    window.addEventListener('cart-updated', updateCartCount);
-    window.addEventListener('storage', updateCartCount);
+    const handleCartUpdate = () => {
+      updateCartCount();
+    };
+    window.addEventListener('cart-updated', handleCartUpdate);
+    window.addEventListener('storage', handleCartUpdate);
     return () => {
-      window.removeEventListener('cart-updated', updateCartCount);
-      window.removeEventListener('storage', updateCartCount);
+      window.removeEventListener('cart-updated', handleCartUpdate);
+      window.removeEventListener('storage', handleCartUpdate);
     };
   }, []);
 
@@ -74,11 +98,11 @@ export function Header() {
   const logoClass = isTransparent ? 'text-white' : 'text-black';
   const iconClass = isTransparent ? 'text-white/80 hover:text-white' : 'text-gray-400 hover:text-black';
 
+  // 메뉴 리스트 (하드코딩된 이름 대신 다국어 key 사용)
   const menus = [
-    { name: '작품 갤러리', path: '/' },
-    { name: '작가의 연구소', path: '/artist-lab' },
-    { name: '스마트 스토어', path: '/store' },
-    { name: 'AR 뷰어', path: '/ar-view' },
+    { key: 'gallery', path: '/' },
+    { key: 'lab', path: '/artist-lab' },
+    { key: 'store', path: '/store' }
   ];
 
   return (
@@ -94,29 +118,27 @@ export function Header() {
               onClick={() => setIsMenuOpen(false)}
               className={`text-2xl font-bold tracking-tight z-[120] transition-colors ${isMenuOpen ? 'text-black' : logoClass}`}
             >
-              KoALa
+              {t('header.logo')}
             </Link>
 
             {/* [WEB] 중앙 메뉴 */}
             <div className="hidden lg:flex items-center gap-10">
               {menus.map((menu) => (
                 <Link
-                  key={menu.name}
+                  key={menu.key}
                   to={menu.path}
                   className={`text-sm font-medium transition-colors ${location.pathname === menu.path
                     ? (isTransparent ? 'text-white' : 'text-black')
                     : (isTransparent ? 'text-white/60 hover:text-white' : 'text-gray-400 hover:text-black')
                     }`}
                 >
-                  {menu.name}
+                  {t(`header.menus.${menu.key}`)}
                 </Link>
               ))}
             </div>
 
             {/* 오른쪽 섹션 */}
             <div className="flex items-center gap-4 md:gap-6">
-              {/* 모드 토글 섹션 제거됨 */}
-
               <Search className={`hidden lg:block w-5 h-5 cursor-pointer ${iconClass}`} />
 
               {/* 장바구니 */}
@@ -158,20 +180,18 @@ export function Header() {
           <div className="flex flex-col gap-6 md:gap-8">
             {menus.map((menu, index) => (
               <Link
-                key={menu.name}
+                key={menu.key}
                 to={menu.path}
                 className={`text-4xl font-black text-black tracking-tighter transition-all duration-500 transform ${isMenuOpen ? 'translate-x-0 opacity-100' : '-translate-x-4 opacity-0'}`}
                 style={{ transitionDelay: `${index * 50}ms` }}
                 onClick={() => setIsMenuOpen(false)}
               >
-                {menu.name}
+                {t(`header.menus.${menu.key}`)}
               </Link>
             ))}
           </div>
 
           <div className="mt-auto space-y-8">
-            {/* 모바일 앱 모드 전환 섹션 제거됨 */}
-
             {/* 하단 마이페이지 & 글로벌 */}
             <div className="grid grid-cols-4 gap-3">
               <Link
@@ -181,7 +201,7 @@ export function Header() {
               >
                 <div className="flex items-center gap-4">
                   <User className="w-5 h-5 text-white/60" />
-                  <span className="text-lg font-bold">마이페이지</span>
+                  <span className="text-lg font-bold">{t('header.myPage')}</span>
                 </div>
                 <ChevronRight className="w-5 h-5 text-white/40" />
               </Link>

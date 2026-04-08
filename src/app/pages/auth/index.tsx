@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router';
 import { Mail, Lock, User } from 'lucide-react';
-import Navigation from '../components/layouts/Header';
-import { login, signup, loginWithKakao, loginWithNaver } from '../../api/auth';
+import Navigation from '../../components/layouts/Header';
+import { login, signup, loginWithKakao, loginWithNaver } from '../../../api/auth';
 
 export default function Auth() {
   const navigate = useNavigate();
@@ -15,28 +15,35 @@ export default function Auth() {
   const [loginEmail, setLoginEmail] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
   const [loginError, setLoginError] = useState('');
+  const [loginSuccess, setLoginSuccess] = useState('');
   const [loginLoading, setLoginLoading] = useState(false);
 
   // 회원가입 상태
   const [signupName, setSignupName] = useState('');
   const [signupEmail, setSignupEmail] = useState('');
+  const [signupPhone, setSignupPhone] = useState('');
   const [signupPassword, setSignupPassword] = useState('');
   const [signupConfirm, setSignupConfirm] = useState('');
   const [signupAgreed, setSignupAgreed] = useState(false);
   const [signupError, setSignupError] = useState('');
+  const [signupSuccess, setSignupSuccess] = useState('');
   const [signupLoading, setSignupLoading] = useState(false);
 
   // 로그인 제출
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoginError('');
+    setLoginSuccess('');
     setLoginLoading(true);
     try {
       const res = await login({ email: loginEmail, password: loginPassword });
       const { accessToken, refreshToken } = res.data.data;
       localStorage.setItem('accessToken', accessToken);
       localStorage.setItem('refreshToken', refreshToken);
-      navigate('/');
+      setLoginSuccess('로그인이 완료되었습니다. 홈으로 이동합니다.');
+      setTimeout(() => {
+        navigate('/');
+      }, 0);
     } catch (err: any) {
       setLoginError(err.response?.data?.message || '로그인에 실패했습니다.');
     } finally {
@@ -48,6 +55,7 @@ export default function Auth() {
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     setSignupError('');
+    setSignupSuccess('');
     if (signupPassword !== signupConfirm) {
       setSignupError('비밀번호가 일치하지 않습니다.');
       return;
@@ -65,12 +73,16 @@ export default function Auth() {
       const res = await signup({
         name: signupName,
         email: signupEmail,
+        phone: signupPhone,
         password: signupPassword,
       });
       const { accessToken, refreshToken } = res.data.data;
       localStorage.setItem('accessToken', accessToken);
       localStorage.setItem('refreshToken', refreshToken);
-      navigate('/onboarding');
+      setSignupSuccess('회원가입이 완료되었습니다. 로그인 화면으로 이동합니다.');
+      setTimeout(() => {
+        navigate('/login');
+      }, 0);
     } catch (err: any) {
       setSignupError(err.response?.data?.message || '회원가입에 실패했습니다.');
     } finally {
@@ -89,21 +101,19 @@ export default function Auth() {
           <div className="flex bg-white rounded-2xl p-1.5 shadow-sm border border-gray-100 mb-8">
             <button
               onClick={() => setIsSignup(false)}
-              className={`flex-1 py-3 rounded-xl text-sm font-bold transition-all duration-300 ${
-                !isSignup
-                  ? 'bg-black text-white shadow-sm'
-                  : 'text-gray-400 hover:text-black'
-              }`}
+              className={`flex-1 py-3 rounded-xl text-sm font-bold transition-all duration-300 ${!isSignup
+                ? 'bg-black text-white shadow-sm'
+                : 'text-gray-400 hover:text-black'
+                }`}
             >
               Sign In
             </button>
             <button
               onClick={() => setIsSignup(true)}
-              className={`flex-1 py-3 rounded-xl text-sm font-bold transition-all duration-300 ${
-                isSignup
-                  ? 'bg-black text-white shadow-sm'
-                  : 'text-gray-400 hover:text-black'
-              }`}
+              className={`flex-1 py-3 rounded-xl text-sm font-bold transition-all duration-300 ${isSignup
+                ? 'bg-black text-white shadow-sm'
+                : 'text-gray-400 hover:text-black'
+                }`}
             >
               Sign Up
             </button>
@@ -127,6 +137,12 @@ export default function Auth() {
             {/* ── 로그인 폼 ── */}
             {!isSignup && (
               <form className="space-y-6" onSubmit={handleLogin}>
+                {loginSuccess && (
+                  <div className="p-3 bg-green-50 border border-green-100 rounded-xl text-sm text-green-600">
+                    {loginSuccess}
+                  </div>
+                )}
+
                 {loginError && (
                   <div className="p-3 bg-red-50 border border-red-100 rounded-xl text-sm text-red-500">
                     {loginError}
@@ -189,6 +205,12 @@ export default function Auth() {
             {/* ── 회원가입 폼 ── */}
             {isSignup && (
               <form className="space-y-5" onSubmit={handleSignup}>
+                {signupSuccess && (
+                  <div className="p-3 bg-green-50 border border-green-100 rounded-xl text-sm text-green-600">
+                    {signupSuccess}
+                  </div>
+                )}
+
                 {signupError && (
                   <div className="p-3 bg-red-50 border border-red-100 rounded-xl text-sm text-red-500">
                     {signupError}
@@ -221,6 +243,20 @@ export default function Auth() {
                       onChange={(e) => setSignupEmail(e.target.value)}
                       required
                       className="w-full pl-12 pr-4 py-3 bg-[#F4F4F4] border border-transparent rounded-xl focus:outline-none focus:border-gray-300 transition-colors"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm mb-2 text-gray-700">Phone Number</label>
+                  <div className="relative">
+                    <input
+                      type="tel"
+                      placeholder="010-1234-5678"
+                      value={signupPhone}
+                      onChange={(e) => setSignupPhone(e.target.value)}
+                      required
+                      className="w-full px-4 py-3 bg-[#F4F4F4] border border-transparent rounded-xl focus:outline-none focus:border-gray-300 transition-colors"
                     />
                   </div>
                 </div>

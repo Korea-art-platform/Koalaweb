@@ -1,0 +1,100 @@
+{
+  "common": {
+    "yes": "네",
+    "no": "아니요",
+    "cancel": "취소",
+    "confirm": "확인",
+    "close": "닫기"
+  },
+  "header": {
+    "logo": "KoALa",
+    "menus": {
+      "gallery": "작품 갤러리",
+      "lab": "작가의 연구소",
+      "store": "스마트 스토어"
+    },
+    "myPage": "마이페이지"
+  },
+  "footer": {
+    "brand": {
+      "logo": "KoALa",
+      "subtitle": "Korean Art Lab",
+      "description": "한국 현대미술의 선구자들이 펼치는 창조적 여정과 영감을 경험하세요. 작품 갤러리, 작가의 연구소, 스마트 스토어, AR 뷰어 등 다양한 콘텐츠로 한국 미술의 매력을 소개합니다."
+    },
+    "explore": {
+      "title": "Explore",
+      "links": {
+        "gallery": "The Gallery",
+        "artistLab": "Artist Lab",
+        "store": "Smart Store"
+      }
+    },
+    "support": {
+      "title": "Support",
+      "links": {
+        "help": "Help Center",
+        "shipping": "Shipping Info",
+        "returns": "Returns",
+        "contact": "Contact Us",
+        "faq": "FAQ"
+      }
+    },
+    "company": {
+      "title": "Company",
+      "links": {
+        "about": "About Us",
+        "careers": "Careers",
+        "press": "Press",
+        "blog": "Blog",
+        "partnerships": "Partnerships"
+      }
+    },
+    "bottom": {
+      "copyright": "© 2026 KoALa. All rights reserved.",
+      "privacy": "Privacy Policy",
+      "terms": "Terms of Service",
+      "cookies": "Cookie Policy"
+    }
+  },
+  "home": {
+    "hero": {
+      "badge": "신제품 드랍!",
+      "defaultTitle": "예술작품이",
+      "defaultSubtitle": "지금 당신의 손에",
+      "description": "한국의 아름다운 예술작품들을 디지털과 물리적 형태로 만나보세요. 전통과 현대가 어우러진 독특한 컬렉션을 선사합니다.",
+      "shopNow": "쇼핑하기"
+    },
+    "categories": {
+      "title": "카테고리",
+      "subtitle": "다양한 장르의 예술을 탐험하세요",
+      "items": "items",
+      "list": {
+        "all": "All Collections",
+        "art-toys": "Art Toys",
+        "sculptures": "Sculptures",
+        "ceramics": "Ceramics",
+        "paintings": "Paintings",
+        "limited-editions": "Limited Editions",
+        "home-decor": "Home Décor"
+      }
+    },
+    "popularProducts": {
+      "title": "인기상품",
+      "subtitle": "KoALa가 큐레이션한 이달의 가장 핫한 아티스트 작품",
+      "viewAll": "VIEW ALL",
+      "viewAllMobile": "전체 상품 보기",
+      "noData": {
+        "title": "아직 등록된 상품이 없습니다.",
+        "description": "어드민에서 상품을 등록해주세요."
+      },
+      "saleBadge": "SALE"
+    },
+    "intro": {
+      "badge": "KoALa Platform",
+      "title": "글로벌 K-아트의 새로운 기준을 만듭니다.",
+      "description": "아티스트와 컬렉터, 디지털과 피지컬을 잇는 가장 매끄러운 아트 에코시스템. 당신의 일상에 스며드는 예술의 힘을 KoALa와 함께 경험하세요.",
+      "exploreArtist": "작가 탐색하기",
+      "tryAR": "AR 뷰어 체험하기"
+    }
+  }
+}

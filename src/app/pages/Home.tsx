@@ -1,10 +1,10 @@
 import { ArrowRight, ChevronRight } from 'lucide-react';
 import { Link } from 'react-router';
 import { useRef, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next'; // i18n 훅 추가
 import { getSkus, getGenreCounts } from '../../api/sku';
 import { getBanners } from '../../api/banner';
 
-// 백엔드 genre 값 → 카테고리 ID 매핑
 const GENRE_TO_CATEGORY: Record<string, string> = {
   ART_TOY: 'art-toys',
   SCULPTURE: 'sculptures',
@@ -15,16 +15,18 @@ const GENRE_TO_CATEGORY: Record<string, string> = {
 };
 
 const DEFAULT_CATEGORIES = [
-  { id: 'all', name: 'All Collections', count: 0 },
-  { id: 'art-toys', name: 'Art Toys', count: 0 },
-  { id: 'sculptures', name: 'Sculptures', count: 0 },
-  { id: 'ceramics', name: 'Ceramics', count: 0 },
-  { id: 'paintings', name: 'Paintings', count: 0 },
-  { id: 'limited-editions', name: 'Limited Editions', count: 0 },
-  { id: 'home-decor', name: 'Home Décor', count: 0 },
+  { id: 'all', count: 0 },
+  { id: 'art-toys', count: 0 },
+  { id: 'sculptures', count: 0 },
+  { id: 'ceramics', count: 0 },
+  { id: 'paintings', count: 0 },
+  { id: 'limited-editions', count: 0 },
+  { id: 'home-decor', count: 0 },
 ];
 
 export default function Home() {
+  const { t } = useTranslation();
+
   const categoryScrollRef = useRef<HTMLDivElement>(null);
   const [skus, setSkus] = useState<any[]>([]);
   const [banner, setBanner] = useState<any>(null);
@@ -34,16 +36,16 @@ export default function Home() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // SKU 목록 조회
+      
         const skuRes = await getSkus(0, 6);
         setSkus(skuRes.data.data.content ?? []);
 
-        // 배너 조회
+      
         const bannerRes = await getBanners('MAIN');
         const banners = bannerRes.data.data ?? [];
         if (banners.length > 0) setBanner(banners[0]);
 
-        // 장르별 카운트 조회
+     
         const genreRes = await getGenreCounts();
         const counts: Record<string, number> = genreRes.data.data ?? {};
         setCategories(DEFAULT_CATEGORIES.map((cat) => {
@@ -73,7 +75,7 @@ export default function Home() {
   return (
     <div className="bg-white">
 
-      {/* Hero Section */}
+   
       <section className="relative h-[80vh] min-h-[600px] md:h-[85vh] overflow-hidden">
         <div className="absolute inset-0">
           <img
@@ -87,21 +89,20 @@ export default function Home() {
           <div className="max-w-[1800px] mx-auto w-full">
             <div className="max-w-2xl text-white">
               <div className="inline-block px-3 py-1 bg-white/10 backdrop-blur-md text-[10px] md:text-xs tracking-widest uppercase rounded-full mb-6 border border-white/20">
-                신제품 드랍!
+                {t('home.hero.badge')}
               </div>
               <h1 className="text-4xl sm:text-5xl md:text-7xl mb-6 font-bold tracking-tighter leading-[1.1]">
-                {banner?.title ?? '예술작품이'}<br />
-                {banner?.subtitle ?? '지금 당신의 손에'}
+                {banner?.title ?? t('home.hero.defaultTitle')}<br />
+                {banner?.subtitle ?? t('home.hero.defaultSubtitle')}
               </h1>
               <p className="text-base md:text-xl text-gray-200 mb-8 max-w-lg break-keep opacity-90">
-                한국의 아름다운 예술작품들을 디지털과 물리적 형태로 만나보세요.
-                전통과 현대가 어우러진 독특한 컬렉션을 선사합니다.
+                {t('home.hero.description')}
               </p>
               <Link
                 to={banner?.linkUrl ?? '/store'}
                 className="inline-flex items-center gap-3 px-8 py-4 bg-white text-black rounded-full hover:bg-gray-100 transition-all font-bold group"
               >
-                쇼핑하기
+                {t('home.hero.shopNow')}
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Link>
             </div>
@@ -109,13 +110,13 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Categories */}
+     
       <section className="py-12 md:py-20 px-6 md:px-12">
         <div className="max-w-[1800px] mx-auto">
           <div className="flex items-end justify-between mb-8 md:mb-12">
             <div>
-              <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-2">카테고리</h2>
-              <p className="text-gray-400 text-sm md:text-base font-medium">다양한 장르의 예술을 탐험하세요</p>
+              <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-2">{t('home.categories.title')}</h2>
+              <p className="text-gray-400 text-sm md:text-base font-medium">{t('home.categories.subtitle')}</p>
             </div>
             <div className="hidden md:flex gap-2">
               <button onClick={() => scrollCategories('left')} className="p-3 rounded-full border border-gray-100 hover:bg-gray-50 transition-all">
@@ -130,8 +131,8 @@ export default function Home() {
             {categories.map((category) => (
               <Link key={category.id} to={`/smart-store?category=${category.id}`} className="flex-shrink-0 group">
                 <div className="px-8 py-6 bg-gray-50 rounded-2xl border border-transparent group-hover:border-black group-hover:bg-white transition-all duration-300 min-w-[200px]">
-                  <h3 className="text-lg font-bold mb-1">{category.name}</h3>
-                  <p className="text-xs text-gray-400 font-medium uppercase tracking-widest">{category.count} items</p>
+                  <h3 className="text-lg font-bold mb-1">{t(`home.categories.list.${category.id}`)}</h3>
+                  <p className="text-xs text-gray-400 font-medium uppercase tracking-widest">{category.count} {t('home.categories.items')}</p>
                 </div>
               </Link>
             ))}
@@ -139,20 +140,18 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 인기상품 */}
       <section className="py-20 px-6 md:px-12 bg-white">
         <div className="max-w-[1800px] mx-auto">
           <div className="flex items-end justify-between mb-12">
             <div>
-              <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-4 text-black">인기상품</h2>
-              <p className="text-gray-500 font-medium break-keep">KoALa가 큐레이션한 이달의 가장 핫한 아티스트 작품</p>
+              <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-4 text-black">{t('home.popularProducts.title')}</h2>
+              <p className="text-gray-500 font-medium break-keep">{t('home.popularProducts.subtitle')}</p>
             </div>
             <Link to="/smart-store" className="hidden md:flex items-center gap-2 text-sm font-bold border-b-2 border-black pb-1 hover:text-gray-500 hover:border-gray-500 transition-all">
-              VIEW ALL <ArrowRight className="w-4 h-4" />
+              {t('home.popularProducts.viewAll')} <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
 
-          {/* 로딩 상태 */}
           {loading ? (
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-8">
               {[...Array(6)].map((_, i) => (
@@ -164,10 +163,10 @@ export default function Home() {
               ))}
             </div>
           ) : skus.length === 0 ? (
-            // 데이터 없을 때 (더미 데이터 없애고 빈 상태 표시)
+        
             <div className="text-center py-20">
-              <p className="text-gray-400 text-lg">아직 등록된 상품이 없습니다.</p>
-              <p className="text-gray-300 text-sm mt-2">어드민에서 상품을 등록해주세요.</p>
+              <p className="text-gray-400 text-lg">{t('home.popularProducts.noData.title')}</p>
+              <p className="text-gray-300 text-sm mt-2">{t('home.popularProducts.noData.description')}</p>
             </div>
           ) : (
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 md:grid-flow-row-dense gap-4 md:gap-8">
@@ -186,7 +185,7 @@ export default function Home() {
                     {sku.salePrice && (
                       <div className="absolute top-4 left-4">
                         <div className="px-3 py-1.5 bg-white/90 backdrop-blur-md text-black text-[10px] md:text-xs font-black rounded-lg shadow-sm">
-                          SALE
+                          {t('home.popularProducts.saleBadge')}
                         </div>
                       </div>
                     )}
@@ -211,7 +210,7 @@ export default function Home() {
 
           <div className="mt-12 md:hidden">
             <Link to="/smart-store" className="flex items-center justify-center w-full py-4 bg-black text-white rounded-full font-bold">
-              전체 상품 보기
+              {t('home.popularProducts.viewAllMobile')}
             </Link>
           </div>
         </div>
@@ -221,15 +220,22 @@ export default function Home() {
       <section className="py-24 px-6 md:px-12 bg-gray-50 border-y border-gray-100">
         <div className="max-w-[1400px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           <div className="order-2 lg:order-1">
-            <div className="text-[10px] md:text-xs text-indigo-500 font-black tracking-[0.2em] mb-4 uppercase">KoALa Platform</div>
-            <h2 className="text-3xl md:text-5xl font-bold mb-6 tracking-tighter break-keep">글로벌 K-아트의 새로운 기준을 만듭니다.</h2>
+            <div className="text-[10px] md:text-xs text-indigo-500 font-black tracking-[0.2em] mb-4 uppercase">
+              {t('home.intro.badge')}
+            </div>
+            <h2 className="text-3xl md:text-5xl font-bold mb-6 tracking-tighter break-keep">
+              {t('home.intro.title')}
+            </h2>
             <p className="text-base md:text-lg text-gray-500 leading-relaxed mb-10 break-keep">
-              아티스트와 컬렉터, 디지털과 피지컬을 잇는 가장 매끄러운 아트 에코시스템.
-              당신의 일상에 스며드는 예술의 힘을 KoALa와 함께 경험하세요.
+              {t('home.intro.description')}
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
-              <Link to="/artist-lab" className="px-8 py-4 bg-black text-white rounded-full font-bold hover:bg-gray-800 transition-all text-center">작가 탐색하기</Link>
-              <Link to="/ar-view" className="px-8 py-4 border-2 border-black rounded-full font-bold hover:bg-black hover:text-white transition-all text-center">AR 뷰어 체험하기</Link>
+              <Link to="/artist-lab" className="px-8 py-4 bg-black text-white rounded-full font-bold hover:bg-gray-800 transition-all text-center">
+                {t('home.intro.exploreArtist')}
+              </Link>
+              <Link to="/ar-view" className="px-8 py-4 border-2 border-black rounded-full font-bold hover:bg-black hover:text-white transition-all text-center">
+                {t('home.intro.tryAR')}
+              </Link>
             </div>
           </div>
           <div className="order-1 lg:order-2">

@@ -7,7 +7,6 @@ const menuItems = [
     { icon: MapPin, label: '배송지 관리', path: '/account/addresses' },
     { icon: CreditCard, label: '결제 수단', path: '/account/payment-methods' },
     { icon: Heart, label: '위시리스트', path: '/account/wishlist' },
-    { icon: Settings, label: '알림 설정', path: '/account/settings' },
 ];
 
 interface Props {
@@ -52,8 +51,8 @@ export default function AccountSidebar({ currentPath, user }: Props) {
                             key={item.path}
                             to={item.path}
                             className={`flex items-center gap-2 md:gap-3 px-4 py-2.5 md:py-3 rounded-xl transition-all whitespace-nowrap ${isActive
-                                    ? 'bg-black text-white font-bold'
-                                    : 'text-gray-400 hover:text-black hover:bg-gray-50'
+                                ? 'bg-black text-white font-bold'
+                                : 'text-gray-400 hover:text-black hover:bg-gray-50'
                                 }`}
                         >
                             <Icon className="w-4 h-4" />

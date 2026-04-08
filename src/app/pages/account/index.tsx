@@ -1,10 +1,10 @@
 import { useLocation, useNavigate } from 'react-router';
-import Navigation from '../components/layouts/Header';
-import AccountSidebar from '../components/layouts/AccountSidebar';
+import Navigation from '../../components/layouts/Header';
+import AccountSidebar from '../../components/layouts/AccountSidebar';
 import { useEffect, useState } from 'react';
-import { getMyProfile, updateMyProfile } from '../../api/user';
-import { getMyOrders } from '../../api/order';
-import { getWishlist } from '../../api/wishlist';
+import { getMyProfile, updateMyProfile } from '../../../api/user';
+import { getMyOrders } from '../../../api/order';
+import { getWishlist } from '../../../api/wishlist';
 
 export default function Account() {
   const location = useLocation();

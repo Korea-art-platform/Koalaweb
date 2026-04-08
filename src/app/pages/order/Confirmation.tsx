@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router';
 import { ArrowLeft, MapPin, CreditCard, Package, AlertCircle } from 'lucide-react';
-import Navigation from '../components/layouts/Header';
+import Navigation from '../../components/layouts/Header';
 
 const paymentMethodNames: Record<string, { name: string, nameKo: string, icon: string }> = {
   toss: { name: 'Toss Pay', nameKo: '토스페이', icon: '💙' },
@@ -60,7 +60,7 @@ export default function OrderConfirmation() {
   return (
     <div className="min-h-screen bg-[#FAFAFA]">
       <Navigation />
-      
+
       <div className="pt-24 pb-16 px-8">
         <div className="max-w-4xl mx-auto">
           {/* Header */}
@@ -88,7 +88,7 @@ export default function OrderConfirmation() {
                   Review Before Confirming
                 </p>
                 <p className="text-xs text-blue-700 leading-relaxed">
-                  Once confirmed, your payment will be processed and the order cannot be cancelled. 
+                  Once confirmed, your payment will be processed and the order cannot be cancelled.
                   Please ensure all information is correct.
                 </p>
               </div>
@@ -104,7 +104,7 @@ export default function OrderConfirmation() {
                   <Package className="w-5 h-5 text-gray-400" />
                   <h2 className="text-lg">Order Items</h2>
                 </div>
-                
+
                 <div className="space-y-4">
                   {orderInfo.items.map((item: any, index: number) => (
                     <div key={index} className="flex gap-4 p-4 bg-gray-50 rounded-xl">
@@ -133,7 +133,7 @@ export default function OrderConfirmation() {
                     Edit
                   </button>
                 </div>
-                
+
                 <div className="p-4 bg-gray-50 rounded-xl">
                   <p className="font-medium mb-2">{shippingAddress.recipient}</p>
                   <p className="text-sm text-gray-600 mb-1">{shippingAddress.address}</p>
@@ -167,7 +167,7 @@ export default function OrderConfirmation() {
                     Change
                   </button>
                 </div>
-                
+
                 <div className="p-4 bg-gray-50 rounded-xl">
                   <div className="flex items-center gap-3">
                     <div className="text-2xl">{paymentInfo.icon}</div>
