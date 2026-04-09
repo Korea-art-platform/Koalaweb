@@ -1,8 +1,8 @@
-import Navigation from '../components/layouts/Header';
+import Navigation from '@/app/components/layouts/Header';
 import { Filter, TrendingUp, Shield, Globe } from 'lucide-react';
 import { Link } from 'react-router';
 import { useState } from 'react';
-import { ImageWithFallback } from '../components/figma/ImageWithFallback';
+import { ImageWithFallback } from '@/app/components/figma/ImageWithFallback';
 
 // 필터 카테고리 한글화
 const filters = ['전체', '아트 토이', '조각', '세라믹', '리미티드 에디션'];

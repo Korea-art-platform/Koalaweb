@@ -1,10 +1,10 @@
 import { Link, useLocation, useNavigate } from 'react-router';
 import { Package, ChevronRight, Box } from 'lucide-react';
-import Navigation from '../../components/layouts/Header';
-import AccountSidebar from '../../components/layouts/AccountSidebar';
+import Navigation from '@/app/components/layouts/Header';
+import AccountSidebar from '@/app/components/layouts/AccountSidebar';
 import { useEffect, useState } from 'react';
-import { getMyProfile } from '../../../api/user';
-import { getMyOrders, cancelOrder } from '../../../api/order';
+import { getMyProfile } from '@/api/user';
+import { getMyOrders, cancelOrder } from '@/api/order';
 
 const getStatusInfo = (status: string) => {
   const statuses: { [key: string]: { label: string; color: string } } = {

@@ -1,9 +1,9 @@
-import Navigation from '../../components/layouts/Header';
+import Navigation from '@/app/components/layouts/Header';
 import { useParams, Link, useNavigate } from 'react-router';
 import { ArrowLeft, Play, Share2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { ImageWithFallback } from '../../components/figma/ImageWithFallback';
-import { getArtist } from '../../../api/artist';
+import { ImageWithFallback } from '@/app/components/figma/ImageWithFallback';
+import { getArtist } from '@/api/artist';
 
 // ── 유튜브/Vimeo/S3 URL → 임베드 URL 변환 ──────────────
 function getVideoEmbedUrl(url: string): string | null {

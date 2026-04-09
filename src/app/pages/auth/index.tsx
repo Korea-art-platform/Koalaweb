@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router';
 import { Mail, Lock, User } from 'lucide-react';
-import Navigation from '../../components/layouts/Header';
-import { login, signup, loginWithKakao, loginWithNaver } from '../../../api/auth';
+import Navigation from '@/app/components/layouts/Header';
+import { login, signup, loginWithKakao, loginWithNaver } from '@/api/auth';
 
 export default function Auth() {
   const navigate = useNavigate();

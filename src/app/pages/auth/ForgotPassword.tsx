@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router';
 import { Mail, Lock, KeyRound } from 'lucide-react';
-import Navigation from '../../components/layouts/Header';
+import Navigation from '@/app/components/layouts/Header';
 import {
   sendPasswordResetCode,
   verifyPasswordResetCode,
   resetPassword,
-} from '../../../api/auth';
+} from '@/api/auth';
 
 type Step = 'email' | 'verify' | 'reset';
 

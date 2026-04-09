@@ -1,9 +1,9 @@
-import Navigation from '../../components/layouts/Header';
+import Navigation from '@/app/components/layouts/Header';
 import { Play, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router';
 import { useEffect, useState } from 'react';
-import { ImageWithFallback } from '../../components/figma/ImageWithFallback';
-import { getArtists } from '../../../api/artist';
+import { ImageWithFallback } from '@/app/components/figma/ImageWithFallback';
+import { getArtists } from '@/api/artist';
 
 // ── 영상 플레이어 컴포넌트 ─────────────────────────────
 function getVideoEmbedUrl(url: string): string | null {

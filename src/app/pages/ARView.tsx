@@ -1,10 +1,10 @@
-import Navigation from '../components/layouts/Header';
+import Navigation from '@/app/components/layouts/Header';
 import { useState, useEffect } from 'react';
 import { RotateCcw, Move, ZoomIn, ZoomOut, Maximize2, CheckCircle2, X, Camera, Info } from 'lucide-react';
-import { ImageWithFallback } from '../components/figma/ImageWithFallback';
+import { ImageWithFallback } from '@/app/components/figma/ImageWithFallback';
 import { Link, useNavigate, useSearchParams } from 'react-router';
-import { getSku } from '../../api/sku';
-import { addCartItem } from '../../api/cart';
+import { getSku } from '@/api/sku';
+import { addCartItem } from '@/api/cart';
 
 export default function ARView() {
   const navigate = useNavigate();

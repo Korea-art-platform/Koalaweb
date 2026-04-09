@@ -1,10 +1,10 @@
-import Navigation from '../components/layouts/Header';
+import Navigation from '@/app/components/layouts/Header';
 import { Filter, Grid3x3, LayoutGrid, Heart } from 'lucide-react';
 import { Link, useNavigate } from 'react-router';
 import { useState, useEffect } from 'react';
-import { ImageWithFallback } from '../components/figma/ImageWithFallback';
-import { getSkus } from '../../api/sku';
-import { getWishlist, addWishlist, removeWishlist } from '../../api/wishlist';
+import { ImageWithFallback } from '@/app/components/figma/ImageWithFallback';
+import { getSkus } from '@/api/sku';
+import { getWishlist, addWishlist, removeWishlist } from '@/api/wishlist';
 
 const categories = ['All', 'ART_TOY', 'SCULPTURE', 'CERAMIC', 'PAINTING', 'GOODS'];
 

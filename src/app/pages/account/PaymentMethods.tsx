@@ -1,9 +1,9 @@
 import { useLocation, useNavigate } from 'react-router';
 import { CreditCard, Plus, Smartphone } from 'lucide-react';
-import Navigation from '../../components/layouts/Header';
-import AccountSidebar from '../../components/layouts/AccountSidebar';
+import Navigation from '@/app/components/layouts/Header';
+import AccountSidebar from '@/app/components/layouts/AccountSidebar';
 import { useEffect, useState } from 'react';
-import { getMyProfile } from '../../../api/user';
+import { getMyProfile } from '@/api/user';
 
 const paymentOptions = [
   { id: 'toss', name: '토스페이', icon: '💙', description: '토스 앱 간편 결제', color: 'bg-blue-50 border-blue-100' },

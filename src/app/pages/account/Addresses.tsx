@@ -1,10 +1,10 @@
 import { Link, useLocation, useNavigate } from 'react-router';
 import { Plus, Edit2, Trash2 } from 'lucide-react';
-import Navigation from '../../components/layouts/Header';
-import AccountSidebar from '../../components/layouts/AccountSidebar';
-import AddressModal from '../../components/modals/AddressModal';
+import Navigation from '@/app/components/layouts/Header';
+import AccountSidebar from '@/app/components/layouts/AccountSidebar';
+import AddressModal from '@/app/components/modals/AddressModal';
 import { useEffect, useState } from 'react';
-import { getMyProfile, getMyAddresses, deleteAddress } from '../../../api/user';
+import { getMyProfile, getMyAddresses, deleteAddress } from '@/api/user';
 
 export default function AccountAddresses() {
   const location = useLocation();
