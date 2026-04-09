@@ -4,7 +4,39 @@
     "no": "아니요",
     "cancel": "취소",
     "confirm": "확인",
-    "close": "닫기"
+    "close": "닫기",
+    "prev": "이전",
+    "next": "다음",
+    "video": {
+      "defaultTitle": "스튜디오 인터뷰 영상",
+      "clickToPlay": "클릭하여 재생"
+    }
+  },
+  "store": {
+    "hero": {
+      "badge": "스마트 스토어",
+      "title": "소장할 수 있는 예술",
+      "description": "엄선된 프리미엄 아트 굿즈, 소장 가치 있는 오브제, 그리고 일상 속 예술 작품들을 만나보세요."
+    },
+    "categories": {
+      "All": "전체",
+      "ART_TOY": "아트 토이",
+      "SCULPTURE": "조각",
+      "CERAMIC": "도자기",
+      "PAINTING": "회화",
+      "GOODS": "아트 굿즈"
+    },
+    "product": {
+      "limited": "한정판",
+      "status": {
+        "available": "판매중",
+        "soldOut": "품절"
+      }
+    },
+    "emptyState": {
+      "title": "해당 작품이 없습니다.",
+      "description": "다른 필터를 선택해 보세요."
+    }
   },
   "header": {
     "logo": "KoALa",
@@ -18,42 +50,42 @@
   "footer": {
     "brand": {
       "logo": "KoALa",
-      "subtitle": "Korean Art Lab",
+      "subtitle": "코리안 아트 랩 (Korean Art Lab)",
       "description": "한국 현대미술의 선구자들이 펼치는 창조적 여정과 영감을 경험하세요. 작품 갤러리, 작가의 연구소, 스마트 스토어, AR 뷰어 등 다양한 콘텐츠로 한국 미술의 매력을 소개합니다."
     },
     "explore": {
-      "title": "Explore",
+      "title": "둘러보기",
       "links": {
-        "gallery": "The Gallery",
-        "artistLab": "Artist Lab",
-        "store": "Smart Store"
+        "gallery": "작품 갤러리",
+        "artistLab": "작가의 연구소",
+        "store": "스마트 스토어"
       }
     },
     "support": {
-      "title": "Support",
+      "title": "고객 지원",
       "links": {
-        "help": "Help Center",
-        "shipping": "Shipping Info",
-        "returns": "Returns",
-        "contact": "Contact Us",
-        "faq": "FAQ"
+        "help": "고객센터",
+        "shipping": "배송 정보",
+        "returns": "교환 및 반품",
+        "contact": "1:1 문의하기",
+        "faq": "자주 묻는 질문"
       }
     },
     "company": {
-      "title": "Company",
+      "title": "회사 소개",
       "links": {
-        "about": "About Us",
-        "careers": "Careers",
-        "press": "Press",
-        "blog": "Blog",
-        "partnerships": "Partnerships"
+        "about": "KoALa 소개",
+        "careers": "채용 정보",
+        "press": "언론 보도",
+        "blog": "공식 블로그",
+        "partnerships": "제휴 및 입점 문의"
       }
     },
     "bottom": {
-      "copyright": "© 2026 KoALa. All rights reserved.",
-      "privacy": "Privacy Policy",
-      "terms": "Terms of Service",
-      "cookies": "Cookie Policy"
+      "copyright": "© 2026 KoALa. 모든 권리 보유.",
+      "privacy": "개인정보처리방침",
+      "terms": "이용약관",
+      "cookies": "쿠키 정책"
     }
   },
   "home": {
@@ -67,34 +99,53 @@
     "categories": {
       "title": "카테고리",
       "subtitle": "다양한 장르의 예술을 탐험하세요",
-      "items": "items",
+      "items": "개",
       "list": {
-        "all": "All Collections",
-        "art-toys": "Art Toys",
-        "sculptures": "Sculptures",
-        "ceramics": "Ceramics",
-        "paintings": "Paintings",
-        "limited-editions": "Limited Editions",
-        "home-decor": "Home Décor"
+        "all": "전체 보기",
+        "art-toys": "아트 토이",
+        "sculptures": "조각",
+        "ceramics": "도자기",
+        "paintings": "회화",
+        "limited-editions": "한정판 에디션",
+        "home-decor": "홈 데코"
       }
     },
     "popularProducts": {
       "title": "인기상품",
       "subtitle": "KoALa가 큐레이션한 이달의 가장 핫한 아티스트 작품",
-      "viewAll": "VIEW ALL",
+      "viewAll": "전체 보기",
       "viewAllMobile": "전체 상품 보기",
       "noData": {
         "title": "아직 등록된 상품이 없습니다.",
         "description": "어드민에서 상품을 등록해주세요."
       },
-      "saleBadge": "SALE"
+      "saleBadge": "특가"
     },
     "intro": {
-      "badge": "KoALa Platform",
+      "badge": "KoALa 플랫폼",
       "title": "글로벌 K-아트의 새로운 기준을 만듭니다.",
       "description": "아티스트와 컬렉터, 디지털과 피지컬을 잇는 가장 매끄러운 아트 에코시스템. 당신의 일상에 스며드는 예술의 힘을 KoALa와 함께 경험하세요.",
       "exploreArtist": "작가 탐색하기",
       "tryAR": "AR 뷰어 체험하기"
+    }
+  },
+  "artistLab": {
+    "hero": {
+      "badge": "작가의 연구실",
+      "title1": "작품 뒤에 숨겨진 이야기",
+      "title2": "연구실에서 만나다",
+      "description": "한국 현대미술의 선구자들이 펼치는 창조적 여정과 영감을 경험하세요."
+    },
+    "row": {
+      "artistLabel": "Artist",
+      "noDescription": "작가 소개가 없습니다.",
+      "interviewLabel": "Studio Interview",
+      "interviewTitle": "{{name}}의 스튜디오 인터뷰",
+      "viewProfile": "프로필 보기",
+      "startCollecting": "수집 시작하기"
+    },
+    "emptyState": {
+      "title": "등록된 아티스트가 없습니다."
     }
   }
 }

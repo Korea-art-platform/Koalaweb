@@ -1,22 +1,14 @@
 import { defineConfig } from 'vite'
-import path from 'path'
 import tailwindcss from '@tailwindcss/vite'
 import react from '@vitejs/plugin-react'
+import tsconfigPaths from 'vite-tsconfig-paths' // 💡 플러그인 불러오기
 
 export default defineConfig({
   plugins: [
-    // The React and Tailwind plugins are both required for Make, even if
-    // Tailwind is not being actively used – do not remove them
     react(),
     tailwindcss(),
+    tsconfigPaths(), // 💡 여기에 쏙 넣어줍니다! (이제 복잡한 alias 설정 안 해도 됩니다)
   ],
-  resolve: {
-    alias: {
-      // Alias @ to the src directory
-      '@': path.resolve(__dirname, './src'),
-    },
-  },
-
-  // File types to support raw imports. Never add .css, .tsx, or .ts files to this.
+  // resolve: { alias: ... } 부분은 싹 지워버리셔도 됩니다!
   assetsInclude: ['**/*.svg', '**/*.csv'],
 })
