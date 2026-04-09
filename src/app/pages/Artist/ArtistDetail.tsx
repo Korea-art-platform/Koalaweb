@@ -2,7 +2,7 @@ import Navigation from '../../components/layouts/Header';
 import { useParams, Link, useNavigate } from 'react-router';
 import { ArrowLeft, Play, Share2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { ImageWithFallback } from '../../components/figma/ImageWithFallback';
+import { ImageWithFallback } from '../../components/fallback/ImageWithFallback';
 import { getArtist } from '../../../api/artist';
 
 // ── 유튜브/Vimeo/S3 URL → 임베드 URL 변환 ──────────────

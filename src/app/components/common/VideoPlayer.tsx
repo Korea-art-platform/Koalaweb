@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Play } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { ImageWithFallback } from '@/app/components/figma/ImageWithFallback';
+import { ImageWithFallback } from '@/app/components/fallback/ImageWithFallback';
 
 function getVideoEmbedUrl(url: string): string | null {
   if (!url) return null;
@@ -50,27 +50,23 @@ export default function VideoPlayer({
             src={embedUrl}
             controls
             autoPlay
-            className="w-full h-full object-cover"
-          />
+            className="w-full h-full object-cover" />
         ) : (
           <iframe
             src={`${embedUrl}?autoplay=1`}
             className="w-full h-full"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowFullScreen
-          />
+            allowFullScreen/>
         )
       ) : (
         <>
           <ImageWithFallback
             src={thumbnail ?? 'https://via.placeholder.com/800x450'}
             alt={title ?? ''}
-            className="w-full h-full object-cover opacity-80 transition-transform duration-500 group-hover:scale-105"
-          />
+            className="w-full h-full object-cover opacity-80 transition-transform duration-500 group-hover:scale-105" />
           <div
             className="absolute inset-0 flex items-center justify-center bg-black/30"
-            onClick={() => setPlaying(true)}
-          >
+            onClick={() => setPlaying(true)} >
             <div className="w-12 h-12 md:w-16 md:h-16 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-xl transform transition-transform group-hover:scale-110">
               <Play className="w-5 h-5 md:w-6 md:h-6 text-black ml-1" fill="currentColor" />
             </div>

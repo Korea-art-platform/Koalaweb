@@ -12,7 +12,7 @@ import {
   X,
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { ImageWithFallback } from '../../components/figma/ImageWithFallback';
+import { ImageWithFallback } from '../../components/fallback/ImageWithFallback';
 import { getSku, getSkuReviews } from '../../../api/sku';
 import { addCartItem } from '../../../api/cart';
 import { addWishlist, removeWishlist, checkWishlist } from '../../../api/wishlist';

@@ -147,5 +147,17 @@
     "emptyState": {
       "title": "등록된 아티스트가 없습니다."
     }
+  },
+  "account":{
+    "sidebar":{
+      "profile":"프로필 설정",
+      "order":"주문 내역",
+      "address":"배송지 관리",
+      "payment": "결제 수단",
+      "wishlist": "위시리스트",
+      "logout": "로그아웃",
+      "defaultUsere":"사용자",
+      "greeting": "{{name}}님"
+    }
   }
 }

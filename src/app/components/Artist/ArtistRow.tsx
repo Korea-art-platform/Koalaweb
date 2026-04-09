@@ -1,7 +1,7 @@
 import { Link } from 'react-router';
 import { ArrowRight } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { ImageWithFallback } from '@/app/components/figma/ImageWithFallback';
+import { ImageWithFallback } from '@/app/components/fallback/ImageWithFallback';
 import VideoPlayer from '@/app/components/common/VideoPlayer';
 
 interface ArtistRowProps {

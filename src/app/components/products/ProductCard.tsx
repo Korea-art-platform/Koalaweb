@@ -2,7 +2,7 @@ import { Heart } from 'lucide-react';
 import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
 // 주의: 경로 점(../) 개수는 실제 위치에 맞게 수정해 주세요.
-import { ImageWithFallback } from '../figma/ImageWithFallback'; 
+import { ImageWithFallback } from '../fallback/ImageWithFallback'; 
 
 interface ProductCardProps {
   sku: any;

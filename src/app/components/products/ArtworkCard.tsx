@@ -1,6 +1,6 @@
 import { Link } from 'react-router';
 import { Heart, Sparkles } from 'lucide-react';
-import { ImageWithFallback } from '../figma/ImageWithFallback';
+import { ImageWithFallback } from '../fallback/ImageWithFallback';
 
 interface ArtworkCardProps {
   id: string;
