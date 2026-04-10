@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router';
 import { ArrowLeft, MapPin, CreditCard, Package, AlertCircle } from 'lucide-react';
-import Navigation from '../../components/layouts/Header';
+import Navigation from '@/app/components/layouts/Header';
 
 const paymentMethodNames: Record<string, { name: string, nameKo: string, icon: string }> = {
   toss: { name: 'Toss Pay', nameKo: '토스페이', icon: '💙' },

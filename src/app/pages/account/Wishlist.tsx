@@ -1,11 +1,11 @@
 import { Link, useLocation, useNavigate } from 'react-router';
 import { Heart, ShoppingCart, Trash2 } from 'lucide-react';
-import Navigation from '../../components/layouts/Header';
-import AccountSidebar from '../../components/layouts/AccountSidebar';
+import Navigation from '@/app/components/layouts/Header';
+import AccountSidebar from '@/app/components/layouts/AccountSidebar';
 import { useEffect, useState } from 'react';
-import { getMyProfile } from '../../../api/user';
-import { getWishlist, removeWishlist } from '../../../api/wishlist';
-import { addCartItem } from '../../../api/cart';
+import { getMyProfile } from '@/api/user';
+import { getWishlist, removeWishlist } from '@/api/wishlist';
+import { addCartItem } from '@/api/cart';
 
 export default function AccountWishlist() {
     const location = useLocation();

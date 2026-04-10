@@ -2,8 +2,8 @@ import { ArrowRight, ChevronRight } from 'lucide-react';
 import { Link } from 'react-router';
 import { useRef, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next'; // i18n 훅 추가
-import { getSkus, getGenreCounts } from '../../api/sku';
-import { getBanners } from '../../api/banner';
+import { getSkus, getGenreCounts } from '@/api/sku';
+import { getBanners } from '@/api/banner';
 
 const GENRE_TO_CATEGORY: Record<string, string> = {
   ART_TOY: 'art-toys',

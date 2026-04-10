@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { Link } from 'react-router';
 import { Search as SearchIcon, X, TrendingUp, Clock, ArrowLeft } from 'lucide-react';
-import Navigation from '../components/layouts/Header';
-import { useViewMode } from '../context/ViewModeContext';
+import Navigation from '@/app/components/layouts/Header';
+import { useViewMode } from '@/app/context/ViewModeContext';
 
 // Mock data for search results
 const mockArtworks = [

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams, useNavigate } from 'react-router';
-import { confirmPayment } from '../../../api/payment';
+import { confirmPayment } from '@/api/payment';
 
 export default function PaymentSuccess() {
   const [searchParams] = useSearchParams();

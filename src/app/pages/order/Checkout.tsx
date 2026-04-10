@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router';
 import { ArrowLeft, MapPin, CreditCard, Package, Check, ChevronRight, Search } from 'lucide-react';
-import Navigation from '../../components/layouts/Header';
-import { createOrder } from '../../../api/order';
-import { getCart } from '../../../api/cart';
-import { preparePayment } from '../../../api/payment';
-import { getMyProfile, getMyAddresses } from '../../../api/user';
+import Navigation from '@/app/components/layouts/Header';
+import { createOrder } from '@/api/order';
+import { getCart } from '@/api/cart';
+import { preparePayment } from '@/api/payment';
+import { getMyProfile, getMyAddresses } from '@/api/user';
 import { loadTossPayments, ANONYMOUS } from '@tosspayments/tosspayments-sdk';
 
 type PaymentMethodType = 'TOSS' | 'KAKAOPAY' | 'NAVERPAY' | 'CARD';

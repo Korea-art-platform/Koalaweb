@@ -1,13 +1,13 @@
 import { Link, useNavigate } from 'react-router';
 import { Minus, Plus, Trash2, ShoppingBag, ArrowLeft } from 'lucide-react';
-import Navigation from '../../components/layouts/Header';
+import Navigation from '@/app/components/layouts/Header';
 import { useState, useEffect } from 'react';
 import {
   getCart,
   updateCartItem,
   removeCartItem,
   clearCart,
-} from '../../../api/cart';
+} from '@/api/cart';
 
 export default function Cart() {
   const navigate = useNavigate();
