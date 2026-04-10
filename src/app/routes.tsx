@@ -6,7 +6,7 @@ import ARView from "./pages/ARView";
 import ResellMarket from "./pages/ResellMarket";
 import ProductDetail from "./pages/product/Detail";
 import ArtistDetail from "./pages/Artist/ArtistDetail";
-import Auth from "./pages/auth/index";
+import Auth from "./pages/auth/Auth";
 import Onboarding from "./pages/auth/Onboarding";
 import Search from "./pages/Search";
 import Cart from "./pages/order/Cart";

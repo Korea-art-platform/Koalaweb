@@ -1,5 +1,6 @@
-export { default as Container } from './Container';
-export { default as Section } from './Section';
-export { default as PageHeader } from './PageHeader';
-export { default as Card } from './Card';
-export { default as Button } from './Button';
+export * from './Container';
+export * from './ScrollToTop';
+export * from './Pagination';
+export * from './Card';
+export * from './Button';
+
