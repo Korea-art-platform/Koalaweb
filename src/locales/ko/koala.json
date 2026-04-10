@@ -96,5 +96,160 @@
       "exploreArtist": "작가 탐색하기",
       "tryAR": "AR 뷰어 체험하기"
     }
+  },
+  "auth": {
+    "common": {
+      "emailLabel": "Email Address",
+      "emailPlaceholder": "your@email.com",
+      "passwordLabel": "Password",
+      "passwordPlaceholder": "Enter your password",
+      "rememberMe": "Remember me",
+      "forgotPassword": "Forgot password?",
+      "orContinueWith": "OR CONTINUE WITH",
+      "termsAgree": "I agree to the",
+      "termsLink": "Terms of Service",
+      "termsAnd": "and",
+      "privacyLink": "Privacy Policy"
+    },
+    "validation": {
+      "passwordMismatch": "비밀번호가 일치하지 않습니다.",
+      "passwordTooShort": "비밀번호는 8자 이상이어야 합니다.",
+      "termsRequired": "이용약관에 동의해주세요."
+    },
+    "tabs": {
+      "signIn": "Sign In",
+      "signUp": "Sign Up"
+    },
+    "login": {
+      "title": "Welcome Back",
+      "subtitle": "Sign in to your KoALa account",
+      "submit": "Sign In",
+      "submitting": "Signing in...",
+      "success": "로그인이 완료되었습니다. 홈으로 이동합니다.",
+      "error": "로그인에 실패했습니다.",
+      "noAccount": "Don't have an account?",
+      "signUpLink": "Sign up",
+      "kakao": "카카오로 로그인",
+      "naver": "네이버로 로그인",
+      "kakaoAlt": "카카오로 계속하기",
+      "naverAlt": "네이버로 계속하기"
+    },
+    "signup": {
+      "title": "Create Account",
+      "subtitle": "Join the Korean Art Laboratory",
+      "nameLabel": "Full Name",
+      "namePlaceholder": "Enter your name",
+      "phoneLabel": "Phone Number",
+      "phonePlaceholder": "010-1234-5678",
+      "passwordPlaceholderCreate": "Create a password",
+      "passwordPlaceholderCombined": "Create a password (8자 이상)",
+      "passwordHint": "Must be at least 8 characters",
+      "confirmPasswordLabel": "Confirm Password",
+      "confirmPasswordPlaceholder": "Confirm your password",
+      "submit": "Create Account",
+      "submitting": "Creating Account...",
+      "success": "회원가입이 완료되었습니다. 로그인 화면으로 이동합니다.",
+      "error": "회원가입에 실패했습니다.",
+      "hasAccount": "Already have an account?",
+      "signInLink": "Sign in",
+      "kakao": "카카오로 시작하기",
+      "naver": "네이버로 시작하기",
+      "kakaoAlt": "카카오로 계속하기",
+      "naverAlt": "네이버로 계속하기"
+    },
+    "forgotPassword": {
+      "emailStep": {
+        "title": "비밀번호 찾기",
+        "desc": "가입하신 이메일 주소를 입력해주세요.",
+        "submit": "인증코드 발송",
+        "submitting": "발송 중..."
+      },
+      "verifyStep": {
+        "title": "인증코드 확인",
+        "desc": "{{email}}로 발송된 6자리 코드를 입력해주세요.",
+        "codeLabel": "인증코드",
+        "codePlaceholder": "6자리 코드 입력",
+        "codeHint": "코드는 5분간 유효합니다.",
+        "submit": "인증코드 확인",
+        "submitting": "확인 중...",
+        "back": "이메일 다시 입력"
+      },
+      "resetStep": {
+        "title": "새 비밀번호 설정",
+        "desc": "새로 사용할 비밀번호를 입력해주세요.",
+        "newPasswordLabel": "새 비밀번호",
+        "newPasswordPlaceholder": "새 비밀번호 (8자 이상)",
+        "confirmLabel": "새 비밀번호 확인",
+        "confirmPlaceholder": "비밀번호 재입력",
+        "submit": "비밀번호 변경",
+        "submitting": "변경 중..."
+      },
+      "errors": {
+        "sendCode": "인증코드 발송에 실패했습니다.",
+        "verifyCode": "인증코드가 올바르지 않습니다.",
+        "resetPassword": "비밀번호 재설정에 실패했습니다.",
+        "passwordMismatch": "비밀번호가 일치하지 않습니다.",
+        "passwordTooShort": "비밀번호는 8자 이상이어야 합니다."
+      },
+      "backToLogin": "로그인으로 돌아가기"
+    },
+    "oauth": {
+      "processing": "로그인 처리 중...",
+      "error": "소셜 로그인 실패"
+    },
+    "onboarding": {
+      "stepOf": "STEP {{current}} OF {{total}}",
+      "skip": "건너뛰기",
+      "skipLater": "나중에 설정하기",
+      "welcome": {
+        "title": "KoALa에 오신 것을 환영합니다",
+        "desc": "사용자님께 꼭 맞는 한국 예술 경험을 위해 몇 가지만 설정해볼까요? 1분이면 충분합니다.",
+        "start": "시작하기"
+      },
+      "nickname": {
+        "title": "닉네임을 정해주세요",
+        "desc": "커뮤니티와 서비스 내에서 사용될 이름입니다.",
+        "label": "닉네임",
+        "placeholder": "닉네임을 입력하세요",
+        "hint": "2~20자 이내, 한글/영문/숫자만 사용 가능합니다.",
+        "next": "다음 단계로",
+        "validation": "닉네임을 입력해 주세요."
+      },
+      "address": {
+        "title": "배송지 미리 등록",
+        "desc": "빠른 결제를 위해 배송 정보를 미리 등록할 수 있습니다. (건너뛰기 가능)",
+        "fullName": "수령인 성함",
+        "phone": "연락처 (- 제외)",
+        "zipCode": "우편번호",
+        "city": "도시 (예: 서울특별시)",
+        "address1": "도로명 주소",
+        "address2": "상세 주소 (아파트, 동/호수 등)",
+        "later": "나중에 하기",
+        "save": "저장하고 계속하기"
+      },
+      "preferences": {
+        "title": "어떤 작품을 좋아하시나요?",
+        "desc": "관심사를 선택해주시면 취향에 맞는 작품을 추천해드려요.",
+        "items": {
+          "artworks": { "label": "원화 및 조형물", "desc": "회화, 판화 등 고유한 예술 작품" },
+          "designToys": { "label": "디자이너 토이", "desc": "한정판 아트 피규어 및 컬렉터블" },
+          "limitedEditions": { "label": "리미티드 에디션", "desc": "넘버링이 포함된 독점 출시작" },
+          "collaborations": { "label": "아티스트 콜라보", "desc": "브랜드와 작가의 특별 협업 제품" }
+        },
+        "skip": "건너뛰기",
+        "next": "계속하기"
+      },
+      "notifications": {
+        "title": "소식을 받아보시겠어요?",
+        "desc": "놓치면 아쉬운 작품 소식들을 가장 먼저 보내드려요.",
+        "items": {
+          "newReleases": { "label": "신규 출시 소식", "desc": "새로운 작품과 한정판 드랍 소식" },
+          "priceDrops": { "label": "가격 변동 알림", "desc": "찜한 아이템의 할인 정보" },
+          "newsletter": { "label": "뉴스레터", "desc": "매주 발행되는 작가 인터뷰 및 큐레이션" }
+        },
+        "start": "시작하기",
+        "changeAnytime": "계정 설정에서 언제든지 변경할 수 있습니다."
+      }
+    }
   }
 }

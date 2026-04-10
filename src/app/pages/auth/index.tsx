@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router';
 import { Mail, Lock, User } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import Navigation from '@/app/components/layouts/Header';
 import { login, signup, loginWithKakao, loginWithNaver } from '@/api/auth';
 
 export default function Auth() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -40,12 +42,12 @@ export default function Auth() {
       const { accessToken, refreshToken } = res.data.data;
       localStorage.setItem('accessToken', accessToken);
       localStorage.setItem('refreshToken', refreshToken);
-      setLoginSuccess('로그인이 완료되었습니다. 홈으로 이동합니다.');
+      setLoginSuccess(t('auth.login.success'));
       setTimeout(() => {
         navigate('/');
       }, 0);
     } catch (err: any) {
-      setLoginError(err.response?.data?.message || '로그인에 실패했습니다.');
+      setLoginError(err.response?.data?.message || t('auth.login.error'));
     } finally {
       setLoginLoading(false);
     }
@@ -57,15 +59,15 @@ export default function Auth() {
     setSignupError('');
     setSignupSuccess('');
     if (signupPassword !== signupConfirm) {
-      setSignupError('비밀번호가 일치하지 않습니다.');
+      setSignupError(t('auth.validation.passwordMismatch'));
       return;
     }
     if (signupPassword.length < 8) {
-      setSignupError('비밀번호는 8자 이상이어야 합니다.');
+      setSignupError(t('auth.validation.passwordTooShort'));
       return;
     }
     if (!signupAgreed) {
-      setSignupError('이용약관에 동의해주세요.');
+      setSignupError(t('auth.validation.termsRequired'));
       return;
     }
     setSignupLoading(true);
@@ -79,12 +81,12 @@ export default function Auth() {
       const { accessToken, refreshToken } = res.data.data;
       localStorage.setItem('accessToken', accessToken);
       localStorage.setItem('refreshToken', refreshToken);
-      setSignupSuccess('회원가입이 완료되었습니다. 로그인 화면으로 이동합니다.');
+      setSignupSuccess(t('auth.signup.success'));
       setTimeout(() => {
         navigate('/login');
       }, 0);
     } catch (err: any) {
-      setSignupError(err.response?.data?.message || '회원가입에 실패했습니다.');
+      setSignupError(err.response?.data?.message || t('auth.signup.error'));
     } finally {
       setSignupLoading(false);
     }
@@ -106,7 +108,7 @@ export default function Auth() {
                 : 'text-gray-400 hover:text-black'
                 }`}
             >
-              Sign In
+              {t('auth.tabs.signIn')}
             </button>
             <button
               onClick={() => setIsSignup(true)}
@@ -115,19 +117,17 @@ export default function Auth() {
                 : 'text-gray-400 hover:text-black'
                 }`}
             >
-              Sign Up
+              {t('auth.tabs.signUp')}
             </button>
           </div>
 
           {/* 헤더 */}
           <div className="text-center mb-8">
             <h1 className="text-3xl tracking-tight mb-3 transition-all duration-300">
-              {isSignup ? 'Create Account' : 'Welcome Back'}
+              {isSignup ? t('auth.signup.title') : t('auth.login.title')}
             </h1>
             <p className="text-sm text-gray-400">
-              {isSignup
-                ? 'Join the Korean Art Laboratory'
-                : 'Sign in to your KoALa account'}
+              {isSignup ? t('auth.signup.subtitle') : t('auth.login.subtitle')}
             </p>
           </div>
 
@@ -150,12 +150,12 @@ export default function Auth() {
                 )}
 
                 <div>
-                  <label className="block text-sm mb-2 text-gray-700">Email Address</label>
+                  <label className="block text-sm mb-2 text-gray-700">{t('auth.common.emailLabel')}</label>
                   <div className="relative">
                     <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                     <input
                       type="email"
-                      placeholder="your@email.com"
+                      placeholder={t('auth.common.emailPlaceholder')}
                       value={loginEmail}
                       onChange={(e) => setLoginEmail(e.target.value)}
                       required
@@ -165,12 +165,12 @@ export default function Auth() {
                 </div>
 
                 <div>
-                  <label className="block text-sm mb-2 text-gray-700">Password</label>
+                  <label className="block text-sm mb-2 text-gray-700">{t('auth.common.passwordLabel')}</label>
                   <div className="relative">
                     <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                     <input
                       type="password"
-                      placeholder="Enter your password"
+                      placeholder={t('auth.common.passwordPlaceholder')}
                       value={loginPassword}
                       onChange={(e) => setLoginPassword(e.target.value)}
                       required
@@ -182,13 +182,13 @@ export default function Auth() {
                 <div className="flex items-center justify-between text-sm">
                   <label className="flex items-center gap-2 cursor-pointer">
                     <input type="checkbox" className="w-4 h-4 rounded border-gray-300" />
-                    <span className="text-gray-600">Remember me</span>
+                    <span className="text-gray-600">{t('auth.common.rememberMe')}</span>
                   </label>
                   <Link
                     to="/forgot-password"
                     className="text-gray-400 hover:text-black transition-colors"
                   >
-                    Forgot password?
+                    {t('auth.common.forgotPassword')}
                   </Link>
                 </div>
 
@@ -197,7 +197,7 @@ export default function Auth() {
                   disabled={loginLoading}
                   className="w-full py-3 bg-black text-white rounded-xl hover:bg-gray-900 transition-colors disabled:opacity-50"
                 >
-                  {loginLoading ? 'Signing in...' : 'Sign In'}
+                  {loginLoading ? t('auth.login.submitting') : t('auth.login.submit')}
                 </button>
               </form>
             )}
@@ -218,12 +218,12 @@ export default function Auth() {
                 )}
 
                 <div>
-                  <label className="block text-sm mb-2 text-gray-700">Full Name</label>
+                  <label className="block text-sm mb-2 text-gray-700">{t('auth.signup.nameLabel')}</label>
                   <div className="relative">
                     <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                     <input
                       type="text"
-                      placeholder="Enter your name"
+                      placeholder={t('auth.signup.namePlaceholder')}
                       value={signupName}
                       onChange={(e) => setSignupName(e.target.value)}
                       required
@@ -233,12 +233,12 @@ export default function Auth() {
                 </div>
 
                 <div>
-                  <label className="block text-sm mb-2 text-gray-700">Email Address</label>
+                  <label className="block text-sm mb-2 text-gray-700">{t('auth.common.emailLabel')}</label>
                   <div className="relative">
                     <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                     <input
                       type="email"
-                      placeholder="your@email.com"
+                      placeholder={t('auth.common.emailPlaceholder')}
                       value={signupEmail}
                       onChange={(e) => setSignupEmail(e.target.value)}
                       required
@@ -248,11 +248,11 @@ export default function Auth() {
                 </div>
 
                 <div>
-                  <label className="block text-sm mb-2 text-gray-700">Phone Number</label>
+                  <label className="block text-sm mb-2 text-gray-700">{t('auth.signup.phoneLabel')}</label>
                   <div className="relative">
                     <input
                       type="tel"
-                      placeholder="010-1234-5678"
+                      placeholder={t('auth.signup.phonePlaceholder')}
                       value={signupPhone}
                       onChange={(e) => setSignupPhone(e.target.value)}
                       required
@@ -262,12 +262,12 @@ export default function Auth() {
                 </div>
 
                 <div>
-                  <label className="block text-sm mb-2 text-gray-700">Password</label>
+                  <label className="block text-sm mb-2 text-gray-700">{t('auth.common.passwordLabel')}</label>
                   <div className="relative">
                     <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                     <input
                       type="password"
-                      placeholder="Create a password (8자 이상)"
+                      placeholder={t('auth.signup.passwordPlaceholderCombined')}
                       value={signupPassword}
                       onChange={(e) => setSignupPassword(e.target.value)}
                       required
@@ -277,12 +277,12 @@ export default function Auth() {
                 </div>
 
                 <div>
-                  <label className="block text-sm mb-2 text-gray-700">Confirm Password</label>
+                  <label className="block text-sm mb-2 text-gray-700">{t('auth.signup.confirmPasswordLabel')}</label>
                   <div className="relative">
                     <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                     <input
                       type="password"
-                      placeholder="Confirm your password"
+                      placeholder={t('auth.signup.confirmPasswordPlaceholder')}
                       value={signupConfirm}
                       onChange={(e) => setSignupConfirm(e.target.value)}
                       required
@@ -299,10 +299,10 @@ export default function Auth() {
                     className="w-4 h-4 mt-0.5 rounded border-gray-300"
                   />
                   <span className="text-xs text-gray-600 leading-relaxed">
-                    I agree to the{' '}
-                    <Link to="/terms" className="text-black hover:underline">Terms of Service</Link>
-                    {' '}and{' '}
-                    <Link to="/privacy" className="text-black hover:underline">Privacy Policy</Link>
+                    {t('auth.common.termsAgree')}{' '}
+                    <Link to="/terms" className="text-black hover:underline">{t('auth.common.termsLink')}</Link>
+                    {' '}{t('auth.common.termsAnd')}{' '}
+                    <Link to="/privacy" className="text-black hover:underline">{t('auth.common.privacyLink')}</Link>
                   </span>
                 </label>
 
@@ -311,7 +311,7 @@ export default function Auth() {
                   disabled={signupLoading}
                   className="w-full py-3 bg-black text-white rounded-xl hover:bg-gray-900 transition-colors disabled:opacity-50"
                 >
-                  {signupLoading ? 'Creating Account...' : 'Create Account'}
+                  {signupLoading ? t('auth.signup.submitting') : t('auth.signup.submit')}
                 </button>
               </form>
             )}
@@ -322,7 +322,7 @@ export default function Auth() {
                 <div className="w-full border-t border-gray-100" />
               </div>
               <div className="relative flex justify-center text-xs">
-                <span className="px-4 bg-white text-gray-400">OR CONTINUE WITH</span>
+                <span className="px-4 bg-white text-gray-400">{t('auth.common.orContinueWith')}</span>
               </div>
             </div>
 
@@ -332,14 +332,18 @@ export default function Auth() {
                 onClick={() => loginWithKakao()}
                 className="w-full flex items-center justify-center gap-3 py-3 bg-[#FEE500] rounded-xl hover:bg-[#FDD800] transition-colors"
               >
-                <span className="text-sm font-medium text-black">카카오로 계속하기</span>
+                <span className="text-sm font-medium text-black">
+                  {isSignup ? t('auth.signup.kakaoAlt') : t('auth.login.kakaoAlt')}
+                </span>
               </button>
               <button
                 type="button"
                 onClick={() => loginWithNaver()}
                 className="w-full flex items-center justify-center gap-3 py-3 bg-[#03C75A] rounded-xl hover:bg-[#02b350] transition-colors"
               >
-                <span className="text-sm font-medium text-white">네이버로 계속하기</span>
+                <span className="text-sm font-medium text-white">
+                  {isSignup ? t('auth.signup.naverAlt') : t('auth.login.naverAlt')}
+                </span>
               </button>
             </div>
           </div>
@@ -349,22 +353,22 @@ export default function Auth() {
             <p className="text-sm text-gray-400">
               {isSignup ? (
                 <>
-                  Already have an account?{' '}
+                  {t('auth.signup.hasAccount')}{' '}
                   <button
                     onClick={() => setIsSignup(false)}
                     className="text-black hover:underline font-medium"
                   >
-                    Sign in
+                    {t('auth.signup.signInLink')}
                   </button>
                 </>
               ) : (
                 <>
-                  Don't have an account?{' '}
+                  {t('auth.login.noAccount')}{' '}
                   <button
                     onClick={() => setIsSignup(true)}
                     className="text-black hover:underline font-medium"
                   >
-                    Sign up
+                    {t('auth.login.signUpLink')}
                   </button>
                 </>
               )}

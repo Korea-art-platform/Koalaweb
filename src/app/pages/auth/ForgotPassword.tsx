@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router';
 import { Mail, Lock, KeyRound } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import Navigation from '@/app/components/layouts/Header';
 import {
   sendPasswordResetCode,
@@ -11,6 +12,7 @@ import {
 type Step = 'email' | 'verify' | 'reset';
 
 export default function ForgotPassword() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [step, setStep] = useState<Step>('email');
   const [email, setEmail] = useState('');
@@ -29,7 +31,7 @@ export default function ForgotPassword() {
       await sendPasswordResetCode(email);
       setStep('verify');
     } catch (err: any) {
-      setError(err.response?.data?.message || '인증코드 발송에 실패했습니다.');
+      setError(err.response?.data?.message || t('auth.forgotPassword.errors.sendCode'));
     } finally {
       setLoading(false);
     }
@@ -44,7 +46,7 @@ export default function ForgotPassword() {
       await verifyPasswordResetCode(email, code);
       setStep('reset');
     } catch (err: any) {
-      setError(err.response?.data?.message || '인증코드가 올바르지 않습니다.');
+      setError(err.response?.data?.message || t('auth.forgotPassword.errors.verifyCode'));
     } finally {
       setLoading(false);
     }
@@ -55,11 +57,11 @@ export default function ForgotPassword() {
     e.preventDefault();
     setError('');
     if (newPassword !== confirmPassword) {
-      setError('비밀번호가 일치하지 않습니다.');
+      setError(t('auth.forgotPassword.errors.passwordMismatch'));
       return;
     }
     if (newPassword.length < 8) {
-      setError('비밀번호는 8자 이상이어야 합니다.');
+      setError(t('auth.forgotPassword.errors.passwordTooShort'));
       return;
     }
     setLoading(true);
@@ -67,22 +69,22 @@ export default function ForgotPassword() {
       await resetPassword(email, code, newPassword);
       navigate('/login');
     } catch (err: any) {
-      setError(err.response?.data?.message || '비밀번호 재설정에 실패했습니다.');
+      setError(err.response?.data?.message || t('auth.forgotPassword.errors.resetPassword'));
     } finally {
       setLoading(false);
     }
   };
 
   const stepTitle: Record<Step, string> = {
-    email: '비밀번호 찾기',
-    verify: '인증코드 확인',
-    reset: '새 비밀번호 설정',
+    email: t('auth.forgotPassword.emailStep.title'),
+    verify: t('auth.forgotPassword.verifyStep.title'),
+    reset: t('auth.forgotPassword.resetStep.title'),
   };
 
   const stepDesc: Record<Step, string> = {
-    email: '가입하신 이메일 주소를 입력해주세요.',
-    verify: `${email}로 발송된 6자리 코드를 입력해주세요.`,
-    reset: '새로 사용할 비밀번호를 입력해주세요.',
+    email: t('auth.forgotPassword.emailStep.desc'),
+    verify: t('auth.forgotPassword.verifyStep.desc', { email }),
+    reset: t('auth.forgotPassword.resetStep.desc'),
   };
 
   return (
@@ -110,13 +112,13 @@ export default function ForgotPassword() {
               <form className="space-y-6" onSubmit={handleSendCode}>
                 <div>
                   <label className="block text-sm mb-2 text-gray-700">
-                    Email Address
+                    {t('auth.common.emailLabel')}
                   </label>
                   <div className="relative">
                     <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                     <input
                       type="email"
-                      placeholder="your@email.com"
+                      placeholder={t('auth.common.emailPlaceholder')}
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       required
@@ -129,7 +131,9 @@ export default function ForgotPassword() {
                   disabled={loading}
                   className="w-full py-3 bg-black text-white rounded-xl hover:bg-gray-900 transition-colors disabled:opacity-50"
                 >
-                  {loading ? '발송 중...' : '인증코드 발송'}
+                  {loading
+                    ? t('auth.forgotPassword.emailStep.submitting')
+                    : t('auth.forgotPassword.emailStep.submit')}
                 </button>
               </form>
             )}
@@ -139,13 +143,13 @@ export default function ForgotPassword() {
               <form className="space-y-6" onSubmit={handleVerifyCode}>
                 <div>
                   <label className="block text-sm mb-2 text-gray-700">
-                    인증코드
+                    {t('auth.forgotPassword.verifyStep.codeLabel')}
                   </label>
                   <div className="relative">
                     <KeyRound className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                     <input
                       type="text"
-                      placeholder="6자리 코드 입력"
+                      placeholder={t('auth.forgotPassword.verifyStep.codePlaceholder')}
                       value={code}
                       onChange={(e) => setCode(e.target.value)}
                       maxLength={6}
@@ -154,7 +158,7 @@ export default function ForgotPassword() {
                     />
                   </div>
                   <p className="text-xs text-gray-400 mt-2">
-                    코드는 5분간 유효합니다.
+                    {t('auth.forgotPassword.verifyStep.codeHint')}
                   </p>
                 </div>
                 <button
@@ -162,14 +166,16 @@ export default function ForgotPassword() {
                   disabled={loading}
                   className="w-full py-3 bg-black text-white rounded-xl hover:bg-gray-900 transition-colors disabled:opacity-50"
                 >
-                  {loading ? '확인 중...' : '인증코드 확인'}
+                  {loading
+                    ? t('auth.forgotPassword.verifyStep.submitting')
+                    : t('auth.forgotPassword.verifyStep.submit')}
                 </button>
                 <button
                   type="button"
                   onClick={() => { setStep('email'); setError(''); }}
                   className="w-full py-3 text-sm text-gray-400 hover:text-black transition-colors"
                 >
-                  이메일 다시 입력
+                  {t('auth.forgotPassword.verifyStep.back')}
                 </button>
               </form>
             )}
@@ -179,13 +185,13 @@ export default function ForgotPassword() {
               <form className="space-y-6" onSubmit={handleResetPassword}>
                 <div>
                   <label className="block text-sm mb-2 text-gray-700">
-                    새 비밀번호
+                    {t('auth.forgotPassword.resetStep.newPasswordLabel')}
                   </label>
                   <div className="relative">
                     <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                     <input
                       type="password"
-                      placeholder="새 비밀번호 (8자 이상)"
+                      placeholder={t('auth.forgotPassword.resetStep.newPasswordPlaceholder')}
                       value={newPassword}
                       onChange={(e) => setNewPassword(e.target.value)}
                       required
@@ -195,13 +201,13 @@ export default function ForgotPassword() {
                 </div>
                 <div>
                   <label className="block text-sm mb-2 text-gray-700">
-                    새 비밀번호 확인
+                    {t('auth.forgotPassword.resetStep.confirmLabel')}
                   </label>
                   <div className="relative">
                     <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                     <input
                       type="password"
-                      placeholder="비밀번호 재입력"
+                      placeholder={t('auth.forgotPassword.resetStep.confirmPlaceholder')}
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
                       required
@@ -214,7 +220,9 @@ export default function ForgotPassword() {
                   disabled={loading}
                   className="w-full py-3 bg-black text-white rounded-xl hover:bg-gray-900 transition-colors disabled:opacity-50"
                 >
-                  {loading ? '변경 중...' : '비밀번호 변경'}
+                  {loading
+                    ? t('auth.forgotPassword.resetStep.submitting')
+                    : t('auth.forgotPassword.resetStep.submit')}
                 </button>
               </form>
             )}
@@ -222,7 +230,7 @@ export default function ForgotPassword() {
 
           <div className="text-center mt-6">
             <Link to="/login" className="text-sm text-gray-400 hover:text-black transition-colors">
-              로그인으로 돌아가기
+              {t('auth.forgotPassword.backToLogin')}
             </Link>
           </div>
         </div>

@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router';
 import { Mail, Lock, User } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import Navigation from '@/app/components/layouts/Header';
 import { signup, loginWithKakao, loginWithNaver } from '@/api/auth';
 
 export default function Signup() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -21,30 +23,29 @@ export default function Signup() {
     setError('');
     setSuccess('');
 
-    // 유효성 검사
     if (password !== confirmPassword) {
-      setError('비밀번호가 일치하지 않습니다.');
+      setError(t('auth.validation.passwordMismatch'));
       return;
     }
     if (password.length < 8) {
-      setError('비밀번호는 8자 이상이어야 합니다.');
+      setError(t('auth.validation.passwordTooShort'));
       return;
     }
     if (!agreed) {
-      setError('이용약관에 동의해주세요.');
+      setError(t('auth.validation.termsRequired'));
       return;
     }
 
     setLoading(true);
     try {
       await signup({ name, email, phone, password });
-      setSuccess('회원가입이 완료되었습니다. 로그인 화면으로 이동합니다.');
+      setSuccess(t('auth.signup.success'));
 
       setTimeout(() => {
         navigate('/login');
       }, 1500);
     } catch (err: any) {
-      setError(err.response?.data?.message || '회원가입에 실패했습니다.');
+      setError(err.response?.data?.message || t('auth.signup.error'));
     } finally {
       setLoading(false);
     }
@@ -61,9 +62,9 @@ export default function Signup() {
         <div className="max-w-md mx-auto">
           {/* Header */}
           <div className="text-center mb-12">
-            <h1 className="text-3xl tracking-tight mb-3">Create Account</h1>
+            <h1 className="text-3xl tracking-tight mb-3">{t('auth.signup.title')}</h1>
             <p className="text-sm text-gray-400">
-              Join the Korean Art Laboratory
+              {t('auth.signup.subtitle')}
             </p>
           </div>
 
@@ -88,13 +89,13 @@ export default function Signup() {
               {/* Name Field */}
               <div>
                 <label className="block text-sm mb-2 text-gray-700">
-                  Full Name
+                  {t('auth.signup.nameLabel')}
                 </label>
                 <div className="relative">
                   <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                   <input
                     type="text"
-                    placeholder="Enter your name"
+                    placeholder={t('auth.signup.namePlaceholder')}
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     required
@@ -106,13 +107,13 @@ export default function Signup() {
               {/* Email Field */}
               <div>
                 <label className="block text-sm mb-2 text-gray-700">
-                  Email Address
+                  {t('auth.common.emailLabel')}
                 </label>
                 <div className="relative">
                   <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                   <input
                     type="email"
-                    placeholder="your@email.com"
+                    placeholder={t('auth.common.emailPlaceholder')}
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
@@ -124,12 +125,12 @@ export default function Signup() {
               {/* Phone Field */}
               <div>
                 <label className="block text-sm mb-2 text-gray-700">
-                  Phone Number
+                  {t('auth.signup.phoneLabel')}
                 </label>
                 <div className="relative">
                   <input
                     type="tel"
-                    placeholder="010-1234-5678"
+                    placeholder={t('auth.signup.phonePlaceholder')}
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                     required
@@ -141,13 +142,13 @@ export default function Signup() {
               {/* Password Field */}
               <div>
                 <label className="block text-sm mb-2 text-gray-700">
-                  Password
+                  {t('auth.common.passwordLabel')}
                 </label>
                 <div className="relative">
                   <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                   <input
                     type="password"
-                    placeholder="Create a password"
+                    placeholder={t('auth.signup.passwordPlaceholderCreate')}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
@@ -155,20 +156,20 @@ export default function Signup() {
                   />
                 </div>
                 <p className="text-xs text-gray-400 mt-2">
-                  Must be at least 8 characters
+                  {t('auth.signup.passwordHint')}
                 </p>
               </div>
 
               {/* Confirm Password Field */}
               <div>
                 <label className="block text-sm mb-2 text-gray-700">
-                  Confirm Password
+                  {t('auth.signup.confirmPasswordLabel')}
                 </label>
                 <div className="relative">
                   <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                   <input
                     type="password"
-                    placeholder="Confirm your password"
+                    placeholder={t('auth.signup.confirmPasswordPlaceholder')}
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     required
@@ -187,13 +188,13 @@ export default function Signup() {
                     className="w-4 h-4 mt-0.5 rounded border-gray-300"
                   />
                   <span className="text-xs text-gray-600 leading-relaxed">
-                    I agree to the{' '}
+                    {t('auth.common.termsAgree')}{' '}
                     <Link to="/terms" className="text-black hover:underline">
-                      Terms of Service
+                      {t('auth.common.termsLink')}
                     </Link>
-                    {' '}and{' '}
+                    {' '}{t('auth.common.termsAnd')}{' '}
                     <Link to="/privacy" className="text-black hover:underline">
-                      Privacy Policy
+                      {t('auth.common.privacyLink')}
                     </Link>
                   </span>
                 </label>
@@ -205,7 +206,7 @@ export default function Signup() {
                 disabled={loading}
                 className="w-full py-3 bg-black text-white rounded-xl hover:bg-gray-900 transition-colors disabled:opacity-50"
               >
-                {loading ? 'Creating Account...' : 'Create Account'}
+                {loading ? t('auth.signup.submitting') : t('auth.signup.submit')}
               </button>
             </form>
 
@@ -216,7 +217,7 @@ export default function Signup() {
               </div>
               <div className="relative flex justify-center text-xs">
                 <span className="px-4 bg-white text-gray-400">
-                  OR CONTINUE WITH
+                  {t('auth.common.orContinueWith')}
                 </span>
               </div>
             </div>
@@ -229,7 +230,7 @@ export default function Signup() {
                 className="w-full flex items-center justify-center gap-3 py-3 bg-[#FEE500] rounded-xl hover:bg-[#FDD800] transition-colors"
               >
                 <span className="text-sm font-medium text-black">
-                  카카오로 시작하기
+                  {t('auth.signup.kakao')}
                 </span>
               </button>
               <button
@@ -238,7 +239,7 @@ export default function Signup() {
                 className="w-full flex items-center justify-center gap-3 py-3 bg-[#03C75A] rounded-xl hover:bg-[#02b350] transition-colors"
               >
                 <span className="text-sm font-medium text-white">
-                  네이버로 시작하기
+                  {t('auth.signup.naver')}
                 </span>
               </button>
             </div>
@@ -247,9 +248,9 @@ export default function Signup() {
           {/* Sign In Link */}
           <div className="text-center mt-6">
             <p className="text-sm text-gray-400">
-              Already have an account?{' '}
+              {t('auth.signup.hasAccount')}{' '}
               <Link to="/login" className="text-black hover:underline">
-                Sign in
+                {t('auth.signup.signInLink')}
               </Link>
             </p>
           </div>
