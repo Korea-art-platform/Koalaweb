@@ -148,15 +148,15 @@
       "title": "등록된 아티스트가 없습니다."
     }
   },
-  "account":{
-    "sidebar":{
-      "profile":"프로필 설정",
-      "order":"주문 내역",
-      "address":"배송지 관리",
+  "account": {
+    "sidebar": {
+      "profile": "프로필 설정",
+      "order": "주문 내역",
+      "address": "배송지 관리",
       "payment": "결제 수단",
       "wishlist": "위시리스트",
       "logout": "로그아웃",
-      "defaultUsere":"사용자",
+      "defaultUsere": "사용자",
       "greeting": "{{name}}님"
     }
   },
@@ -312,6 +312,44 @@
         },
         "start": "시작하기",
         "changeAnytime": "계정 설정에서 언제든지 변경할 수 있습니다."
+      }
+    }
+  },
+  "product": {
+    "detail": {
+      "back": "뒤로가기",
+      "notFound": {
+        "title": "상품 정보를 찾을 수 없습니다.",
+        "backToStore": "스토어로 돌아가기"
+      },
+      "toast": {
+        "cartAdded": "장바구니에 담겼습니다.",
+        "cartAddFailed": "장바구니 담기 실패",
+        "wishlistRemoved": "위시리스트에서 삭제됐습니다.",
+        "wishlistAdded": "위시리스트에 추가됐습니다.",
+        "error": "오류가 발생했습니다.",
+        "goToCart": "장바구니로 이동하여 결제하기"
+      },
+      "gallery": {
+        "limitedEdition": "Limited Edition",
+        "status": {
+          "active": "Available",
+          "outOfStock": "Sold Out"
+        }
+      },
+      "info": {
+        "priceOnRequest": "Price on Request",
+        "by": "by",
+        "authentic": "진품 보증",
+        "globalShipping": "전 세계 배송 가능",
+        "edition": "{{current}} / {{total}} Edition",
+        "size": "크기",
+        "weight": "무게"
+      },
+      "actions": {
+        "outOfStock": "품절",
+        "addingToCart": "담는 중...",
+        "addToCart": "장바구니 담기"
       }
     }
   }
