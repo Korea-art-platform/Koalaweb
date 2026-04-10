@@ -20,7 +20,6 @@
     "noUnusedParameters": false,
     "noFallthroughCasesInSwitch": true,
     "allowJs": true,
-    /* 💡 최신 방식: baseUrl은 지우고, paths에 './' 를 붙여줍니다! */
     "paths": {
       "@/*": ["./src/*"]
     }
