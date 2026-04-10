@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router';
 import { Mail, Lock } from 'lucide-react';
-import Navigation from '../../components/layouts/Header';
-import { login, loginWithKakao, loginWithNaver } from '../../../api/auth';
+import { useTranslation } from 'react-i18next';
+import Navigation from '@/app/components/layouts/Header';
+import { login, loginWithKakao, loginWithNaver } from '@/api/auth';
 
 export default function Login() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -25,13 +27,13 @@ export default function Login() {
       localStorage.setItem('accessToken', accessToken);
       localStorage.setItem('refreshToken', refreshToken);
 
-      setSuccess('로그인이 완료되었습니다. 홈으로 이동합니다.');
+      setSuccess(t('auth.login.success'));
 
       setTimeout(() => {
         navigate('/');
       }, 1500);
     } catch (err: any) {
-      setError(err.response?.data?.message || '로그인에 실패했습니다.');
+      setError(err.response?.data?.message || t('auth.login.error'));
     } finally {
       setLoading(false);
     }
@@ -48,9 +50,9 @@ export default function Login() {
         <div className="max-w-md mx-auto">
           {/* Header */}
           <div className="text-center mb-12">
-            <h1 className="text-3xl tracking-tight mb-3">Welcome Back</h1>
+            <h1 className="text-3xl tracking-tight mb-3">{t('auth.login.title')}</h1>
             <p className="text-sm text-gray-400">
-              Sign in to your KoALa account
+              {t('auth.login.subtitle')}
             </p>
           </div>
 
@@ -75,13 +77,13 @@ export default function Login() {
               {/* Email Field */}
               <div>
                 <label className="block text-sm mb-2 text-gray-700">
-                  Email Address
+                  {t('auth.common.emailLabel')}
                 </label>
                 <div className="relative">
                   <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                   <input
                     type="email"
-                    placeholder="your@email.com"
+                    placeholder={t('auth.common.emailPlaceholder')}
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
@@ -93,13 +95,13 @@ export default function Login() {
               {/* Password Field */}
               <div>
                 <label className="block text-sm mb-2 text-gray-700">
-                  Password
+                  {t('auth.common.passwordLabel')}
                 </label>
                 <div className="relative">
                   <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                   <input
                     type="password"
-                    placeholder="Enter your password"
+                    placeholder={t('auth.common.passwordPlaceholder')}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
@@ -115,13 +117,13 @@ export default function Login() {
                     type="checkbox"
                     className="w-4 h-4 rounded border-gray-300"
                   />
-                  <span className="text-gray-600">Remember me</span>
+                  <span className="text-gray-600">{t('auth.common.rememberMe')}</span>
                 </label>
                 <Link
                   to="/forgot-password"
                   className="text-gray-400 hover:text-black transition-colors"
                 >
-                  Forgot password?
+                  {t('auth.common.forgotPassword')}
                 </Link>
               </div>
 
@@ -131,7 +133,7 @@ export default function Login() {
                 disabled={loading}
                 className="w-full py-3 bg-black text-white rounded-xl hover:bg-gray-900 transition-colors disabled:opacity-50"
               >
-                {loading ? 'Signing in...' : 'Sign In'}
+                {loading ? t('auth.login.submitting') : t('auth.login.submit')}
               </button>
             </form>
 
@@ -142,7 +144,7 @@ export default function Login() {
               </div>
               <div className="relative flex justify-center text-xs">
                 <span className="px-4 bg-white text-gray-400">
-                  OR CONTINUE WITH
+                  {t('auth.common.orContinueWith')}
                 </span>
               </div>
             </div>
@@ -154,7 +156,7 @@ export default function Login() {
                 className="w-full flex items-center justify-center gap-3 py-3 bg-[#FEE500] rounded-xl hover:bg-[#FDD800] transition-colors"
               >
                 <span className="text-sm font-medium text-black">
-                  카카오로 로그인
+                  {t('auth.login.kakao')}
                 </span>
               </button>
               <button
@@ -162,7 +164,7 @@ export default function Login() {
                 className="w-full flex items-center justify-center gap-3 py-3 bg-[#03C75A] rounded-xl hover:bg-[#02b350] transition-colors"
               >
                 <span className="text-sm font-medium text-white">
-                  네이버로 로그인
+                  {t('auth.login.naver')}
                 </span>
               </button>
             </div>
@@ -171,9 +173,9 @@ export default function Login() {
           {/* Sign Up Link */}
           <div className="text-center mt-6">
             <p className="text-sm text-gray-400">
-              Don't have an account?{' '}
+              {t('auth.login.noAccount')}{' '}
               <Link to="/signup" className="text-black hover:underline">
-                Sign up
+                {t('auth.login.signUpLink')}
               </Link>
             </p>
           </div>
