@@ -8,8 +8,6 @@ export default function OAuth2Callback() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const accessToken = searchParams.get('accessToken');
-    const refreshToken = searchParams.get('refreshToken');
     const error = searchParams.get('error');
 
     if (error) {
@@ -18,11 +16,9 @@ export default function OAuth2Callback() {
       return;
     }
 
-    if (accessToken && refreshToken) {
-      localStorage.setItem('accessToken', accessToken);
-      localStorage.setItem('refreshToken', refreshToken);
-      navigate('/');
-    }
+    // 백엔드가 HttpOnly 쿠키로 토큰을 이미 설정했으므로
+    // withCredentials: true 인 axios가 자동으로 쿠키를 포함해 요청
+    navigate('/');
   }, []);
 
   return (

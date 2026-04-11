@@ -1,8 +1,8 @@
 export { default as Home } from './Home';
-export { default as ARView } from './ARView';
-export { default as ResellMarket } from './ResellMarket';
+export { default as ARView } from './later/ARView';
+export { default as ResellMarket } from './later/ResellMarket';
 export { default as Search } from './Search';
-export { default as SmartStore } from './SmartStore';
+export { default as SmartStore } from './product/SmartStore';
 export * from './Artist';
 export * from './Exception';
 export * from './order';

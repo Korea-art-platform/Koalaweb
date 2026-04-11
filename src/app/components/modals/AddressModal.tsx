@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { X, Search, Check } from 'lucide-react';
-import { createAddress, updateAddress } from '../../../api/user';
+import { createAddress, updateAddress } from '@/api/user';
 
 interface AddressModalProps {
   isOpen: boolean;

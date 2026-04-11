@@ -1,8 +1,8 @@
 import { Link, useLocation } from 'react-router';
 import { Globe, ShoppingCart, User, Menu, X, Search, ChevronRight } from 'lucide-react';
-import { ViewModeProvider, useViewMode } from '../../context/ViewModeContext';
+import { ViewModeProvider, useViewMode } from '@/app/context/ViewModeContext';
 import { useEffect, useState } from 'react';
-import { getCart } from '../../../api/cart';
+import { getCart } from '@/api/cart';
 import { useTranslation } from 'react-i18next'; // i18n 훅 추가
 
 export function Header() {
@@ -173,11 +173,13 @@ export function Header() {
       </nav>
 
       {/* [MOBILE] 드로어 메뉴 */}
-      <div className={`fixed inset-0 z-[100] bg-white transition-all duration-500 ease-in-out lg:hidden ${isMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible pointer-events-none'}`}>
-        <div className="flex flex-col h-full pt-32 pb-10 px-10 overflow-y-auto">
+      <div className={`fixed top-0 left-0 w-full h-[100dvh] z-[100] bg-white lg:hidden ${isMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible pointer-events-none'}`}
+        style={{ transition: 'opacity 0.5s ease-in-out, visibility 0.5s ease-in-out' }}
+      >
+        <div className="h-full w-full flex flex-col pt-32 pb-12 px-10 overflow-hidden">
 
-          {/* 메뉴 링크 */}
-          <div className="flex flex-col gap-6 md:gap-8">
+          {/* 메뉴 링크 — flex-1 + min-h-0 으로 iOS Safari에서 올바르게 수축 */}
+          <div className="flex-1 min-h-0 flex flex-col gap-6 md:gap-8 overflow-y-auto">
             {menus.map((menu, index) => (
               <Link
                 key={menu.key}
@@ -191,8 +193,8 @@ export function Header() {
             ))}
           </div>
 
-          <div className="mt-auto space-y-8">
-            {/* 하단 마이페이지 & 글로벌 */}
+          {/* 하단 마이페이지 & 글로벌 — flex-shrink-0 으로 항상 보임 */}
+          <div className="flex-shrink-0 mt-8 space-y-8">
             <div className="grid grid-cols-4 gap-3">
               <Link
                 to="/account/orders"

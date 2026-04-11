@@ -3,6 +3,7 @@ import axios from 'axios';
 const instance = axios.create({
     baseURL: import.meta.env.VITE_API_BASE_URL,
     timeout: 10000,
+    withCredentials: true,
     headers: {
         'Content-Type': 'application/json',
     },
@@ -30,15 +31,21 @@ instance.interceptors.response.use(
         if (error.response?.status === 401 && !originalRequest._retry) {
             originalRequest._retry = true;
             try {
+                // localStorage 토큰(일반 로그인)과 HttpOnly 쿠키(소셜 로그인) 모두 지원
                 const refreshToken = localStorage.getItem('refreshToken');
                 const res = await axios.post(
                     `${import.meta.env.VITE_API_BASE_URL}/api/v1/auth/refresh`,
                     null,
-                    { headers: { 'X-Refresh-Token': refreshToken } }
+                    {
+                        withCredentials: true,
+                        ...(refreshToken && { headers: { 'X-Refresh-Token': refreshToken } }),
+                    }
                 );
                 const newAccessToken = res.data.data.accessToken;
-                localStorage.setItem('accessToken', newAccessToken);
-                originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+                if (newAccessToken) {
+                    localStorage.setItem('accessToken', newAccessToken);
+                    originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+                }
                 return instance(originalRequest);
             } catch (e) {
                 // 리프레시 토큰도 만료 → 로그아웃

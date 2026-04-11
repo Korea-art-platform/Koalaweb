@@ -146,17 +146,36 @@
     },
     "emptyState": {
       "title": "등록된 아티스트가 없습니다."
+    },
+    "detail": {
+      "back": "뒤로",
+      "share": "공유",
+      "labels": {
+        "artist": "Artist",
+        "interview": "Interview",
+        "works": "Works"
+      },
+      "titles": {
+        "insideStudio": "Inside the Studio",
+        "gallery": "Gallery"
+      },
+      "emptyDescription": "작가 소개가 없습니다.",
+      "viewWorks": "작품 보러가기",
+      "notFound": {
+        "title": "작가를 찾을 수 없습니다.",
+        "backToList": "목록으로 돌아가기"
+      }
     }
   },
   "account": {
     "sidebar": {
       "profile": "프로필 설정",
-      "order": "주문 내역",
-      "address": "배송지 관리",
+      "orders": "주문 내역",
+      "addresses": "배송지 관리",
       "payment": "결제 수단",
       "wishlist": "위시리스트",
       "logout": "로그아웃",
-      "defaultUsere": "사용자",
+      "defaultUser": "사용자",
       "greeting": "{{name}}님"
     }
   },
@@ -351,6 +370,54 @@
         "addingToCart": "담는 중...",
         "addToCart": "장바구니 담기"
       }
+    }
+  },
+  "search": {
+    "backToHome": "홈으로 돌아가기",
+    "title": "검색",
+    "placeholderGallery": "작품, 작가 검색...",
+    "placeholderShop": "상품, 작가 검색...",
+    "recentSearches": "최근 검색어",
+    "trendingNow": "인기 검색어",
+    "filters": {
+      "all": "전체 결과",
+      "artworks": "작품",
+      "products": "상품",
+      "artists": "작가"
+    },
+    "results": {
+      "showingAll": "\"{{query}}\" 검색 결과",
+      "showingFilter": "\"{{query}}\"에 대한 {{filter}} 결과",
+      "noResultsDesc": "다른 키워드로 검색하거나 컬렉션을 둘러보세요."
+    }
+  },
+  "cart": {
+    "title": "장바구니",
+    "emptyMessage": "장바구니가 비어 있습니다.",
+    "itemCount": "현재 {{count}}개의 상품이 담겨 있습니다.",
+    "clearAll": "전체 삭제",
+    "emptyState": {
+      "title": "장바구니가 비어있습니다.",
+      "description": "당신의 공간을 채울 멋진 작품을 찾아보세요.",
+      "continueShopping": "쇼핑 계속하기"
+    },
+    "item": {
+      "perItem": "개"
+    },
+    "summary": {
+      "title": "주문 요약",
+      "subtotal": "상품 합계",
+      "shipping": "배송비",
+      "freeShipping": "무료 배송",
+      "shippingNotice": "₩50,000 이상 구매 시 무료 배송",
+      "total": "최종 결제 금액",
+      "vatIncluded": "부가가치세 포함",
+      "checkout": "주문 결제하기",
+      "securePayment": "KoALa의 안전 결제 시스템이 적용됩니다"
+    },
+    "alerts": {
+      "removeConfirm": "장바구니에서 해당 상품을 삭제하시겠습니까?",
+      "clearConfirm": "장바구니를 모두 비우시겠습니까?"
     }
   }
 }

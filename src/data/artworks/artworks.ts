@@ -1,4 +1,4 @@
-import type { Artwork } from '../../app/pages/type/artwork';
+import type { Artwork } from '@/app/pages/type/artwork';
 
 export const artworks: Artwork[] = [
   {

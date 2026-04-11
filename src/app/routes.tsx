@@ -1,28 +1,41 @@
 import { Route, Routes } from "react-router";
-import Home from "./pages/Home";
-import ArtistLab from "./pages/Artist/ArtistLab";
-import SmartStore from "./pages/SmartStore";
-import ARView from "./pages/ARView";
-import ResellMarket from "./pages/ResellMarket";
-import ProductDetail from "./pages/product/Detail";
-import ArtistDetail from "./pages/Artist/ArtistDetail";
-import Auth from "./pages/auth/Auth";
-import Onboarding from "./pages/auth/Onboarding";
-import Search from "./pages/Search";
-import Cart from "./pages/order/Cart";
-import Checkout from "./pages/order/Checkout";
-import OrderConfirmation from "./pages/order/Confirmation";
-import CheckoutSuccess from "./pages/order/Success";
-import Account from "./pages/account/index";
-import AccountAddresses from "./pages/account/Addresses";
-import AccountPaymentMethods from "./pages/account/PaymentMethods";
-import AccountOrders from "./pages/account/Orders";
-import Product360View from "./pages/product/View360";
-import OAuth2Callback from "./pages/auth/OAuth2Callback";
-import AccountWishlist from "./pages/account/Wishlist";
-import ForgotPassword from "./pages/auth/ForgotPassword";
-import PaymentSuccess from "./pages/payment/Success";
-import PaymentFail from "./pages/payment/Fail";
+// 루트 페이지
+import Home from "@/app/pages/Home";
+import Search from "@/app/pages/Search";
+import SmartStore from "@/app/pages/product/SmartStore";
+import ARView from "@/app/pages/later/ARView";
+import ResellMarket from "@/app/pages/later/ResellMarket";
+
+// 아티스트
+import ArtistLab from "@/app/pages/Artist/ArtistLab";
+import ArtistDetail from "@/app/pages/Artist/ArtistDetail";
+
+// 상품
+import ProductDetail from "@/app/pages/product/Detail";
+import Product360View from "@/app/pages/product/View360";
+
+// 인증
+import Auth from "@/app/pages/auth/Auth";
+import ForgotPassword from "@/app/pages/auth/ForgotPassword";
+import Onboarding from "@/app/pages/auth/Onboarding";
+import OAuth2Callback from "@/app/pages/auth/OAuth2Callback";
+
+// 주문
+import Cart from "@/app/pages/order/Cart";
+import Checkout from "@/app/pages/order/Checkout";
+import OrderConfirmation from "@/app/pages/order/Confirmation";
+import CheckoutSuccess from "@/app/pages/order/Success";
+
+// 결제
+import PaymentSuccess from "@/app/pages/payment/Success";
+import PaymentFail from "@/app/pages/payment/Fail";
+
+// 마이페이지
+import Account from "@/app/pages/account/index";
+import AccountOrders from "@/app/pages/account/Orders";
+import AccountAddresses from "@/app/pages/account/Addresses";
+import AccountPaymentMethods from "@/app/pages/account/PaymentMethods";
+import AccountWishlist from "@/app/pages/account/Wishlist";
 
 export function AppRoutes() {
   return (
