@@ -38,8 +38,6 @@ export default function SmartStore() {
     fetchSkus();
   }, [page]);
   useEffect(() => {
-    const token = localStorage.getItem('accessToken');
-    if (!token) return;
     getWishlist(0, 100)
       .then((res: any) => {
         const items = res.data?.data?.content ?? [];
@@ -50,11 +48,6 @@ export default function SmartStore() {
   const handleWishlist = async (e: React.MouseEvent, skuCode: string) => {
     e.preventDefault();
     e.stopPropagation();
-    const token = localStorage.getItem('accessToken');
-    if (!token) {
-      navigate('/login');
-      return;
-    }
     if (wishlistLoading.has(skuCode)) return;
     setWishlistLoading((prev) => new Set(prev).add(skuCode));
     try {

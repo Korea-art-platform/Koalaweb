@@ -17,30 +17,12 @@ export function Header() {
   // 1. 장바구니 수량 업데이트 (API 기반)
   const updateCartCount = async () => {
     try {
-      const token = localStorage.getItem('accessToken');
-      if (token) {
-        const res = await getCart();
-        const items = res?.data?.data?.items ?? [];
-        const total = items.reduce((sum: number, item: any) => sum + (item.quantity || 1), 0);
-        setCartCount(total);
-      } else {
-        const savedCart = localStorage.getItem('cart');
-        if (savedCart) {
-          const cartItems = JSON.parse(savedCart);
-          const total = cartItems.reduce((sum: number, item: any) => sum + (item.quantity || 1), 0);
-          setCartCount(total);
-        } else {
-          setCartCount(0);
-        }
-      }
+      const res = await getCart();
+      const items = res?.data?.data?.items ?? [];
+      const total = items.reduce((sum: number, item: any) => sum + (item.quantity || 1), 0);
+      setCartCount(total);
     } catch (e) {
       console.error('장바구니 조회 실패:', e);
-      const savedCart = localStorage.getItem('cart');
-      if (savedCart) {
-        const cartItems = JSON.parse(savedCart);
-        const total = cartItems.reduce((sum: number, item: any) => sum + (item.quantity || 1), 0);
-        setCartCount(total);
-      }
     }
   };
 

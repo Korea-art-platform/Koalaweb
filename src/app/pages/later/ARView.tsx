@@ -44,11 +44,6 @@ export default function ARView() {
 
   const handleAddToCart = async () => {
     if (!sku) return;
-    const token = localStorage.getItem('accessToken');
-    if (!token) {
-      navigate('/login');
-      return;
-    }
     setCartLoading(true);
     try {
       await addCartItem(sku.skuCode, 1);

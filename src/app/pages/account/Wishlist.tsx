@@ -17,11 +17,6 @@ export default function AccountWishlist() {
     const [totalPages, setTotalPages] = useState(0);
 
     useEffect(() => {
-        const token = localStorage.getItem('accessToken');
-        if (!token) {
-            navigate('/login');
-            return;
-        }
         const fetchData = async () => {
             try {
                 const [profileRes, wishlistRes] = await Promise.all([

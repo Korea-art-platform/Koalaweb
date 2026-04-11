@@ -20,10 +20,8 @@ export default function LoginForm() {
     setSuccess('');
     setLoading(true);
     try {
-      const res = await login({ email, password });
-      const { accessToken, refreshToken } = res.data.data;
-      localStorage.setItem('accessToken', accessToken);
-      localStorage.setItem('refreshToken', refreshToken);
+      // 백엔드가 HttpOnly 쿠키로 토큰을 자동 설정 — localStorage 저장 불필요
+      await login({ email, password });
       setSuccess(t('auth.login.success'));
       setTimeout(() => navigate('/'), 0);
     } catch (err: any) {

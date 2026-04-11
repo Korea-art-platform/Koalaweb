@@ -18,11 +18,6 @@ export default function AccountAddresses() {
 
   const fetchData = async () => {
     try {
-      const token = localStorage.getItem('accessToken');
-      if (!token) {
-        navigate('/login');
-        return;
-      }
       const profileRes = await getMyProfile();
       setUser(profileRes?.data?.data);
 

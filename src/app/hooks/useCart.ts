@@ -10,11 +10,6 @@ export function useCart() {
   const [loading, setLoading] = useState(true);
 
   const fetchCart = async () => {
-    const token = localStorage.getItem('accessToken');
-    if (!token) {
-      navigate('/login');
-      return;
-    }
     try {
       const res = await getCart();
       setCart(res.data.data);

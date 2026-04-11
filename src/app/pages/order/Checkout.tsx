@@ -49,12 +49,6 @@ export default function Checkout() {
   });
 
   useEffect(() => {
-    const token = localStorage.getItem('accessToken');
-    if (!token) {
-      navigate('/login');
-      return;
-    }
-
     const fetchData = async () => {
       try {
         // 사용자 프로필 로드

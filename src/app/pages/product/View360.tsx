@@ -133,11 +133,6 @@ export default function Product360View() {
   };
 
   const handleAddToCart = async () => {
-    const token = localStorage.getItem('accessToken');
-    if (!token) {
-      navigate('/login');
-      return;
-    }
     setCartLoading(true);
     try {
       await addCartItem(sku.skuCode, 1);

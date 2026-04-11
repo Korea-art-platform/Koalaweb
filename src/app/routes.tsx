@@ -36,6 +36,7 @@ import AccountOrders from "@/app/pages/account/Orders";
 import AccountAddresses from "@/app/pages/account/Addresses";
 import AccountPaymentMethods from "@/app/pages/account/PaymentMethods";
 import AccountWishlist from "@/app/pages/account/Wishlist";
+import OrderDetail from "@/app/pages/account/OrderDetail";
 
 export function AppRoutes() {
   return (
@@ -77,6 +78,7 @@ export function AppRoutes() {
       {/* ── 마이페이지 ────────────────────────────────── */}
       <Route path="/account" element={<Account />} />                               {/* 프로필 */}
       <Route path="/account/orders" element={<AccountOrders />} />                  {/* 주문 내역 */}
+      <Route path="/account/orders/:orderNo" element={<OrderDetail />} />          {/* 주문 상세 */}
       <Route path="/account/addresses" element={<AccountAddresses />} />            {/* 배송지 관리 */}
       <Route path="/account/payment-methods" element={<AccountPaymentMethods />} /> {/* 결제 수단 */}
       <Route path="/account/wishlist" element={<AccountWishlist />} />              {/* 위시리스트 */}

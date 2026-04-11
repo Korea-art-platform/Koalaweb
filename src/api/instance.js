@@ -1,5 +1,11 @@
 import axios from 'axios';
 
+/**
+ * 인증 전략: HttpOnly 쿠키
+ * - 백엔드가 로그인/회원가입 시 accessToken, refreshToken 을 HttpOnly 쿠키로 설정
+ * - withCredentials: true 로 모든 요청에 쿠키 자동 포함
+ * - localStorage 에 토큰 저장하지 않음 (XSS 취약점 방지)
+ */
 const instance = axios.create({
     baseURL: import.meta.env.VITE_API_BASE_URL,
     timeout: 10000,
@@ -9,49 +15,27 @@ const instance = axios.create({
     },
 });
 
-// 요청 인터셉터 — JWT 토큰 자동 첨부
-instance.interceptors.request.use(
-    (config) => {
-        const token = localStorage.getItem('accessToken');
-        if (token) {
-            config.headers.Authorization = `Bearer ${token}`;
-        }
-        return config;
-    },
-    (error) => Promise.reject(error)
-);
-
-// 응답 인터셉터 — 토큰 만료 처리
+// 응답 인터셉터 — 401 시 토큰 자동 재발급
 instance.interceptors.response.use(
     (response) => response,
     async (error) => {
         const originalRequest = error.config;
 
-        // 401 에러 && 재시도 안 한 경우 → 토큰 재발급
         if (error.response?.status === 401 && !originalRequest._retry) {
             originalRequest._retry = true;
             try {
-                // localStorage 토큰(일반 로그인)과 HttpOnly 쿠키(소셜 로그인) 모두 지원
-                const refreshToken = localStorage.getItem('refreshToken');
-                const res = await axios.post(
+                // refreshToken 쿠키를 withCredentials 로 자동 전송
+                await axios.post(
                     `${import.meta.env.VITE_API_BASE_URL}/api/v1/auth/refresh`,
                     null,
-                    {
-                        withCredentials: true,
-                        ...(refreshToken && { headers: { 'X-Refresh-Token': refreshToken } }),
-                    }
+                    { withCredentials: true }
                 );
-                const newAccessToken = res.data.data.accessToken;
-                if (newAccessToken) {
-                    localStorage.setItem('accessToken', newAccessToken);
-                    originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
-                }
+                // 재발급 성공 → 원래 요청 재시도 (쿠키가 갱신된 상태)
                 return instance(originalRequest);
-            } catch (e) {
-                // 리프레시 토큰도 만료 → 로그아웃
-                localStorage.removeItem('accessToken');
-                localStorage.removeItem('refreshToken');
+            } catch {
+                // 리프레시도 만료 → 로그인 페이지로
                 window.location.href = '/login';
+                return Promise.reject(error);
             }
         }
         return Promise.reject(error);

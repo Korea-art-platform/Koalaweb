@@ -42,10 +42,11 @@ export default function ProductDetail() {
         const res = await getSku(id!);
         setSku(res.data.data);
 
-        const token = localStorage.getItem('accessToken');
-        if (token) {
+        try {
           const wishRes = await checkWishlist(id!);
           setIsWishlisted(wishRes.data.data);
+        } catch {
+          // not authenticated — wishlist state stays false
         }
       } catch (e) {
         console.error('SKU 로딩 실패:', e);
@@ -64,9 +65,6 @@ export default function ProductDetail() {
   };
 
   const handleAddToCart = async () => {
-    const token = localStorage.getItem('accessToken');
-    if (!token) return navigate('/login');
-
     setCartLoading(true);
     try {
       await addCartItem(sku.skuCode, 1);
@@ -80,9 +78,6 @@ export default function ProductDetail() {
   };
 
   const handleWishlist = async () => {
-    const token = localStorage.getItem('accessToken');
-    if (!token) return navigate('/login');
-
     try {
       if (isWishlisted) {
         await removeWishlist(sku.skuCode);

@@ -18,11 +18,6 @@ export default function AccountPaymentMethods() {
   const [user, setUser] = useState<any>(null);
 
   useEffect(() => {
-    const token = localStorage.getItem('accessToken');
-    if (!token) {
-      navigate('/login');
-      return;
-    }
     getMyProfile()
       .then((res) => setUser(res.data.data))
       .catch(console.error);

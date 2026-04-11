@@ -16,11 +16,6 @@ export default function Account() {
   const [stats, setStats] = useState({ orders: 0, wishlist: 0 });
 
   useEffect(() => {
-    const token = localStorage.getItem('accessToken');
-    if (!token) {
-      navigate('/login');
-      return;
-    }
     const fetchData = async () => {
       try {
         const [profileRes, ordersRes, wishlistRes] = await Promise.all([

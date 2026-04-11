@@ -32,10 +32,8 @@ export default function SignupForm({ onSuccess }: SignupFormProps) {
 
     setLoading(true);
     try {
-      const res = await signup({ name, email, phone, password });
-      const { accessToken, refreshToken } = res.data.data;
-      localStorage.setItem('accessToken', accessToken);
-      localStorage.setItem('refreshToken', refreshToken);
+      // 백엔드가 HttpOnly 쿠키로 토큰을 자동 설정 — localStorage 저장 불필요
+      await signup({ name, email, phone, password });
       setSuccess(t('auth.signup.success'));
       
       // 성공 시 부모 컴포넌트에게 알려서 로그인 탭으로 넘기게 함
