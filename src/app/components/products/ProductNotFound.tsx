@@ -3,7 +3,7 @@ import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
 
 export function ProductNotFound() {
-  const { t } = useTranslation('koala');
+  const { t } = useTranslation();
 
   return (
     <div className="min-h-screen bg-white">

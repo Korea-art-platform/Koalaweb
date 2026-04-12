@@ -1,4 +1,9 @@
 import { Route, Routes } from "react-router";
+
+// 🌟 1. 방금 만든 공통 라우트/레이아웃 컴포넌트 불러오기
+import ProtectedRoute from "@/app/components/routers/ProtectedRoute";
+import AccountLayout from "@/app/components/layouts/AccountLayout";
+
 // 루트 페이지
 import Home from "@/app/pages/Home";
 import Search from "@/app/pages/Search";
@@ -41,47 +46,58 @@ import OrderDetail from "@/app/pages/account/OrderDetail";
 export function AppRoutes() {
   return (
     <Routes>
+      {/* ── 🟢 누구나 접근 가능한 영역 ──────────────────────────────────────── */}
+      
+      {/* 메인 */}
+      <Route path="/" element={<Home />} />
+      <Route path="/search" element={<Search />} />
 
-      {/* ── 메인 ──────────────────────────────────────── */}
-      <Route path="/" element={<Home />} />                          {/* 홈 */}
-      <Route path="/search" element={<Search />} />                  {/* 검색 */}
+      {/* 스토어 */}
+      <Route path="/smart-store" element={<SmartStore />} />
+      <Route path="/store" element={<SmartStore />} />
+      <Route path="/product/:id" element={<ProductDetail />} />
+      <Route path="/product/:id/360" element={<Product360View />} />
+      <Route path="/ar-view" element={<ARView />} />
+      <Route path="/resell" element={<ResellMarket />} />
 
-      {/* ── 스토어 ────────────────────────────────────── */}
-      <Route path="/smart-store" element={<SmartStore />} />         {/* 상품 목록 */}
-      <Route path="/store" element={<SmartStore />} />               {/* 상품 목록 (별칭) */}
-      <Route path="/product/:id" element={<ProductDetail />} />      {/* 상품 상세 */}
-      <Route path="/product/:id/360" element={<Product360View />} /> {/* 360도 뷰어 */}
-      <Route path="/ar-view" element={<ARView />} />                 {/* AR 뷰어 */}
-      <Route path="/resell" element={<ResellMarket />} />            {/* 리셀 마켓 */}
+      {/* 아티스트 */}
+      <Route path="/artist-lab" element={<ArtistLab />} />
+      <Route path="/artist/:id" element={<ArtistDetail />} />
 
-      {/* ── 아티스트 ──────────────────────────────────── */}
-      <Route path="/artist-lab" element={<ArtistLab />} />           {/* 아티스트 목록 */}
-      <Route path="/artist/:id" element={<ArtistDetail />} />        {/* 아티스트 상세 */}
+      {/* 인증 */}
+      <Route path="/login" element={<Auth />} />
+      <Route path="/signup" element={<Auth />} />
+      <Route path="/forgot-password" element={<ForgotPassword />} />
+      <Route path="/oauth2/callback" element={<OAuth2Callback />} />
 
-      {/* ── 인증 ──────────────────────────────────────── */}
-      <Route path="/login" element={<Auth />} />                     {/* 로그인 */}
-      <Route path="/signup" element={<Auth />} />                    {/* 회원가입 (토글) */}
-      <Route path="/forgot-password" element={<ForgotPassword />} /> {/* 비밀번호 찾기 */}
-      <Route path="/onboarding" element={<Onboarding />} />          {/* 온보딩 (가입 후) */}
-      <Route path="/oauth2/callback" element={<OAuth2Callback />} /> {/* 소셜 로그인 콜백 */}
+      {/* ── 🔴 로그인 필수 구역 (ProtectedRoute로 보호됨) ───────────────────────── */}
+      <Route element={<ProtectedRoute />}>
+        
+        {/* 가입 후 온보딩 */}
+        <Route path="/onboarding" element={<Onboarding />} />
 
-      {/* ── 장바구니 / 주문 ───────────────────────────── */}
-      <Route path="/cart" element={<Cart />} />                                {/* 장바구니 */}
-      <Route path="/checkout" element={<Checkout />} />                        {/* 주문 결제 */}
-      <Route path="/checkout/confirm" element={<OrderConfirmation />} />       {/* 주문 확인 */}
-      <Route path="/checkout/success" element={<CheckoutSuccess />} />         {/* 주문 완료 */}
+        {/* 장바구니 / 주문 */}
+        <Route path="/cart" element={<Cart />} />
+        <Route path="/checkout" element={<Checkout />} />
+        <Route path="/checkout/confirm" element={<OrderConfirmation />} />
+        <Route path="/checkout/success" element={<CheckoutSuccess />} />
 
-      {/* ── 결제 ──────────────────────────────────────── */}
-      <Route path="/payment/success" element={<PaymentSuccess />} />  {/* 결제 성공 */}
-      <Route path="/payment/fail" element={<PaymentFail />} />        {/* 결제 실패 */}
+        {/* 결제 */}
+        <Route path="/payment/success" element={<PaymentSuccess />} />
+        <Route path="/payment/fail" element={<PaymentFail />} />
 
-      {/* ── 마이페이지 ────────────────────────────────── */}
-      <Route path="/account" element={<Account />} />                               {/* 프로필 */}
-      <Route path="/account/orders" element={<AccountOrders />} />                  {/* 주문 내역 */}
-      <Route path="/account/orders/:orderNo" element={<OrderDetail />} />          {/* 주문 상세 */}
-      <Route path="/account/addresses" element={<AccountAddresses />} />            {/* 배송지 관리 */}
-      <Route path="/account/payment-methods" element={<AccountPaymentMethods />} /> {/* 결제 수단 */}
-      <Route path="/account/wishlist" element={<AccountWishlist />} />              {/* 위시리스트 */}
+        {/* 📦 마이페이지 그룹 (AccountLayout 안에서 렌더링됨) */}
+        <Route element={<AccountLayout />}>
+          <Route path="/account" element={<Account />} />
+          <Route path="/account/orders" element={<AccountOrders />} />
+          <Route path="/account/orders/:orderNo" element={<OrderDetail />} />
+          <Route path="/account/addresses" element={<AccountAddresses />} />
+          <Route path="/account/payment-methods" element={<AccountPaymentMethods />} /> {/* 오타 수정됨 */}
+          <Route path="/account/wishlist" element={<AccountWishlist />} />
+        </Route>
+
+      </Route>
+      {/* ───────────────────────────────────────────────────────────────── */}
 
     </Routes>
   );

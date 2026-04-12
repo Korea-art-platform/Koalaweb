@@ -13,28 +13,30 @@ import {
   ProductToast,
   ProductImageGallery,
   ProductInfo,
-  ProductActions
+  ProductActions,
 } from '@/app/components/products';
 
 export default function ProductDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { t } = useTranslation('koala');
+  const { t } = useTranslation();
 
   const [sku, setSku] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [selectedImage, setSelectedImage] = useState(0);
-  
+  const [selectedColor, setSelectedColor] = useState<string | undefined>();
+
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
   const [showCartLink, setShowCartLink] = useState(false);
-  
+
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [cartLoading, setCartLoading] = useState(false);
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'auto' });
     setSelectedImage(0);
+    setSelectedColor(undefined);
 
     const fetchSku = async () => {
       setLoading(true);
@@ -96,33 +98,57 @@ export default function ProductDetail() {
   if (loading) return <ProductSkeleton />;
   if (!sku) return <ProductNotFound />;
 
-  const images = sku.mediaList?.length > 0
-    ? sku.mediaList.map((m: any) => m.fileUrl)
-    : [sku.primaryImageUrl ?? 'https://via.placeholder.com/400'];
+  const images =
+    sku.mediaList?.length > 0
+      ? sku.mediaList.map((m: any) => m.fileUrl)
+      : [sku.primaryImageUrl ?? 'https://via.placeholder.com/400'];
 
   return (
     <div className="min-h-screen bg-white relative">
       <Navigation />
 
-      <ProductToast 
-        show={showToast} 
-        message={toastMessage} 
-        showCartLink={showCartLink} 
-        onClose={() => setShowToast(false)} 
+      <ProductToast
+        show={showToast}
+        message={toastMessage}
+        showCartLink={showCartLink}
+        onClose={() => setShowToast(false)}
       />
 
-      <div className="pt-32 pb-32 px-8">
-        <div className="max-w-[1600px] mx-auto">
-          <button onClick={() => navigate(-1)} className="inline-flex items-center gap-2 text-sm text-gray-400 hover:text-black transition-colors mb-12 group">
+      <div className="pt-28 pb-20 px-6 md:px-8">
+        <div className="max-w-5xl mx-auto">
+          {/* Back button */}
+          <button
+            onClick={() => navigate(-1)}
+            className="inline-flex items-center gap-2 text-sm text-gray-400 hover:text-black transition-colors mb-10 group"
+          >
             <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
             {t('product.detail.back')}
           </button>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-20">
-            <ProductImageGallery sku={sku} images={images} selectedImage={selectedImage} setSelectedImage={setSelectedImage} />
+          {/* Main layout */}
+          <div className="grid grid-cols-1 lg:grid-cols-[3fr_2fr] gap-10 lg:gap-14">
+            {/* Image gallery */}
+            <ProductImageGallery
+              sku={sku}
+              images={images}
+              selectedImage={selectedImage}
+              setSelectedImage={setSelectedImage}
+            />
+
+            {/* Info + Actions */}
             <div className="flex flex-col">
-              <ProductInfo sku={sku} />
-              <ProductActions sku={sku} cartLoading={cartLoading} isWishlisted={isWishlisted} onAddToCart={handleAddToCart} onWishlist={handleWishlist} />
+              <ProductInfo
+                sku={sku}
+                selectedColor={selectedColor}
+                onColorSelect={setSelectedColor}
+              />
+              <ProductActions
+                sku={sku}
+                cartLoading={cartLoading}
+                isWishlisted={isWishlisted}
+                onAddToCart={handleAddToCart}
+                onWishlist={handleWishlist}
+              />
             </div>
           </div>
         </div>

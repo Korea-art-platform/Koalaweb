@@ -3,10 +3,12 @@ import { useNavigate, Link } from 'react-router';
 import { Mail, Lock } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { login } from '@/api/auth';
+import { useAuth } from '@/app/context/AuthContext';
 
 export default function LoginForm() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { setAuthenticated } = useAuth();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -22,6 +24,7 @@ export default function LoginForm() {
     try {
       // 백엔드가 HttpOnly 쿠키로 토큰을 자동 설정 — localStorage 저장 불필요
       await login({ email, password });
+      setAuthenticated(true);
       setSuccess(t('auth.login.success'));
       setTimeout(() => navigate('/'), 0);
     } catch (err: any) {

@@ -2,6 +2,7 @@ import { Link, useNavigate } from 'react-router';
 import { User, MapPin, CreditCard, Package, Heart, LogOut } from 'lucide-react';
 // 💡 1. 다국어 훅을 불러옵니다.
 import { useTranslation } from 'react-i18next';
+import { useAuth } from '@/app/context/AuthContext';
 
 // 💡 2. label(한글) 대신 다국어 JSON의 경로가 될 key를 넣습니다.
 const menuItems = [
@@ -21,10 +22,10 @@ export default function AccountSidebar({ currentPath, user }: Props) {
   const navigate = useNavigate();
   // 💡 3. 번역 함수 t를 꺼냅니다.
   const { t } = useTranslation();
+  const { setAuthenticated } = useAuth();
 
   const handleLogout = () => {
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('refreshToken');
+    setAuthenticated(false);
     window.dispatchEvent(new Event('cart-updated'));
     navigate('/login');
   };

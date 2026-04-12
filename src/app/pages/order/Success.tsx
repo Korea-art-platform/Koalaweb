@@ -2,10 +2,12 @@ import { Link, useLocation, useNavigate } from 'react-router';
 import { CheckCircle, Package, MapPin, CreditCard, ChevronRight, Home } from 'lucide-react';
 import Navigation from '@/app/components/layouts/Header';
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 export default function CheckoutSuccess() {
   const location = useLocation();
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [orderData, setOrderData] = useState<any>(null);
 
   useEffect(() => {
@@ -21,9 +23,9 @@ export default function CheckoutSuccess() {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-[#FAFAFA]">
         <Package className="w-16 h-16 text-gray-200 mb-4" />
-        <p className="text-gray-500 mb-8">주문 정보를 찾을 수 없습니다.</p>
+        <p className="text-gray-500 mb-8">{t('order.detail.noShippingInfo')}</p>
         <Link to="/" className="px-8 py-3 bg-black text-white rounded-2xl font-medium">
-          홈으로 돌아가기
+          {t('search.backToHome')}
         </Link>
       </div>
     );
@@ -56,13 +58,13 @@ export default function CheckoutSuccess() {
             <div className="grid grid-cols-2 gap-8 pb-8 border-b border-gray-100">
               <div>
                 <p className="text-[10px] text-gray-400 uppercase tracking-widest mb-1 font-bold">
-                  주문 번호
+                  {t('order.detail.orderNo')}
                 </p>
                 <p className="text-lg font-bold text-gray-900">{orderNo}</p>
               </div>
               <div>
                 <p className="text-[10px] text-gray-400 uppercase tracking-widest mb-1 font-bold">
-                  주문 일자
+                  {t('order.detail.orderDate')}
                 </p>
                 <p className="text-lg font-bold text-gray-900">
                   {new Date().toLocaleDateString('ko-KR')}
@@ -77,7 +79,7 @@ export default function CheckoutSuccess() {
                   <MapPin className="w-5 h-5 text-gray-400" />
                 </div>
                 <div>
-                  <p className="font-bold text-gray-900 mb-1">배송지 정보</p>
+                  <p className="font-bold text-gray-900 mb-1">{t('order.detail.shippingInfo')}</p>
                   <p className="text-gray-600">
                     {shippingAddress?.recipient} ({shippingAddress?.phone})
                   </p>
@@ -93,15 +95,15 @@ export default function CheckoutSuccess() {
                   <CreditCard className="w-5 h-5 text-gray-400" />
                 </div>
                 <div>
-                  <p className="font-bold text-gray-900 mb-1">결제 수단</p>
-                  <p className="text-gray-600">{paymentMethod ?? '결제 완료'}</p>
+                  <p className="font-bold text-gray-900 mb-1">{t('order.detail.paymentMethodTitle')}</p>
+                  <p className="text-gray-600">{paymentMethod ?? t('order.status.PAID')}</p>
                 </div>
               </div>
             </div>
 
             <div className="pt-8">
               <div className="flex justify-between items-end">
-                <span className="text-sm font-bold text-gray-400">총 결제 금액</span>
+                <span className="text-sm font-bold text-gray-400">{t('order.detail.totalAmount')}</span>
                 <span className="text-3xl font-black text-black tracking-tighter">
                   ₩{orderInfo?.total?.toLocaleString()}
                 </span>
@@ -112,7 +114,7 @@ export default function CheckoutSuccess() {
           {/* 주문 상품 목록 */}
           <div className="bg-white rounded-[32px] p-8 shadow-sm border border-gray-100 mb-10">
             <h2 className="text-sm font-bold text-gray-400 uppercase tracking-widest mb-6">
-              주문 상품 정보
+              {t('order.detail.orderItems')}
             </h2>
             <div className="space-y-4">
               {orderInfo?.items?.map((item: any, idx: number) => (
@@ -126,7 +128,7 @@ export default function CheckoutSuccess() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-bold text-gray-900 truncate">{item.skuName}</p>
-                    <p className="text-xs text-gray-400">수량: {item.quantity}개</p>
+                    <p className="text-xs text-gray-400">{t('order.detail.quantity', { count: item.quantity })}</p>
                   </div>
                   <div className="text-right">
                     <p className="text-sm font-bold text-gray-900">
@@ -140,16 +142,16 @@ export default function CheckoutSuccess() {
             {/* 금액 요약 */}
             <div className="mt-8 pt-8 border-t border-gray-50 space-y-3">
               <div className="flex justify-between text-sm">
-                <span className="text-gray-500">상품 금액</span>
+                <span className="text-gray-500">{t('order.detail.productAmount')}</span>
                 <span className="text-gray-900 font-medium">
                   ₩{orderInfo?.subtotal?.toLocaleString()}
                 </span>
               </div>
               <div className="flex justify-between text-sm">
-                <span className="text-gray-500">배송비</span>
+                <span className="text-gray-500">{t('order.detail.shippingAmount')}</span>
                 <span className="font-medium">
                   {orderInfo?.shipping === 0
-                    ? '무료'
+                    ? t('order.detail.freeShipping')
                     : `₩${orderInfo?.shipping?.toLocaleString()}`}
                 </span>
               </div>
@@ -162,13 +164,13 @@ export default function CheckoutSuccess() {
               to="/account/orders"
               className="flex-1 py-5 bg-black text-white rounded-[24px] font-bold flex items-center justify-center gap-2 hover:bg-gray-800 transition-all active:scale-[0.98]"
             >
-              주문 내역 확인 <ChevronRight className="w-4 h-4" />
+              {t('order.history.viewDetail')} <ChevronRight className="w-4 h-4" />
             </Link>
             <Link
               to="/store"
               className="flex-1 py-5 bg-white border border-gray-200 text-gray-600 rounded-[24px] font-bold flex items-center justify-center gap-2 hover:bg-gray-50 transition-all"
             >
-              <Home className="w-4 h-4" /> 쇼핑 계속하기
+              <Home className="w-4 h-4" /> {t('order.detail.continueShopping')}
             </Link>
           </div>
         </div>

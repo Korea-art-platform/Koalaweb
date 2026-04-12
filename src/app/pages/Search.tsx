@@ -3,6 +3,7 @@ import { Link } from 'react-router';
 import { Search as SearchIcon, X, TrendingUp, Clock, ArrowLeft } from 'lucide-react';
 import Navigation from '@/app/components/layouts/Header';
 import { useViewMode } from '@/app/context/ViewModeContext';
+import { useTranslation } from 'react-i18next';
 
 // Mock data for search results
 const mockArtworks = [
@@ -33,6 +34,7 @@ const trendingSearches = [
 
 export default function Search() {
   const { mode } = useViewMode();
+  const { t } = useTranslation();
   const [searchQuery, setSearchQuery] = useState('');
   const [recentSearches, setRecentSearches] = useState([
     'Kim Soo-ja',
@@ -71,11 +73,11 @@ export default function Search() {
               className="inline-flex items-center gap-2 text-sm text-gray-400 hover:text-black transition-colors mb-6"
             >
               <ArrowLeft className="w-4 h-4" />
-              Back to Home
+              {t('search.backToHome')}
             </Link>
-            
-            <h1 className="text-4xl tracking-tight mb-6">Search</h1>
-            
+
+            <h1 className="text-4xl tracking-tight mb-6">{t('search.title')}</h1>
+
             {/* Search Input */}
             <div className="relative max-w-2xl">
               <SearchIcon className="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -83,7 +85,7 @@ export default function Search() {
                 type="text"
                 value={searchQuery}
                 onChange={(e) => handleSearch(e.target.value)}
-                placeholder={mode === 'gallery' ? 'Search artworks, artists...' : 'Search products, artists...'}
+                placeholder={mode === 'gallery' ? t('search.placeholderGallery') : t('search.placeholderShop')}
                 className="w-full pl-16 pr-14 py-5 bg-white border border-gray-200 rounded-2xl focus:outline-none focus:border-gray-400 transition-colors text-lg"
                 autoFocus
               />
@@ -105,7 +107,7 @@ export default function Search() {
                 <div>
                   <div className="flex items-center gap-2 mb-4">
                     <Clock className="w-4 h-4 text-gray-400" />
-                    <h2 className="text-sm tracking-wide text-gray-400">RECENT SEARCHES</h2>
+                    <h2 className="text-sm tracking-wide text-gray-400">{t('search.recentSearches')}</h2>
                   </div>
                   <div className="space-y-2">
                     {recentSearches.map((search, index) => (
@@ -134,7 +136,7 @@ export default function Search() {
               <div>
                 <div className="flex items-center gap-2 mb-4">
                   <TrendingUp className="w-4 h-4 text-gray-400" />
-                  <h2 className="text-sm tracking-wide text-gray-400">TRENDING NOW</h2>
+                  <h2 className="text-sm tracking-wide text-gray-400">{t('search.trendingNow')}</h2>
                 </div>
                 <div className="flex flex-wrap gap-2">
                   {trendingSearches.map((trend, index) => (
@@ -154,9 +156,9 @@ export default function Search() {
               {/* Filter Tabs */}
               <div className="flex items-center gap-3 mb-8 border-b border-gray-200">
                 {[
-                  { key: 'all', label: 'All Results' },
-                  { key: 'artworks', label: mode === 'gallery' ? 'Artworks' : 'Products' },
-                  { key: 'artists', label: 'Artists' },
+                  { key: 'all', label: t('search.filters.all') },
+                  { key: 'artworks', label: mode === 'gallery' ? t('search.filters.artworks') : t('search.filters.products') },
+                  { key: 'artists', label: t('search.filters.artists') },
                 ].map((filter) => (
                   <button
                     key={filter.key}
@@ -177,7 +179,7 @@ export default function Search() {
                 {/* Artists Section */}
                 {(activeFilter === 'all' || activeFilter === 'artists') && (
                   <div>
-                    <h2 className="text-2xl tracking-tight mb-6">Artists</h2>
+                    <h2 className="text-2xl tracking-tight mb-6">{t('search.filters.artists')}</h2>
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                       {mockArtists.map((artist) => (
                         <Link
@@ -204,7 +206,7 @@ export default function Search() {
                 {(activeFilter === 'all' || activeFilter === 'artworks') && (
                   <div>
                     <h2 className="text-2xl tracking-tight mb-6">
-                      {mode === 'gallery' ? 'Artworks' : 'Products'}
+                      {mode === 'gallery' ? t('search.filters.artworks') : t('search.filters.products')}
                     </h2>
                     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                       {(mode === 'gallery' ? mockArtworks : mockProducts).map((item) => (
@@ -240,13 +242,13 @@ export default function Search() {
                       <SearchIcon className="w-8 h-8 text-gray-300" />
                     </div>
                     <p className="text-gray-400 mb-2">
-                      {activeFilter === 'all' 
-                        ? `Showing results for "${searchQuery}"`
-                        : `Showing ${activeFilter} results for "${searchQuery}"`
+                      {activeFilter === 'all'
+                        ? t('search.results.showingAll', { query: searchQuery })
+                        : t('search.results.showingFilter', { query: searchQuery, filter: activeFilter })
                       }
                     </p>
                     <p className="text-sm text-gray-400">
-                      Try different keywords or browse our collections
+                      {t('search.results.noResultsDesc')}
                     </p>
                   </div>
                 )}

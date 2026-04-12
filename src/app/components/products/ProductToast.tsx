@@ -10,7 +10,7 @@ interface Props {
 }
 
 export function ProductToast({ show, message, showCartLink, onClose }: Props) {
-  const { t } = useTranslation('koala');
+  const { t } = useTranslation();
   if (!show) return null;
 
   return (
