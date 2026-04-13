@@ -2,11 +2,12 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import { getCart, updateCartItem, removeCartItem, clearCart } from '@/api/cart';
 import { useTranslation } from 'react-i18next';
+import type { Cart } from '@/api/types';
 
 export function useCart() {
   const navigate = useNavigate();
-  const { t } = useTranslation('cart'); // 🌟 i18n 적용
-  const [cart, setCart] = useState<any>(null);
+  const { t } = useTranslation('cart');
+  const [cart, setCart] = useState<Cart | null>(null);
   const [loading, setLoading] = useState(true);
 
   const fetchCart = async () => {

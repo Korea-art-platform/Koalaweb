@@ -1,9 +1,9 @@
-import React from 'react';
 import { Minus, Plus, Trash2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import type { CartItem as CartItemType } from '@/api/types';
 
 interface CartItemProps {
-  item: any;
+  item: CartItemType;
   onUpdateQuantity: (id: number, currentQty: number, delta: number) => void;
   onRemoveItem: (id: number) => void;
 }

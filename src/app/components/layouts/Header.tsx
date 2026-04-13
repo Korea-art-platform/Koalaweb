@@ -1,12 +1,15 @@
 import { Link, useLocation } from 'react-router';
-import { Globe, ShoppingCart, User, Menu, X, Search, ChevronRight } from 'lucide-react';
+import { 
+  Globe, ShoppingCart, User, Menu, X, Search, 
+  ChevronRight, LogOut, Settings, Bell, Headset 
+} from 'lucide-react';
 import { ViewModeProvider, useViewMode } from '@/app/context/ViewModeContext';
 import { useEffect, useState } from 'react';
 import { getCart } from '@/api/cart';
-import { useTranslation } from 'react-i18next'; // i18n 훅 추가
+import { useTranslation } from 'react-i18next';
 
 export function Header() {
-  const { t } = useTranslation(); // 번역 함수 가져오기
+  const { t } = useTranslation();
   const location = useLocation();
   const { mode, setMode } = useViewMode();
   const [isHeroActive, setIsHeroActive] = useState(false);
@@ -14,7 +17,7 @@ export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isPop, setIsPop] = useState(false);
 
-  // 1. 장바구니 수량 업데이트 (API 기반)
+  // 1. 장바구니 수량 업데이트 (API)
   const updateCartCount = async () => {
     try {
       const res = await getCart();
@@ -26,7 +29,7 @@ export function Header() {
     }
   };
 
-  // 2. 스크롤 감지 (Home Hero 섹션 대응)
+  // 2. 스크롤 및 투명 헤더 로직
   useEffect(() => {
     const updateHeaderState = () => {
       const isHome = location.pathname === '/';
@@ -48,12 +51,10 @@ export function Header() {
     };
   }, [location.pathname]);
 
-  // 3. 장바구니 동기화
+  // 3. 장바구니 동기화 및 애니메이션
   useEffect(() => {
     updateCartCount();
-    const handleCartUpdate = () => {
-      updateCartCount();
-    };
+    const handleCartUpdate = () => updateCartCount();
     window.addEventListener('cart-updated', handleCartUpdate);
     window.addEventListener('storage', handleCartUpdate);
     return () => {
@@ -62,7 +63,6 @@ export function Header() {
     };
   }, []);
 
-  // 4. 장바구니 애니메이션
   useEffect(() => {
     if (cartCount >= 0) {
       setIsPop(true);
@@ -71,7 +71,7 @@ export function Header() {
     }
   }, [cartCount]);
 
-  // 스타일 변수
+  // 스타일 및 메뉴 설정
   const isTransparent = location.pathname === '/' && isHeroActive;
   const navBgClass = isTransparent
     ? 'bg-transparent border-transparent'
@@ -80,11 +80,16 @@ export function Header() {
   const logoClass = isTransparent ? 'text-white' : 'text-black';
   const iconClass = isTransparent ? 'text-white/80 hover:text-white' : 'text-gray-400 hover:text-black';
 
-  // 메뉴 리스트 (하드코딩된 이름 대신 다국어 key 사용)
   const menus = [
     { key: 'gallery', path: '/' },
     { key: 'lab', path: '/artist-lab' },
     { key: 'store', path: '/store' }
+  ];
+
+  const subMenus = [
+    { key: 'notice', path: '/notice', icon: Bell },
+    { key: 'customerService', path: '/support', icon: Headset },
+    { key: 'settings', path: '/account/settings', icon: Settings },
   ];
 
   return (
@@ -93,7 +98,6 @@ export function Header() {
       <nav className={`fixed top-0 left-0 right-0 transition-all duration-300 ${isMenuOpen ? 'z-[110] bg-white' : 'z-50 ' + navBgClass}`}>
         <div className="max-w-[1600px] mx-auto px-6 md:px-12 py-4">
           <div className="flex items-center justify-between">
-
             {/* 로고 */}
             <Link
               to="/"
@@ -112,18 +116,17 @@ export function Header() {
                   className={`text-sm font-medium transition-colors ${location.pathname === menu.path
                     ? (isTransparent ? 'text-white' : 'text-black')
                     : (isTransparent ? 'text-white/60 hover:text-white' : 'text-gray-400 hover:text-black')
-                    }`}
+                  }`}
                 >
                   {t(`header.menus.${menu.key}`)}
                 </Link>
               ))}
             </div>
 
-            {/* 오른쪽 섹션 */}
+            {/* 오른쪽 아이콘 섹션 */}
             <div className="flex items-center gap-4 md:gap-6">
               <Search className={`hidden lg:block w-5 h-5 cursor-pointer ${iconClass}`} />
 
-              {/* 장바구니 */}
               <Link
                 to="/cart"
                 onClick={() => setIsMenuOpen(false)}
@@ -131,8 +134,9 @@ export function Header() {
               >
                 <ShoppingCart className="w-5 h-5" />
                 {cartCount > 0 && (
-                  <span className={`absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full flex items-center justify-center text-[9px] font-bold ${isMenuOpen ? 'bg-black text-white' : (isTransparent ? 'bg-white text-black' : 'bg-black text-white')
-                    }`}>
+                  <span className={`absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full flex items-center justify-center text-[9px] font-bold ${
+                    isMenuOpen ? 'bg-black text-white' : (isTransparent ? 'bg-white text-black' : 'bg-black text-white')
+                  }`}>
                     {cartCount}
                   </span>
                 )}
@@ -154,14 +158,12 @@ export function Header() {
         </div>
       </nav>
 
-      {/* [MOBILE] 드로어 메뉴 */}
-      <div className={`fixed top-0 left-0 w-full h-[100dvh] z-[100] bg-white lg:hidden ${isMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible pointer-events-none'}`}
-        style={{ transition: 'opacity 0.5s ease-in-out, visibility 0.5s ease-in-out' }}
-      >
-        <div className="h-full w-full flex flex-col pt-32 pb-12 px-10 overflow-hidden">
-
-          {/* 메뉴 링크 — flex-1 + min-h-0 으로 iOS Safari에서 올바르게 수축 */}
-          <div className="flex-1 min-h-0 flex flex-col gap-6 md:gap-8 overflow-y-auto">
+      {/* [MOBILE] 사이드바(드로어) 메뉴 */}
+      <div className={`fixed top-0 left-0 w-full h-[100dvh] z-[100] bg-white lg:hidden transition-all duration-400 ease-in-out ${isMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible pointer-events-none'}`}>
+        <div className="h-full w-full flex flex-col pt-28 pb-10 px-8">
+          
+          {/* 1. 메인 서비스 링크 */}
+          <div className="flex flex-col gap-6 mb-10">
             {menus.map((menu, index) => (
               <Link
                 key={menu.key}
@@ -175,22 +177,52 @@ export function Header() {
             ))}
           </div>
 
-          {/* 하단 마이페이지 & 글로벌 — flex-shrink-0 으로 항상 보임 */}
-          <div className="flex-shrink-0 mt-8 space-y-8">
-            <div className="grid grid-cols-4 gap-3">
+          {/* 2. 추가 운영 메뉴 (이미지 요청사항 반영) */}
+          <div className={`flex-1 overflow-y-auto border-t pt-8 space-y-1 transition-all duration-700 delay-150 ${isMenuOpen ? 'opacity-100' : 'opacity-0'}`}>
+            {subMenus.map((item) => (
               <Link
-                to="/account/orders"
-                className="col-span-3 flex items-center justify-between bg-black text-white p-5 rounded-2xl active:scale-95 transition-transform"
+                key={item.key}
+                to={item.path}
                 onClick={() => setIsMenuOpen(false)}
+                className="flex items-center justify-between py-4 active:bg-gray-50 rounded-lg px-2 -mx-2 transition-colors"
               >
                 <div className="flex items-center gap-4">
-                  <User className="w-5 h-5 text-white/60" />
-                  <span className="text-lg font-bold">{t('header.myPage')}</span>
+                  <item.icon className="w-5 h-5 text-gray-400" />
+                  <span className="text-lg font-medium text-gray-700">{t(`header.subMenus.${item.key}`)}</span>
+                </div>
+                <ChevronRight className="w-5 h-5 text-gray-300" />
+              </Link>
+            ))}
+
+            <button 
+              className="w-full flex items-center justify-between py-4 px-2 -mx-2 active:bg-red-50 rounded-lg transition-colors group"
+              onClick={() => { /* Logout Logic */ setIsMenuOpen(false); }}
+            >
+              <div className="flex items-center gap-4">
+                <LogOut className="w-5 h-5 text-red-400" />
+                <span className="text-lg font-medium text-red-500">{t('header.logout')}</span>
+              </div>
+            </button>
+          </div>
+
+          {/* 3. 하단 고정 액션바 */}
+          <div className="flex-shrink-0 mt-auto pt-6">
+            <div className="flex items-center gap-3">
+              <Link
+                to="/account/orders"
+                className="flex-1 flex items-center justify-between bg-zinc-900 text-white p-5 rounded-2xl active:scale-95 transition-all shadow-xl shadow-zinc-200"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center">
+                    <User className="w-4 h-4 text-white" />
+                  </div>
+                  <span className="font-bold text-lg">{t('header.myPage')}</span>
                 </div>
                 <ChevronRight className="w-5 h-5 text-white/40" />
               </Link>
 
-              <button className="col-span-1 flex items-center justify-center bg-gray-100 rounded-2xl active:scale-95 transition-transform">
+              <button className="w-16 h-16 flex items-center justify-center bg-gray-100 rounded-2xl active:scale-95 transition-all">
                 <Globe className="w-6 h-6 text-black" />
               </button>
             </div>

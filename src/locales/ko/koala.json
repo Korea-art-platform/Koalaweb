@@ -45,7 +45,13 @@
       "lab": "작가의 연구소",
       "store": "스마트 스토어"
     },
-    "myPage": "마이페이지"
+    "subMenus": {
+      "notice": "공지사항",
+      "customerService": "고객센터",
+      "settings": "설정"
+    },
+    "myPage": "마이페이지",
+    "logout": "로그아웃"
   },
   "footer": {
     "brand": {

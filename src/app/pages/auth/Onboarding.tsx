@@ -32,7 +32,6 @@ export default function Onboarding(){
     else if(currentStep === 'address') setCurrentStep('preferences');
     else if(currentStep === 'preferences') setCurrentStep('notifications');
     else if (currentStep === 'notifications'){
-    console.log(t('onboarding.completeLog'), formData);
     navigate('/');
     }
   };

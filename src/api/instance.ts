@@ -1,4 +1,8 @@
-import axios from 'axios';
+import axios, { type AxiosRequestConfig } from 'axios';
+
+interface RetryableRequestConfig extends AxiosRequestConfig {
+  _retry?: boolean;
+}
 
 /**
  * 인증 전략: HttpOnly 쿠키
@@ -7,7 +11,7 @@ import axios from 'axios';
  * - localStorage 에 토큰 저장하지 않음 (XSS 취약점 방지)
  */
 const instance = axios.create({
-    baseURL: import.meta.env.VITE_API_BASE_URL,
+    baseURL: import.meta.env.VITE_API_BASE_URL as string,
     timeout: 10000,
     withCredentials: true,
     headers: {
@@ -19,14 +23,14 @@ const instance = axios.create({
 instance.interceptors.response.use(
     (response) => response,
     async (error) => {
-        const originalRequest = error.config;
+        const originalRequest = error.config as RetryableRequestConfig;
 
         if (error.response?.status === 401 && !originalRequest._retry) {
             originalRequest._retry = true;
             try {
                 // refreshToken 쿠키를 withCredentials 로 자동 전송
                 await axios.post(
-                    `${import.meta.env.VITE_API_BASE_URL}/api/v1/auth/refresh`,
+                    `${import.meta.env.VITE_API_BASE_URL as string}/api/v1/auth/refresh`,
                     null,
                     { withCredentials: true }
                 );

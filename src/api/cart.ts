@@ -5,15 +5,15 @@ export const getCart = () =>
     instance.get('/api/v1/cart');
 
 // 장바구니 추가
-export const addCartItem = (skuCode, quantity) =>
+export const addCartItem = (skuCode: string, quantity: number) =>
     instance.post('/api/v1/cart/items', { skuCode, quantity });
 
 // 장바구니 수량 변경
-export const updateCartItem = (itemId, quantity) =>
+export const updateCartItem = (itemId: number, quantity: number) =>
     instance.patch(`/api/v1/cart/items/${itemId}`, { quantity });
 
 // 장바구니 삭제
-export const removeCartItem = (itemId) =>
+export const removeCartItem = (itemId: number) =>
     instance.delete(`/api/v1/cart/items/${itemId}`);
 
 // 장바구니 전체 비우기

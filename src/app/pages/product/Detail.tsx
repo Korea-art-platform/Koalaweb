@@ -6,6 +6,7 @@ import Navigation from '@/app/components/layouts/Header';
 import { getSku } from '@/api/sku';
 import { addCartItem } from '@/api/cart';
 import { addWishlist, removeWishlist, checkWishlist } from '@/api/wishlist';
+import type { Sku } from '@/api/types';
 
 import {
   ProductSkeleton,
@@ -21,7 +22,7 @@ export default function ProductDetail() {
   const navigate = useNavigate();
   const { t } = useTranslation();
 
-  const [sku, setSku] = useState<any>(null);
+  const [sku, setSku] = useState<Sku | null>(null);
   const [loading, setLoading] = useState(true);
   const [selectedImage, setSelectedImage] = useState(0);
   const [selectedColor, setSelectedColor] = useState<string | undefined>();
@@ -67,19 +68,22 @@ export default function ProductDetail() {
   };
 
   const handleAddToCart = async () => {
+    if (!sku) return;
     setCartLoading(true);
     try {
       await addCartItem(sku.skuCode, 1);
       window.dispatchEvent(new Event('cart-updated'));
       showToastMessage(t('product.detail.toast.cartAdded'), true);
-    } catch (e: any) {
-      showToastMessage(e.response?.data?.message || t('product.detail.toast.cartAddFailed'));
+    } catch (e: unknown) {
+      const msg = (e as { response?: { data?: { message?: string } } })?.response?.data?.message;
+      showToastMessage(msg || t('product.detail.toast.cartAddFailed'));
     } finally {
       setCartLoading(false);
     }
   };
 
   const handleWishlist = async () => {
+    if (!sku) return;
     try {
       if (isWishlisted) {
         await removeWishlist(sku.skuCode);
@@ -90,8 +94,9 @@ export default function ProductDetail() {
         setIsWishlisted(true);
         showToastMessage(t('product.detail.toast.wishlistAdded'));
       }
-    } catch (e: any) {
-      showToastMessage(e.response?.data?.message || t('product.detail.toast.error'));
+    } catch (e: unknown) {
+      const msg = (e as { response?: { data?: { message?: string } } })?.response?.data?.message;
+      showToastMessage(msg || t('product.detail.toast.error'));
     }
   };
 
@@ -99,8 +104,8 @@ export default function ProductDetail() {
   if (!sku) return <ProductNotFound />;
 
   const images =
-    sku.mediaList?.length > 0
-      ? sku.mediaList.map((m: any) => m.fileUrl)
+    sku.mediaList && sku.mediaList.length > 0
+      ? sku.mediaList.map((m) => m.fileUrl)
       : [sku.primaryImageUrl ?? 'https://via.placeholder.com/400'];
 
   return (

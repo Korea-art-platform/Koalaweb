@@ -1,11 +1,11 @@
 import { Heart } from 'lucide-react';
 import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
-// 주의: 경로 점(../) 개수는 실제 위치에 맞게 수정해 주세요.
 import { ImageWithFallback } from '@/app/components/fallback/ImageWithFallback';
+import type { Sku } from '@/api/types';
 
 interface ProductCardProps {
-  sku: any;
+  sku: Sku;
   viewMode: 'grid' | 'large';
   isWishlisted: boolean;
   isWishlistLoading: boolean;

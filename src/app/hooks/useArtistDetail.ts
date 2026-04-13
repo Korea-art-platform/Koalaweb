@@ -1,13 +1,14 @@
 import { useState, useEffect } from 'react';
 import { getArtist } from '@/api/artist';
+import type { Artist, ArtistMedia } from '@/api/types';
 
 export function useArtistDetail(id: string | undefined) {
-  const [artist, setArtist] = useState<any>(null);
+  const [artist, setArtist] = useState<Artist | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!id) return;
-    
+
     const fetchData = async () => {
       setLoading(true);
       try {
@@ -22,8 +23,8 @@ export function useArtistDetail(id: string | undefined) {
     fetchData();
   }, [id]);
 
-  const videos = artist?.mediaList?.filter((m: any) => m.mediaType === 'VIDEO') ?? [];
-  const images = artist?.mediaList?.filter((m: any) => m.mediaType === 'IMAGE') ?? [];
+  const videos = artist?.mediaList?.filter((m: ArtistMedia) => m.mediaType === 'VIDEO') ?? [];
+  const images = artist?.mediaList?.filter((m: ArtistMedia) => m.mediaType === 'IMAGE') ?? [];
 
   return { loading, artist, videos, images };
 }
