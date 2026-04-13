@@ -1,65 +1,67 @@
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router';
-import { getCart, updateCartItem, removeCartItem, clearCart } from '@/api/cart';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
+import { getCart, updateCartItem, removeCartItem, clearCart } from '@/api/cart';
 import type { Cart } from '@/api/types';
 
+export const CART_QUERY_KEY = ['cart'] as const;
+
+async function fetchCart(): Promise<Cart | null> {
+  const res = await getCart();
+  return res.data.data ?? null;
+}
+
 export function useCart() {
-  const navigate = useNavigate();
   const { t } = useTranslation('cart');
-  const [cart, setCart] = useState<Cart | null>(null);
-  const [loading, setLoading] = useState(true);
+  const queryClient = useQueryClient();
 
-  const fetchCart = async () => {
-    try {
-      const res = await getCart();
-      setCart(res.data.data);
-    } catch (e) {
-      console.error('장바구니 로딩 실패:', e);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const { data: cart, isLoading: loading } = useQuery<Cart | null>({
+    queryKey: CART_QUERY_KEY,
+    queryFn: fetchCart,
+    retry: false,
+  });
 
-  useEffect(() => {
-    fetchCart();
-  }, []);
+  const updateMutation = useMutation({
+    mutationFn: ({ itemId, quantity }: { itemId: number; quantity: number }) =>
+      updateCartItem(itemId, quantity),
+    onSuccess: (res) => {
+      queryClient.setQueryData(CART_QUERY_KEY, res.data.data);
+    },
+    onError: (e) => console.error('수량 변경 실패:', e),
+  });
 
-  const handleUpdateQuantity = async (itemId: number, currentQty: number, delta: number) => {
+  const removeMutation = useMutation({
+    mutationFn: (itemId: number) => removeCartItem(itemId),
+    onSuccess: (res) => {
+      queryClient.setQueryData(CART_QUERY_KEY, res.data.data);
+    },
+    onError: (e) => console.error('삭제 실패:', e),
+  });
+
+  const clearMutation = useMutation({
+    mutationFn: clearCart,
+    onSuccess: () => {
+      queryClient.setQueryData(CART_QUERY_KEY, null);
+    },
+    onError: (e) => console.error('장바구니 비우기 실패:', e),
+  });
+
+  const handleUpdateQuantity = (itemId: number, currentQty: number, delta: number) => {
     const newQty = currentQty + delta;
     if (newQty <= 0) {
       handleRemoveItem(itemId);
       return;
     }
-    try {
-      const res = await updateCartItem(itemId, newQty);
-      setCart(res.data.data);
-      window.dispatchEvent(new Event('cart-updated'));
-    } catch (e) {
-      console.error('수량 변경 실패:', e);
-    }
+    updateMutation.mutate({ itemId, quantity: newQty });
   };
 
-  const handleRemoveItem = async (itemId: number) => {
-    if (!window.confirm(t('alerts.removeConfirm'))) return; // 🌟 i18n 적용
-    try {
-      const res = await removeCartItem(itemId);
-      setCart(res.data.data);
-      window.dispatchEvent(new Event('cart-updated'));
-    } catch (e) {
-      console.error('삭제 실패:', e);
-    }
+  const handleRemoveItem = (itemId: number) => {
+    if (!window.confirm(t('alerts.removeConfirm'))) return;
+    removeMutation.mutate(itemId);
   };
 
-  const handleClearCart = async () => {
-    if (!window.confirm(t('alerts.clearConfirm'))) return; // 🌟 i18n 적용
-    try {
-      await clearCart();
-      setCart(null);
-      window.dispatchEvent(new Event('cart-updated'));
-    } catch (e) {
-      console.error('장바구니 비우기 실패:', e);
-    }
+  const handleClearCart = () => {
+    if (!window.confirm(t('alerts.clearConfirm'))) return;
+    clearMutation.mutate();
   };
 
   const cartItems = cart?.items ?? [];
@@ -75,6 +77,6 @@ export function useCart() {
     total,
     handleUpdateQuantity,
     handleRemoveItem,
-    handleClearCart
+    handleClearCart,
   };
 }

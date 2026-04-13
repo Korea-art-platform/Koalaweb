@@ -43,7 +43,8 @@
     "menus": {
       "gallery": "작품 갤러리",
       "lab": "작가의 연구소",
-      "store": "스마트 스토어"
+      "store": "스마트 스토어",
+      "about": "KoALa 소개"
     },
     "subMenus": {
       "notice": "공지사항",

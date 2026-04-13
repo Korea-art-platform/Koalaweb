@@ -1,27 +1,19 @@
-import { useState, useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { getArtist } from '@/api/artist';
 import type { Artist, ArtistMedia } from '@/api/types';
 
+async function fetchArtist(id: string): Promise<Artist> {
+  const res = await getArtist(id);
+  return res.data.data;
+}
+
 export function useArtistDetail(id: string | undefined) {
-  const [artist, setArtist] = useState<Artist | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    if (!id) return;
-
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        const artistRes = await getArtist(id);
-        setArtist(artistRes.data.data);
-      } catch (e) {
-        console.error('아티스트 로딩 실패:', e);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchData();
-  }, [id]);
+  const { data: artist, isLoading: loading } = useQuery<Artist>({
+    queryKey: ['artist', id],
+    queryFn: () => fetchArtist(id!),
+    enabled: !!id,
+    retry: false,
+  });
 
   const videos = artist?.mediaList?.filter((m: ArtistMedia) => m.mediaType === 'VIDEO') ?? [];
   const images = artist?.mediaList?.filter((m: ArtistMedia) => m.mediaType === 'IMAGE') ?? [];

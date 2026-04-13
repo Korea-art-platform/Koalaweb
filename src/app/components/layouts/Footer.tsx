@@ -88,9 +88,6 @@ export default function Footer() {
               <ul className="space-y-3">
                 {[
                   { key: 'about', path: '/about' },
-                  { key: 'careers', path: '/careers' },
-                  { key: 'press', path: '/press' },
-                  { key: 'blog', path: '/blog' },
                   { key: 'partnerships', path: '/partnerships' }
                 ].map((link) => (
                   <li key={link.key}>

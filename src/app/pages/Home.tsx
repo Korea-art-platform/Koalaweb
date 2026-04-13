@@ -76,7 +76,7 @@ export default function Home() {
     <div className="bg-white">
 
    
-      <section className="relative h-[80vh] min-h-[600px] md:h-[85vh] overflow-hidden">
+      <section data-hero="dark" className="relative h-[80vh] min-h-[600px] md:h-[85vh] overflow-hidden">
         <div className="absolute inset-0">
           <img
             src={banner?.imageUrl ?? 'https://i.ytimg.com/vi/fNfC7KZ10og/hq720.jpg'}

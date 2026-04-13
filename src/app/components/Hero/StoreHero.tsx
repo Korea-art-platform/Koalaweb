@@ -4,7 +4,7 @@ export default function StoreHero() {
   const { t } = useTranslation();
 
   return (
-    <section className="pt-24 md:pt-32 pb-8 md:pb-12 px-5 md:px-8 lg:px-12">
+    <section data-hero="light" className="pt-24 md:pt-32 pb-8 md:pb-12 px-5 md:px-8 lg:px-12">
       <div className="max-w-[1600px] mx-auto">
         <div className="max-w-2xl">
           <div className="text-[10px] md:text-xs text-gray-400 tracking-[0.2em] mb-3 md:mb-4 uppercase font-bold">

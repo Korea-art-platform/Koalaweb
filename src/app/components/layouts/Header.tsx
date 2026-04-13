@@ -1,45 +1,47 @@
 import { Link, useLocation } from 'react-router';
-import { 
-  Globe, ShoppingCart, User, Menu, X, Search, 
-  ChevronRight, LogOut, Settings, Bell, Headset 
+import {
+  Globe, ShoppingCart, User, Menu, X, Search,
+  ChevronRight, LogOut, Settings, Bell, Headset
 } from 'lucide-react';
-import { ViewModeProvider, useViewMode } from '@/app/context/ViewModeContext';
+import { ViewModeProvider } from '@/app/context/ViewModeContext';
 import { useEffect, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { CART_QUERY_KEY } from '@/app/hooks/useCart';
 import { getCart } from '@/api/cart';
+import type { Cart } from '@/api/types';
 import { useTranslation } from 'react-i18next';
 
 export function Header() {
   const { t } = useTranslation();
   const location = useLocation();
-  const { mode, setMode } = useViewMode();
   const [isHeroActive, setIsHeroActive] = useState(false);
-  const [cartCount, setCartCount] = useState(0);
+  const [isHeroDark, setIsHeroDark] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isPop, setIsPop] = useState(false);
 
-  // 1. 장바구니 수량 업데이트 (API)
-  const updateCartCount = async () => {
-    try {
+  // 1. 장바구니 수량 — react-query 캐시에서 읽기 (별도 API 호출 없음)
+  const { data: cart } = useQuery<Cart | null>({
+    queryKey: CART_QUERY_KEY,
+    queryFn: async () => {
       const res = await getCart();
-      const items = res?.data?.data?.items ?? [];
-      const total = items.reduce((sum: number, item: any) => sum + (item.quantity || 1), 0);
-      setCartCount(total);
-    } catch (e) {
-      console.error('장바구니 조회 실패:', e);
-    }
-  };
+      return res.data.data ?? null;
+    },
+    retry: false,
+  });
+  const cartCount = cart?.items?.reduce((sum, item) => sum + item.quantity, 0) ?? 0;
 
   // 2. 스크롤 및 투명 헤더 로직
   useEffect(() => {
     const updateHeaderState = () => {
-      const isHome = location.pathname === '/';
-      const hero = document.getElementById('home-hero');
-      if (!isHome || !hero) {
+      const hero = document.querySelector('[data-hero]');
+      if (!hero) {
         setIsHeroActive(false);
+        setIsHeroDark(false);
         return;
       }
       const heroRect = hero.getBoundingClientRect();
-      setIsHeroActive(heroRect.bottom > 88);
+      setIsHeroActive(heroRect.bottom > 72);
+      setIsHeroDark(hero.getAttribute('data-hero') === 'dark');
     };
 
     updateHeaderState();
@@ -51,18 +53,7 @@ export function Header() {
     };
   }, [location.pathname]);
 
-  // 3. 장바구니 동기화 및 애니메이션
-  useEffect(() => {
-    updateCartCount();
-    const handleCartUpdate = () => updateCartCount();
-    window.addEventListener('cart-updated', handleCartUpdate);
-    window.addEventListener('storage', handleCartUpdate);
-    return () => {
-      window.removeEventListener('cart-updated', handleCartUpdate);
-      window.removeEventListener('storage', handleCartUpdate);
-    };
-  }, []);
-
+  // 3. 카트 수량 변동 시 팝 애니메이션
   useEffect(() => {
     if (cartCount >= 0) {
       setIsPop(true);
@@ -72,18 +63,19 @@ export function Header() {
   }, [cartCount]);
 
   // 스타일 및 메뉴 설정
-  const isTransparent = location.pathname === '/' && isHeroActive;
+  const isTransparent = isHeroActive;
   const navBgClass = isTransparent
     ? 'bg-transparent border-transparent'
     : 'bg-white/95 border-b border-gray-100 backdrop-blur-sm shadow-sm';
 
-  const logoClass = isTransparent ? 'text-white' : 'text-black';
-  const iconClass = isTransparent ? 'text-white/80 hover:text-white' : 'text-gray-400 hover:text-black';
+  const logoClass = isTransparent && isHeroDark ? 'text-white' : 'text-black';
+  const iconClass = isTransparent && isHeroDark ? 'text-white/80 hover:text-white' : 'text-gray-400 hover:text-black';
 
   const menus = [
     { key: 'gallery', path: '/' },
     { key: 'lab', path: '/artist-lab' },
-    { key: 'store', path: '/store' }
+    { key: 'store', path: '/store' },
+    { key: 'about', path: '/about'}
   ];
 
   const subMenus = [

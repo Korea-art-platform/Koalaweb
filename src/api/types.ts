@@ -18,6 +18,7 @@ export interface SignupRequest {
   email: string;
   password: string;
   name?: string;
+  phone?: string;
 }
 
 export interface LoginRequest {
@@ -40,6 +41,7 @@ export interface UpdateProfileRequest {
 
 export interface Address {
   id?: number;
+  label?: string;
   fullName: string;
   phone: string;
   zipCode: string;

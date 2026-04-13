@@ -2,10 +2,12 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router';
 import { ArrowLeft } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { useQueryClient } from '@tanstack/react-query';
 import Navigation from '@/app/components/layouts/Header';
 import { getSku } from '@/api/sku';
 import { addCartItem } from '@/api/cart';
 import { addWishlist, removeWishlist, checkWishlist } from '@/api/wishlist';
+import { CART_QUERY_KEY } from '@/app/hooks/useCart';
 import type { Sku } from '@/api/types';
 
 import {
@@ -21,6 +23,7 @@ export default function ProductDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const queryClient = useQueryClient();
 
   const [sku, setSku] = useState<Sku | null>(null);
   const [loading, setLoading] = useState(true);
@@ -72,7 +75,7 @@ export default function ProductDetail() {
     setCartLoading(true);
     try {
       await addCartItem(sku.skuCode, 1);
-      window.dispatchEvent(new Event('cart-updated'));
+      queryClient.invalidateQueries({ queryKey: CART_QUERY_KEY });
       showToastMessage(t('product.detail.toast.cartAdded'), true);
     } catch (e: unknown) {
       const msg = (e as { response?: { data?: { message?: string } } })?.response?.data?.message;

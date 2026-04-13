@@ -1,34 +1,29 @@
-import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useQuery } from '@tanstack/react-query';
 import Navigation from '@/app/components/layouts/Header';
 import ArtistLabHero from '@/app/components/Hero/ArtistLabHero';
 import ArtistListSkeleton from '@/app/components/Artist/ArtistListSkeleton';
 import ArtistRow from '@/app/components/Artist/ArtistRow';
 import { getArtists } from '@/api/artist';
+import type { Artist, PageResponse } from '@/api/types';
 
 export default function ArtistLab() {
-  const [artists, setArtists] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
   const { t } = useTranslation();
 
-  useEffect(() => {
-    const fetchArtists = async () => {
-      try {
-        const res = await getArtists(0, 20);
-        setArtists(res.data.data.content ?? []);
-      } catch (e) {
-        console.error('아티스트 로딩 실패:', e);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchArtists();
-  }, []);
+  const { data: artists = [], isLoading: loading } = useQuery<Artist[]>({
+    queryKey: ['artists'],
+    queryFn: async () => {
+      const res = await getArtists(0, 20);
+      const page: PageResponse<Artist> = res.data.data;
+      return page.content ?? [];
+    },
+    retry: false,
+  });
 
   return (
     <div className="min-h-screen bg-white">
       <Navigation />
-      
+
       <ArtistLabHero />
 
       <section className="px-6 md:px-8 pb-32">
