@@ -7,17 +7,23 @@ import { AuthProvider } from './context/AuthContext';
 import Header from './components/layouts/Header';
 import Footer from './components/layouts/Footer';
 import ScrollToTop from './components/common/ScrollToTop';
+import { useEffect } from 'react'; // 추가
+import TagManager from 'react-gtm-module'; // 추가
 
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 1000 * 30,   // 30초 동안 fresh 상태 유지
+      staleTime: 1000 * 30,   
       retry: 1,
     },
   },
 });
 
 function App() {
+  useEffect(() => {
+    TagManager.initialize({ gtmId: 'GTM-KHDT3ZKX' }); 
+  }, []);
+
   return (
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
