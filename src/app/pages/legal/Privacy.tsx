@@ -1,0 +1,144 @@
+import { useNavigate } from 'react-router';
+import { ArrowLeft } from 'lucide-react';
+
+export default function Privacy() {
+  const navigate = useNavigate();
+
+  return (
+    <div className="min-h-screen bg-white">
+      {/* 헤더 */}
+      <div className="sticky top-0 z-10 bg-white border-b border-gray-100">
+        <div className="max-w-3xl mx-auto flex items-center gap-4 px-6 py-4">
+          <button onClick={() => navigate(-1)} className="text-gray-700 hover:text-black transition-colors">
+            <ArrowLeft className="w-5 h-5" />
+          </button>
+          <h1 className="text-base font-semibold tracking-tight text-gray-900">개인정보처리방침</h1>
+        </div>
+      </div>
+
+      {/* 본문 */}
+      <div className="max-w-3xl mx-auto px-6 py-8 space-y-8 text-sm text-gray-700 leading-relaxed">
+
+        <p className="text-xs text-gray-400">최종 업데이트: 2025년 1월 1일</p>
+
+        <p>
+          KoALa(이하 "회사")는 개인정보보호법 등 관련 법령을 준수하며, 이용자의 개인정보를
+          안전하게 보호합니다. 본 방침은 회사가 수집하는 개인정보의 항목, 수집 목적, 보유 기간
+          등을 안내합니다.
+        </p>
+
+        <section className="space-y-3">
+          <h2 className="font-semibold text-gray-900">1. 수집하는 개인정보 항목</h2>
+          <div className="space-y-2">
+            <p className="font-medium text-gray-800">필수 항목</p>
+            <ul className="space-y-1 list-disc list-inside text-gray-600">
+              <li>이름, 이메일 주소, 휴대폰 번호</li>
+              <li>비밀번호 (암호화 저장)</li>
+              <li>결제 정보 (카드사에서 직접 처리, 당사 미보관)</li>
+            </ul>
+            <p className="font-medium text-gray-800 mt-2">소셜 로그인 시 추가 수집</p>
+            <ul className="space-y-1 list-disc list-inside text-gray-600">
+              <li>카카오: 닉네임, 이메일</li>
+              <li>네이버: 이름, 이메일</li>
+            </ul>
+            <p className="font-medium text-gray-800 mt-2">자동 수집 항목</p>
+            <ul className="space-y-1 list-disc list-inside text-gray-600">
+              <li>접속 IP, 쿠키, 서비스 이용 기록</li>
+            </ul>
+          </div>
+        </section>
+
+        <section className="space-y-2">
+          <h2 className="font-semibold text-gray-900">2. 개인정보 수집 및 이용 목적</h2>
+          <ul className="space-y-1 list-disc list-inside text-gray-600">
+            <li>회원 가입 및 본인 확인</li>
+            <li>상품 주문, 결제 및 배송 처리</li>
+            <li>고객 문의 및 분쟁 처리</li>
+            <li>서비스 개선 및 맞춤형 콘텐츠 제공</li>
+            <li>법령상 의무 이행</li>
+          </ul>
+        </section>
+
+        <section className="space-y-2">
+          <h2 className="font-semibold text-gray-900">3. 개인정보 보유 및 이용 기간</h2>
+          <ul className="space-y-1 list-disc list-inside text-gray-600">
+            <li>회원 정보: 회원 탈퇴 시까지</li>
+            <li>거래 기록: 5년 (전자상거래법)</li>
+            <li>소비자 불만 기록: 3년 (전자상거래법)</li>
+            <li>접속 로그: 3개월 (통신비밀보호법)</li>
+          </ul>
+        </section>
+
+        <section className="space-y-2">
+          <h2 className="font-semibold text-gray-900">4. 개인정보의 제3자 제공</h2>
+          <p>
+            회사는 원칙적으로 이용자의 개인정보를 제3자에게 제공하지 않습니다. 단, 아래의 경우
+            예외로 합니다.
+          </p>
+          <ul className="space-y-1 list-disc list-inside text-gray-600 mt-2">
+            <li>이용자가 사전에 동의한 경우</li>
+            <li>법령의 규정에 따른 경우</li>
+            <li>배송을 위한 택배사 정보 제공 (수령인 정보에 한함)</li>
+          </ul>
+        </section>
+
+        <section className="space-y-2">
+          <h2 className="font-semibold text-gray-900">5. 개인정보 처리 위탁</h2>
+          <div className="overflow-x-auto">
+            <table className="w-full text-xs border-collapse border border-gray-200 rounded-lg">
+              <thead>
+                <tr className="bg-gray-50">
+                  <th className="text-left px-4 py-2 font-medium text-gray-700 border-b border-gray-200">수탁업체</th>
+                  <th className="text-left px-4 py-2 font-medium text-gray-700 border-b border-gray-200">위탁 업무</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-100">
+                <tr>
+                  <td className="px-4 py-2 text-gray-600">토스페이먼츠</td>
+                  <td className="px-4 py-2 text-gray-600">결제 처리</td>
+                </tr>
+                <tr>
+                  <td className="px-4 py-2 text-gray-600">Amazon Web Services</td>
+                  <td className="px-4 py-2 text-gray-600">서버 인프라 운영</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section className="space-y-2">
+          <h2 className="font-semibold text-gray-900">6. 이용자의 권리</h2>
+          <p>이용자는 언제든지 다음의 권리를 행사할 수 있습니다.</p>
+          <ul className="space-y-1 list-disc list-inside text-gray-600 mt-2">
+            <li>개인정보 열람 요청</li>
+            <li>개인정보 수정·삭제 요청</li>
+            <li>개인정보 처리 정지 요청</li>
+            <li>회원 탈퇴 (마이페이지에서 가능)</li>
+          </ul>
+        </section>
+
+        <section className="space-y-2">
+          <h2 className="font-semibold text-gray-900">7. 쿠키 사용</h2>
+          <p>
+            회사는 서비스 편의를 위해 쿠키를 사용합니다. 인증 토큰은 HttpOnly 쿠키로 저장되어
+            XSS 공격으로부터 보호됩니다. 브라우저 설정을 통해 쿠키를 거부할 수 있으나 일부
+            서비스 이용이 제한될 수 있습니다.
+          </p>
+        </section>
+
+        <section className="space-y-2">
+          <h2 className="font-semibold text-gray-900">8. 개인정보 보호 책임자</h2>
+          <div className="bg-gray-50 rounded-xl p-4 space-y-1 text-xs">
+            <p><span className="font-medium text-gray-800">책임자:</span> KoALa 개인정보 보호팀</p>
+            <p><span className="font-medium text-gray-800">이메일:</span> privacy@koala-art.co.kr</p>
+            <p><span className="font-medium text-gray-800">처리 기간:</span> 접수 후 영업일 3일 이내</p>
+          </div>
+        </section>
+
+        <p className="pt-4 pb-8 text-xs text-gray-400 text-center border-t border-gray-100">
+          본 방침은 2025년 1월 1일부터 시행됩니다.
+        </p>
+      </div>
+    </div>
+  );
+}

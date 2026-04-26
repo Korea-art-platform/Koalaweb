@@ -140,19 +140,28 @@ export default function SignupForm({ onSuccess }: SignupFormProps) {
         )}
       </div>
 
-      <label className="flex items-start gap-3 cursor-pointer">
+      <div className="flex items-start gap-3">
         <input
+          id="agree-terms"
           type="checkbox"
           {...register('agreed', { required: t('auth.validation.termsRequired') })}
-          className="w-4 h-4 mt-0.5 rounded border-gray-300"
+          className="w-4 h-4 mt-0.5 rounded border-gray-300 cursor-pointer"
         />
-        <span className="text-xs text-gray-600 leading-relaxed">
+        <label htmlFor="agree-terms" className="text-xs text-gray-600 leading-relaxed cursor-pointer select-none">
           {t('auth.common.termsAgree')}{' '}
-          <Link to="/terms" className="text-black hover:underline">{t('auth.common.termsLink')}</Link>
+          <Link
+            to="/terms"
+            className="text-black underline underline-offset-2 hover:text-gray-700"
+            onClick={(e) => e.stopPropagation()}
+          >{t('auth.common.termsLink')}</Link>
           {' '}{t('auth.common.termsAnd')}{' '}
-          <Link to="/privacy" className="text-black hover:underline">{t('auth.common.privacyLink')}</Link>
-        </span>
-      </label>
+          <Link
+            to="/privacy"
+            className="text-black underline underline-offset-2 hover:text-gray-700"
+            onClick={(e) => e.stopPropagation()}
+          >{t('auth.common.privacyLink')}</Link>
+        </label>
+      </div>
       {errors.agreed && (
         <p className="text-xs text-red-500">{errors.agreed.message}</p>
       )}

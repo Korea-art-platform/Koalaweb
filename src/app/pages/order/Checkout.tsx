@@ -6,7 +6,7 @@ import { createOrder } from '@/api/order';
 import { getCart } from '@/api/cart';
 import { preparePayment } from '@/api/payment';
 import { getMyProfile, getMyAddresses } from '@/api/user';
-import { loadTossPayments, ANONYMOUS } from '@tosspayments/tosspayments-sdk';
+import type { PaymentPageState } from '@/app/pages/payment/PaymentPage';
 
 type PaymentMethodType = 'TOSS' | 'KAKAOPAY' | 'NAVERPAY' | 'CARD';
 
@@ -194,43 +194,29 @@ export default function Checkout() {
       });
       const order = orderRes.data.data;
 
-      // 2단계: 결제 준비 (결제 방법 매핑)
+      // 2단계: 결제 준비 (백엔드에 결제 레코드 생성)
       const tossMethod = selectedMethod === 'CARD' ? 'CARD' : 'EASY_PAY';
       await preparePayment(order.orderNo, 'TOSS', tossMethod);
 
-      // 3단계: Toss 결제창 호출
-      const tossPayments = await loadTossPayments(import.meta.env.VITE_TOSS_CLIENT_KEY);
-      const payment = tossPayments.payment({ customerKey: ANONYMOUS });
-
+      // 3단계: 결제 위젯 페이지로 이동
+      //        위젯 페이지에서 Toss SDK를 초기화하고 결제 수단 UI를 렌더링
       const orderName = cartItems.length > 0
         ? `${cartItems[0].skuName}${cartItems.length > 1 ? ` 외 ${cartItems.length - 1}건` : ''}`
         : '주문';
 
-      const successUrl = `${window.location.origin}/payment/success`;
-      const failUrl = `${window.location.origin}/payment/fail`;
+      const paymentState: PaymentPageState = {
+        orderId: order.orderNo,
+        amount: total,
+        orderName,
+        customerEmail: form.ordererEmail,
+        customerName: form.ordererName,
+        customerMobilePhone: form.ordererPhone.replace(/\D/g, ''),
+        // 로그인 회원의 경우 customerKey에 userId(문자열)를 전달하면
+        // Toss 대시보드에서 결제 내역을 회원 단위로 조회할 수 있습니다.
+        // customerKey: String(profile.id),
+      };
 
-      if (selectedMethod === 'CARD') {
-        await payment.requestPayment({
-          method: 'CARD',
-          amount: { currency: 'KRW', value: total },
-          orderId: order.orderNo,
-          orderName,
-          successUrl,
-          failUrl,
-          card: { useEscrow: false, useCardPoint: false },
-        });
-      } else {
-        const easyPayType = selectedMethod as string;
-        await payment.requestPayment({
-          method: 'EASY_PAY',
-          amount: { currency: 'KRW', value: total },
-          orderId: order.orderNo,
-          orderName,
-          successUrl,
-          failUrl,
-          easyPay: { easyPayType },
-        });
-      }
+      navigate('/payment', { state: paymentState });
     } catch (e: any) {
       alert(e.response?.data?.message || e.message || '결제 처리에 실패했습니다.');
     } finally {

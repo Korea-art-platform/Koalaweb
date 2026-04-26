@@ -4,6 +4,13 @@ import { Route, Routes } from "react-router";
 import ProtectedRoute from "@/app/components/routers/ProtectedRoute";
 import AccountLayout from "@/app/components/layouts/AccountLayout";
 
+// 약관
+import Terms from "@/app/pages/legal/Terms";
+import Privacy from "@/app/pages/legal/Privacy";
+
+// 404
+import NotFound from "@/app/pages/NotFound";
+
 // 루트 페이지
 import About from "@/app/pages/About";
 import Home from "@/app/pages/Home";
@@ -33,6 +40,7 @@ import OrderConfirmation from "@/app/pages/order/Confirmation";
 import CheckoutSuccess from "@/app/pages/order/Success";
 
 // 결제
+import PaymentPage from "@/app/pages/payment/PaymentPage";
 import PaymentSuccess from "@/app/pages/payment/Success";
 import PaymentFail from "@/app/pages/payment/Fail";
 
@@ -72,6 +80,10 @@ export function AppRoutes() {
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/oauth2/callback" element={<OAuth2Callback />} />
 
+      {/* 약관 */}
+      <Route path="/terms" element={<Terms />} />
+      <Route path="/privacy" element={<Privacy />} />
+
       {/* ── 🔴 로그인 필수 구역 (ProtectedRoute로 보호됨) ───────────────────────── */}
       <Route element={<ProtectedRoute />}>
         
@@ -85,6 +97,7 @@ export function AppRoutes() {
         <Route path="/checkout/success" element={<CheckoutSuccess />} />
 
         {/* 결제 */}
+        <Route path="/payment" element={<PaymentPage />} />
         <Route path="/payment/success" element={<PaymentSuccess />} />
         <Route path="/payment/fail" element={<PaymentFail />} />
 
@@ -100,6 +113,9 @@ export function AppRoutes() {
 
       </Route>
       {/* ───────────────────────────────────────────────────────────────── */}
+
+      {/* 404 */}
+      <Route path="*" element={<NotFound />} />
 
     </Routes>
   );
