@@ -20,12 +20,12 @@ export default defineConfig({
         target: 'http://localhost:8081',
         changeOrigin: true,
       },
-      // OAuth2 로그인 흐름
-      '/oauth2': {
+      // OAuth2 인가 요청만 백엔드로 프록시 (/oauth2/callback은 프론트 라우트이므로 제외)
+      '/oauth2/authorization': {
         target: 'http://localhost:8081',
         changeOrigin: true,
       },
-      '/login/oauth2': {
+      '/login/oauth2/code': {
         target: 'http://localhost:8081',
         changeOrigin: true,
       },

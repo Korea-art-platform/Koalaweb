@@ -1,7 +1,8 @@
 import { useEffect } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/app/context/AuthContext';
+import { getMyProfile } from '@/api/user';
 
 export default function OAuth2Callback() {
   const { t } = useTranslation();
@@ -18,10 +19,16 @@ export default function OAuth2Callback() {
       return;
     }
 
-    // 백엔드가 HttpOnly 쿠키로 토큰을 이미 설정했으므로
-    // withCredentials: true 인 axios가 자동으로 쿠키를 포함해 요청
-    setAuthenticated(true);
-    navigate('/');
+    // 백엔드가 설정한 HttpOnly 쿠키가 실제로 유효한지 검증 후 인증 상태 반영
+    getMyProfile()
+      .then(() => {
+        setAuthenticated(true);
+        navigate('/');
+      })
+      .catch(() => {
+        alert(t('auth.oauth.error'));
+        navigate('/login');
+      });
   }, []);
 
   return (

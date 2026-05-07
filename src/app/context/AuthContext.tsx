@@ -25,6 +25,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       .catch(() => setIsAuthenticated(false));
   }, []);
 
+  useEffect(() => {
+    // 세션 만료 시 인터셉터가 발행하는 이벤트 수신 → 비인증 상태로 전환
+    // ProtectedRoute가 /login으로 리다이렉트 (window.location 리로드 없이)
+    const handleExpired = () => setIsAuthenticated(false);
+    window.addEventListener('auth:expired', handleExpired);
+    return () => window.removeEventListener('auth:expired', handleExpired);
+  }, []);
+
   const setAuthenticated = (value: boolean) => setIsAuthenticated(value);
 
   return (
