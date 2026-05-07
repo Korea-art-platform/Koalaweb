@@ -19,6 +19,8 @@ import {
   ProductActions,
 } from '@/app/components/products';
 
+import ProductDetailPage from '@/app/components/products/ProductDetailPage'; // ← 추가
+
 export default function ProductDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -124,7 +126,8 @@ export default function ProductDetail() {
 
       <div className="pt-28 pb-20 px-6 md:px-8">
         <div className="max-w-5xl mx-auto">
-          {/* Back button */}
+
+          {/* 뒤로가기 */}
           <button
             onClick={() => navigate(-1)}
             className="inline-flex items-center gap-2 text-sm text-gray-400 hover:text-black transition-colors mb-10 group"
@@ -133,17 +136,14 @@ export default function ProductDetail() {
             {t('product.detail.back')}
           </button>
 
-          {/* Main layout */}
+          {/* 상품 기본 정보 */}
           <div className="grid grid-cols-1 lg:grid-cols-[3fr_2fr] gap-10 lg:gap-14">
-            {/* Image gallery */}
             <ProductImageGallery
               sku={sku}
               images={images}
               selectedImage={selectedImage}
               setSelectedImage={setSelectedImage}
             />
-
-            {/* Info + Actions */}
             <div className="flex flex-col">
               <ProductInfo
                 sku={sku}
@@ -159,6 +159,12 @@ export default function ProductDetail() {
               />
             </div>
           </div>
+
+          {/* 상품 상세 페이지 이미지 ← 추가 */}
+          <div className="mt-20 border-t border-gray-100 pt-16">
+            <ProductDetailPage skuCode={sku.skuCode} />
+          </div>
+
         </div>
       </div>
     </div>
