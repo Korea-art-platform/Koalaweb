@@ -158,6 +158,9 @@
       "logout": "로그아웃",
       "defaultUsere": "사용자",
       "greeting": "{{name}}님"
+    },
+    "wishlist": {
+      "addToCart": "담기"
     }
   },
   "auth": {
@@ -371,6 +374,41 @@
       "showingFilter": "\"{{query}}\"에 대한 {{filter}} 결과",
       "noResultsDesc": "다른 키워드로 검색하거나 컬렉션을 둘러보세요."
     }
+  },
+  "ar": {
+    "tab360": "360° Viewer",
+    "tabAr": "AR Placement",
+    "comingSoonTitle": "AR Coming Soon",
+    "comingSoonDesc": "WebXR-based AR camera integration is coming soon.",
+    "productImageAlt": "Product Image",
+    "artistSuffix": "Artist",
+    "size": "Size",
+    "edition": "Edition",
+    "price": "Price",
+    "viewDetail": "View Detail",
+    "arToast": "AR feature is coming soon.",
+    "goToCart": "Go to Cart",
+    "addToCartShort": "Add",
+    "noSkuDesc": "Click 'View in AR' on the product page to place the artwork in your space.",
+    "status360Desc": "Zoom in/out with buttons • Go to product for 360° view",
+    "resetZoom": "Reset",
+    "move": "Move",
+    "zoomIn": "Zoom In",
+    "zoomOut": "Zoom Out"
+  },
+  "view360": {
+    "notFound": "360° images not found.",
+    "goBack": "Go Back",
+    "dragHint": "Drag to rotate • Scroll to zoom",
+    "noImagesRegistered": "No 360° images registered",
+    "autoRotate": "Auto Rotate",
+    "productInfo": "Product Info",
+    "category": "Category",
+    "edition": "Edition",
+    "price": "Price",
+    "viewDetail": "View Detail",
+    "goToCart": "Go to Cart",
+    "addToCartShort": "Add"
   },
   "cart": {
     "title": "장바구니",

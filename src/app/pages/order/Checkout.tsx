@@ -7,6 +7,7 @@ import { getCart } from '@/api/cart';
 import { preparePayment } from '@/api/payment';
 import { getMyProfile, getMyAddresses } from '@/api/user';
 import type { PaymentPageState } from '@/app/pages/payment/PaymentPage';
+import type { Cart, UserAddress } from '@/api/types';
 
 type PaymentMethodType = 'TOSS' | 'KAKAOPAY' | 'NAVERPAY' | 'CARD';
 
@@ -28,11 +29,11 @@ export default function Checkout() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const [cart, setCart] = useState<any>(null);
+  const [cart, setCart] = useState<Cart | null>(null);
   const [loading, setLoading] = useState(true);
   const [selectedMethod, setSelectedMethod] = useState<PaymentMethodType | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [addresses, setAddresses] = useState<any[]>([]);
+  const [addresses, setAddresses] = useState<UserAddress[]>([]);
   const [showAddressSearch, setShowAddressSearch] = useState(false);
 
   // 배송지 폼
@@ -75,7 +76,7 @@ export default function Checkout() {
         }));
 
         // 기본 배송지가 있으면 배송지 정보 초기화
-        const defaultAddress = userAddresses.find((addr: any) => addr?.isDefault);
+        const defaultAddress = userAddresses.find((addr) => addr?.isDefault);
         if (defaultAddress) {
           setForm((prev) => ({
             ...prev,
@@ -133,8 +134,6 @@ export default function Checkout() {
   const openAddressSearch = () => {
     new (window as any).daum.Postcode({
       oncomplete: function (data: any) {
-        console.log('📍 다음 API 응답:', data);  // 디버깅용
-
         let fullAddress = data.address;
         let extraAddress = '';
 
@@ -217,8 +216,10 @@ export default function Checkout() {
       };
 
       navigate('/payment', { state: paymentState });
-    } catch (e: any) {
-      alert(e.response?.data?.message || e.message || '결제 처리에 실패했습니다.');
+    } catch (e: unknown) {
+      const apiMsg = (e as { response?: { data?: { message?: string } } })?.response?.data?.message;
+      const errMsg = (e as { message?: string })?.message;
+      alert(apiMsg || errMsg || '결제 처리에 실패했습니다.');
     } finally {
       setIsProcessing(false);
     }
@@ -309,7 +310,7 @@ export default function Checkout() {
                       className="px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 text-sm focus:outline-none focus:border-gray-300"
                     >
                       <option value="">저장된 배송지 선택</option>
-                      {addresses.map((addr: any) => (
+                      {addresses.map((addr) => (
                         <option key={addr.id} value={addr.id}>
                           {addr.label} - {addr.address1}
                         </option>
@@ -401,7 +402,7 @@ export default function Checkout() {
                   <Package className="w-5 h-5 text-gray-400" /> 주문 상품 ({cartItems.length})
                 </h2>
                 <div className="space-y-4">
-                  {cartItems.map((item: any) => (
+                  {cartItems.map((item) => (
                     <div key={item.id} className="flex gap-4 p-4 bg-gray-50 rounded-2xl items-center">
                       <img
                         src={item.primaryImageUrl ?? 'https://via.placeholder.com/80'}

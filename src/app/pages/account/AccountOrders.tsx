@@ -43,8 +43,9 @@ export default function AccountOrders() {
     try {
       await cancelOrder(orderNo);
       setOrders((prev) => prev.map((o) => o.orderNo === orderNo ? { ...o, orderStatus: 'CANCELLED' } : o));
-    } catch (e: any) {
-      alert(e.response?.data?.message || t('order.detail.cancelFailed'));
+    } catch (e: unknown) {
+      const msg = (e as { response?: { data?: { message?: string } } })?.response?.data?.message;
+      alert(msg || t('order.detail.cancelFailed'));
     }
   };
 

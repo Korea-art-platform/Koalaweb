@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { getSkus, getGenreCounts } from '@/api/sku';
 import { getBanners } from '@/api/banner';
+import type { Sku, Banner } from '@/api/types';
 
 // 분리한 컴포넌트들 Import
 import HomeHero from '@/app/components/Home/HomeHero';
@@ -30,8 +31,8 @@ const DEFAULT_CATEGORIES = [
 
 export default function Home() {
 
-  const [skus, setSkus] = useState<any[]>([]);
-  const [banner, setBanner] = useState<any>(null);
+  const [skus, setSkus] = useState<Sku[]>([]);
+  const [banner, setBanner] = useState<Banner | null>(null);
   const [categories, setCategories] = useState(DEFAULT_CATEGORIES);
   const [loading, setLoading] = useState(true);
 

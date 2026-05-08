@@ -3,12 +3,15 @@ import tailwindcss from '@tailwindcss/vite'
 import react from '@vitejs/plugin-react'
 import tsconfigPaths from 'vite-tsconfig-paths'
 
-export default defineConfig({
+export default defineConfig(({ command }) => ({
   plugins: [
     react(),
     tailwindcss(),
     tsconfigPaths(),
   ],
+  esbuild: {
+    drop: command === 'build' ? ['console', 'debugger'] : [],
+  },
   assetsInclude: ['**/*.svg', '**/*.csv'],
 
   server: {
@@ -17,6 +20,10 @@ export default defineConfig({
       // API 요청을 로컬 백엔드로 프록시
       // → 브라우저가 같은 origin으로 인식 → HttpOnly 쿠키 정상 동작
       '/api': {
+        target: 'http://localhost:8081',
+        changeOrigin: true,
+      },
+      '/admin': {
         target: 'http://localhost:8081',
         changeOrigin: true,
       },
@@ -31,4 +38,4 @@ export default defineConfig({
       },
     },
   },
-})
+}))

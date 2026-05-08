@@ -101,13 +101,21 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* 하단 정보 섹션 */}
-        <div className="pt-8 border-t border-white/10">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-6">
-            <p className="text-[10px] md:text-xs text-gray-500 order-2 md:order-1">
+        {/* 사업자 정보 */}
+        <div className="pt-8 border-t border-white/10 space-y-4">
+          <p className="text-[10px] text-gray-600 leading-relaxed break-keep">
+            {/* TODO: 실제 사업자 정보로 교체 필요 */}
+            상호명: (주)코알라 &nbsp;|&nbsp; 대표이사: 홍길동 &nbsp;|&nbsp; 사업자등록번호: 000-00-00000
+            &nbsp;|&nbsp; 통신판매업 신고번호: 제0000-서울XX-0000호
+            <br className="hidden sm:block" />
+            &nbsp;|&nbsp; 주소: 서울특별시 강남구 테헤란로 XX, XX층 &nbsp;|&nbsp; 이메일: support@koala-art.co.kr
+          </p>
+
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+            <p className="text-[10px] text-gray-500 order-2 md:order-1">
               {t('footer.bottom.copyright')}
             </p>
-            
+
             <div className="flex flex-wrap justify-center items-center gap-x-6 gap-y-2 order-1 md:order-2">
               {[
                 { key: 'privacy', path: '/privacy' },

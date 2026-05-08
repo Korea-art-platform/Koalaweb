@@ -1,155 +1,63 @@
-import { AdminLayout } from '@/app/components/layouts/AdminLayout';
-import { Package, Users, ShoppingBag, TrendingUp, ArrowUp, ArrowDown } from 'lucide-react';
 import { Link } from 'react-router';
+import { useAdminAuth } from '@/app/context/AdminAuthContext';
+import {
+  ShoppingBag, Package, Users, Star, Image as ImageIcon,
+  LogOut, UserCog,
+} from 'lucide-react';
 
-const stats = [
-  {
-    label: '총 상품',
-    value: '127',
-    change: '+12.5%',
-    trend: 'up',
-    icon: Package,
-    color: 'text-blue-600',
-    bgColor: 'bg-blue-50'
-  },
-  {
-    label: '아티스트',
-    value: '24',
-    change: '+3',
-    trend: 'up',
-    icon: Users,
-    color: 'text-purple-600',
-    bgColor: 'bg-purple-50'
-  },
-  {
-    label: '이번 달 주문',
-    value: '89',
-    change: '-5.2%',
-    trend: 'down',
-    icon: ShoppingBag,
-    color: 'text-green-600',
-    bgColor: 'bg-green-50'
-  },
-  {
-    label: '이번 달 매출',
-    value: '₩42.5M',
-    change: '+18.3%',
-    trend: 'up',
-    icon: TrendingUp,
-    color: 'text-orange-600',
-    bgColor: 'bg-orange-50'
-  },
-];
-
-const recentProducts = [
-  { id: '1', name: 'Harmony Spirit', artist: '김원근', price: 250000, status: '판매중', date: '2026-04-10' },
-  { id: '2', name: 'Urban Poetry', artist: '박지영', price: 380000, status: '품절', date: '2026-04-09' },
-  { id: '3', name: 'Digital Dreams', artist: '이수민', price: 190000, status: '판매중', date: '2026-04-08' },
-  { id: '4', name: 'Nature Blend', artist: '김원근', price: 420000, status: '판매중', date: '2026-04-07' },
-  { id: '5', name: 'Abstract Mind', artist: '최윤아', price: 350000, status: '판매중', date: '2026-04-06' },
+const NAV_CARDS = [
+  { label: '주문 관리', desc: '신규 주문 확인 및 배송 처리', icon: ShoppingBag, href: '/admin/orders', color: 'bg-blue-50 text-blue-600' },
+  { label: '상품 관리', desc: 'SKU 등록·수정·게시 상태 관리', icon: Package, href: '/admin/products', color: 'bg-violet-50 text-violet-600' },
+  { label: '아티스트', desc: '아티스트 프로필 등록 및 관리', icon: Users, href: '/admin/artists', color: 'bg-amber-50 text-amber-600' },
+  { label: '리뷰 관리', desc: '승인 대기 리뷰 검토 및 처리', icon: Star, href: '/admin/reviews', color: 'bg-green-50 text-green-600' },
+  { label: '배너 관리', desc: '홈 배너 등록 및 노출 설정', icon: ImageIcon, href: '/admin/banners', color: 'bg-pink-50 text-pink-600' },
+  { label: '회원 관리', desc: '회원 조회 및 계정 상태 관리', icon: UserCog, href: '/admin/users', color: 'bg-gray-100 text-gray-600' },
 ];
 
 export default function AdminDashboard() {
+  const { admin, logout } = useAdminAuth();
+
   return (
-    <AdminLayout>
-      {/* Header */}
-      <header className="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-8 flex-shrink-0">
+    <div className="p-8">
+      <div className="flex items-start justify-between mb-8">
         <div>
-          <h1 className="text-lg font-bold text-gray-900">대시보드</h1>
-          <p className="text-xs text-gray-500 mt-0.5">KoALa 관리자 패널에 오신 것을 환영합니다</p>
+          <p className="text-xs text-gray-400 mb-1">대시보드</p>
+          <h1 className="text-xl font-bold text-gray-900">
+            안녕하세요, {admin?.name ?? '관리자'}님
+          </h1>
+          {admin && (
+            <p className="text-xs text-gray-400 mt-1">{admin.email}</p>
+          )}
         </div>
-        <div className="text-sm text-gray-600">
-          {new Date().toLocaleDateString('ko-KR', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-            weekday: 'long'
-          })}
-        </div>
-      </header>
-
-      {/* Content Area */}
-      <div className="flex-1 overflow-auto p-8">
-        <div className="max-w-[1400px] mx-auto space-y-8">
-
-          {/* Stats Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {stats.map((stat) => {
-              const Icon = stat.icon;
-              return (
-                <div key={stat.label} className="bg-white p-6 rounded-2xl border border-gray-200 hover:shadow-lg transition-shadow">
-                  <div className="flex items-start justify-between mb-4">
-                    <div className={`p-3 rounded-xl ${stat.bgColor}`}>
-                      <Icon className={`w-5 h-5 ${stat.color}`} />
-                    </div>
-                    <div className={`flex items-center gap-1 text-xs font-medium ${
-                      stat.trend === 'up' ? 'text-green-600' : 'text-red-600'
-                    }`}>
-                      {stat.trend === 'up' ? <ArrowUp className="w-3 h-3" /> : <ArrowDown className="w-3 h-3" />}
-                      {stat.change}
-                    </div>
-                  </div>
-                  <div className="text-2xl font-bold text-gray-900 mb-1">{stat.value}</div>
-                  <div className="text-sm text-gray-500">{stat.label}</div>
-                </div>
-              );
-            })}
-          </div>
-
-          {/* Recent Products */}
-          <div className="bg-white rounded-2xl border border-gray-200">
-            <div className="p-6 border-b border-gray-200 flex items-center justify-between">
-              <div>
-                <h2 className="text-lg font-bold text-gray-900">최근 등록 상품</h2>
-                <p className="text-sm text-gray-500 mt-0.5">가장 최근에 등록된 상품 목록입니다</p>
-              </div>
-              <Link
-                to="/admin/products"
-                className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
-              >
-                전체보기
-              </Link>
-            </div>
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="border-b border-gray-200">
-                    <th className="text-left text-xs font-medium text-gray-500 px-6 py-3">상품명</th>
-                    <th className="text-left text-xs font-medium text-gray-500 px-6 py-3">아티스트</th>
-                    <th className="text-left text-xs font-medium text-gray-500 px-6 py-3">가격</th>
-                    <th className="text-left text-xs font-medium text-gray-500 px-6 py-3">상태</th>
-                    <th className="text-left text-xs font-medium text-gray-500 px-6 py-3">등록일</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {recentProducts.map((product) => (
-                    <tr key={product.id} className="border-b border-gray-100 last:border-0 hover:bg-gray-50 transition-colors">
-                      <td className="px-6 py-4">
-                        <div className="font-medium text-sm text-gray-900">{product.name}</div>
-                      </td>
-                      <td className="px-6 py-4 text-sm text-gray-600">{product.artist}</td>
-                      <td className="px-6 py-4 text-sm text-gray-900 font-medium">
-                        ₩{product.price.toLocaleString()}
-                      </td>
-                      <td className="px-6 py-4">
-                        <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${
-                          product.status === '판매중'
-                            ? 'bg-green-50 text-green-700'
-                            : 'bg-gray-100 text-gray-600'
-                        }`}>
-                          {product.status}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 text-sm text-gray-500">{product.date}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-        </div>
+        <button
+          onClick={logout}
+          className="flex items-center gap-1.5 text-xs text-gray-400 hover:text-gray-700 transition-colors py-1"
+        >
+          <LogOut className="w-3.5 h-3.5" />
+          로그아웃
+        </button>
       </div>
-    </AdminLayout>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {NAV_CARDS.map((card) => {
+          const Icon = card.icon;
+          return (
+            <Link
+              key={card.href}
+              to={card.href}
+              className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-md transition-shadow group"
+            >
+              <div className={`w-10 h-10 rounded-lg flex items-center justify-center mb-4 ${card.color}`}>
+                <Icon className="w-5 h-5" />
+              </div>
+              <div className="font-semibold text-gray-900 text-sm mb-1 group-hover:text-black transition-colors">
+                {card.label}
+              </div>
+              <div className="text-xs text-gray-400">{card.desc}</div>
+            </Link>
+          );
+        })}
+      </div>
+    </div>
   );
 }

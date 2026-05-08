@@ -30,8 +30,9 @@ export default function ForgotPassword() {
     try {
       await sendPasswordResetCode(email);
       setStep('verify');
-    } catch (err: any) {
-      setError(err.response?.data?.message || t('auth.forgotPassword.errors.sendCode'));
+    } catch (err: unknown) {
+      const msg = (err as { response?: { data?: { message?: string } } })?.response?.data?.message;
+      setError(msg || t('auth.forgotPassword.errors.sendCode'));
     } finally {
       setLoading(false);
     }
@@ -45,8 +46,9 @@ export default function ForgotPassword() {
     try {
       await verifyPasswordResetCode(email, code);
       setStep('reset');
-    } catch (err: any) {
-      setError(err.response?.data?.message || t('auth.forgotPassword.errors.verifyCode'));
+    } catch (err: unknown) {
+      const msg = (err as { response?: { data?: { message?: string } } })?.response?.data?.message;
+      setError(msg || t('auth.forgotPassword.errors.verifyCode'));
     } finally {
       setLoading(false);
     }
@@ -68,8 +70,9 @@ export default function ForgotPassword() {
     try {
       await resetPassword(email, code, newPassword);
       navigate('/login');
-    } catch (err: any) {
-      setError(err.response?.data?.message || t('auth.forgotPassword.errors.resetPassword'));
+    } catch (err: unknown) {
+      const msg = (err as { response?: { data?: { message?: string } } })?.response?.data?.message;
+      setError(msg || t('auth.forgotPassword.errors.resetPassword'));
     } finally {
       setLoading(false);
     }
@@ -152,7 +155,7 @@ export default function ForgotPassword() {
                       placeholder={t('auth.forgotPassword.verifyStep.codePlaceholder')}
                       value={code}
                       onChange={(e) => setCode(e.target.value)}
-                      maxLength={6}
+                      maxLength={8}
                       required
                       className="w-full pl-12 pr-4 py-3 bg-[#F4F4F4] border border-transparent rounded-xl focus:outline-none focus:border-gray-300 transition-colors tracking-widest text-center text-lg"
                     />

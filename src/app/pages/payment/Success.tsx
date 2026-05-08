@@ -55,13 +55,10 @@ export default function PaymentSuccess() {
           state: { orderNo: orderId },
           replace: true,
         });
-      } catch (e: any) {
-        console.error('[PaymentSuccess] 승인 실패:', e);
-        setErrorMsg(
-          e?.response?.data?.message
-          ?? e?.message
-          ?? '결제 승인에 실패했습니다. 고객센터로 문의해 주세요.'
-        );
+      } catch (e: unknown) {
+        const apiMsg = (e as { response?: { data?: { message?: string } } })?.response?.data?.message;
+        const errMsg = (e as { message?: string })?.message;
+        setErrorMsg(apiMsg ?? errMsg ?? '결제 승인에 실패했습니다. 고객센터로 문의해 주세요.');
         setStatus('error');
       }
     };

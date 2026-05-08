@@ -21,7 +21,8 @@ const queryClient = new QueryClient({
 
 function App() {
   useEffect(() => {
-    TagManager.initialize({ gtmId: 'GTM-KHDT3ZKX' }); 
+    const gtmId = import.meta.env.VITE_GTM_ID as string;
+    if (gtmId) TagManager.initialize({ gtmId });
   }, []);
 
   return (

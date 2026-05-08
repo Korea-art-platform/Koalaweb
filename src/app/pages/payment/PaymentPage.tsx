@@ -75,9 +75,11 @@ export default function PaymentPage() {
           easyPay: { easyPayType: selected },
         });
       }
-    } catch (e: any) {
-      if (e?.code !== 'USER_CANCEL') {
-        alert(e?.message ?? '결제 요청에 실패했습니다. 다시 시도해 주세요.');
+    } catch (e: unknown) {
+      const code = (e as { code?: string })?.code;
+      const msg = (e as { message?: string })?.message;
+      if (code !== 'USER_CANCEL') {
+        alert(msg ?? '결제 요청에 실패했습니다. 다시 시도해 주세요.');
       }
     } finally {
       setIsProcessing(false);

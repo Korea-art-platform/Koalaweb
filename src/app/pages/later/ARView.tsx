@@ -1,24 +1,33 @@
 import Navigation from '@/app/components/layouts/Header';
-import { useState, useEffect } from 'react';
-import { RotateCcw, Move, ZoomIn, ZoomOut, Maximize2, CheckCircle2, X, Camera, Info } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
+import { RotateCcw, Move, ZoomIn, ZoomOut, Maximize2, CheckCircle2, X, Camera } from 'lucide-react';
 import { ImageWithFallback } from '@/app/components/fallback/ImageWithFallback';
-import { Link, useNavigate, useSearchParams } from 'react-router';
+import { Link, useSearchParams } from 'react-router';
 import { getSku } from '@/api/sku';
 import { addCartItem } from '@/api/cart';
+import type { Sku } from '@/api/types';
 
 export default function ARView() {
-  const navigate = useNavigate();
+  const { t } = useTranslation();
   const [searchParams] = useSearchParams();
   const skuCode = searchParams.get('skuCode'); // /ar-view?skuCode=SKU-001
 
   const [mode, setMode] = useState<'360' | 'ar'>('360');
-  const [sku, setSku] = useState<any>(null);
+  const [sku, setSku] = useState<Sku | null>(null);
   const [loading, setLoading] = useState(false);
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
+  const [showCartLink, setShowCartLink] = useState(false);
   const [cartLoading, setCartLoading] = useState(false);
   const [zoom, setZoom] = useState(1);
-  const [showInfo, setShowInfo] = useState(true);
+  const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
+    };
+  }, []);
 
   useEffect(() => {
     if (!skuCode) return;
@@ -36,10 +45,12 @@ export default function ARView() {
     fetchSku();
   }, [skuCode]);
 
-  const showToastMessage = (message: string) => {
+  const showToastMessage = (message: string, withCartLink = false) => {
+    if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
     setToastMessage(message);
+    setShowCartLink(withCartLink);
     setShowToast(true);
-    setTimeout(() => setShowToast(false), 3000);
+    toastTimerRef.current = setTimeout(() => setShowToast(false), 3000);
   };
 
   const handleAddToCart = async () => {
@@ -48,9 +59,10 @@ export default function ARView() {
     try {
       await addCartItem(sku.skuCode, 1);
       window.dispatchEvent(new Event('cart-updated'));
-      showToastMessage('장바구니에 담겼습니다.');
-    } catch (e: any) {
-      showToastMessage(e.response?.data?.message || '장바구니 담기 실패');
+      showToastMessage(t('product.detail.toast.cartAdded'), true);
+    } catch (e: unknown) {
+      const msg = (e as { response?: { data?: { message?: string } } })?.response?.data?.message;
+      showToastMessage(msg || t('product.detail.toast.cartAddFailed'));
     } finally {
       setCartLoading(false);
     }
@@ -58,7 +70,7 @@ export default function ARView() {
 
   const handleARMode = () => {
     setMode('ar');
-    showToastMessage('AR 기능은 준비 중입니다.');
+    showToastMessage(t('ar.arToast'));
     setTimeout(() => setMode('360'), 1500);
   };
 
@@ -76,9 +88,9 @@ export default function ARView() {
             <CheckCircle2 className="w-5 h-5 text-green-400 flex-shrink-0" />
             <div className="flex-1">
               <p className="text-sm font-semibold">{toastMessage}</p>
-              {toastMessage.includes('장바구니') && (
+              {showCartLink && (
                 <Link to="/cart" className="text-xs text-gray-400 underline hover:text-white transition-colors">
-                  장바구니로 이동하기
+                  {t('ar.goToCart')}
                 </Link>
               )}
             </div>
@@ -96,8 +108,8 @@ export default function ARView() {
               <div className="relative w-full max-w-2xl aspect-square flex items-center justify-center bg-black rounded-3xl overflow-hidden">
                 <div className="text-center text-white">
                   <Camera className="w-16 h-16 mx-auto mb-4 opacity-40" />
-                  <p className="text-lg font-bold mb-2">AR 기능 준비 중</p>
-                  <p className="text-sm text-white/50">WebXR 기반 AR 카메라 연동이<br />곧 추가될 예정입니다.</p>
+                  <p className="text-lg font-bold mb-2">{t('ar.comingSoonTitle')}</p>
+                  <p className="text-sm text-white/50">{t('ar.comingSoonDesc')}</p>
                 </div>
                 <div className="absolute top-6 left-6 w-8 h-8 border-t-2 border-l-2 border-white/60" />
                 <div className="absolute top-6 right-6 w-8 h-8 border-t-2 border-r-2 border-white/60" />
@@ -112,7 +124,7 @@ export default function ARView() {
                   <>
                     <ImageWithFallback
                       src={displayImage}
-                      alt={sku?.name ?? '상품 이미지'}
+                      alt={sku?.name ?? t('ar.productImageAlt')}
                       className="w-full h-full object-contain drop-shadow-2xl transition-transform duration-200"
                       style={{ transform: `scale(${zoom})` } as any}
                     />
@@ -127,18 +139,18 @@ export default function ARView() {
 
           <div className="absolute top-8 left-1/2 -translate-x-1/2 z-10 w-full max-w-xs px-4">
             <div className="flex items-center gap-2 p-1.5 rounded-full bg-white/90 backdrop-blur-md shadow-xl border border-gray-100">
-              <button onClick={() => setMode('360')} className={`flex-1 py-2 rounded-full text-xs font-bold transition-all ${mode === '360' ? 'bg-black text-white' : 'text-gray-400 hover:text-black'}`}>360° 뷰어</button>
-              <button onClick={handleARMode} className={`flex-1 py-2 rounded-full text-xs font-bold transition-all ${mode === 'ar' ? 'bg-black text-white' : 'text-gray-400 hover:text-black'}`}>AR 공간 배치</button>
+              <button onClick={() => setMode('360')} className={`flex-1 py-2 rounded-full text-xs font-bold transition-all ${mode === '360' ? 'bg-black text-white' : 'text-gray-400 hover:text-black'}`}>{t('ar.tab360')}</button>
+              <button onClick={handleARMode} className={`flex-1 py-2 rounded-full text-xs font-bold transition-all ${mode === 'ar' ? 'bg-black text-white' : 'text-gray-400 hover:text-black'}`}>{t('ar.tabAr')}</button>
             </div>
           </div>
 
           <div className="absolute left-6 top-1/2 -translate-y-1/2 z-10 hidden sm:block">
             <div className="flex flex-col gap-4 p-3 rounded-[24px] bg-white/90 backdrop-blur-md shadow-xl border border-gray-100">
-              <button onClick={() => setZoom(1)} className="p-3 hover:bg-gray-50 rounded-xl transition-colors text-gray-700" title="초기화"><RotateCcw className="w-5 h-5" /></button>
-              <button className="p-3 hover:bg-gray-50 rounded-xl transition-colors text-gray-700" title="이동"><Move className="w-5 h-5" /></button>
+              <button onClick={() => setZoom(1)} className="p-3 hover:bg-gray-50 rounded-xl transition-colors text-gray-700" title={t('ar.resetZoom')}><RotateCcw className="w-5 h-5" /></button>
+              <button className="p-3 hover:bg-gray-50 rounded-xl transition-colors text-gray-700" title={t('ar.move')}><Move className="w-5 h-5" /></button>
               <div className="w-full h-px bg-gray-100" />
-              <button onClick={() => setZoom((p) => Math.min(p + 0.25, 3))} className="p-3 hover:bg-gray-50 rounded-xl transition-colors text-gray-700" title="확대"><ZoomIn className="w-5 h-5" /></button>
-              <button onClick={() => setZoom((p) => Math.max(p - 0.25, 0.5))} className="p-3 hover:bg-gray-50 rounded-xl transition-colors text-gray-700" title="축소"><ZoomOut className="w-5 h-5" /></button>
+              <button onClick={() => setZoom((p) => Math.min(p + 0.25, 3))} className="p-3 hover:bg-gray-50 rounded-xl transition-colors text-gray-700" title={t('ar.zoomIn')}><ZoomIn className="w-5 h-5" /></button>
+              <button onClick={() => setZoom((p) => Math.max(p - 0.25, 0.5))} className="p-3 hover:bg-gray-50 rounded-xl transition-colors text-gray-700" title={t('ar.zoomOut')}><ZoomOut className="w-5 h-5" /></button>
             </div>
           </div>
 
@@ -149,24 +161,24 @@ export default function ARView() {
                   <div>
                     <div className="text-[10px] text-gray-400 uppercase tracking-widest mb-3 font-bold">{sku.genre}</div>
                     <h3 className="text-2xl font-medium mb-1 leading-tight">{sku.name}</h3>
-                    <p className="text-sm text-gray-500 font-medium">{sku.artistName} 작가</p>
+                    <p className="text-sm text-gray-500 font-medium">{sku.artistName} {t('ar.artistSuffix')}</p>
                   </div>
                   <div className="pt-6 border-t border-gray-100 space-y-4 text-xs">
-                    {sku.widthCm && (<div className="flex justify-between"><span className="text-gray-400">크기</span><span className="font-bold text-gray-900">{sku.widthCm}×{sku.heightCm}{sku.depthCm ? `×${sku.depthCm}` : ''}cm</span></div>)}
-                    {sku.isLimitedEdition && (<div className="flex justify-between"><span className="text-gray-400">에디션</span><span className="font-bold text-gray-900">{sku.editionNumber} / {sku.editionSize}</span></div>)}
-                    <div className="flex justify-between"><span className="text-gray-400">가격</span><span className="font-bold text-gray-900">₩{(sku.salePrice ?? sku.listPrice).toLocaleString()}</span></div>
+                    {sku.widthCm && (<div className="flex justify-between"><span className="text-gray-400">{t('ar.size')}</span><span className="font-bold text-gray-900">{sku.widthCm}×{sku.heightCm}{sku.depthCm ? `×${sku.depthCm}` : ''}cm</span></div>)}
+                    {sku.isLimitedEdition && (<div className="flex justify-between"><span className="text-gray-400">{t('ar.edition')}</span><span className="font-bold text-gray-900">{sku.editionNumber} / {sku.editionSize}</span></div>)}
+                    <div className="flex justify-between"><span className="text-gray-400">{t('ar.price')}</span><span className="font-bold text-gray-900">₩{(sku.salePrice ?? sku.listPrice).toLocaleString()}</span></div>
                   </div>
                   <div className="flex gap-3">
-                    <Link to={`/product/${sku.skuCode}`} className="flex-1 py-4 border border-gray-200 text-black text-center rounded-2xl hover:bg-gray-50 transition-colors text-sm font-bold">상세 보기</Link>
-                    <button onClick={handleAddToCart} disabled={cartLoading || sku.status === 'OUT_OF_STOCK'} className="flex-1 py-4 bg-black text-white rounded-2xl hover:bg-gray-800 transition-all font-bold text-sm disabled:opacity-50">{sku.status === 'OUT_OF_STOCK' ? '품절' : cartLoading ? '담는 중...' : '담기'}</button>
+                    <Link to={`/product/${sku.skuCode}`} className="flex-1 py-4 border border-gray-200 text-black text-center rounded-2xl hover:bg-gray-50 transition-colors text-sm font-bold">{t('ar.viewDetail')}</Link>
+                    <button onClick={handleAddToCart} disabled={cartLoading || sku.status === 'OUT_OF_STOCK'} className="flex-1 py-4 bg-black text-white rounded-2xl hover:bg-gray-800 transition-all font-bold text-sm disabled:opacity-50">{sku.status === 'OUT_OF_STOCK' ? t('product.detail.actions.outOfStock') : cartLoading ? t('product.detail.actions.addingToCart') : t('ar.addToCartShort')}</button>
                   </div>
                 </>
               ) : (
                 <div>
                   <div className="text-[10px] text-gray-400 uppercase tracking-widest mb-3 font-bold">Premium Art Toy</div>
                   <h3 className="text-2xl font-medium mb-1 leading-tight">KoALa AR Viewer</h3>
-                  <p className="text-sm text-gray-500 font-medium mt-4 leading-relaxed">상품 상세 페이지에서 AR 보기를 클릭하면 해당 작품을 공간에 배치해볼 수 있습니다.</p>
-                  <Link to="/store" className="block w-full mt-8 py-4 bg-black text-white text-center rounded-2xl hover:bg-gray-800 transition-all font-bold text-sm">스토어 구경하기</Link>
+                  <p className="text-sm text-gray-500 font-medium mt-4 leading-relaxed">{t('ar.noSkuDesc')}</p>
+                  <Link to="/store" className="block w-full mt-8 py-4 bg-black text-white text-center rounded-2xl hover:bg-gray-800 transition-all font-bold text-sm">{t('order.history.goStore')}</Link>
                 </div>
               )}
             </div>
@@ -177,9 +189,9 @@ export default function ARView() {
           <div className="absolute bottom-8 left-8 z-10 max-w-[280px] sm:max-w-sm p-6 rounded-[24px] bg-white/90 backdrop-blur-md shadow-xl border border-gray-100">
             <div className="text-sm space-y-2">
               <div className="font-bold flex items-center gap-2 text-black">
-                {mode === 'ar' ? (<><div className="w-2 h-2 bg-yellow-500 rounded-full animate-pulse" />AR 기능 준비 중</>) : (<><div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />360° 뷰어</>)}
+                {mode === 'ar' ? (<><div className="w-2 h-2 bg-yellow-500 rounded-full animate-pulse" />{t('ar.comingSoonTitle')}</>) : (<><div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />{t('ar.tab360')}</>)}
               </div>
-              <div className="text-gray-500 text-xs leading-relaxed">{mode === 'ar' ? 'WebXR 기반 AR 카메라 연동이 곧 추가될 예정입니다.' : '좌우 버튼으로 확대/축소 • 상품 상세에서 360° 뷰로 이동하세요'}</div>
+              <div className="text-gray-500 text-xs leading-relaxed">{mode === 'ar' ? t('ar.comingSoonDesc') : t('ar.status360Desc')}</div>
             </div>
           </div>
 
@@ -190,7 +202,7 @@ export default function ARView() {
                   <span className="text-[10px] text-gray-400 font-bold uppercase">Price</span>
                   <span className="text-lg font-black text-black">₩{(sku.salePrice ?? sku.listPrice).toLocaleString()}</span>
                 </div>
-                <button onClick={handleAddToCart} disabled={cartLoading || sku.status === 'OUT_OF_STOCK'} className="flex-1 py-4 bg-black text-white rounded-xl font-bold text-sm disabled:opacity-50">{sku.status === 'OUT_OF_STOCK' ? '품절' : '장바구니 담기'}</button>
+                <button onClick={handleAddToCart} disabled={cartLoading || sku.status === 'OUT_OF_STOCK'} className="flex-1 py-4 bg-black text-white rounded-xl font-bold text-sm disabled:opacity-50">{sku.status === 'OUT_OF_STOCK' ? t('product.detail.actions.outOfStock') : t('product.detail.actions.addToCart')}</button>
               </div>
             </div>
           )}

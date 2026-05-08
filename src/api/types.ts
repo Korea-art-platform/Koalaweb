@@ -30,6 +30,8 @@ export interface LoginRequest {
 export interface UserProfile {
   id: number;
   email: string;
+  name?: string;
+  phone?: string;
   nickname?: string;
   profileImageUrl?: string;
 }
@@ -54,6 +56,18 @@ export interface Address {
 
 export type AddressRequest = Omit<Address, 'id' | 'isDefault'>;
 
+// 백엔드 배송지 응답 (Account 페이지에서 사용)
+export interface UserAddress {
+  id: number;
+  label?: string;
+  recipientName: string;
+  recipientPhone: string;
+  zipCode: string;
+  address1: string;
+  address2?: string;
+  isDefault: boolean;
+}
+
 // ─── SKU (상품) ───────────────────────────────────────────────────────────────
 export type SkuStatus = 'ACTIVE' | 'OUT_OF_STOCK' | 'COMING_SOON';
 
@@ -67,14 +81,22 @@ export interface Sku {
   name: string;
   genre: string;
   artistName: string;
+  artistCode?: string;
   listPrice: number;
   salePrice?: number;
   status: SkuStatus;
   isLimitedEdition: boolean;
+  editionNumber?: number;
+  editionSize?: number;
   primaryImageUrl?: string;
   mediaList?: SkuMedia[];
   colorOptions?: string[];
   description?: string;
+  widthCm?: number;
+  heightCm?: number;
+  depthCm?: number;
+  weightKg?: number;
+  spinePicturesJson?: string[];
 }
 
 export interface GenreCount {
@@ -140,10 +162,19 @@ export interface OrderItem {
 
 export interface Order {
   orderNo: string;
-  status: string;
+  orderStatus: string;
   totalAmount: number;
   createdAt: string;
   items?: OrderItem[];
+  // 주문 목록 요약 필드
+  firstSkuName?: string;
+  firstSkuImageUrl?: string;
+  itemCount?: number;
+  // 주문 상세 필드
+  orderItems?: OrderItem[];
+  ordererName?: string;
+  ordererEmail?: string;
+  ordererPhone?: string;
 }
 
 // ─── 결제 ─────────────────────────────────────────────────────────────────────

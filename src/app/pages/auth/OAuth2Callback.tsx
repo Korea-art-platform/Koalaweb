@@ -10,9 +10,9 @@ export default function OAuth2Callback() {
   const navigate = useNavigate();
   const { setAuthenticated } = useAuth();
 
-  useEffect(() => {
-    const error = searchParams.get('error');
+  const error = searchParams.get('error');
 
+  useEffect(() => {
     if (error) {
       alert(t('auth.oauth.error'));
       navigate('/login');
@@ -29,7 +29,7 @@ export default function OAuth2Callback() {
         alert(t('auth.oauth.error'));
         navigate('/login');
       });
-  }, []);
+  }, [error, navigate, setAuthenticated, t]);
 
   return (
     <div className="flex items-center justify-center h-screen">

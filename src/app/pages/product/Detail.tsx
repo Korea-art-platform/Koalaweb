@@ -1,14 +1,15 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router';
 import { ArrowLeft } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useQueryClient } from '@tanstack/react-query';
 import Navigation from '@/app/components/layouts/Header';
 import { getSku } from '@/api/sku';
+import { getArtist } from '@/api/artist';
 import { addCartItem } from '@/api/cart';
 import { addWishlist, removeWishlist, checkWishlist } from '@/api/wishlist';
 import { CART_QUERY_KEY } from '@/app/hooks/useCart';
-import type { Sku } from '@/api/types';
+import type { Sku, Artist } from '@/api/types';
 
 import {
   ProductSkeleton,
@@ -19,7 +20,8 @@ import {
   ProductActions,
 } from '@/app/components/products';
 
-import ProductDetailPage from '@/app/components/products/ProductDetailPage'; // ← 추가
+import ProductDetailPage from '@/app/components/products/ProductDetailPage';
+import { ArtImages, ArtArtist, ArtInfo, ArtQnA } from '@/app/components/ArtDetail';
 
 export default function ProductDetail() {
   const { id } = useParams();
@@ -28,6 +30,7 @@ export default function ProductDetail() {
   const queryClient = useQueryClient();
 
   const [sku, setSku] = useState<Sku | null>(null);
+  const [artist, setArtist] = useState<Artist | null>(null);
   const [loading, setLoading] = useState(true);
   const [selectedImage, setSelectedImage] = useState(0);
   const [selectedColor, setSelectedColor] = useState<string | undefined>();
@@ -38,6 +41,13 @@ export default function ProductDetail() {
 
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [cartLoading, setCartLoading] = useState(false);
+  const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
+    };
+  }, []);
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'auto' });
@@ -48,7 +58,15 @@ export default function ProductDetail() {
       setLoading(true);
       try {
         const res = await getSku(id!);
-        setSku(res.data.data);
+        const skuData: Sku = res.data.data;
+        setSku(skuData);
+
+        if ((skuData as any).artistCode) {
+          try {
+            const artistRes = await getArtist((skuData as any).artistCode);
+            setArtist(artistRes.data.data);
+          } catch { /* artist 없으면 이름만 표시 */ }
+        }
 
         try {
           const wishRes = await checkWishlist(id!);
@@ -66,10 +84,11 @@ export default function ProductDetail() {
   }, [id]);
 
   const showToastMessage = (message: string, isCart: boolean = false) => {
+    if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
     setToastMessage(message);
     setShowCartLink(isCart);
     setShowToast(true);
-    setTimeout(() => setShowToast(false), 3000);
+    toastTimerRef.current = setTimeout(() => setShowToast(false), 3000);
   };
 
   const handleAddToCart = async () => {
@@ -160,9 +179,32 @@ export default function ProductDetail() {
             </div>
           </div>
 
-          {/* 상품 상세 페이지 이미지 ← 추가 */}
+          {/* 상품 상세 이미지 */}
           <div className="mt-20 border-t border-gray-100 pt-16">
             <ProductDetailPage skuCode={sku.skuCode} />
+          </div>
+
+          {/* 작품 상세 이미지 그리드 + 작가 / 작품 소개 / QnA */}
+          <div className="mt-20 border-t border-gray-100 pt-16 max-w-2xl mx-auto">
+            <ArtImages
+              images={images.filter((_, i) => i < 3)}
+              title={sku.name}
+            />
+            <ArtArtist
+              artistCode={(sku as any).artistCode}
+              artistName={sku.artistName}
+              artistDescription={artist?.bio}
+              artistImageUrl={artist?.profileImageUrl}
+            />
+            <ArtInfo
+              items={[
+                { label: '소재', value: sku.genre ?? '-' },
+                { label: '크기', value: (sku as any).widthCm ? `${(sku as any).widthCm}cm × ${(sku as any).heightCm}cm` : '-' },
+                { label: '무게', value: (sku as any).weightKg ? `${(sku as any).weightKg}kg` : '-' },
+                { label: '배달비용', value: '-' },
+              ]}
+            />
+            <ArtQnA />
           </div>
 
         </div>

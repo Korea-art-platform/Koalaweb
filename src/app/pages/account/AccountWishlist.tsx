@@ -41,8 +41,9 @@ export default function AccountWishlist() {
             await addCartItem(skuCode, 1);
             window.dispatchEvent(new Event('cart-updated'));
             alert(t('product.detail.toast.cartAdded'));
-        } catch (e: any) {
-            alert(e.response?.data?.message || t('product.detail.toast.cartAddFailed'));
+        } catch (e: unknown) {
+            const msg = (e as { response?: { data?: { message?: string } } })?.response?.data?.message;
+            alert(msg || t('product.detail.toast.cartAddFailed'));
         }
     };
 
@@ -120,7 +121,7 @@ export default function AccountWishlist() {
                                             className="flex-1 flex items-center justify-center gap-1.5 py-2.5 bg-black text-white rounded-xl text-xs font-bold hover:bg-gray-800 transition-colors"
                                         >
                                             <ShoppingCart className="w-3.5 h-3.5" />
-                                            담기
+                                            {t('account.wishlist.addToCart')}
                                         </button>
                                         <button
                                             onClick={() => handleRemove(item.skuCode)}

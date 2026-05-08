@@ -5,13 +5,14 @@ import Navigation from '@/app/components/layouts/Header';
 import AccountSidebar from '@/app/components/layouts/AccountSidebar';
 import { getMyProfile } from '@/api/user';
 import { useAuth } from '@/app/context/AuthContext';
+import type { UserProfile } from '@/api/types';
 
 export default function AccountLayout() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
   const { setAuthenticated } = useAuth();
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -19,8 +20,9 @@ export default function AccountLayout() {
       try {
         const res = await getMyProfile();
         setUser(res.data.data);
-      } catch (e: any) {
-        if (e.response?.status === 401 || e.response?.status === 403) {
+      } catch (e: unknown) {
+        const status = (e as { response?: { status?: number } })?.response?.status;
+        if (status === 401 || status === 403) {
           setAuthenticated(false);
           navigate('/login', { replace: true });
         }
@@ -29,7 +31,7 @@ export default function AccountLayout() {
       }
     };
     fetchUser();
-  }, [navigate]);
+  }, [navigate, setAuthenticated]);
 
   if (loading) {
     return (

@@ -1,8 +1,10 @@
 import { useTranslation } from 'react-i18next';
 import { loginWithKakao, loginWithNaver } from '@/api/auth';
+import kakaoBtn from '@/app/image/kakao/ko/kakao_login_medium_wide.png';
+import naverBtn from '@/app/image/naver/ko/NAVER_login_Light_KR_green_wide_H48.png';
 
 interface SocialLoginProps {
-  isSignup: boolean;
+  isSignup?: boolean;
 }
 
 export default function SocialLogin({ isSignup }: SocialLoginProps) {
@@ -23,20 +25,16 @@ export default function SocialLogin({ isSignup }: SocialLoginProps) {
         <button
           type="button"
           onClick={() => loginWithKakao()}
-          className="w-full flex items-center justify-center gap-3 py-3 bg-[#FEE500] rounded-xl hover:bg-[#FDD800] transition-colors"
+          className="w-full rounded-xl overflow-hidden hover:opacity-90 active:opacity-75 transition-opacity"
         >
-          <span className="text-sm font-medium text-black">
-            {isSignup ? t('auth.signup.kakaoAlt') : t('auth.login.kakaoAlt')}
-          </span>
+          <img src={kakaoBtn} alt="카카오로 로그인" className="w-full h-auto block" />
         </button>
         <button
           type="button"
           onClick={() => loginWithNaver()}
-          className="w-full flex items-center justify-center gap-3 py-3 bg-[#03C75A] rounded-xl hover:bg-[#02b350] transition-colors"
+          className="w-full rounded-xl overflow-hidden hover:opacity-90 active:opacity-75 transition-opacity"
         >
-          <span className="text-sm font-medium text-white">
-            {isSignup ? t('auth.signup.naverAlt') : t('auth.login.naverAlt')}
-          </span>
+          <img src={naverBtn} alt="네이버로 로그인" className="w-full h-auto block" />
         </button>
       </div>
     </>

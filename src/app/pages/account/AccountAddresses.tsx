@@ -3,13 +3,14 @@ import AddressModal from '@/app/components/modals/AddressModal';
 import { useEffect, useState } from 'react';
 import { getMyAddresses, deleteAddress } from '@/api/user';
 import { useTranslation } from 'react-i18next';
+import type { UserAddress } from '@/api/types';
 
 export default function AccountAddresses() {
   const { t } = useTranslation();
-  const [addresses, setAddresses] = useState<any[]>([]);
+  const [addresses, setAddresses] = useState<UserAddress[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMode, setModalMode] = useState<'create' | 'edit'>('create');
-  const [selectedAddress, setSelectedAddress] = useState<any>(null);
+  const [selectedAddress, setSelectedAddress] = useState<UserAddress | null>(null);
   const [loading, setLoading] = useState(true);
 
   const fetchAddresses = async () => {
@@ -27,7 +28,7 @@ export default function AccountAddresses() {
     fetchAddresses();
   }, []);
 
-  const handleEditAddress = (addr: any) => {
+  const handleEditAddress = (addr: UserAddress) => {
     setSelectedAddress(addr);
     setModalMode('edit');
     setIsModalOpen(true);
@@ -38,8 +39,9 @@ export default function AccountAddresses() {
     try {
       await deleteAddress(addressId);
       setAddresses((prev) => prev.filter((addr) => addr.id !== addressId));
-    } catch (err: any) {
-      alert(err.response?.data?.message || t('account.addresses.deleteFailed'));
+    } catch (err: unknown) {
+      const msg = (err as { response?: { data?: { message?: string } } })?.response?.data?.message;
+      alert(msg || t('account.addresses.deleteFailed'));
     }
   };
 
@@ -73,7 +75,7 @@ export default function AccountAddresses() {
         </div>
       ) : (
         <div className="space-y-4">
-          {addresses.map((address: any) => (
+          {addresses.map((address) => (
             <div key={address.id} className="bg-white rounded-2xl p-6 border border-gray-100 hover:border-gray-200 transition-colors">
               <div className="flex items-start justify-between mb-4">
                 <div className="flex-1">

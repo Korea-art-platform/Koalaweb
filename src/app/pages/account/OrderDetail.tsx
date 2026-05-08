@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { ArrowLeft } from 'lucide-react';
 import { getOrder, cancelOrder } from '@/api/order';
+import type { Order } from '@/api/types';
 
 import {
   OrderStatusStepper,
@@ -16,7 +17,7 @@ export default function OrderDetail() {
   const { t } = useTranslation();
   const { orderNo } = useParams<{ orderNo: string }>();
   const navigate = useNavigate();
-  const [order, setOrder] = useState<any>(null);
+  const [order, setOrder] = useState<Order | null>(null);
   const [loading, setLoading] = useState(true);
   const [cancelling, setCancelling] = useState(false);
 
@@ -33,9 +34,10 @@ export default function OrderDetail() {
     setCancelling(true);
     try {
       await cancelOrder(orderNo!);
-      setOrder((prev: any) => ({ ...prev, orderStatus: 'CANCELLED' }));
-    } catch (e: any) {
-      alert(e.response?.data?.message || t('order.detail.cancelFailed'));
+      setOrder((prev) => prev ? { ...prev, orderStatus: 'CANCELLED' } : null);
+    } catch (e: unknown) {
+      const msg = (e as { response?: { data?: { message?: string } } })?.response?.data?.message;
+      alert(msg || t('order.detail.cancelFailed'));
     } finally {
       setCancelling(false);
     }

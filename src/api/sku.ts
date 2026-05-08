@@ -4,6 +4,10 @@ import instance from './instance';
 export const getSkus = (page = 0, size = 20) =>
     instance.get('/api/v1/skus', { params: { page, size } });
 
+// 작가별 SKU 목록
+export const getSkusByArtist = (artistCode: string, page = 0, size = 50) =>
+    instance.get('/api/v1/skus', { params: { page, size, artistCode } });
+
 // SKU 상세
 export const getSku = (skuCode: string) =>
     instance.get(`/api/v1/skus/${skuCode}`);

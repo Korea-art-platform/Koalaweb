@@ -236,7 +236,8 @@
       "subtitle": "찜한 상품을 관리하세요.",
       "totalCount": "총 {{count}}개의 찜한 상품",
       "emptyTitle": "찜한 상품이 없습니다",
-      "emptyDesc": "마음에 드는 작품을 위시리스트에 추가해보세요."
+      "emptyDesc": "마음에 드는 작품을 위시리스트에 추가해보세요.",
+      "addToCart": "담기"
     }
   },
   "order": {
@@ -537,6 +538,41 @@
       "showingFilter": "\"{{query}}\"에 대한 {{filter}} 결과",
       "noResultsDesc": "다른 키워드로 검색하거나 컬렉션을 둘러보세요."
     }
+  },
+  "ar": {
+    "tab360": "360° 뷰어",
+    "tabAr": "AR 공간 배치",
+    "comingSoonTitle": "AR 기능 준비 중",
+    "comingSoonDesc": "WebXR 기반 AR 카메라 연동이 곧 추가될 예정입니다.",
+    "productImageAlt": "상품 이미지",
+    "artistSuffix": "작가",
+    "size": "크기",
+    "edition": "에디션",
+    "price": "가격",
+    "viewDetail": "상세 보기",
+    "arToast": "AR 기능은 준비 중입니다.",
+    "goToCart": "장바구니로 이동하기",
+    "addToCartShort": "담기",
+    "noSkuDesc": "상품 상세 페이지에서 AR 보기를 클릭하면 해당 작품을 공간에 배치해볼 수 있습니다.",
+    "status360Desc": "좌우 버튼으로 확대/축소 • 상품 상세에서 360° 뷰로 이동하세요",
+    "resetZoom": "초기화",
+    "move": "이동",
+    "zoomIn": "확대",
+    "zoomOut": "축소"
+  },
+  "view360": {
+    "notFound": "360° 이미지를 찾을 수 없습니다.",
+    "goBack": "돌아가기",
+    "dragHint": "드래그하여 회전 • 스크롤하여 확대/축소",
+    "noImagesRegistered": "360° 이미지가 등록되지 않았습니다",
+    "autoRotate": "자동 회전",
+    "productInfo": "상품 정보",
+    "category": "카테고리",
+    "edition": "에디션",
+    "price": "가격",
+    "viewDetail": "상세 보기",
+    "goToCart": "장바구니로 이동하기",
+    "addToCartShort": "담기"
   },
   "cart": {
     "title": "장바구니",
