@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useSearchParams, useNavigate } from 'react-router';
 import { confirmPayment } from '@/api/payment';
+import { getOrder } from '@/api/order';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Toss 결제 성공 콜백 페이지
@@ -48,11 +49,28 @@ export default function PaymentSuccess() {
         // 장바구니 갱신 이벤트 (Header 카운트 뱃지 동기화)
         window.dispatchEvent(new Event('cart-updated'));
 
+        // 주문 상세 조회 — 완료 화면에 금액/상품 표시용
+        let orderDetail: any = null;
+        try {
+          const orderRes = await getOrder(orderId);
+          orderDetail = orderRes.data.data;
+        } catch {
+          // 조회 실패해도 완료 화면은 표시 (orderId만으로 fallback)
+        }
+
         setStatus('success');
 
-        // 주문 완료 페이지로 이동 (replace로 뒤로가기 시 중복 요청 방지)
         navigate('/checkout/success', {
-          state: { orderNo: orderId },
+          state: {
+            orderNo: orderId,
+            orderInfo: orderDetail ? {
+              total: orderDetail.totalAmount,
+              subtotal: orderDetail.totalAmount,
+              shipping: 0,
+              items: orderDetail.orderItems ?? orderDetail.items ?? [],
+            } : null,
+            paymentMethod: '토스페이먼츠',
+          },
           replace: true,
         });
       } catch (e: unknown) {

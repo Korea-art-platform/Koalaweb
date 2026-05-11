@@ -6,6 +6,7 @@ import { createOrder } from '@/api/order';
 import { getCart } from '@/api/cart';
 import { preparePayment } from '@/api/payment';
 import { getMyProfile, getMyAddresses } from '@/api/user';
+import { ANONYMOUS } from '@tosspayments/tosspayments-sdk';
 import type { PaymentPageState } from '@/app/pages/payment/PaymentPage';
 import type { Cart, UserAddress } from '@/api/types';
 
@@ -33,7 +34,15 @@ export default function Checkout() {
   const [loading, setLoading] = useState(true);
   const [selectedMethod, setSelectedMethod] = useState<PaymentMethodType | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [profile, setProfile] = useState<any>(null);
   const [addresses, setAddresses] = useState<UserAddress[]>([]);
+  const [agreed, setAgreed] = useState({ purchase: false, privacy: false, terms: false });
+  const allAgreed = agreed.purchase && agreed.privacy && agreed.terms;
+
+  const toggleAll = () => {
+    const next = !allAgreed;
+    setAgreed({ purchase: next, privacy: next, terms: next });
+  };
   const [showAddressSearch, setShowAddressSearch] = useState(false);
 
   // 배송지 폼
@@ -55,6 +64,7 @@ export default function Checkout() {
         // 사용자 프로필 로드
         const profileRes = await getMyProfile();
         const profile = profileRes?.data?.data;
+        setProfile(profile);
 
         if (!profile) {
           console.error('프로필 데이터가 없습니다:', profileRes);
@@ -210,9 +220,7 @@ export default function Checkout() {
         customerEmail: form.ordererEmail,
         customerName: form.ordererName,
         customerMobilePhone: form.ordererPhone.replace(/\D/g, ''),
-        // 로그인 회원의 경우 customerKey에 userId(문자열)를 전달하면
-        // Toss 대시보드에서 결제 내역을 회원 단위로 조회할 수 있습니다.
-        // customerKey: String(profile.id),
+        customerKey: profile?.id ? String(profile.id) : ANONYMOUS,
       };
 
       navigate('/payment', { state: paymentState });
@@ -482,10 +490,49 @@ export default function Checkout() {
                   </div>
                 </div>
 
+                {/* 구매자 동의 */}
+                <div className="mb-5 border border-gray-100 rounded-2xl overflow-hidden">
+                  {/* 전체 동의 */}
+                  <button
+                    type="button"
+                    onClick={toggleAll}
+                    className="w-full flex items-center gap-3 px-5 py-4 bg-gray-50 hover:bg-gray-100 transition-colors text-left"
+                  >
+                    <span className={`w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 transition-colors ${allAgreed ? 'bg-black border-black' : 'border-gray-300'}`}>
+                      {allAgreed && <Check className="w-3 h-3 text-white" />}
+                    </span>
+                    <span className="text-sm font-bold text-gray-900">아래 약관에 모두 동의합니다</span>
+                  </button>
+
+                  <div className="divide-y divide-gray-100">
+                    {[
+                      { key: 'purchase' as const, label: '구매조건 확인 및 결제진행에 동의합니다', href: '/returns' },
+                      { key: 'privacy'  as const, label: '개인정보 수집·이용에 동의합니다',        href: '/privacy' },
+                      { key: 'terms'    as const, label: '이용약관에 동의합니다',                  href: '/terms' },
+                    ].map(({ key, label, href }) => (
+                      <div key={key} className="flex items-center gap-3 px-5 py-3.5">
+                        <button
+                          type="button"
+                          onClick={() => setAgreed((prev) => ({ ...prev, [key]: !prev[key] }))}
+                          className={`w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 transition-colors ${agreed[key] ? 'bg-black border-black' : 'border-gray-300'}`}
+                        >
+                          {agreed[key] && <Check className="w-3 h-3 text-white" />}
+                        </button>
+                        <span className="flex-1 text-xs text-gray-600">
+                          <span className="text-red-400 font-bold mr-1">[필수]</span>{label}
+                        </span>
+                        <a href={href} target="_blank" rel="noopener noreferrer" className="text-[10px] text-gray-400 hover:text-black transition-colors whitespace-nowrap underline-offset-2 hover:underline">
+                          보기
+                        </a>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
                 <button
                   onClick={handleOrder}
-                  disabled={cartItems.length === 0 || !selectedMethod || isProcessing}
-                  className={`w-full py-5 rounded-2xl font-bold flex items-center justify-center gap-2 transition-all shadow-lg ${cartItems.length > 0 && selectedMethod && !isProcessing
+                  disabled={cartItems.length === 0 || !selectedMethod || !allAgreed || isProcessing}
+                  className={`w-full py-5 rounded-2xl font-bold flex items-center justify-center gap-2 transition-all shadow-lg ${cartItems.length > 0 && selectedMethod && allAgreed && !isProcessing
                       ? 'bg-black text-white hover:bg-gray-800 shadow-black/10 active:scale-[0.98]'
                       : 'bg-gray-100 text-gray-300 cursor-not-allowed shadow-none'
                     }`}
