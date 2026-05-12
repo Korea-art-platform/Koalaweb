@@ -1,6 +1,6 @@
 import { Link, useLocation } from 'react-router';
 import {
-  Globe, ShoppingCart, User, Menu, X, Search,
+  ShoppingCart, User, Menu, X, Search,
   ChevronRight, LogOut, Settings, Bell, Headset
 } from 'lucide-react';
 import { ViewModeProvider } from '@/app/context/ViewModeContext';
@@ -220,9 +220,10 @@ export function Header() {
                 <ChevronRight className="w-5 h-5 text-white/40" />
               </Link>
 
-              <button className="w-16 h-16 flex items-center justify-center bg-gray-100 rounded-2xl active:scale-95 transition-all">
+              {/* 언어 전환 버튼 — 한국어 단일 운영 중, 다국어 지원 시 복구 */}
+              {/* <button className="w-16 h-16 flex items-center justify-center bg-gray-100 rounded-2xl active:scale-95 transition-all">
                 <Globe className="w-6 h-6 text-black" />
-              </button>
+              </button> */}
             </div>
           </div>
         </div>

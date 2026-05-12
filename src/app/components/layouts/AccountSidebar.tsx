@@ -1,5 +1,5 @@
 import { Link, useNavigate } from 'react-router';
-import { User, MapPin, CreditCard, Package, Heart, LogOut } from 'lucide-react';
+import { User, MapPin, CreditCard, Package, Heart, LogOut, Settings } from 'lucide-react';
 // 💡 1. 다국어 훅을 불러옵니다.
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/app/context/AuthContext';
@@ -11,6 +11,7 @@ const menuItems = [
   { icon: MapPin, key: 'account.sidebar.addresses', path: '/account/addresses' },
   { icon: CreditCard, key: 'account.sidebar.payment', path: '/account/payment-methods' },
   { icon: Heart, key: 'account.sidebar.wishlist', path: '/account/wishlist' },
+  { icon: Settings, key: 'account.sidebar.settings', path: '/account/settings' },
 ];
 
 interface Props {

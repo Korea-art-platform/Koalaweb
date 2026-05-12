@@ -15,6 +15,9 @@ import Contact from "@/app/pages/support/Contact";
 import Help from "@/app/pages/support/Help";
 import Returns from "@/app/pages/support/Returns";
 
+// 공지사항
+import Notice from "@/app/pages/Notice";
+
 // 404
 import NotFound from "@/app/pages/NotFound";
 
@@ -59,6 +62,7 @@ import AccountOrders from "@/app/pages/account/AccountOrders";
 import AccountAddresses from "@/app/pages/account/AccountAddresses";
 import AccountPaymentMethods from "@/app/pages/account/PaymentMethods";
 import AccountWishlist from "@/app/pages/account/AccountWishlist";
+import AccountSettings from "@/app/pages/account/AccountSettings";
 import OrderDetail from "@/app/pages/account/OrderDetail";
 
 //관리자
@@ -110,6 +114,9 @@ export function AppRoutes() {
       <Route path="/privacy" element={<Privacy />} />
       <Route path="/cookies" element={<Cookies />} />
 
+      {/* 공지사항 */}
+      <Route path="/notice" element={<Notice />} />
+
       {/* 고객 지원 */}
       <Route path="/faq" element={<FAQ />} />
       <Route path="/shipping" element={<Shipping />} />
@@ -142,6 +149,7 @@ export function AppRoutes() {
           <Route path="/account/addresses" element={<AccountAddresses />} />
           <Route path="/account/payment-methods" element={<AccountPaymentMethods />} />
           <Route path="/account/wishlist" element={<AccountWishlist />} />
+          <Route path="/account/settings" element={<AccountSettings />} />
         </Route>
 
       </Route>

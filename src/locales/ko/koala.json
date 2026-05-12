@@ -183,6 +183,7 @@
       "addresses": "배송지 관리",
       "payment": "결제 수단",
       "wishlist": "위시리스트",
+      "settings": "설정",
       "logout": "로그아웃",
       "defaultUser": "사용자",
       "greeting": "{{name}}님"

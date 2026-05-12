@@ -48,6 +48,9 @@ export default function ArtistDetail() {
           name={artist.name}
           description={artist.bio}
           profileImageUrl={artist.profileImageUrl}
+          artistCode={artist.artistCode}
+          followCount={artist.followCount ?? 0}
+          isFollowing={artist.isFollowing ?? false}
         />
 
         <ArtistCareer />

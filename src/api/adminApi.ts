@@ -16,6 +16,9 @@ export async function getAdminMe() {
   return res.data.data;
 }
 
+export const adminLogout = () =>
+  adminInstance.post(`${BASE}/auth/logout`)
+
 // ── Orders ────────────────────────────────────────────────────────────────────
 export async function getAdminOrders(page = 0, size = 20) {
   const res = await adminInstance.get(`${BASE}/orders`, { params: { page, size, sort: 'createdAt,desc' } });

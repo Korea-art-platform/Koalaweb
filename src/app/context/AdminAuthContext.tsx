@@ -1,11 +1,11 @@
 import { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
-import { getAdminMe, type AdminMe } from '@/api/adminApi';
+import { getAdminMe, adminLogout, type AdminMe } from '@/api/adminApi';
 
 interface AdminAuthContextType {
   admin: AdminMe | null;
   token: string | null;
   login: (token: string) => Promise<void>;
-  logout: () => void;
+  logout: () => Promise<void>;
   loading: boolean;
 }
 
@@ -34,11 +34,17 @@ export function AdminAuthProvider({ children }: { children: ReactNode }) {
     setAdmin(me);
   };
 
-  const logout = () => {
-    sessionStorage.removeItem('admin_token');
-    setToken(null);
-    setAdmin(null);
-  };
+  const logout = async () => {
+    try {
+      await adminLogout();
+    }catch{
+
+    }finally{
+      sessionStorage.removeItem('admin_token');
+      setToken(null);
+      setAdmin(null);
+    }
+  }
 
   return (
     <AdminAuthContext.Provider value={{ admin, token, login, logout, loading }}>
