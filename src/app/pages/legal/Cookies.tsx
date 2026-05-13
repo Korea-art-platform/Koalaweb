@@ -17,11 +17,11 @@ export default function Cookies() {
 
       <div className="max-w-3xl mx-auto px-6 py-8 space-y-8 text-sm text-gray-700 leading-relaxed">
 
-        <p className="text-xs text-gray-400">최종 업데이트: 2025년 1월 1일</p>
+        <p className="text-xs text-gray-400">최종 업데이트: 2026년 5월 13일</p>
 
         <p>
-          KoALa(이하 "회사")는 서비스 제공, 보안 유지 및 사용자 경험 향상을 위해 쿠키를 사용합니다.
-          본 정책은 회사가 사용하는 쿠키의 종류와 목적, 관리 방법을 안내합니다.
+          헤론(이하 "회사")이 운영하는 KoALa 서비스는 서비스 제공, 보안 유지 및 사용자 경험 향상을
+          위해 쿠키를 사용합니다. 본 정책은 회사가 사용하는 쿠키의 종류와 목적, 관리 방법을 안내합니다.
         </p>
 
         <section className="space-y-3">
@@ -115,7 +115,7 @@ export default function Cookies() {
         </section>
 
         <p className="pt-4 pb-8 text-xs text-gray-400 text-center border-t border-gray-100">
-          본 쿠키 정책은 2025년 1월 1일부터 시행됩니다.
+          본 쿠키 정책은 2026년 5월 13일부터 시행됩니다.
         </p>
 
       </div>

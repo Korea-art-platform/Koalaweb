@@ -84,7 +84,7 @@ export function Header() {
     { key: 'gallery', path: '/' },
     { key: 'lab', path: '/artist-lab' },
     { key: 'store', path: '/store' },
-    { key: 'about', path: '/about'}
+    //{ key: 'about', path: '/about'}
   ];
 
   const subMenus = [

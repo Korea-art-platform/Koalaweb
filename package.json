@@ -1,7 +1,8 @@
 {
-  "name": "@figma/my-make-file",
+  "name": "koala-web",
   "private": true,
-  "version": "0.0.1",
+  "version": "1.0.0",
+  "description": "KoALa — Korean Art Marketplace (web)",
   "type": "module",
   "scripts": {
     "build": "vite build",

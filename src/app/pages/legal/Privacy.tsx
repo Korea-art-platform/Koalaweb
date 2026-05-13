@@ -19,31 +19,36 @@ export default function Privacy() {
       {/* 본문 */}
       <div className="max-w-3xl mx-auto px-6 py-8 space-y-8 text-sm text-gray-700 leading-relaxed">
 
-        <p className="text-xs text-gray-400">최종 업데이트: 2025년 1월 1일</p>
+        <p className="text-xs text-gray-400">최종 업데이트: 2026년 5월 13일</p>
 
         <p>
-          KoALa(이하 "회사")는 개인정보보호법 등 관련 법령을 준수하며, 이용자의 개인정보를
-          안전하게 보호합니다. 본 방침은 회사가 수집하는 개인정보의 항목, 수집 목적, 보유 기간
-          등을 안내합니다.
+          헤론(이하 "회사")이 운영하는 KoALa 서비스는 「개인정보 보호법」,
+          「정보통신망 이용촉진 및 정보보호 등에 관한 법률」 등 관련 법령을 준수하며,
+          이용자의 개인정보를 안전하게 보호합니다. 본 방침은 회사가 수집하는 개인정보의 항목,
+          수집 목적, 보유 기간 및 처리 방법을 안내합니다.
         </p>
 
         <section className="space-y-3">
           <h2 className="font-semibold text-gray-900">1. 수집하는 개인정보 항목</h2>
           <div className="space-y-2">
-            <p className="font-medium text-gray-800">필수 항목</p>
+            <p className="font-medium text-gray-800">회원가입 시 필수 항목</p>
             <ul className="space-y-1 list-disc list-inside text-gray-600">
               <li>이름, 이메일 주소, 휴대폰 번호</li>
-              <li>비밀번호 (암호화 저장)</li>
-              <li>결제 정보 (카드사에서 직접 처리, 당사 미보관)</li>
+              <li>비밀번호 (단방향 암호화 저장, 원문 미보관)</li>
+            </ul>
+            <p className="font-medium text-gray-800 mt-2">주문·결제 시 수집 항목</p>
+            <ul className="space-y-1 list-disc list-inside text-gray-600">
+              <li>배송지 정보 (수령인 성명, 주소, 연락처)</li>
+              <li>결제 정보 (카드 번호 등 결제 수단은 PG사(토스페이먼츠·카카오페이)가 직접 처리, 당사 미보관)</li>
             </ul>
             <p className="font-medium text-gray-800 mt-2">소셜 로그인 시 추가 수집</p>
             <ul className="space-y-1 list-disc list-inside text-gray-600">
               <li>카카오: 닉네임, 이메일</li>
               <li>네이버: 이름, 이메일</li>
             </ul>
-            <p className="font-medium text-gray-800 mt-2">자동 수집 항목</p>
+            <p className="font-medium text-gray-800 mt-2">서비스 이용 과정에서 자동 수집</p>
             <ul className="space-y-1 list-disc list-inside text-gray-600">
-              <li>접속 IP, 쿠키, 서비스 이용 기록</li>
+              <li>접속 IP 주소, 쿠키, 브라우저 환경 정보, 서비스 이용 기록</li>
             </ul>
           </div>
         </section>
@@ -128,15 +133,22 @@ export default function Privacy() {
 
         <section className="space-y-2">
           <h2 className="font-semibold text-gray-900">8. 개인정보 보호 책임자</h2>
+          <p>이용자는 아래 담당자에게 개인정보 관련 문의, 열람, 정정·삭제, 처리 정지 요청을 할 수 있습니다.</p>
           <div className="bg-gray-50 rounded-xl p-4 space-y-1 text-xs">
+            <p><span className="font-medium text-gray-800">회사명:</span> 헤론</p>
             <p><span className="font-medium text-gray-800">책임자:</span> KoALa 개인정보 보호팀</p>
             <p><span className="font-medium text-gray-800">이메일:</span> privacy@koala-art.co.kr</p>
             <p><span className="font-medium text-gray-800">처리 기간:</span> 접수 후 영업일 3일 이내</p>
           </div>
+          <p className="text-xs text-gray-500 mt-2">
+            개인정보 침해에 관한 신고·상담은 아래 기관에도 문의하실 수 있습니다.<br />
+            • 개인정보보호위원회 개인정보 침해신고센터: <a href="https://www.privacy.go.kr" target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:text-black">privacy.go.kr</a> / 국번없이 182<br />
+            • 경찰청 사이버수사국: <a href="https://ecrm.cyber.go.kr" target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:text-black">ecrm.cyber.go.kr</a> / 국번없이 182
+          </p>
         </section>
 
         <p className="pt-4 pb-8 text-xs text-gray-400 text-center border-t border-gray-100">
-          본 방침은 2025년 1월 1일부터 시행됩니다.
+          본 방침은 2026년 5월 13일부터 시행됩니다.
         </p>
       </div>
     </div>
