@@ -6,14 +6,13 @@ interface ArtistHandsProps {
   images?: string[];
 }
 
-const PLACEHOLDER = 'https://via.placeholder.com/300x200';
-
 export function ArtistHands({
   title = '작가의 손',
   description = '도구가 아닌\n순서 글쓰기',
   images,
 }: ArtistHandsProps) {
-  const imgs = images && images.length > 0 ? images : [PLACEHOLDER, PLACEHOLDER, PLACEHOLDER];
+  if (!images || images.length === 0) return null;
+  const imgs = images;
 
   return (
     <section className="mb-16">

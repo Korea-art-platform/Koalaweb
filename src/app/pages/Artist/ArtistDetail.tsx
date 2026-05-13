@@ -17,14 +17,11 @@ import { ArtInfo, ArtQnA } from '@/app/components/ArtDetail';
 
 export default function ArtistDetail() {
   const { id } = useParams();
-  const { loading, artist, videos, images } = useArtistDetail(id);
+  const { loading, artist, interviewVideo, interviewImage, studioImages, handsImages } = useArtistDetail(id);
   const { skus } = useArtistSkus(artist?.artistCode);
 
   if (loading) return <ArtistDetailSkeleton />;
   if (!artist) return <ArtistNotFound />;
-
-  const videoUrl = videos?.[0]?.fileUrl;
-  const studioImages = images?.map((m: { fileUrl: string }) => m.fileUrl);
 
   const works: WorkItem[] = skus.map((sku) => ({
     id: sku.skuCode,
@@ -64,13 +61,19 @@ export default function ArtistDetail() {
 
         <ArtistCareer items={artist.careerList} />
 
-        <ArtistInterview videoUrl={videoUrl} />
+        <ArtistInterview
+          videoUrl={interviewVideo?.fileUrl}
+          thumbnailUrl={interviewImage?.fileUrl}
+        />
 
-        <ArtistStudio studioImages={studioImages} artistName={artist.name} />
+        <ArtistStudio
+          studioImages={studioImages.map((m) => m.fileUrl)}
+          artistName={artist.name}
+        />
 
-        <ArtistHands />
+        <ArtistHands images={handsImages.map((m) => m.fileUrl)} />
 
-        <ArtistWorksCarousel works={works.length > 0 ? works : undefined} artistId={id} />
+        <ArtistWorksCarousel works={works} artistId={id} />
 
         <div className="mt-20 border-t border-gray-100 pt-16">
           <ArtInfo

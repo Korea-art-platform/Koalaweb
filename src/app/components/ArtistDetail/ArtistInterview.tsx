@@ -4,6 +4,8 @@ interface ArtistInterviewProps {
 }
 
 export function ArtistInterview({ videoUrl, thumbnailUrl }: ArtistInterviewProps) {
+  if (!videoUrl && !thumbnailUrl) return null;
+
   return (
     <section className="mb-16">
       <p className="text-xs text-gray-400 tracking-widest uppercase mb-4">INTERVIEW</p>

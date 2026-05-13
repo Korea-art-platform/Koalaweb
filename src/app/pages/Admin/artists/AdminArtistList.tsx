@@ -1,4 +1,5 @@
 ﻿import { useState, useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router';
 import { Users } from 'lucide-react';
 import { getAdminArtists, createArtist, deleteArtist } from '@/api/adminApi';
 
@@ -10,6 +11,7 @@ interface ArtistForm {
 }
 
 export default function AdminArtistList() {
+  const navigate = useNavigate();
   const [data, setData] = useState<any>(null);
   const [page, setPage] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -104,7 +106,15 @@ export default function AdminArtistList() {
                     </span>
                   </td>
                   <td className="px-5 py-4">
-                    <button onClick={() => handleDelete(a.artistCode, a.name)} className="text-xs text-red-400 hover:text-red-600 font-medium">삭제</button>
+                    <div className="flex items-center gap-3">
+                      <button
+                        onClick={() => navigate(`/admin/artists/${a.artistCode}`)}
+                        className="text-xs text-blue-500 hover:text-blue-700 font-medium"
+                      >
+                        편집
+                      </button>
+                      <button onClick={() => handleDelete(a.artistCode, a.name)} className="text-xs text-red-400 hover:text-red-600 font-medium">삭제</button>
+                    </div>
                   </td>
                 </tr>
               ))}

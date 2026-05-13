@@ -73,7 +73,9 @@ import AdminDashboard from '@/app/pages/Admin/AdminDashboard';
 import AdminOrderList from '@/app/pages/Admin/orders/AdminOrderList';
 import AdminOrderDetail from '@/app/pages/Admin/orders/AdminOrderDetail';
 import AdminProductList from '@/app/pages/Admin/products/AdminProductList';
+import AdminProductDetail from '@/app/pages/Admin/products/AdminProductDetail';
 import AdminArtistList from '@/app/pages/Admin/artists/AdminArtistList';
+import AdminArtistDetail from '@/app/pages/Admin/artists/AdminArtistDetail';
 import AdminReviewList from '@/app/pages/Admin/reviews/AdminReviewList';
 import AdminBannerList from '@/app/pages/Admin/banners/AdminBannerList';
 import AdminUserList from '@/app/pages/Admin/users/AdminUserList';
@@ -163,7 +165,9 @@ export function AppRoutes() {
           <Route path="/admin/orders" element={<AdminOrderList />} />
           <Route path="/admin/orders/:orderNo" element={<AdminOrderDetail />} />
           <Route path="/admin/products" element={<AdminProductList />} />
+          <Route path="/admin/products/:skuCode" element={<AdminProductDetail />} />
           <Route path="/admin/artists" element={<AdminArtistList />} />
+          <Route path="/admin/artists/:artistCode" element={<AdminArtistDetail />} />
           <Route path="/admin/reviews" element={<AdminReviewList />} />
           <Route path="/admin/banners" element={<AdminBannerList />} />
           <Route path="/admin/users" element={<AdminUserList />} />

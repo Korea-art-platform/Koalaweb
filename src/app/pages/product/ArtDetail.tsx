@@ -48,10 +48,10 @@ export default function ArtDetail() {
   if (loading) return <ProductSkeleton />;
   if (!sku) return <ProductNotFound />;
 
-  const images =
-    sku.mediaList && sku.mediaList.length > 0
-      ? sku.mediaList.filter((m) => m.mediaType === 'IMAGE').map((m) => m.fileUrl)
-      : sku.primaryImageUrl ? [sku.primaryImageUrl] : [];
+  // MAIN(대표) → DETAIL(상세) 순서로 모아서 전달. 없으면 primaryImageUrl 폴백
+  const mainImage  = sku.mediaList?.find((m) => m.mediaRole === 'MAIN')?.fileUrl ?? sku.primaryImageUrl;
+  const detailImgs = sku.mediaList?.filter((m) => m.mediaRole === 'DETAIL').map((m) => m.fileUrl) ?? [];
+  const images     = [mainImage, ...detailImgs].filter(Boolean) as string[];
 
   const artInfoItems = [
     { label: '소재', value: sku.genre ?? '-' },

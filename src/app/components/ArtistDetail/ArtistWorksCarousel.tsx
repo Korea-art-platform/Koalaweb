@@ -15,13 +15,9 @@ interface ArtistWorksCarouselProps {
   artistId?: string;
 }
 
-const PLACEHOLDER_WORKS: WorkItem[] = Array.from({ length: 6 }, (_, i) => ({
-  id: String(i + 1),
-  title: `작품 ${i + 1}`,
-  imageUrl: 'https://via.placeholder.com/280x350',
-}));
-
-export function ArtistWorksCarousel({ works = PLACEHOLDER_WORKS, artistId }: ArtistWorksCarouselProps) {
+export function ArtistWorksCarousel({ works, artistId }: ArtistWorksCarouselProps) {
+  // 등록된 작품이 없으면 섹션 자체를 숨김
+  if (!works || works.length === 0) return null;
   const scrollRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);

@@ -2,7 +2,7 @@ import axios from 'axios';
 
 const adminInstance = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL as string,
-  timeout: 10000,
+  timeout: 60000, // 파일 업로드를 위해 60초로 설정
   headers: { 'Content-Type': 'application/json' },
 });
 

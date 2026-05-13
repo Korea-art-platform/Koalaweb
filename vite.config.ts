@@ -23,7 +23,7 @@ export default defineConfig(({ command }) => ({
         target: 'http://localhost:8080',
         changeOrigin: true,
       },
-      '/admin': {
+      '/admin/api': {
         target: 'http://localhost:8080',
         changeOrigin: true,
       },

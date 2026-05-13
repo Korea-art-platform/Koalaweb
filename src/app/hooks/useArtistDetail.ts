@@ -13,8 +13,13 @@ export function useArtistDetail(id: string | undefined) {
     retry: false,
   });
 
-  const videos = artist?.mediaList?.filter((m: ArtistMedia) => m.mediaType === 'VIDEO') ?? [];
-  const images = artist?.mediaList?.filter((m: ArtistMedia) => m.mediaType === 'IMAGE') ?? [];
+  const media = artist?.mediaList ?? [];
 
-  return { loading, artist, videos, images };
+  // 각 섹션별 역할로 분류
+  const interviewVideo  = media.find((m: ArtistMedia) => m.mediaRole === 'INTERVIEW_VIDEO');
+  const interviewImage  = media.find((m: ArtistMedia) => m.mediaRole === 'INTERVIEW_IMAGE');
+  const studioImages    = media.filter((m: ArtistMedia) => m.mediaRole === 'STUDIO');
+  const handsImages     = media.filter((m: ArtistMedia) => m.mediaRole === 'HANDS');
+
+  return { loading, artist, interviewVideo, interviewImage, studioImages, handsImages };
 }

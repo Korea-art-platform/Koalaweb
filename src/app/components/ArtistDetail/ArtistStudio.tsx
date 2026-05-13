@@ -5,13 +5,9 @@ interface ArtistStudioProps {
   artistName?: string;
 }
 
-const PLACEHOLDER = 'https://via.placeholder.com/400x300';
-
 export function ArtistStudio({ studioImages, artistName }: ArtistStudioProps) {
-  const images =
-    studioImages && studioImages.length > 0
-      ? studioImages
-      : [PLACEHOLDER, PLACEHOLDER, PLACEHOLDER, PLACEHOLDER];
+  if (!studioImages || studioImages.length === 0) return null;
+  const images = studioImages;
 
   return (
     <section className="mb-16">

@@ -66,6 +66,30 @@ export async function deleteSku(skuCode: string) {
   await adminInstance.delete(`${BASE}/skus/${skuCode}`);
 }
 
+// ── SKU Media ─────────────────────────────────────────────────────────────────
+export async function getSkuMedia(skuCode: string) {
+  const res = await adminInstance.get(`${BASE}/skus/${skuCode}/media`);
+  return res.data.data as SkuMediaItem[];
+}
+
+export async function addSkuMedia(
+  skuCode: string,
+  file: File,
+  meta: { mediaType: string; mediaRole: string; altText?: string; sortOrder?: number; isPrimary?: boolean }
+) {
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('meta', new Blob([JSON.stringify(meta)], { type: 'application/json' }));
+  const res = await adminInstance.post(`${BASE}/skus/${skuCode}/media`, formData, {
+    headers: { 'Content-Type': undefined }, // multipart/form-data + boundary 브라우저 자동 설정
+  });
+  return res.data.data as SkuMediaItem;
+}
+
+export async function deleteSkuMedia(skuCode: string, mediaId: number) {
+  await adminInstance.delete(`${BASE}/skus/${skuCode}/media/${mediaId}`);
+}
+
 export async function adjustStock(skuCode: string, delta: number, memo?: string) {
   await adminInstance.post(`${BASE}/skus/stock-adjust`, { skuCode, delta, memo });
 }
@@ -77,18 +101,84 @@ export async function getAdminArtists(page = 0, size = 50) {
   return res.data.data;
 }
 
-export async function createArtist(body: { name: string; slug: string; description?: string; profileImageUrl?: string }) {
+export async function getAdminArtist(artistCode: string) {
+  const res = await adminInstance.get(`/api/v1/artists/${artistCode}`);
+  return res.data.data as ArtistDetailResponse;
+}
+
+export async function createArtist(body: {
+  name: string;
+  slug: string;
+  description?: string;
+  artistNote?: string;
+  profileImageUrl?: string;
+}) {
   const res = await adminInstance.post(`${BASE}/artists`, body);
   return res.data.data;
 }
 
-export async function updateArtist(artistCode: string, body: Record<string, unknown>) {
+export async function updateArtist(artistCode: string, body: {
+  name: string;
+  slug: string;
+  description?: string;
+  artistNote?: string;
+  profileImageUrl?: string;
+}) {
   const res = await adminInstance.put(`${BASE}/artists/${artistCode}`, body);
   return res.data.data;
 }
 
 export async function deleteArtist(artistCode: string) {
   await adminInstance.delete(`${BASE}/artists/${artistCode}`);
+}
+
+// ── Artist Media ──────────────────────────────────────────────────────────────
+export async function getArtistMedia(artistCode: string) {
+  const res = await adminInstance.get(`${BASE}/artists/${artistCode}/media`);
+  return res.data.data as ArtistMediaResponse[];
+}
+
+export async function addArtistMedia(
+  artistCode: string,
+  file: File,
+  meta: { mediaType: string; mediaRole: string; title?: string; sortOrder?: number }
+) {
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('meta', new Blob([JSON.stringify(meta)], { type: 'application/json' }));
+  const res = await adminInstance.post(`${BASE}/artists/${artistCode}/media`, formData, {
+    headers: { 'Content-Type': undefined }, // multipart/form-data + boundary 브라우저 자동 설정
+  });
+  return res.data.data as ArtistMediaResponse;
+}
+
+export async function deleteArtistMedia(artistCode: string, mediaId: number) {
+  await adminInstance.delete(`${BASE}/artists/${artistCode}/media/${mediaId}`);
+}
+
+// ── Artist Careers ────────────────────────────────────────────────────────────
+export async function addArtistCareer(artistCode: string, body: {
+  category: string;
+  year: number;
+  content: string;
+  sortOrder?: number;
+}) {
+  const res = await adminInstance.post(`${BASE}/artists/${artistCode}/careers`, body);
+  return res.data.data as ArtistCareerResponse;
+}
+
+export async function updateArtistCareer(artistCode: string, careerId: number, body: {
+  category: string;
+  year: number;
+  content: string;
+  sortOrder?: number;
+}) {
+  const res = await adminInstance.put(`${BASE}/artists/${artistCode}/careers/${careerId}`, body);
+  return res.data.data as ArtistCareerResponse;
+}
+
+export async function deleteArtistCareer(artistCode: string, careerId: number) {
+  await adminInstance.delete(`${BASE}/artists/${artistCode}/careers/${careerId}`);
 }
 
 // ── Users ─────────────────────────────────────────────────────────────────────
@@ -163,6 +253,50 @@ export async function getAuditLogs(page = 0, size = 20) {
 }
 
 // ── Types ─────────────────────────────────────────────────────────────────────
+export interface SkuMediaItem {
+  id: number;
+  mediaType: string;
+  mediaRole: string;
+  fileUrl: string;
+  thumbnailUrl?: string;
+  altText?: string;
+  sortOrder: number;
+  isPrimary: boolean;
+}
+
+export interface ArtistMediaResponse {
+  id: number;
+  mediaType: string;
+  mediaRole: string;
+  fileUrl: string;
+  thumbnailUrl?: string;
+  title?: string;
+  sortOrder: number;
+}
+
+export interface ArtistCareerResponse {
+  id: number;
+  category: '학력' | '개인전' | '그룹전';
+  year: number;
+  content: string;
+  sortOrder: number;
+}
+
+export interface ArtistDetailResponse {
+  id: number;
+  artistCode: string;
+  name: string;
+  slug: string;
+  description?: string;
+  artistNote?: string;
+  profileImageUrl?: string;
+  isActive: boolean;
+  mediaList: ArtistMediaResponse[];
+  careerList: ArtistCareerResponse[];
+  followCount: number;
+  isFollowing: boolean;
+}
+
 export interface AdminMe {
   id: number;
   adminCode: string;

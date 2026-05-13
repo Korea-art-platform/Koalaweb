@@ -1,24 +1,76 @@
-﻿import { useState, useEffect, useCallback } from 'react';
-import { getAdminSkus, publishSku, discontinueSku, deleteSku, adjustStock } from '@/api/adminApi';
-import { Package } from 'lucide-react';
+import { useState, useEffect, useCallback, useRef } from 'react';
+import { useNavigate } from 'react-router';
+import { getAdminSkus, createSku, addSkuMedia, publishSku, discontinueSku, deleteSku, adjustStock, getAdminArtists } from '@/api/adminApi';
+import { Package, ImagePlus, X } from 'lucide-react';
 
 const SKU_STATUS_COLOR: Record<string, string> = {
-  DRAFT: 'bg-gray-100 text-gray-500',
-  PUBLISHED: 'bg-green-50 text-green-700',
+  DRAFT:        'bg-gray-100 text-gray-500',
+  ACTIVE:       'bg-green-50 text-green-700',
+  OUT_OF_STOCK: 'bg-yellow-50 text-yellow-700',
   DISCONTINUED: 'bg-red-50 text-red-600',
 };
 const SKU_STATUS_LABEL: Record<string, string> = {
-  DRAFT: '임시저장', PUBLISHED: '판매중', DISCONTINUED: '판매중단',
+  DRAFT:        '임시저장',
+  ACTIVE:       '판매중',
+  OUT_OF_STOCK: '품절',
+  DISCONTINUED: '판매중단',
+};
+
+const SKU_TYPES = [
+  { value: 'ARTWORK', label: '아트워크 (원화·판화 등)' },
+  { value: 'GOODS', label: '굿즈' },
+];
+const GENRES = ['회화', '조각', '사진', '드로잉', '판화', '디지털아트', '기타'];
+
+const inputCls = 'w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black/10';
+
+interface CreateForm {
+  artistCode: string;
+  name: string;
+  slug: string;
+  description: string;
+  skuType: string;
+  genre: string;
+  listPrice: string;
+  salePrice: string;
+  isLimitedEdition: boolean;
+  editionSize: string;
+  editionNumber: string;
+  widthCm: string;
+  heightCm: string;
+  depthCm: string;
+  weightKg: string;
+}
+
+const EMPTY_FORM: CreateForm = {
+  artistCode: '', name: '', slug: '', description: '',
+  skuType: 'ARTWORK', genre: '',
+  listPrice: '', salePrice: '',
+  isLimitedEdition: false, editionSize: '', editionNumber: '',
+  widthCm: '', heightCm: '', depthCm: '', weightKg: '',
 };
 
 export default function AdminProductList() {
+  const navigate = useNavigate();
   const [data, setData] = useState<any>(null);
   const [page, setPage] = useState(0);
   const [loading, setLoading] = useState(true);
+
+  // 재고 조정 모달
   const [stockModal, setStockModal] = useState<{ skuCode: string; current: number } | null>(null);
   const [delta, setDelta] = useState('');
   const [memo, setMemo] = useState('');
   const [adjusting, setAdjusting] = useState(false);
+
+  // 상품 생성 모달
+  const [createOpen, setCreateOpen] = useState(false);
+  const [form, setForm] = useState<CreateForm>(EMPTY_FORM);
+  const [artists, setArtists] = useState<any[]>([]);
+  const [submitting, setSubmitting] = useState(false);
+  const [formError, setFormError] = useState('');
+  const [primaryFile, setPrimaryFile] = useState<File | null>(null);
+  const [primaryPreview, setPrimaryPreview] = useState<string>('');
+  const primaryInputRef = useRef<HTMLInputElement>(null);
 
   const load = useCallback(() => {
     setLoading(true);
@@ -27,35 +79,113 @@ export default function AdminProductList() {
 
   useEffect(() => { load(); }, [load]);
 
-  const handlePublish = async (skuCode: string) => {
-    await publishSku(skuCode);
-    load();
+  // 생성 모달 열릴 때 아티스트 목록 로드
+  const openCreate = async () => {
+    setForm(EMPTY_FORM);
+    setFormError('');
+    setPrimaryFile(null);
+    setPrimaryPreview('');
+    setCreateOpen(true);
+    try {
+      const res = await getAdminArtists(0, 200);
+      setArtists(res.content ?? []);
+    } catch {
+      setArtists([]);
+    }
   };
 
+  const handlePrimaryFileChange = (file: File | null) => {
+    setPrimaryFile(file);
+    if (file) {
+      const url = URL.createObjectURL(file);
+      setPrimaryPreview(url);
+    } else {
+      setPrimaryPreview('');
+    }
+  };
+
+  const setF = (patch: Partial<CreateForm>) => setForm((f) => ({ ...f, ...patch }));
+
+  const handleSlugAutoFill = (name: string) => {
+    const slug = name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+    setF({ slug });
+  };
+
+  const handleCreate = async () => {
+    if (!form.artistCode) { setFormError('아티스트를 선택해 주세요.'); return; }
+    if (!form.name.trim()) { setFormError('상품명을 입력해 주세요.'); return; }
+    if (!form.slug.trim()) { setFormError('슬러그를 입력해 주세요.'); return; }
+    if (!form.listPrice || isNaN(Number(form.listPrice))) { setFormError('정가를 올바르게 입력해 주세요.'); return; }
+    setFormError('');
+    setSubmitting(true);
+
+    let createdSkuCode: string | null = null;
+
+    try {
+      // ── 1단계: 상품 생성 ──────────────────────────────
+      const created: any = await createSku({
+        artistCode: form.artistCode,
+        name: form.name.trim(),
+        slug: form.slug.trim(),
+        description: form.description.trim() || undefined,
+        skuType: form.skuType || undefined,
+        genre: form.genre || undefined,
+        listPrice: Number(form.listPrice),
+        salePrice: form.salePrice ? Number(form.salePrice) : undefined,
+        isLimitedEdition: form.isLimitedEdition,
+        // isLimitedEdition=false 이면 edition 값을 무조건 undefined (DB 제약)
+        editionSize: form.isLimitedEdition && form.editionSize ? Number(form.editionSize) : undefined,
+        editionNumber: form.isLimitedEdition && form.editionNumber ? Number(form.editionNumber) : undefined,
+        widthCm: form.widthCm ? Number(form.widthCm) : undefined,
+        heightCm: form.heightCm ? Number(form.heightCm) : undefined,
+        depthCm: form.depthCm ? Number(form.depthCm) : undefined,
+        weightKg: form.weightKg ? Number(form.weightKg) : undefined,
+      });
+      createdSkuCode = created?.skuCode ?? null;
+    } catch {
+      setFormError('상품 등록에 실패했습니다. 슬러그가 중복되었을 수 있습니다.');
+      setSubmitting(false);
+      return; // 생성 자체 실패 → 여기서 중단
+    }
+
+    // ── 2단계: 모달 닫기 + 목록 갱신 (생성 성공 확정) ──
+    setCreateOpen(false);
+    load();
+    setSubmitting(false);
+
+    // ── 3단계: 이미지 업로드 (실패해도 생성은 유지) ─────
+    if (primaryFile && createdSkuCode) {
+      try {
+        await addSkuMedia(createdSkuCode, primaryFile, {
+          mediaType: 'IMAGE',
+          mediaRole: 'MAIN',
+          isPrimary: true,
+        });
+        load(); // 이미지 업로드 후 한 번 더 갱신
+      } catch {
+        // 이미지 업로드 실패는 경고만 — 상품은 이미 등록됨
+        // 편집 페이지에서 다시 올릴 수 있도록 안내
+        alert(`상품은 등록됐습니다.\n대표 이미지 업로드에 실패했습니다.\n편집 페이지 > 이미지 탭에서 다시 업로드해 주세요.`);
+      }
+    }
+  };
+
+  const handlePublish = async (skuCode: string) => { await publishSku(skuCode); load(); };
   const handleDiscontinue = async (skuCode: string) => {
     if (!window.confirm('판매 중단하시겠습니까?')) return;
-    await discontinueSku(skuCode);
-    load();
+    await discontinueSku(skuCode); load();
   };
-
   const handleDelete = async (skuCode: string) => {
     if (!window.confirm('삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.')) return;
-    await deleteSku(skuCode);
-    load();
+    await deleteSku(skuCode); load();
   };
-
   const handleStockAdjust = async () => {
     if (!stockModal || !delta) return;
     setAdjusting(true);
     try {
       await adjustStock(stockModal.skuCode, Number(delta), memo || undefined);
-      setStockModal(null);
-      setDelta('');
-      setMemo('');
-      load();
-    } finally {
-      setAdjusting(false);
-    }
+      setStockModal(null); setDelta(''); setMemo(''); load();
+    } finally { setAdjusting(false); }
   };
 
   const skus: any[] = data?.content ?? [];
@@ -67,7 +197,15 @@ export default function AdminProductList() {
         <Package className="w-3.5 h-3.5" />
         <span>상품 관리</span>
       </div>
-      <h1 className="text-xl font-bold text-gray-900 mb-6">상품 (SKU) 목록</h1>
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="text-xl font-bold text-gray-900">상품 (SKU) 목록</h1>
+        <button
+          onClick={openCreate}
+          className="px-3 py-2 text-xs bg-black text-white rounded-lg hover:bg-gray-800 transition-colors"
+        >
+          + 상품 추가
+        </button>
+      </div>
 
       <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
         {loading ? (
@@ -114,10 +252,16 @@ export default function AdminProductList() {
                     </td>
                     <td className="px-5 py-4">
                       <div className="flex gap-3">
-                        {sku.status === 'DRAFT' && (
+                        <button
+                          onClick={() => navigate(`/admin/products/${sku.skuCode}`)}
+                          className="text-xs text-blue-500 hover:text-blue-700 font-medium"
+                        >
+                          편집
+                        </button>
+                        {(sku.status === 'DRAFT' || sku.status === 'OUT_OF_STOCK') && (
                           <button onClick={() => handlePublish(sku.skuCode)} className="text-xs text-green-600 hover:text-green-800 font-medium">게시</button>
                         )}
-                        {sku.status === 'PUBLISHED' && (
+                        {sku.status === 'ACTIVE' && (
                           <button onClick={() => handleDiscontinue(sku.skuCode)} className="text-xs text-orange-500 hover:text-orange-700 font-medium">중단</button>
                         )}
                         {sku.status === 'DISCONTINUED' && (
@@ -142,6 +286,7 @@ export default function AdminProductList() {
         </div>
       )}
 
+      {/* ── 재고 조정 모달 ── */}
       {stockModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-xl p-6 w-full max-w-sm shadow-xl">
@@ -150,27 +295,178 @@ export default function AdminProductList() {
             <div className="space-y-3">
               <div>
                 <label className="block text-xs text-gray-500 mb-1.5">조정 수량 (양수: 입고, 음수: 차감)</label>
-                <input
-                  type="number"
-                  value={delta}
-                  onChange={(e) => setDelta(e.target.value)}
-                  className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-black/10"
-                  placeholder="예: 10 또는 -5"
-                />
+                <input type="number" value={delta} onChange={(e) => setDelta(e.target.value)}
+                  className={inputCls} placeholder="예: 10 또는 -5" />
               </div>
               <div>
                 <label className="block text-xs text-gray-500 mb-1.5">메모 (선택)</label>
-                <input
-                  value={memo}
-                  onChange={(e) => setMemo(e.target.value)}
-                  className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-black/10"
-                  placeholder="조정 사유 입력"
-                />
+                <input value={memo} onChange={(e) => setMemo(e.target.value)}
+                  className={inputCls} placeholder="조정 사유 입력" />
               </div>
             </div>
             <div className="flex gap-2 mt-5">
-              <button onClick={() => { setStockModal(null); setDelta(''); setMemo(''); }} className="flex-1 py-2.5 text-sm border border-gray-200 rounded-lg hover:bg-gray-50">취소</button>
-              <button onClick={handleStockAdjust} disabled={adjusting || !delta || isNaN(Number(delta))} className="flex-1 py-2.5 text-sm bg-black text-white rounded-lg hover:bg-gray-800 disabled:opacity-50">{adjusting ? '처리 중...' : '적용'}</button>
+              <button onClick={() => { setStockModal(null); setDelta(''); setMemo(''); }}
+                className="flex-1 py-2.5 text-sm border border-gray-200 rounded-lg hover:bg-gray-50">취소</button>
+              <button onClick={handleStockAdjust} disabled={adjusting || !delta || isNaN(Number(delta))}
+                className="flex-1 py-2.5 text-sm bg-black text-white rounded-lg hover:bg-gray-800 disabled:opacity-50">
+                {adjusting ? '처리 중...' : '적용'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── 상품 생성 모달 ── */}
+      {createOpen && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 overflow-y-auto">
+          <div className="bg-white rounded-xl p-6 w-full max-w-lg shadow-xl my-8">
+            <h2 className="font-semibold text-gray-900 mb-5">상품 추가</h2>
+
+            <div className="space-y-4">
+              {/* 아티스트 */}
+              <div>
+                <label className="block text-xs text-gray-500 mb-1.5">아티스트 *</label>
+                <select value={form.artistCode} onChange={(e) => setF({ artistCode: e.target.value })} className={inputCls}>
+                  <option value="">-- 아티스트 선택 --</option>
+                  {artists.map((a: any) => (
+                    <option key={a.artistCode} value={a.artistCode}>{a.name}</option>
+                  ))}
+                </select>
+              </div>
+
+              {/* 상품명 + 슬러그 */}
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs text-gray-500 mb-1.5">상품명 *</label>
+                  <input value={form.name}
+                    onChange={(e) => { setF({ name: e.target.value }); handleSlugAutoFill(e.target.value); }}
+                    className={inputCls} placeholder="작품 제목" />
+                </div>
+                <div>
+                  <label className="block text-xs text-gray-500 mb-1.5">슬러그 *</label>
+                  <input value={form.slug} onChange={(e) => setF({ slug: e.target.value })}
+                    className={inputCls} placeholder="artwork-title" />
+                </div>
+              </div>
+
+              {/* 타입 + 장르 */}
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs text-gray-500 mb-1.5">상품 타입</label>
+                  <select value={form.skuType} onChange={(e) => setF({ skuType: e.target.value })} className={inputCls}>
+                    {SKU_TYPES.map((t) => <option key={t.value} value={t.value}>{t.label}</option>)}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-xs text-gray-500 mb-1.5">장르</label>
+                  <select value={form.genre} onChange={(e) => setF({ genre: e.target.value })} className={inputCls}>
+                    <option value="">-- 선택 --</option>
+                    {GENRES.map((g) => <option key={g} value={g}>{g}</option>)}
+                  </select>
+                </div>
+              </div>
+
+              {/* 가격 */}
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs text-gray-500 mb-1.5">정가 (원) *</label>
+                  <input type="number" value={form.listPrice} onChange={(e) => setF({ listPrice: e.target.value })}
+                    className={inputCls} placeholder="1500000" min="0" />
+                </div>
+                <div>
+                  <label className="block text-xs text-gray-500 mb-1.5">판매가 (원, 선택)</label>
+                  <input type="number" value={form.salePrice} onChange={(e) => setF({ salePrice: e.target.value })}
+                    className={inputCls} placeholder="1200000" min="0" />
+                </div>
+              </div>
+
+              {/* 대표 이미지 업로드 */}
+              <div>
+                <label className="block text-xs text-gray-500 mb-1.5">대표 이미지 (선택)</label>
+                <input
+                  ref={primaryInputRef}
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={(e) => handlePrimaryFileChange(e.target.files?.[0] ?? null)}
+                />
+                {primaryPreview ? (
+                  <div className="relative inline-block">
+                    <img src={primaryPreview} alt="preview" className="w-24 h-24 object-cover rounded-lg border" />
+                    <button
+                      type="button"
+                      onClick={() => { handlePrimaryFileChange(null); if (primaryInputRef.current) primaryInputRef.current.value = ''; }}
+                      className="absolute -top-1.5 -right-1.5 bg-black text-white rounded-full p-0.5 hover:bg-red-600"
+                    >
+                      <X className="w-3 h-3" />
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => primaryInputRef.current?.click()}
+                    className="flex items-center gap-2 px-3 py-2 text-xs border border-dashed border-gray-300 rounded-lg text-gray-400 hover:border-gray-500 hover:text-gray-600 transition-colors"
+                  >
+                    <ImagePlus className="w-4 h-4" /> 이미지 선택
+                  </button>
+                )}
+              </div>
+
+              {/* 에디션 */}
+              <div>
+                <label className="flex items-center gap-2 text-xs text-gray-600 cursor-pointer">
+                  <input type="checkbox" checked={form.isLimitedEdition}
+                    onChange={(e) => setF({ isLimitedEdition: e.target.checked })}
+                    className="rounded" />
+                  한정 에디션
+                </label>
+                {form.isLimitedEdition && (
+                  <div className="grid grid-cols-2 gap-3 mt-2">
+                    <div>
+                      <label className="block text-xs text-gray-500 mb-1.5">에디션 총 수량</label>
+                      <input type="number" value={form.editionSize} onChange={(e) => setF({ editionSize: e.target.value })}
+                        className={inputCls} placeholder="50" min="1" />
+                    </div>
+                    <div>
+                      <label className="block text-xs text-gray-500 mb-1.5">이 작품 에디션 번호</label>
+                      <input type="number" value={form.editionNumber} onChange={(e) => setF({ editionNumber: e.target.value })}
+                        className={inputCls} placeholder="7" min="1" />
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* 사이즈/무게 */}
+              <div>
+                <p className="text-xs text-gray-500 mb-2">작품 크기 / 무게 (선택)</p>
+                <div className="grid grid-cols-4 gap-2">
+                  {(['widthCm', 'heightCm', 'depthCm', 'weightKg'] as const).map((key) => (
+                    <div key={key}>
+                      <label className="block text-xs text-gray-400 mb-1">{{ widthCm: '가로(cm)', heightCm: '세로(cm)', depthCm: '깊이(cm)', weightKg: '무게(kg)' }[key]}</label>
+                      <input type="number" value={form[key]} onChange={(e) => setF({ [key]: e.target.value })}
+                        className={inputCls + ' py-1.5'} placeholder="0" min="0" step="0.1" />
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* 설명 */}
+              <div>
+                <label className="block text-xs text-gray-500 mb-1.5">작품 설명 (선택)</label>
+                <textarea value={form.description} onChange={(e) => setF({ description: e.target.value })}
+                  rows={3} className={`${inputCls} resize-none`} placeholder="작품에 대한 설명" />
+              </div>
+            </div>
+
+            {formError && <p className="text-xs text-red-500 mt-3">{formError}</p>}
+
+            <div className="flex gap-2 mt-5">
+              <button onClick={() => setCreateOpen(false)}
+                className="flex-1 py-2.5 text-sm border border-gray-200 rounded-lg hover:bg-gray-50">취소</button>
+              <button onClick={handleCreate} disabled={submitting}
+                className="flex-1 py-2.5 text-sm bg-black text-white rounded-lg hover:bg-gray-800 disabled:opacity-50">
+                {submitting ? '등록 중...' : '등록'}
+              </button>
             </div>
           </div>
         </div>
