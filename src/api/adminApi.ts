@@ -152,6 +152,14 @@ export async function addArtistMedia(
   return res.data.data as ArtistMediaResponse;
 }
 
+export async function addArtistMediaUrl(
+  artistCode: string,
+  data: { fileUrl: string; mediaType: string; mediaRole: string; title?: string; sortOrder?: number }
+) {
+  const res = await adminInstance.post(`${BASE}/artists/${artistCode}/media-url`, data);
+  return res.data.data as ArtistMediaResponse;
+}
+
 export async function deleteArtistMedia(artistCode: string, mediaId: number) {
   await adminInstance.delete(`${BASE}/artists/${artistCode}/media/${mediaId}`);
 }

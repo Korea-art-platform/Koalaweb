@@ -11,6 +11,7 @@ export function useArtistDetail(id: string | undefined) {
     },
     enabled: !!id,
     retry: false,
+    staleTime: 0,   // 작가 상세는 항상 최신 데이터 fetch (어드민 수정 즉시 반영)
   });
 
   const media = artist?.mediaList ?? [];

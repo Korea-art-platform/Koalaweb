@@ -6,6 +6,12 @@ import { ImageWithFallback } from '@/app/components/fallback/ImageWithFallback';
 function getVideoEmbedUrl(url: string): string | null {
   if (!url) return null;
 
+  // 이미 embed URL 형태 (어드민에서 변환 저장)
+  if (url.includes('youtube.com/embed/') || url.includes('player.vimeo.com/video/')) {
+    return url;
+  }
+
+  // YouTube watch URL
   const youtubeMatch = url.match(
     /(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\n?#]+)/
   );
@@ -13,11 +19,13 @@ function getVideoEmbedUrl(url: string): string | null {
     return `https://www.youtube.com/embed/${youtubeMatch[1]}`;
   }
 
+  // Vimeo
   const vimeoMatch = url.match(/vimeo\.com\/(\d+)/);
   if (vimeoMatch) {
     return `https://player.vimeo.com/video/${vimeoMatch[1]}`;
   }
 
+  // 직접 업로드 파일
   if (url.endsWith('.mp4') || url.endsWith('.webm')) {
     return url;
   }

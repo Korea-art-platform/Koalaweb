@@ -3,6 +3,11 @@ interface ArtistInterviewProps {
   thumbnailUrl?: string;
 }
 
+/** YouTube / Vimeo 임베드 URL 여부 판별 */
+function isEmbedUrl(url: string) {
+  return /youtube\.com|youtu\.be|vimeo\.com/i.test(url);
+}
+
 export function ArtistInterview({ videoUrl, thumbnailUrl }: ArtistInterviewProps) {
   if (!videoUrl && !thumbnailUrl) return null;
 
@@ -11,19 +16,27 @@ export function ArtistInterview({ videoUrl, thumbnailUrl }: ArtistInterviewProps
       <p className="text-xs text-gray-400 tracking-widest uppercase mb-4">INTERVIEW</p>
       <div className="w-full aspect-video bg-[#D6C9A8] overflow-hidden">
         {videoUrl ? (
-          <iframe
-            src={videoUrl}
-            title="Artist Interview"
-            className="w-full h-full"
-            allowFullScreen
-          />
+          isEmbedUrl(videoUrl) ? (
+            /* YouTube / Vimeo → iframe */
+            <iframe
+              src={videoUrl}
+              title="Artist Interview"
+              className="w-full h-full"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            />
+          ) : (
+            /* 직접 업로드한 MP4 등 → video 태그 */
+            <video
+              src={videoUrl}
+              controls
+              className="w-full h-full object-cover"
+              poster={thumbnailUrl}
+            />
+          )
         ) : thumbnailUrl ? (
           <img src={thumbnailUrl} alt="Interview" className="w-full h-full object-cover" />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center">
-            <span className="text-sm text-gray-500">인터뷰 영상</span>
-          </div>
-        )}
+        ) : null}
       </div>
     </section>
   );

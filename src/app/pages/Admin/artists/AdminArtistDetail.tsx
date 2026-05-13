@@ -7,6 +7,7 @@ import {
   updateArtist,
   getArtistMedia,
   addArtistMedia,
+  addArtistMediaUrl,
   deleteArtistMedia,
   addArtistCareer,
   updateArtistCareer,
@@ -31,10 +32,11 @@ const PAGE_SECTIONS = [
   {
     role: 'INTERVIEW_VIDEO',
     icon: '🎬',
-    title: '인터뷰 영상',
-    desc: 'INTERVIEW 섹션에 표시되는 영상 파일',
+    title: '인터뷰 영상 (YouTube)',
+    desc: 'YouTube URL을 입력하면 INTERVIEW 섹션에 임베드됩니다',
     accept: 'video/*',
     single: true,
+    urlOnly: true,   // 파일 업로드 대신 URL 입력
   },
   {
     role: 'INTERVIEW_IMAGE',
@@ -280,7 +282,56 @@ function SectionCard({
   const [deleting, setDeleting] = useState<number | null>(null);
   const [error, setError] = useState('');
 
+  // YouTube URL 입력 상태 (INTERVIEW_VIDEO 전용)
+  const [urlInput, setUrlInput] = useState('');
+  const [urlSaving, setUrlSaving] = useState(false);
+
   const mediaType = section.role === 'INTERVIEW_VIDEO' ? 'VIDEO' : 'IMAGE';
+
+  /** YouTube watch/short URL → embed URL 변환 */
+  const toEmbedUrl = (url: string): string | null => {
+    try {
+      const u = new URL(url.trim());
+      // https://www.youtube.com/watch?v=VIDEO_ID
+      if (u.hostname.includes('youtube.com') && u.searchParams.get('v')) {
+        return `https://www.youtube.com/embed/${u.searchParams.get('v')}`;
+      }
+      // https://youtu.be/VIDEO_ID
+      if (u.hostname === 'youtu.be') {
+        return `https://www.youtube.com/embed${u.pathname}`;
+      }
+      // 이미 embed URL이면 그대로
+      if (u.hostname.includes('youtube.com') && u.pathname.startsWith('/embed/')) {
+        return url.trim();
+      }
+      return null;
+    } catch {
+      return null;
+    }
+  };
+
+  const handleSaveUrl = async () => {
+    const embedUrl = toEmbedUrl(urlInput);
+    if (!embedUrl) {
+      setError('올바른 YouTube URL을 입력해 주세요.\n(예: https://www.youtube.com/watch?v=VIDEO_ID)');
+      return;
+    }
+    setError('');
+    setUrlSaving(true);
+    try {
+      await addArtistMediaUrl(artistCode, {
+        fileUrl: embedUrl,
+        mediaType: 'VIDEO',
+        mediaRole: 'INTERVIEW_VIDEO',
+      });
+      setUrlInput('');
+      onChanged();
+    } catch {
+      setError('저장에 실패했습니다.');
+    } finally {
+      setUrlSaving(false);
+    }
+  };
 
   const upload = async (files: FileList | null, replacingId?: number) => {
     if (!files || files.length === 0) return;
@@ -294,7 +345,6 @@ function SectionCard({
           sortOrder: items.length,
         });
       }
-      // 교체인 경우 기존 항목 삭제
       if (replacingId !== undefined) {
         await deleteArtistMedia(artistCode, replacingId);
       }
@@ -321,7 +371,6 @@ function SectionCard({
     setTimeout(() => replaceRef.current?.click(), 0);
   };
 
-  // 단일 슬롯 (PROFILE / INTERVIEW_VIDEO / INTERVIEW_IMAGE)
   const current = items[0];
 
   return (
@@ -337,17 +386,63 @@ function SectionCard({
 
       {/* 바디 */}
       <div className="px-5 py-4">
-        {section.single ? (
-          /* ── 단일 슬롯 ── */
+        {'urlOnly' in section && section.urlOnly ? (
+          /* ── YouTube URL 입력 전용 슬롯 ── */
+          <div className="space-y-3">
+            {/* 현재 등록된 영상 */}
+            {current ? (
+              <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg border border-gray-200">
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs text-gray-500 mb-0.5">현재 등록된 영상</p>
+                  <p className="text-xs text-gray-700 truncate font-mono">{current.fileUrl}</p>
+                </div>
+                <div className="w-28 h-16 flex-shrink-0 rounded overflow-hidden bg-gray-200">
+                  <iframe
+                    src={current.fileUrl}
+                    className="w-full h-full pointer-events-none"
+                    title="preview"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  />
+                </div>
+                <button
+                  onClick={() => handleDelete(current.id)}
+                  disabled={deleting === current.id}
+                  className="p-1.5 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg disabled:opacity-40"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
+              </div>
+            ) : (
+              <p className="text-xs text-gray-400">아직 등록된 영상이 없습니다.</p>
+            )}
+
+            {/* URL 입력 */}
+            <div className="flex gap-2">
+              <input
+                value={urlInput}
+                onChange={(e) => setUrlInput(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && handleSaveUrl()}
+                placeholder="https://www.youtube.com/watch?v=..."
+                className="flex-1 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black/10"
+              />
+              <button
+                onClick={handleSaveUrl}
+                disabled={urlSaving || !urlInput.trim()}
+                className="px-4 py-2 text-sm bg-black text-white rounded-lg hover:bg-gray-800 disabled:opacity-50 whitespace-nowrap"
+              >
+                {urlSaving ? '저장 중...' : current ? '교체' : '등록'}
+              </button>
+            </div>
+            {error && <p className="text-xs text-red-500 whitespace-pre-line">{error}</p>}
+          </div>
+        ) : section.single ? (
+          /* ── 단일 슬롯 (파일 업로드) ── */
           <div className="flex items-center gap-4">
             {/* 미리보기 */}
             <div className="w-32 h-20 rounded-lg overflow-hidden bg-gray-100 border border-gray-200 flex-shrink-0">
               {current ? (
-                current.mediaType === 'VIDEO' ? (
-                  <video src={current.fileUrl} className="w-full h-full object-cover" muted />
-                ) : (
-                  <img src={current.fileUrl} alt="" className="w-full h-full object-cover" />
-                )
+                <img src={current.fileUrl} alt="" className="w-full h-full object-cover" />
               ) : (
                 <div className="w-full h-full flex items-center justify-center text-gray-300 text-xs">
                   없음

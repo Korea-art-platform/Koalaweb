@@ -158,6 +158,7 @@ export interface Artist {
   careerList?: ArtistCareer[];
   followCount?: number;
   isFollowing?: boolean;
+  slug?: string;
 }
 
 // ─── 주문 ─────────────────────────────────────────────────────────────────────
