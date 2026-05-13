@@ -20,20 +20,20 @@ export default defineConfig(({ command }) => ({
       // API 요청을 로컬 백엔드로 프록시
       // → 브라우저가 같은 origin으로 인식 → HttpOnly 쿠키 정상 동작
       '/api': {
-        target: 'http://localhost:8081',
+        target: 'http://localhost:8080',
         changeOrigin: true,
       },
       '/admin': {
-        target: 'http://localhost:8081',
+        target: 'http://localhost:8080',
         changeOrigin: true,
       },
       // OAuth2 인가 요청만 백엔드로 프록시 (/oauth2/callback은 프론트 라우트이므로 제외)
       '/oauth2/authorization': {
-        target: 'http://localhost:8081',
+        target: 'http://localhost:8080',
         changeOrigin: true,
       },
       '/login/oauth2/code': {
-        target: 'http://localhost:8081',
+        target: 'http://localhost:8080',
         changeOrigin: true,
       },
     },

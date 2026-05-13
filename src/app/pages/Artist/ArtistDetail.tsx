@@ -41,19 +41,28 @@ export default function ArtistDetail() {
         <ArtistWorldView
           breadcrumb="작가 소개"
           worldViewTitle={`${artist.name}의 세계관`}
-          worldViewDesc={artist.bio ?? ''}
+          worldViewDesc={artist.description ?? ''}
         />
 
         <ArtistProfileSection
           name={artist.name}
-          description={artist.bio}
+          description={artist.description}
           profileImageUrl={artist.profileImageUrl}
           artistCode={artist.artistCode}
           followCount={artist.followCount ?? 0}
           isFollowing={artist.isFollowing ?? false}
         />
 
-        <ArtistCareer />
+        {artist.artistNote && (
+          <section className="mb-16">
+            <h3 className="text-lg font-semibold mb-4">작가 노트</h3>
+            <p className="text-sm text-gray-700 leading-relaxed whitespace-pre-line">
+              {artist.artistNote}
+            </p>
+          </section>
+        )}
+
+        <ArtistCareer items={artist.careerList} />
 
         <ArtistInterview videoUrl={videoUrl} />
 

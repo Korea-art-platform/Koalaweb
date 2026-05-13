@@ -131,17 +131,33 @@ export interface Cart {
 // ─── 아티스트 ─────────────────────────────────────────────────────────────────
 export interface ArtistMedia {
   mediaType: 'VIDEO' | 'IMAGE';
+  mediaRole?: string;
   fileUrl: string;
+  thumbnailUrl?: string;
+  title?: string;
+  sortOrder?: number;
+}
+
+export interface ArtistCareer {
+  id: number;
+  category: '학력' | '개인전' | '그룹전';
+  year: number;
+  content: string;
+  sortOrder: number;
 }
 
 export interface Artist {
   artistCode: string;
   name: string;
-  bio?: string;
+  description?: string;
+  artistNote?: string;
   specialty?: string;
   profileImageUrl?: string;
   studioImageUrl?: string;
   mediaList?: ArtistMedia[];
+  careerList?: ArtistCareer[];
+  followCount?: number;
+  isFollowing?: boolean;
 }
 
 // ─── 주문 ─────────────────────────────────────────────────────────────────────
