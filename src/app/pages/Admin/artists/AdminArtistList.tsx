@@ -1,7 +1,7 @@
 ﻿import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router';
 import { Users } from 'lucide-react';
-import { getAdminArtists, createArtist, deleteArtist } from '@/api/adminApi';
+import { getAdminArtists, createArtist, deleteArtist, activateArtist, deactivateArtist } from '@/api/adminApi';
 
 interface ArtistForm {
   name: string;
@@ -51,8 +51,19 @@ export default function AdminArtistList() {
     }
   };
 
+  const handleToggleActive = async (a: any) => {
+    if (a.isActive) {
+      await deactivateArtist(a.artistCode);
+    } else {
+      await activateArtist(a.artistCode);
+    }
+    load();
+  };
+
   const handleDelete = async (artistCode: string, name: string) => {
-    if (!window.confirm(name + ' 아티스트를 삭제하시겠습니까?\n연결된 상품이 있으면 삭제되지 않을 수 있습니다.')) return;
+    if (!window.confirm(
+      `"${name}" 아티스트를 삭제하시겠습니까?\n\n⚠️ 이 작가의 모든 작품(상품)도 함께 삭제됩니다.\n이 작업은 되돌릴 수 없습니다.`
+    )) return;
     await deleteArtist(artistCode);
     load();
   };
@@ -101,9 +112,16 @@ export default function AdminArtistList() {
                   <td className="px-5 py-4 font-mono text-xs text-gray-400">{a.artistCode}</td>
                   <td className="px-5 py-4 text-xs text-gray-500">{a.slug}</td>
                   <td className="px-5 py-4">
-                    <span className={`inline-flex px-2 py-0.5 rounded-full text-xs font-medium ${a.isActive ? 'bg-green-50 text-green-700' : 'bg-gray-100 text-gray-500'}`}>
-                      {a.isActive ? '활성' : '비활성'}
-                    </span>
+                    <button
+                      onClick={() => handleToggleActive(a)}
+                      className={`inline-flex px-2.5 py-1 rounded-full text-xs font-medium transition-colors cursor-pointer
+                        ${a.isActive
+                          ? 'bg-green-50 text-green-700 hover:bg-green-100'
+                          : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
+                        }`}
+                    >
+                      {a.isActive ? '공개중' : '비공개'}
+                    </button>
                   </td>
                   <td className="px-5 py-4">
                     <div className="flex items-center gap-3">

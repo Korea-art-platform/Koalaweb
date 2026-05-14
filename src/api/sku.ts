@@ -6,7 +6,7 @@ export const getSkus = (page = 0, size = 20) =>
 
 // 작가별 SKU 목록
 export const getSkusByArtist = (artistCode: string, page = 0, size = 50) =>
-    instance.get('/api/v1/skus', { params: { page, size, artistCode } });
+    instance.get(`/api/v1/artists/${artistCode}/skus`, { params: { page, size } });
 
 // SKU 상세
 export const getSku = (skuCode: string) =>

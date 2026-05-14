@@ -1,10 +1,12 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router';
-import { ArrowLeft, Upload, Trash2, Plus, Pencil, X, Check } from 'lucide-react';
+import { ArrowLeft, Upload, Trash2, Plus, Pencil, X, Check, ImagePlus } from 'lucide-react';
 // Upload은 SectionCard에서 사용
 import {
   getAdminArtist,
   updateArtist,
+  createSku,
+  addSkuMedia,
   getArtistMedia,
   addArtistMedia,
   addArtistMediaUrl,
@@ -12,12 +14,17 @@ import {
   addArtistCareer,
   updateArtistCareer,
   deleteArtistCareer,
+  getArtistSkus,
+  setArtistFeaturedSku,
+  clearArtistFeaturedSku,
   type ArtistDetailResponse,
   type ArtistMediaResponse,
   type ArtistCareerResponse,
+  type ArtistSkuItem,
+  type FeaturedSkuInfo,
 } from '@/api/adminApi';
 
-type Tab = 'info' | 'media' | 'career';
+type Tab = 'info' | 'media' | 'career' | 'featured';
 
 // 상세페이지 섹션별 미디어 역할 정의
 const PAGE_SECTIONS = [
@@ -104,7 +111,7 @@ export default function AdminArtistDetail() {
 
       {/* 탭 */}
       <div className="flex gap-1 border-b border-gray-200 mb-6">
-        {(['info', 'media', 'career'] as Tab[]).map((t) => (
+        {(['info', 'media', 'career', 'featured'] as Tab[]).map((t) => (
           <button
             key={t}
             onClick={() => setTab(t)}
@@ -114,14 +121,15 @@ export default function AdminArtistDetail() {
                 : 'border-transparent text-gray-400 hover:text-gray-700'
             }`}
           >
-            {{ info: '기본정보', media: '미디어', career: '약력' }[t]}
+            {{ info: '기본정보', media: '미디어', career: '약력', featured: '대표 작품' }[t]}
           </button>
         ))}
       </div>
 
-      {tab === 'info' && <InfoTab artist={artist} onSaved={load} />}
-      {tab === 'media' && <MediaTab artistCode={artist.artistCode} mediaList={artist.mediaList} onChanged={load} />}
-      {tab === 'career' && <CareerTab artistCode={artist.artistCode} careerList={artist.careerList} onChanged={load} />}
+      {tab === 'info'     && <InfoTab artist={artist} onSaved={load} />}
+      {tab === 'media'    && <MediaTab artistCode={artist.artistCode} mediaList={artist.mediaList} onChanged={load} />}
+      {tab === 'career'   && <CareerTab artistCode={artist.artistCode} careerList={artist.careerList} onChanged={load} />}
+      {tab === 'featured' && <FeaturedTab artistCode={artist.artistCode} current={artist.featuredSku} onChanged={load} />}
     </div>
   );
 }
@@ -739,6 +747,328 @@ function CareerTab({
           )}
         </div>
       ))}
+    </div>
+  );
+}
+
+// ────────────────────────────────────────────────────────────
+// 대표 작품 탭
+// ────────────────────────────────────────────────────────────
+function FeaturedTab({
+  artistCode,
+  current,
+  onChanged,
+}: {
+  artistCode: string;
+  current?: FeaturedSkuInfo;
+  onChanged: () => void;
+}) {
+  const [skus, setSkus] = useState<ArtistSkuItem[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [busy, setBusy] = useState(false);
+
+  // 새 작품 등록 폼
+  const [addOpen, setAddOpen] = useState(false);
+  const [addForm, setAddForm] = useState({ name: '', listPrice: '', salePrice: '', description: '' });
+  const [addImage, setAddImage] = useState<File | null>(null);
+  const [addPreview, setAddPreview] = useState<string | null>(null);
+  const [addError, setAddError] = useState('');
+  const [addBusy, setAddBusy] = useState(false);
+  const imageInputRef = useRef<HTMLInputElement>(null);
+
+  const reloadSkus = useCallback(() => {
+    setLoading(true);
+    getArtistSkus(artistCode).then(setSkus).finally(() => setLoading(false));
+  }, [artistCode]);
+
+  useEffect(() => { reloadSkus(); }, [reloadSkus]);
+
+  const handleSet = async (skuCode: string) => {
+    setBusy(true);
+    try { await setArtistFeaturedSku(artistCode, skuCode); onChanged(); }
+    catch { alert('설정에 실패했습니다.'); }
+    finally { setBusy(false); }
+  };
+
+  const handleClear = async () => {
+    if (!window.confirm('대표 작품을 해제하시겠습니까?')) return;
+    setBusy(true);
+    try { await clearArtistFeaturedSku(artistCode); onChanged(); }
+    catch { alert('해제에 실패했습니다.'); }
+    finally { setBusy(false); }
+  };
+
+  const handleImagePick = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setAddImage(file);
+    setAddPreview(URL.createObjectURL(file));
+  };
+
+  const toSlug = (name: string) =>
+    name.toLowerCase().trim().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '').slice(0, 200)
+    + '-' + Date.now();
+
+  const handleAddSku = async () => {
+    if (!addForm.name.trim()) { setAddError('작품명을 입력해 주세요.'); return; }
+    if (!addForm.listPrice || isNaN(Number(addForm.listPrice))) { setAddError('정가를 입력해 주세요.'); return; }
+    if (addForm.salePrice && Number(addForm.salePrice) > Number(addForm.listPrice)) {
+      setAddError('할인가는 정가보다 클 수 없습니다.'); return;
+    }
+    setAddError('');
+    setAddBusy(true);
+    try {
+      // 1. SKU 생성
+      const created: any = await createSku({
+        artistCode,
+        name: addForm.name.trim(),
+        slug: toSlug(addForm.name),
+        listPrice: Number(addForm.listPrice),
+        salePrice: addForm.salePrice ? Number(addForm.salePrice) : undefined,
+        description: addForm.description.trim() || undefined,
+        skuType: 'ARTWORK',
+        genre: 'ART_TOY',
+        currency: 'KRW',
+      });
+      // 2. 이미지 업로드 (있을 경우)
+      if (addImage && created?.skuCode) {
+        try {
+          await addSkuMedia(created.skuCode, addImage, {
+            mediaType: 'IMAGE',
+            mediaRole: 'MAIN',
+            isPrimary: true,
+            sortOrder: 0,
+          });
+        } catch { /* 이미지 실패해도 작품은 생성됨 */ }
+      }
+      // 3. 대표 작품으로 설정
+      if (created?.skuCode) {
+        await setArtistFeaturedSku(artistCode, created.skuCode);
+      }
+      // 초기화
+      setAddOpen(false);
+      setAddForm({ name: '', listPrice: '', salePrice: '', description: '' });
+      setAddImage(null);
+      setAddPreview(null);
+      reloadSkus();
+      onChanged();
+    } catch (e: any) {
+      const msg = e?.response?.data?.error?.message;
+      setAddError(msg ?? '작품 등록에 실패했습니다.');
+    } finally {
+      setAddBusy(false);
+    }
+  };
+
+  const fmt = (n: number) => n.toLocaleString('ko-KR');
+
+  return (
+    <div className="space-y-6 max-w-xl">
+      {/* 현재 설정된 대표 작품 */}
+      <div>
+        <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">현재 대표 작품</p>
+        {current ? (
+          <div className="flex items-center gap-4 p-4 bg-white border border-gray-200 rounded-xl">
+            <div className="w-20 h-20 flex-shrink-0 rounded-lg overflow-hidden bg-gray-100 border border-gray-200">
+              {current.imageUrl
+                ? <img src={current.imageUrl} alt={current.name} className="w-full h-full object-cover" />
+                : <div className="w-full h-full flex items-center justify-center text-gray-300 text-xs">없음</div>
+              }
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="font-semibold text-gray-900 text-sm truncate">{current.name}</p>
+              <p className="text-xs text-gray-400 font-mono mt-0.5">{current.skuCode}</p>
+              <div className="flex items-center gap-1.5 mt-1.5">
+                {current.salePrice ? (
+                  <>
+                    <span className="text-sm font-bold text-red-500">₩{fmt(current.salePrice)}</span>
+                    <span className="text-xs text-gray-400 line-through">₩{fmt(current.listPrice)}</span>
+                  </>
+                ) : (
+                  <span className="text-sm font-bold text-gray-900">₩{fmt(current.listPrice)}</span>
+                )}
+              </div>
+            </div>
+            <button
+              onClick={handleClear}
+              disabled={busy}
+              className="px-3 py-1.5 text-xs text-red-500 border border-red-200 rounded-lg hover:bg-red-50 disabled:opacity-40 whitespace-nowrap"
+            >
+              해제
+            </button>
+          </div>
+        ) : (
+          <div className="p-4 bg-gray-50 border border-dashed border-gray-200 rounded-xl text-center text-sm text-gray-400">
+            설정된 대표 작품이 없습니다.
+          </div>
+        )}
+      </div>
+
+      {/* 새 작품 등록 */}
+      <div>
+        <div className="flex items-center justify-between mb-3">
+          <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">새 작품 직접 등록</p>
+          <button
+            onClick={() => { setAddOpen((v) => !v); setAddError(''); }}
+            className="flex items-center gap-1 text-xs text-gray-500 hover:text-gray-900 transition-colors"
+          >
+            <Plus className="w-3.5 h-3.5" />
+            {addOpen ? '닫기' : '작품 추가'}
+          </button>
+        </div>
+
+        {addOpen && (
+          <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 space-y-3">
+            {/* 이미지 업로드 */}
+            <div>
+              <label className="block text-xs text-gray-500 mb-1.5">대표 이미지</label>
+              <div className="flex items-center gap-3">
+                <div
+                  onClick={() => imageInputRef.current?.click()}
+                  className="w-24 h-24 rounded-xl overflow-hidden bg-white border-2 border-dashed border-gray-200 flex items-center justify-center cursor-pointer hover:border-gray-400 transition-colors flex-shrink-0"
+                >
+                  {addPreview
+                    ? <img src={addPreview} alt="preview" className="w-full h-full object-cover" />
+                    : <ImagePlus className="w-6 h-6 text-gray-300" />
+                  }
+                </div>
+                <div className="text-xs text-gray-400 leading-relaxed">
+                  클릭하여 이미지 업로드<br />
+                  <span className="text-gray-300">(JPG, PNG, WEBP)</span>
+                </div>
+                <input ref={imageInputRef} type="file" accept="image/*" className="hidden" onChange={handleImagePick} />
+              </div>
+            </div>
+
+            {/* 작품명 */}
+            <div>
+              <label className="block text-xs text-gray-500 mb-1.5">작품명 *</label>
+              <input
+                value={addForm.name}
+                onChange={(e) => setAddForm((f) => ({ ...f, name: e.target.value }))}
+                className={inputCls}
+                placeholder="예: 말머리 No.1"
+              />
+            </div>
+
+            {/* 가격 */}
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="block text-xs text-gray-500 mb-1.5">정가 (원) *</label>
+                <input
+                  type="number"
+                  value={addForm.listPrice}
+                  onChange={(e) => setAddForm((f) => ({ ...f, listPrice: e.target.value }))}
+                  className={inputCls}
+                  placeholder="50000"
+                  min="0"
+                />
+              </div>
+              <div>
+                <label className="block text-xs text-gray-500 mb-1.5">할인가 (원)</label>
+                <input
+                  type="number"
+                  value={addForm.salePrice}
+                  onChange={(e) => setAddForm((f) => ({ ...f, salePrice: e.target.value }))}
+                  className={inputCls}
+                  placeholder="비워두면 정가 적용"
+                  min="0"
+                />
+              </div>
+            </div>
+
+            {/* 설명 */}
+            <div>
+              <label className="block text-xs text-gray-500 mb-1.5">작품 설명</label>
+              <textarea
+                value={addForm.description}
+                onChange={(e) => setAddForm((f) => ({ ...f, description: e.target.value }))}
+                rows={3}
+                className={`${inputCls} resize-none`}
+                placeholder="작품에 대한 간략한 설명"
+              />
+            </div>
+
+            {addError && <p className="text-xs text-red-500 whitespace-pre-line">{addError}</p>}
+
+            <div className="flex gap-2 pt-1">
+              <button
+                onClick={handleAddSku}
+                disabled={addBusy}
+                className="flex-1 py-2.5 text-sm bg-black text-white rounded-lg hover:bg-gray-800 disabled:opacity-50"
+              >
+                {addBusy ? '등록 중...' : '작품 등록 + 대표 설정'}
+              </button>
+              <button
+                onClick={() => { setAddOpen(false); setAddForm({ name: '', listPrice: '', salePrice: '', description: '' }); setAddImage(null); setAddPreview(null); setAddError(''); }}
+                className="px-4 py-2.5 text-sm border border-gray-200 rounded-lg hover:bg-gray-50"
+              >
+                취소
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* 기존 작품 목록에서 선택 */}
+      <div>
+        <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">
+          기존 작품에서 선택 <span className="font-normal text-gray-400">({skus.length})</span>
+        </p>
+        {loading ? (
+          <p className="text-sm text-gray-400">불러오는 중...</p>
+        ) : skus.length === 0 ? (
+          <p className="text-sm text-gray-400">등록된 작품이 없습니다. 위에서 새 작품을 추가해 주세요.</p>
+        ) : (
+          <div className="space-y-2">
+            {skus.map((sku) => {
+              const isCurrent = current?.skuCode === sku.skuCode;
+              return (
+                <div
+                  key={sku.skuCode}
+                  className={`flex items-center gap-3 p-3 rounded-xl border transition-colors
+                    ${isCurrent ? 'border-black bg-gray-50' : 'border-gray-200 bg-white hover:border-gray-300'}`}
+                >
+                  <div className="w-14 h-14 flex-shrink-0 rounded-lg overflow-hidden bg-gray-100 border border-gray-200">
+                    {sku.imageUrl
+                      ? <img src={sku.imageUrl} alt={sku.name} className="w-full h-full object-cover" />
+                      : <div className="w-full h-full flex items-center justify-center text-gray-300 text-[10px]">없음</div>
+                    }
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-gray-900 truncate">{sku.name}</p>
+                    <div className="flex items-center gap-1.5 mt-0.5">
+                      {sku.salePrice ? (
+                        <>
+                          <span className="text-xs font-bold text-red-500">₩{fmt(sku.salePrice)}</span>
+                          <span className="text-xs text-gray-400 line-through">₩{fmt(sku.listPrice)}</span>
+                        </>
+                      ) : (
+                        <span className="text-xs font-medium text-gray-700">₩{fmt(sku.listPrice)}</span>
+                      )}
+                      <span className={`text-[10px] px-1.5 py-0.5 rounded-full ml-1
+                        ${sku.status === 'ACTIVE' ? 'bg-green-50 text-green-700' : 'bg-gray-100 text-gray-500'}`}>
+                        {sku.status === 'ACTIVE' ? '판매중' : sku.status}
+                      </span>
+                    </div>
+                  </div>
+                  {isCurrent ? (
+                    <span className="text-[10px] font-semibold bg-black text-white px-2 py-1 rounded-full">대표</span>
+                  ) : (
+                    <button
+                      onClick={() => handleSet(sku.skuCode)}
+                      disabled={busy}
+                      className="px-3 py-1.5 text-xs bg-black text-white rounded-lg hover:bg-gray-800 disabled:opacity-40 whitespace-nowrap"
+                    >
+                      설정
+                    </button>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

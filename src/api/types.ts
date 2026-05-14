@@ -41,22 +41,7 @@ export interface UpdateProfileRequest {
   profileImageUrl?: string;
 }
 
-export interface Address {
-  id?: number;
-  label?: string;
-  fullName: string;
-  phone: string;
-  zipCode: string;
-  address1: string;
-  address2?: string;
-  city?: string;
-  country: string;
-  isDefault?: boolean;
-}
-
-export type AddressRequest = Omit<Address, 'id' | 'isDefault'>;
-
-// 백엔드 배송지 응답 (Account 페이지에서 사용)
+// 백엔드 배송지 응답 / 요청 공통 인터페이스
 export interface UserAddress {
   id: number;
   label?: string;
@@ -66,6 +51,17 @@ export interface UserAddress {
   address1: string;
   address2?: string;
   isDefault: boolean;
+}
+
+// 배송지 생성/수정 요청 — 백엔드 AddressCreateRequest/AddressUpdateRequest 와 1:1 매핑
+export interface AddressRequest {
+  label?: string;
+  recipientName: string;
+  recipientPhone: string;
+  zipCode: string;
+  address1: string;
+  address2?: string;
+  isDefault?: boolean;
 }
 
 // ─── SKU (상품) ───────────────────────────────────────────────────────────────

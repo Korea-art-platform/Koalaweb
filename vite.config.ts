@@ -16,6 +16,7 @@ export default defineConfig(({ command }) => ({
 
   server: {
     port: 5173,
+    host: true,   // 로컬 네트워크의 다른 기기(스마트폰 등)에서 접속 허용
     proxy: {
       // API 요청을 로컬 백엔드로 프록시
       // → 브라우저가 같은 origin으로 인식 → HttpOnly 쿠키 정상 동작

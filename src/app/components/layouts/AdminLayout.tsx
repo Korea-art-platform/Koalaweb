@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router';
-import { LayoutDashboard, Package, Users, ShoppingBag, Star, Image as ImageIcon } from 'lucide-react';
+import { LayoutDashboard, Package, Users, ShoppingBag, Star, Image as ImageIcon, RotateCcw } from 'lucide-react';
 
 interface AdminLayoutProps {
   children: React.ReactNode;
@@ -13,6 +13,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
     { label: '상품관리', path: '/admin/products', icon: Package },
     { label: '아티스트', path: '/admin/artists', icon: Users },
     { label: '주문', path: '/admin/orders', icon: ShoppingBag },
+    { label: '반품/교환', path: '/admin/returns', icon: RotateCcw },
     { label: '리뷰', path: '/admin/reviews', icon: Star },
     { label: '배너', path: '/admin/banners', icon: ImageIcon },
   ];

@@ -1,14 +1,15 @@
-import { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router';
+import { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router';
 import { ArrowLeft, MapPin, CreditCard, Package, Check, ChevronRight, Search } from 'lucide-react';
 import Navigation from '@/app/components/layouts/Header';
 import { createOrder } from '@/api/order';
 import { getCart } from '@/api/cart';
 import { preparePayment } from '@/api/payment';
 import { getMyProfile, getMyAddresses } from '@/api/user';
-import { ANONYMOUS } from '@tosspayments/tosspayments-sdk';
-import type { PaymentPageState } from '@/app/pages/payment/PaymentPage';
+import { loadTossPayments, ANONYMOUS } from '@tosspayments/tosspayments-sdk';
 import type { Cart, UserAddress } from '@/api/types';
+
+const TOSS_CLIENT_KEY = import.meta.env.VITE_TOSS_CLIENT_KEY as string;
 
 type PaymentMethodType = 'TOSS' | 'KAKAOPAY' | 'NAVERPAY' | 'CARD';
 
@@ -28,7 +29,6 @@ const paymentMethods: PaymentMethod[] = [
 
 export default function Checkout() {
   const navigate = useNavigate();
-  const location = useLocation();
 
   const [cart, setCart] = useState<Cart | null>(null);
   const [loading, setLoading] = useState(true);
@@ -44,6 +44,7 @@ export default function Checkout() {
     setAgreed({ purchase: next, privacy: next, terms: next });
   };
   const [showAddressSearch, setShowAddressSearch] = useState(false);
+  const postcodeContainerRef = useRef<HTMLDivElement>(null);
 
   // 배송지 폼
   const [form, setForm] = useState({
@@ -127,48 +128,42 @@ export default function Checkout() {
   };
 
   const handleAddressSearch = () => {
-    // 다음 우편번호 API 로드 (비동기 스크립트)
-    if ((window as any).daum && (window as any).daum.Postcode) {
-      openAddressSearch();
+    setShowAddressSearch(true);
+  };
+
+  // 우편번호 오버레이가 열릴 때 embed 초기화
+  useEffect(() => {
+    if (!showAddressSearch) return;
+
+    const initEmbed = () => {
+      if (!postcodeContainerRef.current) return;
+      postcodeContainerRef.current.innerHTML = '';
+      new (window as any).daum.Postcode({
+        width: '100%',
+        height: '100%',
+        oncomplete: (data: any) => {
+          let fullAddress = data.address;
+          let extra = '';
+          if (data.addressType === 'R') {
+            if (data.bname?.trim()) extra += data.bname;
+            if (data.buildingName?.trim()) extra += (extra ? `, ${data.buildingName}` : data.buildingName);
+            if (extra) fullAddress += ` (${extra})`;
+          }
+          setForm((prev) => ({ ...prev, zipCode: data.zonecode, address1: fullAddress, address2: '' }));
+          setShowAddressSearch(false);
+        },
+      }).embed(postcodeContainerRef.current);
+    };
+
+    if ((window as any).daum?.Postcode) {
+      initEmbed();
     } else {
-      // 스크립트가 없으면 로드
       const script = document.createElement('script');
       script.src = 'https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js';
-      script.onload = () => {
-        openAddressSearch();
-      };
+      script.onload = initEmbed;
       document.head.appendChild(script);
     }
-  };
-
-  const openAddressSearch = () => {
-    new (window as any).daum.Postcode({
-      oncomplete: function (data: any) {
-        let fullAddress = data.address;
-        let extraAddress = '';
-
-        if (data.addressType === 'R') {
-          if (data.bname && data.bname.trim() !== '') {
-            extraAddress += data.bname;
-          }
-          // buildingName, apartment 등 다양한 필드 확인
-          if (data.buildingName && data.buildingName.trim() !== '') {
-            extraAddress += extraAddress !== '' ? `, ${data.buildingName}` : data.buildingName;
-          }
-          if (extraAddress.trim() !== '') {
-            fullAddress += ` (${extraAddress})`;
-          }
-        }
-
-        setForm((prev) => ({
-          ...prev,
-          zipCode: data.zonecode,
-          address1: fullAddress,
-          address2: '', // 상세주소 초기화
-        }));
-      },
-    }).open();
-  };
+  }, [showAddressSearch]);
 
   const handleOrder = async () => {
     if (!selectedMethod) {
@@ -181,6 +176,13 @@ export default function Checkout() {
     }
     if (!form.recipientName || !form.recipientPhone || !form.zipCode || !form.address1) {
       alert('배송지 정보를 입력해 주세요.');
+      return;
+    }
+    // +821012345678 → 01012345678 (국제형식 → 국내형식)
+    let mobilePhone = form.ordererPhone.replace(/\D/g, '');
+    if (mobilePhone.startsWith('82')) mobilePhone = '0' + mobilePhone.slice(2);
+    if (mobilePhone.length < 10 || mobilePhone.length > 11) {
+      alert('주문자 전화번호를 올바르게 입력해 주세요. (예: 01012345678)');
       return;
     }
 
@@ -204,30 +206,47 @@ export default function Checkout() {
       const order = orderRes.data.data;
 
       // 2단계: 결제 준비 (백엔드에 결제 레코드 생성)
-      const tossMethod = selectedMethod === 'CARD' ? 'CARD' : 'EASY_PAY';
-      await preparePayment(order.orderNo, 'TOSS', tossMethod);
+      await preparePayment(order.orderNo, 'TOSS', selectedMethod);
 
-      // 3단계: 결제 위젯 페이지로 이동
-      //        위젯 페이지에서 Toss SDK를 초기화하고 결제 수단 UI를 렌더링
+      // 3단계: Toss SDK 초기화 후 즉시 결제창 실행
       const orderName = cartItems.length > 0
         ? `${cartItems[0].skuName}${cartItems.length > 1 ? ` 외 ${cartItems.length - 1}건` : ''}`
         : '주문';
 
-      const paymentState: PaymentPageState = {
-        orderId: order.orderNo,
-        amount: total,
-        orderName,
-        customerEmail: form.ordererEmail,
-        customerName: form.ordererName,
-        customerMobilePhone: form.ordererPhone.replace(/\D/g, ''),
-        customerKey: profile?.id ? String(profile.id) : ANONYMOUS,
+      const tossPayments = await loadTossPayments(TOSS_CLIENT_KEY);
+      const customerKey = profile?.id ? `user_${profile.id}` : ANONYMOUS;
+      const payment = tossPayments.payment({ customerKey });
+
+      // 간편결제사 코드 매핑 (SDK v2: method는 모두 'CARD', easyPay로 결제사 구분)
+      const EASY_PAY_CODE: Record<string, string> = {
+        TOSS:     'TOSSPAY',
+        KAKAOPAY: 'KAKAOPAY',
+        NAVERPAY: 'NAVERPAY',
       };
 
-      navigate('/payment', { state: paymentState });
+      const easyPayCode = EASY_PAY_CODE[selectedMethod];
+
+      await payment.requestPayment({
+        method: 'CARD',
+        amount: { currency: 'KRW', value: total },
+        orderId: order.orderNo,
+        orderName,
+        successUrl: `${window.location.origin}/payment/success`,
+        failUrl: `${window.location.origin}/payment/fail`,
+        customerEmail: form.ordererEmail || undefined,
+        customerName: form.ordererName || undefined,
+        customerMobilePhone: mobilePhone,
+        card: easyPayCode
+          ? { flowMode: 'DIRECT', easyPay: easyPayCode }
+          : { useEscrow: false, useCardPoint: false },
+      });
     } catch (e: unknown) {
+      const code = (e as { code?: string })?.code;
+      if (code === 'USER_CANCEL') return;  // 사용자가 결제창을 직접 닫은 경우
+
+      const msg = (e as { message?: string })?.message;
       const apiMsg = (e as { response?: { data?: { message?: string } } })?.response?.data?.message;
-      const errMsg = (e as { message?: string })?.message;
-      alert(apiMsg || errMsg || '결제 처리에 실패했습니다.');
+      alert(`결제 오류: ${apiMsg || msg || '결제 처리에 실패했습니다.'}`);
     } finally {
       setIsProcessing(false);
     }
@@ -557,6 +576,21 @@ export default function Checkout() {
           </div>
         </div>
       </div>
+      {/* 우편번호 검색 오버레이 */}
+      {showAddressSearch && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+          <div className="bg-white rounded-2xl overflow-hidden shadow-2xl w-full max-w-md mx-4">
+            <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
+              <span className="font-medium text-gray-900">주소 검색</span>
+              <button
+                onClick={() => setShowAddressSearch(false)}
+                className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors text-gray-400 hover:text-gray-700"
+              >✕</button>
+            </div>
+            <div ref={postcodeContainerRef} style={{ width: '100%', height: '460px' }} />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -4,6 +4,8 @@ import { useTranslation } from 'react-i18next';
 import { ImageWithFallback } from '@/app/components/fallback/ImageWithFallback';
 import VideoPlayer from '@/app/components/common/VideoPlayer';
 
+const fmt = (n: number) => n.toLocaleString('ko-KR');
+
 interface ArtistRowProps {
   artist: any;
   index: number;
@@ -89,6 +91,39 @@ export default function ArtistRow({ artist, index }: ArtistRowProps) {
               {t('artistLab.row.startCollecting') as string}
             </Link>
           </div>
+
+          {/* 대표 작품 카드 */}
+          {artist.featuredSku && (
+            <Link
+              to={`/products/${artist.featuredSku.skuCode}`}
+              className="group block border border-gray-200 rounded-2xl overflow-hidden hover:border-gray-400 transition-colors mt-2"
+            >
+              <div className="flex items-center gap-4 p-3">
+                <div className="w-16 h-16 flex-shrink-0 rounded-xl overflow-hidden bg-gray-100">
+                  <ImageWithFallback
+                    src={artist.featuredSku.imageUrl ?? ''}
+                    alt={artist.featuredSku.name}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-[10px] text-gray-400 uppercase tracking-widest mb-0.5">대표 작품</p>
+                  <p className="text-sm font-semibold text-gray-900 truncate">{artist.featuredSku.name}</p>
+                  <div className="flex items-center gap-1.5 mt-1">
+                    {artist.featuredSku.salePrice ? (
+                      <>
+                        <span className="text-sm font-bold text-red-500">₩{fmt(artist.featuredSku.salePrice)}</span>
+                        <span className="text-xs text-gray-400 line-through">₩{fmt(artist.featuredSku.listPrice)}</span>
+                      </>
+                    ) : (
+                      <span className="text-sm font-bold text-gray-900">₩{fmt(artist.featuredSku.listPrice)}</span>
+                    )}
+                  </div>
+                </div>
+                <ArrowRight className="w-4 h-4 text-gray-300 group-hover:text-gray-700 transition-colors flex-shrink-0" />
+              </div>
+            </Link>
+          )}
         </div>
       </div>
     </div>

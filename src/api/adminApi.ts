@@ -20,13 +20,31 @@ export const adminLogout = () =>
   adminInstance.post(`${BASE}/auth/logout`)
 
 // ── Orders ────────────────────────────────────────────────────────────────────
-export async function getAdminOrders(page = 0, size = 20) {
-  const res = await adminInstance.get(`${BASE}/orders`, { params: { page, size, sort: 'createdAt,desc' } });
+export async function getAdminOrders(
+  page = 0,
+  size = 20,
+  search?: { userId?: number; name?: string; phone?: string }
+) {
+  const res = await adminInstance.get(`${BASE}/orders`, {
+    params: { page, size, ...search },
+  });
   return res.data.data;
 }
 
 export async function getAdminOrder(orderNo: string) {
   const res = await adminInstance.get(`${BASE}/orders/${orderNo}`);
+  return res.data.data;
+}
+
+export async function adminCancelOrder(
+  orderNo: string,
+  reason: string,
+  cancelAmount?: number
+) {
+  const res = await adminInstance.post(`${BASE}/orders/${orderNo}/cancel`, {
+    reason,
+    cancelAmount: cancelAmount ?? null,
+  });
   return res.data.data;
 }
 
@@ -96,8 +114,7 @@ export async function adjustStock(skuCode: string, delta: number, memo?: string)
 
 // ── Artists ───────────────────────────────────────────────────────────────────
 export async function getAdminArtists(page = 0, size = 50) {
-  // 공개 엔드포인트 사용 (AdminArtistController에 GET 목록 없음)
-  const res = await adminInstance.get('/api/v1/artists', { params: { page, size } });
+  const res = await adminInstance.get(`${BASE}/artists`, { params: { page, size } });
   return res.data.data;
 }
 
@@ -239,6 +256,84 @@ export async function deleteBanner(bannerCode: string) {
   await adminInstance.delete(`${BASE}/banners/${bannerCode}`);
 }
 
+/** 배너 이미지 사전 업로드 → imageUrl 반환 */
+export async function uploadBannerImage(file: File): Promise<string> {
+  const formData = new FormData();
+  formData.append('file', file);
+  const res = await adminInstance.post<{ data: { imageUrl: string } }>(
+    `${BASE}/banners/upload-image`,
+    formData,
+    { headers: { 'Content-Type': undefined } }
+  );
+  return res.data.data.imageUrl;
+}
+
+/** 기존 배너 이미지 교체 */
+export async function updateBannerImage(bannerCode: string, file: File): Promise<BannerResponse> {
+  const formData = new FormData();
+  formData.append('file', file);
+  const res = await adminInstance.patch(`${BASE}/banners/${bannerCode}/image`, formData, {
+    headers: { 'Content-Type': undefined },
+  });
+  return res.data.data as BannerResponse;
+}
+
+/** Artist 공개/비공개 토글 */
+export async function activateArtist(artistCode: string) {
+  await adminInstance.patch(`${BASE}/artists/${artistCode}/activate`);
+}
+
+export async function deactivateArtist(artistCode: string) {
+  await adminInstance.patch(`${BASE}/artists/${artistCode}/deactivate`);
+}
+
+/** 대표 작품 관리 */
+export async function getArtistSkus(artistCode: string): Promise<ArtistSkuItem[]> {
+  const res = await adminInstance.get(`${BASE}/artists/${artistCode}/skus`);
+  return res.data.data;
+}
+
+export async function setArtistFeaturedSku(artistCode: string, skuCode: string) {
+  const res = await adminInstance.put(`${BASE}/artists/${artistCode}/featured-sku`, { skuCode });
+  return res.data.data as FeaturedSkuInfo;
+}
+
+export async function clearArtistFeaturedSku(artistCode: string) {
+  await adminInstance.delete(`${BASE}/artists/${artistCode}/featured-sku`);
+}
+
+// ── Returns ───────────────────────────────────────────────────────────────────
+export async function getAdminReturns(page = 0, size = 20, status?: string) {
+  const res = await adminInstance.get(`${BASE}/returns`, {
+    params: { page, size, ...(status ? { status } : {}) },
+  });
+  return res.data.data;
+}
+
+export async function getAdminReturn(returnNo: string) {
+  const res = await adminInstance.get(`${BASE}/returns/${returnNo}`);
+  return res.data.data;
+}
+
+export async function processReturn(
+  returnNo: string,
+  action: 'APPROVE' | 'REJECT',
+  refundAmount?: number,
+  adminMemo?: string
+) {
+  const res = await adminInstance.patch(`${BASE}/returns/${returnNo}/process`, {
+    action,
+    refundAmount: refundAmount ?? null,
+    adminMemo: adminMemo ?? null,
+  });
+  return res.data.data;
+}
+
+export async function completeReturn(returnNo: string) {
+  const res = await adminInstance.patch(`${BASE}/returns/${returnNo}/complete`);
+  return res.data.data;
+}
+
 // ── Reviews ───────────────────────────────────────────────────────────────────
 export async function getPendingReviews(page = 0, size = 20) {
   const res = await adminInstance.get(`${BASE}/reviews/pending`, { params: { page, size } });
@@ -290,6 +385,24 @@ export interface ArtistCareerResponse {
   sortOrder: number;
 }
 
+export interface FeaturedSkuInfo {
+  skuCode: string;
+  name: string;
+  listPrice: number;
+  salePrice?: number;
+  imageUrl?: string;
+  description?: string;
+}
+
+export interface ArtistSkuItem {
+  skuCode: string;
+  name: string;
+  listPrice: number;
+  salePrice?: number;
+  imageUrl?: string;
+  status: string;
+}
+
 export interface ArtistDetailResponse {
   id: number;
   artistCode: string;
@@ -303,6 +416,7 @@ export interface ArtistDetailResponse {
   careerList: ArtistCareerResponse[];
   followCount: number;
   isFollowing: boolean;
+  featuredSku?: FeaturedSkuInfo;
 }
 
 export interface AdminMe {

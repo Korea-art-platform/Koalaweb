@@ -116,6 +116,15 @@ export default function AdminProductList() {
     if (!form.name.trim()) { setFormError('상품명을 입력해 주세요.'); return; }
     if (!form.slug.trim()) { setFormError('슬러그를 입력해 주세요.'); return; }
     if (!form.listPrice || isNaN(Number(form.listPrice))) { setFormError('정가를 올바르게 입력해 주세요.'); return; }
+    if (Number(form.listPrice) < 0) { setFormError('정가는 0원 이상이어야 합니다.'); return; }
+    if (form.salePrice) {
+      if (isNaN(Number(form.salePrice))) { setFormError('판매가를 올바르게 입력해 주세요.'); return; }
+      if (Number(form.salePrice) < 0) { setFormError('판매가는 0원 이상이어야 합니다.'); return; }
+      if (Number(form.salePrice) > Number(form.listPrice)) {
+        setFormError('판매가는 정가보다 클 수 없습니다. (판매가 ≤ 정가)\n예) 정가 100,000원 → 판매가 80,000원');
+        return;
+      }
+    }
     setFormError('');
     setSubmitting(true);
 
@@ -142,8 +151,9 @@ export default function AdminProductList() {
         weightKg: form.weightKg ? Number(form.weightKg) : undefined,
       });
       createdSkuCode = created?.skuCode ?? null;
-    } catch {
-      setFormError('상품 등록에 실패했습니다. 슬러그가 중복되었을 수 있습니다.');
+    } catch (err: any) {
+      const serverMsg = err?.response?.data?.message;
+      setFormError(serverMsg || '상품 등록에 실패했습니다. 슬러그가 중복되었을 수 있습니다.');
       setSubmitting(false);
       return; // 생성 자체 실패 → 여기서 중단
     }
@@ -369,12 +379,16 @@ export default function AdminProductList() {
               {/* 가격 */}
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs text-gray-500 mb-1.5">정가 (원) *</label>
+                  <label className="block text-xs text-gray-500 mb-1.5">
+                    정가 (원) * <span className="text-gray-300">정상/원가</span>
+                  </label>
                   <input type="number" value={form.listPrice} onChange={(e) => setF({ listPrice: e.target.value })}
                     className={inputCls} placeholder="1500000" min="0" />
                 </div>
                 <div>
-                  <label className="block text-xs text-gray-500 mb-1.5">판매가 (원, 선택)</label>
+                  <label className="block text-xs text-gray-500 mb-1.5">
+                    할인가 (원) <span className="text-gray-300">정가보다 낮아야 함</span>
+                  </label>
                   <input type="number" value={form.salePrice} onChange={(e) => setF({ salePrice: e.target.value })}
                     className={inputCls} placeholder="1200000" min="0" />
                 </div>
@@ -458,7 +472,7 @@ export default function AdminProductList() {
               </div>
             </div>
 
-            {formError && <p className="text-xs text-red-500 mt-3">{formError}</p>}
+            {formError && <p className="text-xs text-red-500 mt-3 whitespace-pre-line">{formError}</p>}
 
             <div className="flex gap-2 mt-5">
               <button onClick={() => setCreateOpen(false)}

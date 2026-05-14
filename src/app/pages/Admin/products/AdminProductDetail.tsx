@@ -96,6 +96,25 @@ export default function AdminProductDetail() {
 }
 
 // ────────────────────────────────────────────────────────────
+// 상품 유형·장르 옵션 정의
+// ────────────────────────────────────────────────────────────
+const SKU_TYPES = [
+  { value: 'ARTWORK', label: '작품 (Artwork)' },
+  { value: 'GOODS',   label: '굿즈 (Goods)' },
+];
+
+const GENRES = [
+  { value: 'ART_TOY',      label: '아트 토이' },
+  { value: 'SCULPTURE',    label: '조각' },
+  { value: 'PAINTING',     label: '페인팅' },
+  { value: 'PRINT',        label: '판화 / 프린트' },
+  { value: 'PHOTOGRAPH',   label: '사진' },
+  { value: 'INSTALLATION', label: '설치 미술' },
+  { value: 'TEXTILE',      label: '섬유 / 직물' },
+  { value: 'OTHER',        label: '기타' },
+];
+
+// ────────────────────────────────────────────────────────────
 // 기본 정보 탭
 // ────────────────────────────────────────────────────────────
 function InfoTab({ sku, onSaved }: { sku: any; onSaved: () => void }) {
@@ -103,6 +122,8 @@ function InfoTab({ sku, onSaved }: { sku: any; onSaved: () => void }) {
     name: sku.name ?? '',
     slug: sku.slug ?? '',
     description: sku.description ?? '',
+    skuType: sku.skuType ?? 'ARTWORK',
+    genre: sku.genre ?? 'ART_TOY',
     listPrice: String(sku.listPrice ?? ''),
     salePrice: sku.salePrice ? String(sku.salePrice) : '',
   });
@@ -121,6 +142,8 @@ function InfoTab({ sku, onSaved }: { sku: any; onSaved: () => void }) {
         name: form.name.trim(),
         slug: form.slug.trim(),
         description: form.description.trim() || undefined,
+        skuType: form.skuType,
+        genre: form.genre,
         listPrice: Number(form.listPrice),
         salePrice: form.salePrice ? Number(form.salePrice) : undefined,
         primaryImageUrl: sku.primaryImageUrl,
@@ -135,6 +158,8 @@ function InfoTab({ sku, onSaved }: { sku: any; onSaved: () => void }) {
     }
   };
 
+  const selectCls = `${inputCls} bg-white`;
+
   return (
     <div className="space-y-4">
       <div className="bg-white rounded-xl border border-gray-200 p-5 space-y-4">
@@ -148,6 +173,27 @@ function InfoTab({ sku, onSaved }: { sku: any; onSaved: () => void }) {
             <input value={form.slug} onChange={(e) => setF({ slug: e.target.value })} className={inputCls} />
           </div>
         </div>
+
+        {/* 상품 유형 + 장르 */}
+        <div className="grid grid-cols-2 gap-3">
+          <div>
+            <label className="block text-xs text-gray-500 mb-1.5">상품 유형</label>
+            <select value={form.skuType} onChange={(e) => setF({ skuType: e.target.value })} className={selectCls}>
+              {SKU_TYPES.map((t) => (
+                <option key={t.value} value={t.value}>{t.label}</option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label className="block text-xs text-gray-500 mb-1.5">장르 / 종류</label>
+            <select value={form.genre} onChange={(e) => setF({ genre: e.target.value })} className={selectCls}>
+              {GENRES.map((g) => (
+                <option key={g.value} value={g.value}>{g.label}</option>
+              ))}
+            </select>
+          </div>
+        </div>
+
         <div className="grid grid-cols-2 gap-3">
           <div>
             <label className="block text-xs text-gray-500 mb-1.5">정가 (원) *</label>
@@ -175,8 +221,6 @@ function InfoTab({ sku, onSaved }: { sku: any; onSaved: () => void }) {
       {/* 읽기전용 메타 */}
       <div className="bg-gray-50 rounded-xl border border-gray-100 p-4 text-xs text-gray-500 space-y-1">
         <div>아티스트: <span className="text-gray-700">{sku.artistName}</span></div>
-        <div>장르: <span className="text-gray-700">{sku.genre ?? '—'}</span></div>
-        <div>타입: <span className="text-gray-700">{sku.skuType ?? '—'}</span></div>
         {sku.isLimitedEdition && <div>에디션: <span className="text-gray-700">{sku.editionNumber} / {sku.editionSize}</span></div>}
         {(sku.widthCm || sku.heightCm) && (
           <div>크기: <span className="text-gray-700">{sku.widthCm}×{sku.heightCm}{sku.depthCm ? `×${sku.depthCm}` : ''} cm</span></div>
@@ -271,75 +315,77 @@ function ImagesTab({ skuCode, onChanged }: { skuCode: string; onChanged: () => v
         />
       </div>
 
-      {/* ── 상세 이미지 (DETAIL) — ArtImages.tsx 와 동일한 그리드 ── */}
+      {/* ── 상세 이미지 (DETAIL) — ArtImages.tsx 와 동일한 레이아웃 ── */}
       <div>
         <SectionLabel badge="상세" desc="상품 상세 페이지 '작품 - 상세' 섹션에 순서대로 표시됩니다" />
 
-        {detailImages.length === 0 && (
-          // 아직 아무것도 없으면 첫 슬롯을 넓게 미리보기
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+        {/* 상단 3슬롯: 왼쪽 세로 큰 이미지(1) + 오른쪽 2장(2·3) */}
+        <div className="grid grid-cols-2 gap-2">
+          {/* 슬롯 1 — 왼쪽 세로 */}
+          <VisualSlot
+            image={detailImages[0] ?? null}
+            aspectClass="aspect-[3/4]"
+            emptyLabel="상세 이미지 1 — 클릭하여 업로드"
+            uploading={uploading === 'DETAIL'}
+            deleting={deleting === (detailImages[0]?.id ?? -1)}
+            onClickEmpty={!detailImages[0] ? () => detailInputRef.current?.click() : undefined}
+            onReplace={detailImages[0] ? () => triggerReplace(detailImages[0].id, 'DETAIL') : undefined}
+            onDelete={detailImages[0] ? () => handleDelete(detailImages[0].id) : undefined}
+            index={detailImages[0] ? 1 : undefined}
+          />
+
+          {/* 슬롯 2·3 — 오른쪽 세로 배치 */}
+          <div className="flex flex-col gap-2">
             <VisualSlot
-              image={null}
-              aspectClass="col-span-2 md:col-span-3 aspect-[2/1]"
-              emptyLabel="상세 이미지 1 — 클릭하여 업로드"
+              image={detailImages[1] ?? null}
+              aspectClass="flex-1 min-h-0"
+              emptyLabel={detailImages[0] ? '이미지 2 추가' : '이미지 1 먼저 추가'}
               uploading={uploading === 'DETAIL'}
-              deleting={false}
-              onClickEmpty={() => detailInputRef.current?.click()}
+              deleting={deleting === (detailImages[1]?.id ?? -1)}
+              onClickEmpty={detailImages[0] && !detailImages[1] ? () => detailInputRef.current?.click() : undefined}
+              onReplace={detailImages[1] ? () => triggerReplace(detailImages[1].id, 'DETAIL') : undefined}
+              onDelete={detailImages[1] ? () => handleDelete(detailImages[1].id) : undefined}
+              index={detailImages[1] ? 2 : undefined}
+            />
+            <VisualSlot
+              image={detailImages[2] ?? null}
+              aspectClass="flex-1 min-h-0"
+              emptyLabel={detailImages[1] ? '이미지 3 추가' : '이미지 2 먼저 추가'}
+              uploading={uploading === 'DETAIL'}
+              deleting={deleting === (detailImages[2]?.id ?? -1)}
+              onClickEmpty={detailImages[1] && !detailImages[2] ? () => detailInputRef.current?.click() : undefined}
+              onReplace={detailImages[2] ? () => triggerReplace(detailImages[2].id, 'DETAIL') : undefined}
+              onDelete={detailImages[2] ? () => handleDelete(detailImages[2].id) : undefined}
+              index={detailImages[2] ? 3 : undefined}
             />
           </div>
-        )}
+        </div>
 
-        {detailImages.length === 1 && (
-          <>
-            <VisualSlot
-              image={detailImages[0]}
-              aspectClass="w-full aspect-square"
-              emptyLabel="상세 이미지 1"
-              uploading={uploading === 'DETAIL'}
-              deleting={deleting === detailImages[0].id}
-              onReplace={() => triggerReplace(detailImages[0].id, 'DETAIL')}
-              onDelete={() => handleDelete(detailImages[0].id)}
-              index={1}
-            />
-            {/* 두 번째 이미지 추가 슬롯 */}
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-2 mt-2">
-              <VisualSlot
-                image={null}
-                aspectClass="aspect-square"
-                emptyLabel="이미지 2 추가"
-                uploading={uploading === 'DETAIL'}
-                deleting={false}
-                onClickEmpty={() => detailInputRef.current?.click()}
-              />
-            </div>
-          </>
-        )}
+        {/* 4번째 이상: 한 장씩 전체 너비 */}
+        {detailImages.slice(3).map((img, idx) => (
+          <VisualSlot
+            key={img.id}
+            image={img}
+            aspectClass="w-full aspect-square mt-2"
+            emptyLabel={`상세 이미지 ${idx + 4}`}
+            uploading={uploading === 'DETAIL'}
+            deleting={deleting === img.id}
+            onReplace={() => triggerReplace(img.id, 'DETAIL')}
+            onDelete={() => handleDelete(img.id)}
+            index={idx + 4}
+          />
+        ))}
 
-        {detailImages.length >= 2 && (
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-            {detailImages.map((img, idx) => (
-              <VisualSlot
-                key={img.id}
-                image={img}
-                aspectClass={idx === 0 ? 'col-span-2 md:col-span-3 aspect-[2/1]' : 'aspect-square'}
-                emptyLabel={`상세 이미지 ${idx + 1}`}
-                uploading={uploading === 'DETAIL'}
-                deleting={deleting === img.id}
-                onReplace={() => triggerReplace(img.id, 'DETAIL')}
-                onDelete={() => handleDelete(img.id)}
-                index={idx + 1}
-              />
-            ))}
-            {/* 다음 이미지 추가 슬롯 */}
-            <VisualSlot
-              image={null}
-              aspectClass="aspect-square"
-              emptyLabel={`이미지 ${detailImages.length + 1} 추가`}
-              uploading={uploading === 'DETAIL'}
-              deleting={false}
-              onClickEmpty={() => detailInputRef.current?.click()}
-            />
-          </div>
+        {/* 4번째 이상 추가 슬롯 */}
+        {detailImages.length >= 3 && (
+          <VisualSlot
+            image={null}
+            aspectClass="w-full aspect-square mt-2"
+            emptyLabel={`이미지 ${detailImages.length + 1} 추가`}
+            uploading={uploading === 'DETAIL'}
+            deleting={false}
+            onClickEmpty={() => detailInputRef.current?.click()}
+          />
         )}
       </div>
 

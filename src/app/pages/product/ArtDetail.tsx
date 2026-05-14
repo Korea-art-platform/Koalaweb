@@ -48,10 +48,10 @@ export default function ArtDetail() {
   if (loading) return <ProductSkeleton />;
   if (!sku) return <ProductNotFound />;
 
-  // MAIN(대표) → DETAIL(상세) 순서로 모아서 전달. 없으면 primaryImageUrl 폴백
+  // 대표 이미지(MAIN) — 썸네일·공유 등에 사용
   const mainImage  = sku.mediaList?.find((m) => m.mediaRole === 'MAIN')?.fileUrl ?? sku.primaryImageUrl;
+  // 상세 이미지(DETAIL) — '작품 - 상세' 섹션에 별도 표시
   const detailImgs = sku.mediaList?.filter((m) => m.mediaRole === 'DETAIL').map((m) => m.fileUrl) ?? [];
-  const images     = [mainImage, ...detailImgs].filter(Boolean) as string[];
 
   const artInfoItems = [
     { label: '소재', value: sku.genre ?? '-' },
@@ -77,7 +77,7 @@ export default function ArtDetail() {
           <ShareButton
             title={sku.name}
             description={sku.description ?? undefined}
-            imageUrl={images[0]}
+            imageUrl={mainImage ?? undefined}
           />
         </div>
 
@@ -86,7 +86,7 @@ export default function ArtDetail() {
           worldViewTitle={sku.name}
           worldViewDesc={sku.description ?? ''}
         />
-        <ArtImages images={images} title={sku.name} />
+        <ArtImages images={detailImgs} title={sku.name} />
         <ArtArtist
           artistCode={(sku as any).artistCode}
           artistName={sku.artistName}

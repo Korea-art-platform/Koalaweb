@@ -79,6 +79,8 @@ import AdminArtistDetail from '@/app/pages/Admin/artists/AdminArtistDetail';
 import AdminReviewList from '@/app/pages/Admin/reviews/AdminReviewList';
 import AdminBannerList from '@/app/pages/Admin/banners/AdminBannerList';
 import AdminUserList from '@/app/pages/Admin/users/AdminUserList';
+import AdminReturnList from '@/app/pages/Admin/returns/AdminReturnList';
+import AdminReturnDetail from '@/app/pages/Admin/returns/AdminReturnDetail';
 
 
 export function AppRoutes() {
@@ -171,6 +173,8 @@ export function AppRoutes() {
           <Route path="/admin/reviews" element={<AdminReviewList />} />
           <Route path="/admin/banners" element={<AdminBannerList />} />
           <Route path="/admin/users" element={<AdminUserList />} />
+          <Route path="/admin/returns" element={<AdminReturnList />} />
+          <Route path="/admin/returns/:returnNo" element={<AdminReturnDetail />} />
         </Route>
       </Route>
 

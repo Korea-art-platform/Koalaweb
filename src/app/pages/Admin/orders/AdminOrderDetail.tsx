@@ -1,14 +1,15 @@
-﻿import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router';
-import { getAdminOrder, registerTracking, markDelivered } from '@/api/adminApi';
-import { ArrowLeft, Truck } from 'lucide-react';
+import { getAdminOrder, registerTracking, markDelivered, adminCancelOrder } from '@/api/adminApi';
+import { ArrowLeft, Truck, XCircle } from 'lucide-react';
 
 const ORDER_STATUS_LABEL: Record<string, string> = {
-  PENDING: '결제대기', PAID: '결제완료', PREPARING: '준비중',
+  PENDING_PAYMENT: '결제대기', PAID: '결제완료', PREPARING: '준비중',
   SHIPPED: '배송중', DELIVERED: '배송완료', CANCELLED: '취소',
 };
 const PAYMENT_STATUS_LABEL: Record<string, string> = {
-  UNPAID: '미결제', PAID: '결제완료', PARTIAL_REFUNDED: '부분환불', REFUNDED: '환불완료',
+  READY: '결제전', PAID: '결제완료', CANCELLED: '취소/환불',
+  FAILED: '실패', PARTIAL_REFUNDED: '부분환불', REFUNDED: '환불완료',
 };
 
 export default function AdminOrderDetail() {
@@ -16,10 +17,20 @@ export default function AdminOrderDetail() {
   const navigate = useNavigate();
   const [order, setOrder] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+
+  // 운송장 모달
   const [trackingOpen, setTrackingOpen] = useState(false);
   const [carrierCode, setCarrierCode] = useState('');
   const [trackingNo, setTrackingNo] = useState('');
   const [submitting, setSubmitting] = useState(false);
+
+  // 취소 모달
+  const [cancelOpen, setCancelOpen] = useState(false);
+  const [cancelReason, setCancelReason] = useState('');
+  const [cancelAmount, setCancelAmount] = useState('');
+  const [isPartial, setIsPartial] = useState(false);
+  const [cancelling, setCancelling] = useState(false);
+  const [cancelError, setCancelError] = useState('');
 
   const reload = () => {
     if (!orderNo) return;
@@ -49,9 +60,36 @@ export default function AdminOrderDetail() {
     reload();
   };
 
+  const handleCancelOrder = async () => {
+    if (!orderNo || !cancelReason.trim()) { setCancelError('취소 사유를 입력해주세요.'); return; }
+    if (isPartial && (!cancelAmount || Number(cancelAmount) <= 0)) {
+      setCancelError('환불 금액을 올바르게 입력해주세요.');
+      return;
+    }
+    setCancelling(true);
+    setCancelError('');
+    try {
+      await adminCancelOrder(
+        orderNo,
+        cancelReason.trim(),
+        isPartial ? Number(cancelAmount) : undefined
+      );
+      setCancelOpen(false);
+      setCancelReason('');
+      setCancelAmount('');
+      setIsPartial(false);
+      reload();
+    } catch (e: any) {
+      setCancelError(e?.response?.data?.message ?? '취소 처리에 실패했습니다.');
+    } finally {
+      setCancelling(false);
+    }
+  };
+
   if (loading) return <div className="p-8 text-sm text-gray-400">불러오는 중...</div>;
   if (!order) return <div className="p-8 text-sm text-gray-400">주문을 찾을 수 없습니다.</div>;
 
+  const isCancelled = order.orderStatus === 'CANCELLED';
   const canRegisterTracking = ['PAID', 'PREPARING'].includes(order.orderStatus);
   const canMarkDelivered = order.orderStatus === 'SHIPPED';
 
@@ -60,12 +98,13 @@ export default function AdminOrderDetail() {
       <button onClick={() => navigate('/admin/orders')} className="flex items-center gap-1.5 text-xs text-gray-400 hover:text-gray-700 mb-6 transition-colors">
         <ArrowLeft className="w-3.5 h-3.5" /> 목록으로
       </button>
+
       <div className="flex items-start justify-between mb-6 gap-4">
         <div>
           <p className="text-xs text-gray-400 font-mono mb-1">{order.orderNo}</p>
           <h1 className="text-xl font-bold text-gray-900">주문 상세</h1>
         </div>
-        <div className="flex gap-2 flex-shrink-0">
+        <div className="flex gap-2 flex-wrap justify-end flex-shrink-0">
           {canRegisterTracking && (
             <button onClick={() => setTrackingOpen(true)} className="flex items-center gap-1.5 px-3 py-2 text-xs bg-black text-white rounded-lg hover:bg-gray-800 transition-colors">
               <Truck className="w-3.5 h-3.5" /> 운송장 등록
@@ -76,32 +115,47 @@ export default function AdminOrderDetail() {
               배송완료 처리
             </button>
           )}
+          {!isCancelled && (
+            <button
+              onClick={() => { setCancelOpen(true); setCancelError(''); }}
+              className="flex items-center gap-1.5 px-3 py-2 text-xs bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
+            >
+              <XCircle className="w-3.5 h-3.5" /> 주문 취소
+            </button>
+          )}
         </div>
       </div>
+
       <div className="space-y-4">
         <Section title="주문 상태">
           <Row label="주문 상태" value={ORDER_STATUS_LABEL[order.orderStatus] ?? order.orderStatus} />
           <Row label="결제 상태" value={PAYMENT_STATUS_LABEL[order.paymentStatus] ?? order.paymentStatus} />
           {order.paidAt && <Row label="결제일" value={new Date(order.paidAt).toLocaleString('ko-KR')} />}
+          {order.cancelledAt && <Row label="취소일" value={new Date(order.cancelledAt).toLocaleString('ko-KR')} />}
           <Row label="주문일" value={new Date(order.createdAt).toLocaleString('ko-KR')} />
         </Section>
+
         <Section title="주문자 정보">
           <Row label="이름" value={order.ordererName} />
           <Row label="이메일" value={order.ordererEmail} />
           <Row label="연락처" value={order.ordererPhone} />
         </Section>
+
         {order.shipment && (
           <Section title="배송지">
             <Row label="수령인" value={order.shipment.recipientName} />
             <Row label="연락처" value={order.shipment.recipientPhone} />
             <Row label="주소" value={'(' + order.shipment.zipCode + ') ' + order.shipment.address1 + (order.shipment.address2 ? ' ' + order.shipment.address2 : '')} />
             {order.shipment.deliveryRequest && <Row label="배송 요청사항" value={order.shipment.deliveryRequest} />}
-            {order.shipment.carrierCode && <>
-              <Row label="택배사" value={order.shipment.carrierCode} />
-              <Row label="운송장번호" value={order.shipment.trackingNo} />
-            </>}
+            {order.shipment.carrierCode && (
+              <>
+                <Row label="택배사" value={order.shipment.carrierCode} />
+                <Row label="운송장번호" value={order.shipment.trackingNo} />
+              </>
+            )}
           </Section>
         )}
+
         <Section title="주문 상품">
           <div className="space-y-3 pt-1">
             {order.items?.map((item: any) => (
@@ -118,6 +172,7 @@ export default function AdminOrderDetail() {
             ))}
           </div>
         </Section>
+
         <Section title="결제 금액">
           <Row label="상품금액" value={Number(order.productAmount).toLocaleString() + '원'} />
           {Number(order.discountAmount) > 0 && <Row label="할인" value={'-' + Number(order.discountAmount).toLocaleString() + '원'} />}
@@ -128,6 +183,8 @@ export default function AdminOrderDetail() {
           </div>
         </Section>
       </div>
+
+      {/* 운송장 등록 모달 */}
       {trackingOpen && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-xl p-6 w-full max-w-sm shadow-xl">
@@ -145,6 +202,84 @@ export default function AdminOrderDetail() {
             <div className="flex gap-2 mt-5">
               <button onClick={() => { setTrackingOpen(false); setCarrierCode(''); setTrackingNo(''); }} className="flex-1 py-2.5 text-sm border border-gray-200 rounded-lg hover:bg-gray-50">취소</button>
               <button onClick={handleRegisterTracking} disabled={submitting || !carrierCode.trim() || !trackingNo.trim()} className="flex-1 py-2.5 text-sm bg-black text-white rounded-lg hover:bg-gray-800 disabled:opacity-50">{submitting ? '등록 중...' : '등록'}</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 주문 취소 모달 */}
+      {cancelOpen && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl p-6 w-full max-w-sm shadow-xl">
+            <h2 className="font-semibold text-gray-900 mb-1">주문 취소</h2>
+            <p className="text-xs text-gray-400 mb-4">
+              배송 상태에 관계없이 강제 취소됩니다. 결제 완료 건은 자동 환불이 시도됩니다.
+            </p>
+
+            <div className="space-y-4">
+              {/* 취소 사유 */}
+              <div>
+                <label className="block text-xs text-gray-500 mb-1.5">취소 사유 <span className="text-red-500">*</span></label>
+                <textarea
+                  value={cancelReason}
+                  onChange={(e) => setCancelReason(e.target.value)}
+                  rows={3}
+                  placeholder="취소 사유를 입력하세요"
+                  className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-black/10 resize-none"
+                />
+              </div>
+
+              {/* 부분환불 토글 */}
+              <div>
+                <label className="flex items-center gap-2 cursor-pointer select-none">
+                  <input
+                    type="checkbox"
+                    checked={isPartial}
+                    onChange={(e) => { setIsPartial(e.target.checked); setCancelAmount(''); }}
+                    className="w-4 h-4 rounded"
+                  />
+                  <span className="text-sm text-gray-700">부분 환불</span>
+                  <span className="text-xs text-gray-400">(체크 안 하면 전액 환불)</span>
+                </label>
+              </div>
+
+              {/* 부분환불 금액 */}
+              {isPartial && (
+                <div>
+                  <label className="block text-xs text-gray-500 mb-1.5">
+                    환불 금액 <span className="text-xs text-gray-400">(최대 {Number(order.totalAmount).toLocaleString()}원)</span>
+                  </label>
+                  <input
+                    type="number"
+                    value={cancelAmount}
+                    onChange={(e) => setCancelAmount(e.target.value)}
+                    min={1}
+                    max={order.totalAmount}
+                    placeholder="환불할 금액 입력"
+                    className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-black/10"
+                  />
+                </div>
+              )}
+
+              {cancelError && (
+                <p className="text-xs text-red-500 bg-red-50 px-3 py-2 rounded-lg">{cancelError}</p>
+              )}
+            </div>
+
+            <div className="flex gap-2 mt-5">
+              <button
+                onClick={() => { setCancelOpen(false); setCancelReason(''); setCancelAmount(''); setIsPartial(false); setCancelError(''); }}
+                className="flex-1 py-2.5 text-sm border border-gray-200 rounded-lg hover:bg-gray-50"
+              >
+                닫기
+              </button>
+              <button
+                onClick={handleCancelOrder}
+                disabled={cancelling || !cancelReason.trim()}
+                className="flex-1 py-2.5 text-sm bg-red-500 text-white rounded-lg hover:bg-red-600 disabled:opacity-50"
+              >
+                {cancelling ? '처리 중...' : '취소 확정'}
+              </button>
             </div>
           </div>
         </div>

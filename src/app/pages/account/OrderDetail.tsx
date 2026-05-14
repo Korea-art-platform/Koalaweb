@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { ArrowLeft } from 'lucide-react';
-import { getOrder, cancelOrder } from '@/api/order';
+import { getOrder, cancelOrder, getReturnByOrder } from '@/api/order';
 import type { Order } from '@/api/types';
 
 import {
@@ -18,16 +18,28 @@ export default function OrderDetail() {
   const { orderNo } = useParams<{ orderNo: string }>();
   const navigate = useNavigate();
   const [order, setOrder] = useState<Order | null>(null);
+  const [returnStatus, setReturnStatus] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [cancelling, setCancelling] = useState(false);
 
-  useEffect(() => {
+  const fetchOrder = () => {
     if (!orderNo) return;
     getOrder(orderNo)
-      .then((res) => setOrder(res.data.data))
+      .then((res) => {
+        const o = res.data.data;
+        setOrder(o);
+        // 배송완료 상태면 반품 상태 조회
+        if (o.orderStatus === 'DELIVERED') {
+          getReturnByOrder(orderNo)
+            .then((r) => setReturnStatus(r.data.data.status))
+            .catch(() => setReturnStatus(null));
+        }
+      })
       .catch(() => navigate('/account/orders'))
       .finally(() => setLoading(false));
-  }, [orderNo, navigate]);
+  };
+
+  useEffect(() => { fetchOrder(); }, [orderNo]);
 
   const handleCancel = async () => {
     if (!window.confirm(t('order.detail.confirmCancel'))) return;
@@ -42,6 +54,8 @@ export default function OrderDetail() {
       setCancelling(false);
     }
   };
+
+  const orderWithReturn = order ? { ...order, returnStatus } : null;
 
   return (
     <>
@@ -63,18 +77,23 @@ export default function OrderDetail() {
           <div className="bg-white rounded-3xl h-48" />
           <div className="bg-white rounded-3xl h-40" />
         </div>
-      ) : order ? (
+      ) : orderWithReturn ? (
         <div className="space-y-4 md:space-y-6">
           <div className="bg-white rounded-2xl md:rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
-            <OrderSummaryHeader order={order} />
+            <OrderSummaryHeader order={order!} />
             <div className="px-6 md:px-10 py-8">
-              <OrderStatusStepper status={order.orderStatus} />
+              <OrderStatusStepper status={order!.orderStatus} />
             </div>
           </div>
 
-          <OrderItemsList order={order} />
-          <OrderInfoCards order={order} />
-          <OrderActions order={order} onCancel={handleCancel} cancelling={cancelling} />
+          <OrderItemsList order={order!} />
+          <OrderInfoCards order={order!} />
+          <OrderActions
+            order={orderWithReturn}
+            onCancel={handleCancel}
+            cancelling={cancelling}
+            onReturnSuccess={fetchOrder}
+          />
         </div>
       ) : null}
     </>

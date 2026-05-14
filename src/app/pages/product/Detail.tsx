@@ -127,10 +127,17 @@ export default function ProductDetail() {
   if (loading) return <ProductSkeleton />;
   if (!sku) return <ProductNotFound />;
 
+  // 갤러리: 전체 미디어 최대 5장 (MAIN + DETAIL 합산)
   const images =
     sku.mediaList && sku.mediaList.length > 0
-      ? sku.mediaList.map((m) => m.fileUrl)
+      ? sku.mediaList.map((m) => m.fileUrl).slice(0, 5)
       : [sku.primaryImageUrl ?? 'https://via.placeholder.com/400'];
+
+  // '작품 - 상세' 섹션: DETAIL 롤 이미지만 (최대 5장)
+  const detailImgs = (sku.mediaList ?? [])
+    .filter((m) => m.mediaRole === 'DETAIL')
+    .map((m) => m.fileUrl)
+    .slice(0, 5);
 
   return (
     <div className="min-h-screen bg-white relative">
@@ -187,7 +194,7 @@ export default function ProductDetail() {
           {/* 작품 상세 이미지 그리드 + 작가 / 작품 소개 / QnA */}
           <div className="mt-20 border-t border-gray-100 pt-16 max-w-2xl mx-auto">
             <ArtImages
-              images={images.filter((_, i) => i < 3)}
+              images={detailImgs}
               title={sku.name}
             />
             <ArtArtist

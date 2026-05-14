@@ -142,7 +142,8 @@
       "interviewLabel": "Studio Interview",
       "interviewTitle": "{{name}}의 스튜디오 인터뷰",
       "viewProfile": "프로필 보기",
-      "startCollecting": "수집 시작하기"
+      "startCollecting": "수집 시작하기",
+      "collectorsLabel": "collectors worldwide"
     },
     "emptyState": {
       "title": "등록된 아티스트가 없습니다."

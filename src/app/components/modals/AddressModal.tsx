@@ -1,13 +1,13 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { X, Search, Check } from 'lucide-react';
 import { createAddress, updateAddress } from '@/api/user';
-import type { Address } from '@/api/types';
+import type { UserAddress } from '@/api/types';
 
 interface AddressModalProps {
   isOpen: boolean;
   mode: 'create' | 'edit';
-  address?: Address;
+  address?: UserAddress;
   onClose: () => void;
   onSuccess: () => void;
 }
@@ -25,6 +25,8 @@ type AddressFormData = {
 export default function AddressModal({ isOpen, mode, address, onClose, onSuccess }: AddressModalProps) {
   const [serverError, setServerError] = useState('');
   const [success, setSuccess] = useState('');
+  const [showPostcode, setShowPostcode] = useState(false);
+  const postcodeContainerRef = useRef<HTMLDivElement>(null);
 
   const {
     register,
@@ -43,8 +45,8 @@ export default function AddressModal({ isOpen, mode, address, onClose, onSuccess
     if (mode === 'edit' && address) {
       reset({
         label: address.label ?? '',
-        recipientName: address.fullName,
-        recipientPhone: address.phone,
+        recipientName: address.recipientName,
+        recipientPhone: address.recipientPhone,
         zipCode: address.zipCode,
         address1: address.address1,
         address2: address.address2 ?? '',
@@ -56,8 +58,18 @@ export default function AddressModal({ isOpen, mode, address, onClose, onSuccess
   }, [isOpen, mode, address, reset]);
 
   const handleAddressSearch = () => {
-    const openSearch = () => {
-      new (window as { daum?: { Postcode: new (opts: { oncomplete: (data: DaumPostcodeResult) => void }) => { open: () => void } } }).daum!.Postcode({
+    setShowPostcode(true);
+  };
+
+  useEffect(() => {
+    if (!showPostcode) return;
+
+    const initEmbed = () => {
+      if (!postcodeContainerRef.current) return;
+      postcodeContainerRef.current.innerHTML = '';
+      new (window as any).daum.Postcode({
+        width: '100%',
+        height: '100%',
         oncomplete: (data: DaumPostcodeResult) => {
           let fullAddress = data.address;
           let extra = '';
@@ -68,30 +80,32 @@ export default function AddressModal({ isOpen, mode, address, onClose, onSuccess
           }
           setValue('zipCode', data.zonecode);
           setValue('address1', fullAddress);
+          setShowPostcode(false);
         },
-      }).open();
+      }).embed(postcodeContainerRef.current);
     };
 
-    if ((window as { daum?: unknown }).daum) {
-      openSearch();
+    if ((window as any).daum?.Postcode) {
+      initEmbed();
     } else {
       const script = document.createElement('script');
       script.src = 'https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js';
-      script.onload = openSearch;
+      script.onload = initEmbed;
       document.head.appendChild(script);
     }
-  };
+  }, [showPostcode]);
 
   const onSubmit = async (data: AddressFormData) => {
     setServerError('');
     setSuccess('');
     const payload = {
-      fullName: data.recipientName,
-      phone: data.recipientPhone,
+      label: data.label || undefined,
+      recipientName: data.recipientName,
+      recipientPhone: data.recipientPhone,
       zipCode: data.zipCode,
       address1: data.address1,
-      address2: data.address2,
-      country: 'KR',
+      address2: data.address2 || undefined,
+      isDefault: data.isDefault,
     };
 
     try {
@@ -122,6 +136,21 @@ export default function AddressModal({ isOpen, mode, address, onClose, onSuccess
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+      {/* 우편번호 검색 오버레이 */}
+      {showPostcode && (
+        <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/60">
+          <div className="bg-white rounded-2xl overflow-hidden shadow-2xl w-full max-w-md mx-4">
+            <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
+              <span className="font-medium text-gray-900">주소 검색</span>
+              <button
+                onClick={() => setShowPostcode(false)}
+                className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors text-gray-400 hover:text-gray-700"
+              >✕</button>
+            </div>
+            <div ref={postcodeContainerRef} style={{ width: '100%', height: '460px' }} />
+          </div>
+        </div>
+      )}
       <div className="bg-white rounded-3xl max-w-md w-full max-h-[90vh] overflow-y-auto shadow-2xl">
         {/* 헤더 */}
         <div className="sticky top-0 bg-white border-b border-gray-100 p-6 flex items-center justify-between">
