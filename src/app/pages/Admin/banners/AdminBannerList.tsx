@@ -6,7 +6,16 @@ import {
   type BannerResponse,
 } from '@/api/adminApi';
 
-const BANNER_TYPES = ['MAIN', 'SUB', 'EVENT', 'PROMOTION', 'ARTIST'];
+const BANNER_TYPES = ['MAIN', 'MAIN_SUB', 'SUB', 'EVENT', 'PROMOTION', 'ARTIST'];
+
+const BANNER_TYPE_LABELS: Record<string, string> = {
+  MAIN: 'MAIN (메인 히어로)',
+  MAIN_SUB: 'MAIN_SUB (메인 서브)',
+  SUB: 'SUB',
+  EVENT: 'EVENT',
+  PROMOTION: 'PROMOTION',
+  ARTIST: 'ARTIST',
+};
 
 interface BannerForm {
   bannerType: string;
@@ -236,7 +245,7 @@ export default function AdminBannerList() {
                   onChange={(e) => setForm((f) => ({ ...f, bannerType: e.target.value }))}
                   className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-black/10 bg-white"
                 >
-                  {BANNER_TYPES.map((t) => <option key={t} value={t}>{t}</option>)}
+                  {BANNER_TYPES.map((t) => <option key={t} value={t}>{BANNER_TYPE_LABELS[t] ?? t}</option>)}
                 </select>
               </div>
 

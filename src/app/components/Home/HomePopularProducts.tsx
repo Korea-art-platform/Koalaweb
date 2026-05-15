@@ -34,12 +34,12 @@ export default function HomePopularProducts({ skus, loading }: HomePopularProduc
   }
 
   return (
-    <section className="py-20 px-6 md:px-12 bg-white">
+    <section className="py-10 md:py-20 px-4 md:px-12 bg-white">
       <div className="max-w-[1800px] mx-auto">
-        <div className="flex items-end justify-between mb-12">
+        <div className="flex items-end justify-between mb-6 md:mb-12">
           <div>
-            <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-4 text-black">{t('home.popularProducts.title')}</h2>
-            <p className="text-gray-500 font-medium">{t('home.popularProducts.subtitle')}</p>
+            <h2 className="text-2xl md:text-5xl font-bold tracking-tight mb-1 md:mb-4 text-black">{t('home.popularProducts.title')}</h2>
+            <p className="text-gray-500 text-xs md:text-base font-medium">{t('home.popularProducts.subtitle')}</p>
           </div>
           <Link to="/smart-store" className="hidden md:flex items-center gap-2 text-sm font-bold border-b-2 border-black pb-1 hover:text-gray-500 transition-all">
             {t('home.popularProducts.viewAll')} <ArrowRight className="w-4 h-4" />

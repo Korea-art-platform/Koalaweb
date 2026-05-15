@@ -16,8 +16,9 @@ export default function AdminLogin() {
     setError('');
     setLoading(true);
     try {
-      const { accessToken } = await adminLogin(loginId, password);
-      await login(accessToken);
+      // 서버가 HttpOnly 쿠키(admin_token)를 설정 — 토큰을 JS에서 직접 보관하지 않음
+      await adminLogin(loginId, password);
+      await login();
       navigate('/admin', { replace: true });
     } catch {
       setError('아이디 또는 비밀번호가 올바르지 않습니다.');

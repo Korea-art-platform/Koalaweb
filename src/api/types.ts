@@ -195,7 +195,7 @@ export type PaymentProvider = 'TOSS' | 'KAKAOPAY' | 'NAVERPAY';
 export type PaymentMethodType = 'CARD' | 'VBANK';
 
 // ─── 배너 ─────────────────────────────────────────────────────────────────────
-export type BannerType = 'MAIN' | string;
+export type BannerType = 'MAIN' | 'MAIN_SUB' | string;
 
 export interface Banner {
   id: number;

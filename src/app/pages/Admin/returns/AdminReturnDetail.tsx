@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router';
 import { getAdminReturn, processReturn, completeReturn } from '@/api/adminApi';
 import { ArrowLeft, Check, X } from 'lucide-react';
@@ -39,13 +39,13 @@ export default function AdminReturnDetail() {
   const [processing, setProcessing] = useState(false);
   const [processError, setProcessError] = useState('');
 
-  const reload = () => {
+  const reload = useCallback(() => {
     if (!returnNo) return;
     setLoading(true);
     getAdminReturn(returnNo).then(setRet).finally(() => setLoading(false));
-  };
+  }, [returnNo]);
 
-  useEffect(() => { reload(); }, [returnNo]);
+  useEffect(() => { reload(); }, [reload]);
 
   const handleProcess = async () => {
     if (!returnNo) return;

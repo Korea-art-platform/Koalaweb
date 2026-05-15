@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router';
 import { getAdminOrder, registerTracking, markDelivered, adminCancelOrder } from '@/api/adminApi';
 import { ArrowLeft, Truck, XCircle } from 'lucide-react';
@@ -32,13 +32,13 @@ export default function AdminOrderDetail() {
   const [cancelling, setCancelling] = useState(false);
   const [cancelError, setCancelError] = useState('');
 
-  const reload = () => {
+  const reload = useCallback(() => {
     if (!orderNo) return;
     setLoading(true);
     getAdminOrder(orderNo).then(setOrder).finally(() => setLoading(false));
-  };
+  }, [orderNo]);
 
-  useEffect(() => { reload(); }, [orderNo]);
+  useEffect(() => { reload(); }, [reload]);
 
   const handleRegisterTracking = async () => {
     if (!orderNo || !carrierCode.trim() || !trackingNo.trim()) return;

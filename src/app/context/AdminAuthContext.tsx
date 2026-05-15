@@ -3,8 +3,7 @@ import { getAdminMe, adminLogout, type AdminMe } from '@/api/adminApi';
 
 interface AdminAuthContextType {
   admin: AdminMe | null;
-  token: string | null;
-  login: (token: string) => Promise<void>;
+  login: () => Promise<void>;
   logout: () => Promise<void>;
   loading: boolean;
 }
@@ -13,23 +12,18 @@ const AdminAuthContext = createContext<AdminAuthContextType | null>(null);
 
 export function AdminAuthProvider({ children }: { children: ReactNode }) {
   const [admin, setAdmin] = useState<AdminMe | null>(null);
-  const [token, setToken] = useState<string | null>(() => sessionStorage.getItem('admin_token'));
   const [loading, setLoading] = useState(true);
 
+  // 마운트 시 HttpOnly 쿠키로 로그인 상태 확인
   useEffect(() => {
-    if (!token) { setLoading(false); return; }
     getAdminMe()
       .then(setAdmin)
-      .catch(() => {
-        sessionStorage.removeItem('admin_token');
-        setToken(null);
-      })
+      .catch(() => setAdmin(null))
       .finally(() => setLoading(false));
-  }, [token]);
+  }, []);
 
-  const login = async (newToken: string) => {
-    sessionStorage.setItem('admin_token', newToken);
-    setToken(newToken);
+  // 로그인: 서버가 이미 HttpOnly 쿠키를 설정했으므로 /me만 호출
+  const login = async () => {
     const me = await getAdminMe();
     setAdmin(me);
   };
@@ -37,17 +31,15 @@ export function AdminAuthProvider({ children }: { children: ReactNode }) {
   const logout = async () => {
     try {
       await adminLogout();
-    }catch{
-
-    }finally{
-      sessionStorage.removeItem('admin_token');
-      setToken(null);
+    } catch {
+      // 서버 오류여도 클라이언트 상태 초기화
+    } finally {
       setAdmin(null);
     }
-  }
+  };
 
   return (
-    <AdminAuthContext.Provider value={{ admin, token, login, logout, loading }}>
+    <AdminAuthContext.Provider value={{ admin, login, logout, loading }}>
       {children}
     </AdminAuthContext.Provider>
   );

@@ -15,7 +15,15 @@ export function OrderItemsList({ order }: { order: any }) {
         {items.map((item: any, idx: number) => (
           <div key={idx} className="flex gap-4 md:gap-5 items-center">
             <div className="w-20 h-20 rounded-xl overflow-hidden bg-gray-100 flex-shrink-0 border border-gray-50 flex items-center justify-center">
-              <Package className="w-8 h-8 text-gray-300" />
+              {item.primaryImageUrl ? (
+                <img
+                  src={item.primaryImageUrl}
+                  alt={item.skuName}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <Package className="w-8 h-8 text-gray-300" />
+              )}
             </div>
             <div className="flex-1 min-w-0">
               <p className="font-bold text-sm md:text-base text-gray-900 line-clamp-2">

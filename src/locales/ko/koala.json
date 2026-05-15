@@ -281,7 +281,38 @@
       "cancelFailed": "주문 취소에 실패했습니다.",
       "cancelling": "취소 중...",
       "cancelOrder": "주문 취소",
-      "continueShopping": "쇼핑 계속하기"
+      "continueShopping": "쇼핑 계속하기",
+      "returnRequest": "반품 / 교환 신청",
+      "returnStatus": {
+        "REQUESTED": "반품/교환 신청 접수됨",
+        "APPROVED": "반품/교환 승인됨",
+        "REJECTED": "반품/교환 거절됨",
+        "COMPLETED": "반품/교환 완료"
+      },
+      "returnModal": {
+        "title": "반품 / 교환 신청",
+        "typeLabel": "신청 유형",
+        "typeReturn": "반품",
+        "typeExchange": "교환",
+        "reasonLabel": "사유",
+        "reasonRequired": "사유",
+        "detailLabel": "상세 내용",
+        "detailOptional": "(선택)",
+        "detailPlaceholder": "자세한 사유를 입력해 주세요",
+        "noticeDefault": "신청 후 영업일 기준 1~3일 내 처리됩니다.",
+        "noticeReturn": " 반품 승인 시 결제 금액이 자동 환불됩니다.",
+        "noticeExchange": " 교환 승인 후 안내에 따라 상품을 발송해 주세요.",
+        "cancel": "취소",
+        "submit": "신청하기",
+        "submitting": "신청 중...",
+        "errorDefault": "신청 중 오류가 발생했습니다.",
+        "reasons": {
+          "SIMPLE_CHANGE": "단순 변심",
+          "DEFECT": "상품 불량/파손",
+          "WRONG_DELIVERY": "오배송",
+          "OTHER": "기타"
+        }
+      }
     },
     "confirmation": {
       "back": "결제 단계로 돌아가기",

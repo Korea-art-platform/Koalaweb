@@ -3,6 +3,7 @@ import { User, MapPin, CreditCard, Package, Heart, LogOut, Settings } from 'luci
 // 💡 1. 다국어 훅을 불러옵니다.
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/app/context/AuthContext';
+import { logout as logoutApi } from '@/api/auth';
 
 // 💡 2. label(한글) 대신 다국어 JSON의 경로가 될 key를 넣습니다.
 const menuItems = [
@@ -25,10 +26,16 @@ export default function AccountSidebar({ currentPath, user }: Props) {
   const { t } = useTranslation();
   const { setAuthenticated } = useAuth();
 
-  const handleLogout = () => {
-    setAuthenticated(false);
-    window.dispatchEvent(new Event('cart-updated'));
-    navigate('/login');
+  const handleLogout = async () => {
+    try {
+      await logoutApi();
+    } catch {
+      // 서버 오류여도 클라이언트 상태는 초기화
+    } finally {
+      setAuthenticated(false);
+      window.dispatchEvent(new Event('cart-updated'));
+      navigate('/login');
+    }
   };
 
   const initials = user?.name
@@ -63,12 +70,12 @@ export default function AccountSidebar({ currentPath, user }: Props) {
             <Link
               key={item.path}
               to={item.path}
-              className={`flex items-center gap-2 md:gap-3 px-4 py-2.5 md:py-3 rounded-xl transition-all whitespace-nowrap ${
+              className={`flex items-center gap-2 md:gap-3 px-4 py-3 md:py-3 rounded-xl transition-all whitespace-nowrap min-h-[44px] ${
                 isActive
                   ? 'bg-black text-white font-bold'
                   : 'text-gray-400 hover:text-black hover:bg-gray-50'
               }`} >
-              <Icon className="w-4 h-4" />
+              <Icon className="w-4 h-4 flex-shrink-0" />
               <span className="text-xs md:text-sm">{t(item.key) as string}</span>
             </Link>
           );
@@ -76,7 +83,7 @@ export default function AccountSidebar({ currentPath, user }: Props) {
       </nav>
       <button
         onClick={handleLogout}
-        className="flex items-center gap-3 px-4 py-3 mt-6 w-full text-gray-400 hover:text-red-500 transition-colors border-t border-gray-100 pt-6 font-bold" >
+        className="flex items-center gap-3 px-4 py-3 mt-4 md:mt-6 w-full text-gray-400 hover:text-red-500 transition-colors border-t border-gray-100 pt-4 md:pt-6 font-bold min-h-[44px]" >
         <LogOut className="w-4 h-4" />
         <span className="text-sm">{t('account.sidebar.logout') as string}</span>
       </button>

@@ -514,22 +514,34 @@ function StockStatusTab({
   onChanged: () => void;
   navigate: ReturnType<typeof useNavigate>;
 }) {
-  const [delta, setDelta] = useState('');
+  const current = sku.stockQuantity ?? 0;
+  const [targetQty, setTargetQty] = useState(String(current));
   const [memo, setMemo] = useState('');
   const [stockBusy, setStockBusy] = useState(false);
   const [stockError, setStockError] = useState('');
   const [statusBusy, setStatusBusy] = useState(false);
 
+  const targetNum = parseInt(targetQty, 10);
+  const delta = isNaN(targetNum) ? null : targetNum - current;
+
   const handleAdjust = async () => {
-    if (!delta || isNaN(Number(delta))) { setStockError('올바른 수량을 입력해 주세요.'); return; }
+    if (delta === null || isNaN(targetNum) || targetNum < 0) {
+      setStockError('올바른 수량을 입력해 주세요. (0 이상)');
+      return;
+    }
+    if (delta === 0) { setStockError('현재 재고와 동일합니다.'); return; }
     setStockError('');
     setStockBusy(true);
     try {
-      await adjustStock(sku.skuCode, Number(delta), memo || undefined);
-      setDelta(''); setMemo(''); onChanged();
+      await adjustStock(sku.skuCode, delta, memo || undefined);
+      setMemo('');
+      onChanged();
     } catch { setStockError('재고 조정에 실패했습니다.'); }
     finally { setStockBusy(false); }
   };
+
+  // sku가 새로 로드될 때마다 입력값 동기화
+  const latestCurrent = sku.stockQuantity ?? 0;
 
   const statusAction = async (fn: () => Promise<void>) => {
     setStatusBusy(true);
@@ -542,25 +554,38 @@ function StockStatusTab({
       <div className="bg-white rounded-xl border border-gray-200 p-5">
         <h2 className="text-sm font-semibold text-gray-700 mb-1">재고 관리</h2>
         <p className="text-2xl font-bold text-gray-900 mb-4 tabular-nums">
-          {sku.stockQuantity ?? 0}<span className="text-sm font-normal text-gray-400 ml-1">개</span>
+          {latestCurrent}<span className="text-sm font-normal text-gray-400 ml-1">개</span>
         </p>
         <div className="space-y-3">
           <div>
-            <label className="block text-xs text-gray-500 mb-1.5">
-              조정 수량 <span className="text-gray-400">(양수: 입고, 음수: 차감)</span>
-            </label>
-            <input type="number" value={delta} onChange={(e) => setDelta(e.target.value)}
-              className={inputCls} placeholder="예: 10 또는 -3" />
+            <label className="block text-xs text-gray-500 mb-1.5">변경할 재고 수량</label>
+            <input
+              type="number"
+              value={targetQty}
+              min={0}
+              onChange={(e) => setTargetQty(e.target.value)}
+              className={inputCls}
+              placeholder="변경 후 재고 수량 입력"
+            />
+            {/* 변경 예정 미리보기 */}
+            {delta !== null && delta !== 0 && !isNaN(targetNum) && targetNum >= 0 && (
+              <p className={`text-xs mt-1.5 font-medium ${delta > 0 ? 'text-blue-500' : 'text-red-500'}`}>
+                {latestCurrent}개 → {targetNum}개 ({delta > 0 ? `+${delta}` : delta})
+              </p>
+            )}
           </div>
           <div>
             <label className="block text-xs text-gray-500 mb-1.5">메모 (선택)</label>
             <input value={memo} onChange={(e) => setMemo(e.target.value)}
-              className={inputCls} placeholder="입고 사유 등" />
+              className={inputCls} placeholder="조정 사유 등" />
           </div>
           {stockError && <p className="text-xs text-red-500">{stockError}</p>}
-          <button onClick={handleAdjust} disabled={stockBusy || !delta}
-            className="w-full py-2 text-sm bg-black text-white rounded-lg hover:bg-gray-800 disabled:opacity-50">
-            {stockBusy ? '처리 중...' : '재고 조정'}
+          <button
+            onClick={handleAdjust}
+            disabled={stockBusy || delta === 0 || delta === null || isNaN(targetNum) || targetNum < 0}
+            className="w-full py-2 text-sm bg-black text-white rounded-lg hover:bg-gray-800 disabled:opacity-50"
+          >
+            {stockBusy ? '처리 중...' : '재고 수정'}
           </button>
         </div>
       </div>

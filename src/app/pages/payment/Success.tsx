@@ -82,7 +82,9 @@ export default function PaymentSuccess() {
     };
 
     confirm();
-  }, []);
+  // calledRef 패턴으로 이중 호출 방지 — searchParams/navigate는 ref가 막아주므로 deps 명시
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams, navigate]);
 
   // ── 에러 화면 ──────────────────────────────────────────────────────────────
   if (status === 'error') {

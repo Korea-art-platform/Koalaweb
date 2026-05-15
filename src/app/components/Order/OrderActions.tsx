@@ -35,16 +35,13 @@ export function OrderActions({ order, onCancel, cancelling, onReturnSuccess }: O
             onClick={() => setReturnModalOpen(true)}
             className="flex items-center justify-center gap-2 px-6 py-4 border border-gray-300 text-gray-700 rounded-2xl font-bold text-sm hover:bg-gray-50 transition-all"
           >
-            <RotateCcw className="w-4 h-4" /> 반품 / 교환 신청
+            <RotateCcw className="w-4 h-4" /> {t('order.detail.returnRequest')}
           </button>
         )}
         {order?.returnStatus && (
           <div className="flex items-center justify-center gap-2 px-6 py-4 bg-gray-50 border border-gray-200 text-gray-500 rounded-2xl text-sm font-medium">
             <RotateCcw className="w-4 h-4" />
-            {order.returnStatus === 'REQUESTED' && '반품/교환 신청 접수됨'}
-            {order.returnStatus === 'APPROVED' && '반품/교환 승인됨'}
-            {order.returnStatus === 'REJECTED' && '반품/교환 거절됨'}
-            {order.returnStatus === 'COMPLETED' && '반품/교환 완료'}
+            {t(`order.detail.returnStatus.${order.returnStatus}`, { defaultValue: order.returnStatus })}
           </div>
         )}
         {canCancel && (

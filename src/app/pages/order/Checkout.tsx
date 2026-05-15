@@ -201,11 +201,13 @@ export default function Checkout() {
           address2: form.address2,
           deliveryRequest: form.deliveryRequest,
         },
-        cartItemIds: [],
+        cartItemIds: cartItems.map((item) => item.id),
       });
       const order = orderRes.data.data;
 
       // 2단계: 결제 준비 (백엔드에 결제 레코드 생성)
+      // provider는 항상 'TOSS' — 카카오/네이버페이 모두 Toss SDK의 easyPay로 처리됨
+      // method 필드에 실제 선택 수단(KAKAOPAY, NAVERPAY 등)이 기록되어 추적 가능
       await preparePayment(order.orderNo, 'TOSS', selectedMethod);
 
       // 3단계: Toss SDK 초기화 후 즉시 결제창 실행

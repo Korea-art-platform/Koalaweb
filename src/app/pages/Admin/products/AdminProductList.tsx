@@ -58,7 +58,7 @@ export default function AdminProductList() {
 
   // 재고 조정 모달
   const [stockModal, setStockModal] = useState<{ skuCode: string; current: number } | null>(null);
-  const [delta, setDelta] = useState('');
+  const [targetQty, setTargetQty] = useState('');
   const [memo, setMemo] = useState('');
   const [adjusting, setAdjusting] = useState(false);
 
@@ -190,11 +190,15 @@ export default function AdminProductList() {
     await deleteSku(skuCode); load();
   };
   const handleStockAdjust = async () => {
-    if (!stockModal || !delta) return;
+    if (!stockModal) return;
+    const targetNum = parseInt(targetQty, 10);
+    const delta = targetNum - stockModal.current;
+    if (isNaN(targetNum) || targetNum < 0) return;
+    if (delta === 0) return;
     setAdjusting(true);
     try {
-      await adjustStock(stockModal.skuCode, Number(delta), memo || undefined);
-      setStockModal(null); setDelta(''); setMemo(''); load();
+      await adjustStock(stockModal.skuCode, delta, memo || undefined);
+      setStockModal(null); setTargetQty(''); setMemo(''); load();
     } finally { setAdjusting(false); }
   };
 
@@ -248,7 +252,7 @@ export default function AdminProductList() {
                     </td>
                     <td className="px-5 py-4">
                       <button
-                        onClick={() => setStockModal({ skuCode: sku.skuCode, current: sku.stockQuantity })}
+                        onClick={() => { setStockModal({ skuCode: sku.skuCode, current: sku.stockQuantity }); setTargetQty(String(sku.stockQuantity ?? 0)); }}
                         className="font-medium text-gray-700 hover:text-black tabular-nums underline decoration-dashed underline-offset-2"
                         title="클릭하여 재고 조정"
                       >
@@ -297,34 +301,52 @@ export default function AdminProductList() {
       )}
 
       {/* ── 재고 조정 모달 ── */}
-      {stockModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl p-6 w-full max-w-sm shadow-xl">
-            <h2 className="font-semibold text-gray-900 mb-1">재고 조정</h2>
-            <p className="text-xs text-gray-400 mb-4">현재 재고: {stockModal.current}개</p>
-            <div className="space-y-3">
-              <div>
-                <label className="block text-xs text-gray-500 mb-1.5">조정 수량 (양수: 입고, 음수: 차감)</label>
-                <input type="number" value={delta} onChange={(e) => setDelta(e.target.value)}
-                  className={inputCls} placeholder="예: 10 또는 -5" />
+      {stockModal && (() => {
+        const targetNum = parseInt(targetQty, 10);
+        const delta = isNaN(targetNum) ? null : targetNum - stockModal.current;
+        const isValid = delta !== null && delta !== 0 && targetNum >= 0;
+        return (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-xl p-6 w-full max-w-sm shadow-xl">
+              <h2 className="font-semibold text-gray-900 mb-1">재고 수정</h2>
+              <p className="text-2xl font-bold text-gray-900 mb-4 tabular-nums">
+                {stockModal.current}<span className="text-sm font-normal text-gray-400 ml-1">개</span>
+              </p>
+              <div className="space-y-3">
+                <div>
+                  <label className="block text-xs text-gray-500 mb-1.5">변경할 재고 수량</label>
+                  <input
+                    type="number"
+                    value={targetQty}
+                    min={0}
+                    onChange={(e) => setTargetQty(e.target.value)}
+                    className={inputCls}
+                    placeholder="변경 후 재고 수량 입력"
+                  />
+                  {delta !== null && delta !== 0 && targetNum >= 0 && (
+                    <p className={`text-xs mt-1.5 font-medium ${delta > 0 ? 'text-blue-500' : 'text-red-500'}`}>
+                      {stockModal.current}개 → {targetNum}개 ({delta > 0 ? `+${delta}` : delta})
+                    </p>
+                  )}
+                </div>
+                <div>
+                  <label className="block text-xs text-gray-500 mb-1.5">메모 (선택)</label>
+                  <input value={memo} onChange={(e) => setMemo(e.target.value)}
+                    className={inputCls} placeholder="조정 사유 입력" />
+                </div>
               </div>
-              <div>
-                <label className="block text-xs text-gray-500 mb-1.5">메모 (선택)</label>
-                <input value={memo} onChange={(e) => setMemo(e.target.value)}
-                  className={inputCls} placeholder="조정 사유 입력" />
+              <div className="flex gap-2 mt-5">
+                <button onClick={() => { setStockModal(null); setTargetQty(''); setMemo(''); }}
+                  className="flex-1 py-2.5 text-sm border border-gray-200 rounded-lg hover:bg-gray-50">취소</button>
+                <button onClick={handleStockAdjust} disabled={adjusting || !isValid}
+                  className="flex-1 py-2.5 text-sm bg-black text-white rounded-lg hover:bg-gray-800 disabled:opacity-50">
+                  {adjusting ? '처리 중...' : '적용'}
+                </button>
               </div>
-            </div>
-            <div className="flex gap-2 mt-5">
-              <button onClick={() => { setStockModal(null); setDelta(''); setMemo(''); }}
-                className="flex-1 py-2.5 text-sm border border-gray-200 rounded-lg hover:bg-gray-50">취소</button>
-              <button onClick={handleStockAdjust} disabled={adjusting || !delta || isNaN(Number(delta))}
-                className="flex-1 py-2.5 text-sm bg-black text-white rounded-lg hover:bg-gray-800 disabled:opacity-50">
-                {adjusting ? '처리 중...' : '적용'}
-              </button>
             </div>
           </div>
-        </div>
-      )}
+        );
+      })()}
 
       {/* ── 상품 생성 모달 ── */}
       {createOpen && (

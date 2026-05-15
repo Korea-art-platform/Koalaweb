@@ -2,12 +2,13 @@ import { Link } from 'react-router';
 import { useAdminAuth } from '@/app/context/AdminAuthContext';
 import {
   ShoppingBag, Package, Users, Star, Image as ImageIcon,
-  LogOut, UserCog,
+  LogOut, UserCog, RotateCcw,
 } from 'lucide-react';
 
 const NAV_CARDS = [
   { label: '주문 관리', desc: '신규 주문 확인 및 배송 처리', icon: ShoppingBag, href: '/admin/orders', color: 'bg-blue-50 text-blue-600' },
   { label: '상품 관리', desc: 'SKU 등록·수정·게시 상태 관리', icon: Package, href: '/admin/products', color: 'bg-violet-50 text-violet-600' },
+  { label: '반품/교환', desc: '반품·교환 신청 접수 및 승인 처리', icon: RotateCcw, href: '/admin/returns', color: 'bg-orange-50 text-orange-600' },
   { label: '아티스트', desc: '아티스트 프로필 등록 및 관리', icon: Users, href: '/admin/artists', color: 'bg-amber-50 text-amber-600' },
   { label: '리뷰 관리', desc: '승인 대기 리뷰 검토 및 처리', icon: Star, href: '/admin/reviews', color: 'bg-green-50 text-green-600' },
   { label: '배너 관리', desc: '홈 배너 등록 및 노출 설정', icon: ImageIcon, href: '/admin/banners', color: 'bg-pink-50 text-pink-600' },

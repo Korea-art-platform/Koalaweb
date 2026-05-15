@@ -32,7 +32,8 @@ const DEFAULT_CATEGORIES = [
 export default function Home() {
 
   const [skus, setSkus] = useState<Sku[]>([]);
-  const [banner, setBanner] = useState<Banner | null>(null);
+  const [banners, setBanners] = useState<Banner[]>([]);
+  const [mainSubBanner, setMainSubBanner] = useState<Banner | null>(null);
   const [categories, setCategories] = useState(DEFAULT_CATEGORIES);
   const [loading, setLoading] = useState(true);
 
@@ -42,20 +43,24 @@ export default function Home() {
         setLoading(true);
         
         // 병렬 요청으로 로딩 속도 최적화
-        const [skuRes, bannerRes, genreRes] = await Promise.all([
-          getSkus(0, 8), 
+        const [skuRes, bannerRes, mainSubRes, genreRes] = await Promise.all([
+          getSkus(0, 8),
           getBanners('MAIN'),
+          getBanners('MAIN_SUB'),
           getGenreCounts()
         ]);
 
         // 1. 상품 데이터 설정
         setSkus(skuRes.data.data.content ?? []);
 
-        // 2. 메인 배너 설정
-        const banners = bannerRes.data.data ?? [];
-        if (banners.length > 0) setBanner(banners[0]);
+        // 2. 메인 히어로 배너 설정
+        setBanners(bannerRes.data.data ?? []);
 
-        // 3. 카테고리별 수량 가공
+        // 3. 메인 서브 배너 설정 (첫 번째 활성 배너 1개만 사용)
+        const subBanners: Banner[] = mainSubRes.data.data ?? [];
+        setMainSubBanner(subBanners.length > 0 ? subBanners[0] : null);
+
+        // 4. 카테고리별 수량 가공
         const counts: Record<string, number> = genreRes.data.data ?? {};
         setCategories(DEFAULT_CATEGORIES.map((cat) => {
           if (cat.id === 'all') return { ...cat, count: counts['ALL'] ?? 0 };
@@ -81,13 +86,13 @@ export default function Home() {
 
   return (
     <main className="bg-white font-sans">
-      <HomeHero banner={banner} />
+      <HomeHero banners={banners} />
 
       <HomeCategories categories={categories} />
 
       <HomePopularProducts skus={skus} loading={loading} />
 
-      <HomePlatformIntro />
+      <HomePlatformIntro banner={mainSubBanner} />
     </main>
   );
 }

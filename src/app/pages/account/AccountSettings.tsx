@@ -1,15 +1,22 @@
 import { useNavigate } from 'react-router';
 import { useAuth } from '@/app/context/AuthContext';
+import { logout as logoutApi } from '@/api/auth';
 import { KeyRound, LogOut, Trash2, ChevronRight } from 'lucide-react';
 
 export default function AccountSettings() {
   const navigate = useNavigate();
   const { setAuthenticated } = useAuth();
 
-  const handleLogout = () => {
-    setAuthenticated(false);
-    window.dispatchEvent(new Event('cart-updated'));
-    navigate('/login');
+  const handleLogout = async () => {
+    try {
+      await logoutApi();
+    } catch {
+      // 서버 오류여도 클라이언트 상태는 초기화
+    } finally {
+      setAuthenticated(false);
+      window.dispatchEvent(new Event('cart-updated'));
+      navigate('/login');
+    }
   };
 
   return (

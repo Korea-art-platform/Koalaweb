@@ -1,4 +1,4 @@
-import { Link, useLocation } from 'react-router';
+import { Link, useLocation, useNavigate } from 'react-router';
 import {
   ShoppingCart, User, Menu, X, Search,
   ChevronRight, LogOut, Settings, Bell, Headset
@@ -10,10 +10,14 @@ import { CART_QUERY_KEY } from '@/app/hooks/useCart';
 import { getCart } from '@/api/cart';
 import type { Cart } from '@/api/types';
 import { useTranslation } from 'react-i18next';
+import { useAuth } from '@/app/context/AuthContext';
+import { logout as logoutApi } from '@/api/auth';
 
 export function Header() {
   const { t } = useTranslation();
   const location = useLocation();
+  const navigate = useNavigate();
+  const { setAuthenticated } = useAuth();
   const [isHeroActive, setIsHeroActive] = useState(false);
   const [isHeroDark, setIsHeroDark] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -89,7 +93,7 @@ export function Header() {
 
   const subMenus = [
     { key: 'notice', path: '/notice', icon: Bell },
-    { key: 'customerService', path: '/support', icon: Headset },
+    { key: 'customerService', path: '/notice', icon: Headset },
     { key: 'settings', path: '/account/settings', icon: Settings },
   ];
 
@@ -193,9 +197,17 @@ export function Header() {
               </Link>
             ))}
 
-            <button 
+            <button
               className="w-full flex items-center justify-between py-4 px-2 -mx-2 active:bg-red-50 rounded-lg transition-colors group"
-              onClick={() => { setIsMenuOpen(false); }}
+              onClick={async () => {
+                setIsMenuOpen(false);
+                try { await logoutApi(); } catch { /* ignore */ }
+                finally {
+                  setAuthenticated(false);
+                  window.dispatchEvent(new Event('cart-updated'));
+                  navigate('/login');
+                }
+              }}
             >
               <div className="flex items-center gap-4">
                 <LogOut className="w-5 h-5 text-red-400" />

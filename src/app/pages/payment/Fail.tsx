@@ -23,6 +23,8 @@ export default function PaymentFail() {
 
   const errorCode = searchParams.get('code');
   const rawMessage = searchParams.get('message');
+  // Toss가 failUrl에 붙여주는 orderId — 결제 재시도 시 Checkout으로 돌아가는 데 사용
+  const orderId = searchParams.get('orderId');
   const errorMessage =
     (errorCode && TOSS_ERROR_MESSAGES[errorCode]) ||
     rawMessage ||
@@ -41,7 +43,7 @@ export default function PaymentFail() {
         )}
         <div className="space-y-3">
           <button
-            onClick={() => navigate(-1)}
+            onClick={() => navigate('/checkout')}
             className="w-full py-3 bg-black text-white rounded-xl hover:bg-gray-900 transition-colors"
           >
             다시 시도
@@ -53,6 +55,9 @@ export default function PaymentFail() {
             장바구니로 돌아가기
           </button>
         </div>
+        {orderId && (
+          <p className="text-[10px] text-gray-300 mt-4">주문번호: {orderId}</p>
+        )}
       </div>
     </div>
   );
