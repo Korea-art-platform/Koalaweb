@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router';
+import { Helmet } from 'react-helmet-async';
 import { ArrowLeft } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useQueryClient } from '@tanstack/react-query';
@@ -9,6 +10,7 @@ import { getArtist } from '@/api/artist';
 import { addCartItem } from '@/api/cart';
 import { addWishlist, removeWishlist, checkWishlist } from '@/api/wishlist';
 import { CART_QUERY_KEY } from '@/app/hooks/useCart';
+import { useAuth } from '@/app/context/AuthContext';
 import type { Sku, Artist } from '@/api/types';
 
 import {
@@ -28,6 +30,8 @@ export default function ProductDetail() {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const queryClient = useQueryClient();
+
+  const { isAuthenticated } = useAuth();
 
   const [sku, setSku] = useState<Sku | null>(null);
   const [artist, setArtist] = useState<Artist | null>(null);
@@ -68,12 +72,7 @@ export default function ProductDetail() {
           } catch { /* artist 없으면 이름만 표시 */ }
         }
 
-        try {
-          const wishRes = await checkWishlist(id!);
-          setIsWishlisted(wishRes.data.data);
-        } catch {
-          // not authenticated — wishlist state stays false
-        }
+        // 위시리스트 여부는 isAuthenticated + sku 둘 다 준비된 뒤 별도 useEffect에서 처리
       } catch (e) {
         console.error('SKU 로딩 실패:', e);
       } finally {
@@ -108,6 +107,13 @@ export default function ProductDetail() {
 
   const handleWishlist = async () => {
     if (!sku) return;
+
+    // 비로그인 사용자 → 로그인 페이지로
+    if (!isAuthenticated) {
+      navigate('/login');
+      return;
+    }
+
     try {
       if (isWishlisted) {
         await removeWishlist(sku.skuCode);
@@ -119,10 +125,27 @@ export default function ProductDetail() {
         showToastMessage(t('product.detail.toast.wishlistAdded'));
       }
     } catch (e: unknown) {
+      const status = (e as { response?: { status?: number } })?.response?.status;
+      // 401 → 세션 만료, 로그인 페이지로
+      if (status === 401) {
+        navigate('/login');
+        return;
+      }
       const msg = (e as { response?: { data?: { message?: string } } })?.response?.data?.message;
       showToastMessage(msg || t('product.detail.toast.error'));
     }
   };
+
+  // 로그인 상태 변경 시 위시리스트 여부 재확인
+  useEffect(() => {
+    if (isAuthenticated === true && sku) {
+      checkWishlist(sku.skuCode)
+        .then((res) => setIsWishlisted(res.data.data))
+        .catch(() => setIsWishlisted(false));
+    } else if (isAuthenticated === false) {
+      setIsWishlisted(false);
+    }
+  }, [isAuthenticated, sku?.skuCode]);
 
   if (loading) return <ProductSkeleton />;
   if (!sku) return <ProductNotFound />;
@@ -139,8 +162,35 @@ export default function ProductDetail() {
     .map((m) => m.fileUrl)
     .slice(0, 5);
 
+  const pageDescription = sku.description
+    ? sku.description.slice(0, 155) + (sku.description.length > 155 ? '…' : '')
+    : `${sku.name} — KoALa에서 만나는 한국 작가의 작품`;
+  const pageImage = sku.primaryImageUrl ?? 'https://koala-art.co.kr/og-image.svg';
+  const pageUrl = `https://koala-art.co.kr/products/${sku.skuCode}`;
+
   return (
     <div className="min-h-screen bg-white relative">
+      <Helmet>
+        <title>{sku.name} — KoALa</title>
+        <meta name="description" content={pageDescription} />
+        <link rel="canonical" href={pageUrl} />
+
+        {/* Open Graph — 카카오톡·SNS 공유 시 상품 이미지+이름 노출 */}
+        <meta property="og:type" content="product" />
+        <meta property="og:title" content={`${sku.name} — KoALa`} />
+        <meta property="og:description" content={pageDescription} />
+        <meta property="og:image" content={pageImage} />
+        <meta property="og:image:width" content="800" />
+        <meta property="og:image:height" content="800" />
+        <meta property="og:url" content={pageUrl} />
+
+        {/* Twitter Card */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={`${sku.name} — KoALa`} />
+        <meta name="twitter:description" content={pageDescription} />
+        <meta name="twitter:image" content={pageImage} />
+      </Helmet>
+
       <Navigation />
 
       <ProductToast

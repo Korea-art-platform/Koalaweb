@@ -10,7 +10,7 @@ const menuItems = [
   { icon: User, key: 'account.sidebar.profile', path: '/account' },
   { icon: Package, key: 'account.sidebar.orders', path: '/account/orders' },
   { icon: MapPin, key: 'account.sidebar.addresses', path: '/account/addresses' },
-  { icon: CreditCard, key: 'account.sidebar.payment', path: '/account/payment-methods' },
+  //{ icon: CreditCard, key: 'account.sidebar.payment', path: '/account/payment-methods' },
   { icon: Heart, key: 'account.sidebar.wishlist', path: '/account/wishlist' },
   { icon: Settings, key: 'account.sidebar.settings', path: '/account/settings' },
 ];

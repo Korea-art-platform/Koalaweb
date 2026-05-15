@@ -1,6 +1,7 @@
 import '../locales/i18n';
 import { BrowserRouter } from 'react-router';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { HelmetProvider } from 'react-helmet-async';
 import { AppRoutes } from './routes.tsx';
 import { ViewModeProvider } from './context/ViewModeContext';
 import { AuthProvider } from './context/AuthContext';
@@ -26,6 +27,7 @@ function App() {
   }, []);
 
   return (
+    <HelmetProvider>
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
         <ScrollToTop />
@@ -42,6 +44,7 @@ function App() {
         </AuthProvider>
       </BrowserRouter>
     </QueryClientProvider>
+    </HelmetProvider>
   );
 }
 

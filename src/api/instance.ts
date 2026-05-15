@@ -36,11 +36,12 @@ instance.interceptors.response.use(
                 );
                 // 재발급 성공 → 원래 요청 재시도 (쿠키가 갱신된 상태)
                 return instance(originalRequest);
-            } catch {
+            } catch (refreshError) {
                 // 리프레시도 만료 → 인증 만료 이벤트 발행 (AuthContext가 수신해서 리다이렉트)
                 // window.location.href = '/login' 을 쓰면 전체 리로드 → getMyProfile 재호출 → 무한루프
                 window.dispatchEvent(new Event('auth:expired'));
-                return Promise.reject(error);
+                // 원래 요청의 401 에러 대신 refresh 에러를 전달하면 호출부가 더 정확한 메시지 표시 가능
+                return Promise.reject(refreshError ?? error);
             }
         }
         return Promise.reject(error);

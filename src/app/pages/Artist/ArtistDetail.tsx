@@ -1,4 +1,5 @@
 import { useParams } from 'react-router';
+import { Helmet } from 'react-helmet-async';
 import Navigation from '@/app/components/layouts/Header';
 import { useArtistDetail } from '@/app/hooks/useArtistDetail';
 import { useArtistSkus } from '@/app/hooks/useArtistSkus';
@@ -30,8 +31,35 @@ export default function ArtistDetail() {
     price: sku.salePrice ?? sku.listPrice,
   }));
 
+  const artistDescription = artist.description
+    ? artist.description.slice(0, 155) + (artist.description.length > 155 ? '…' : '')
+    : `${artist.name} 작가의 작품을 KoALa에서 만나보세요.`;
+  const artistImage = artist.profileImageUrl ?? 'https://koala-art.co.kr/og-image.svg';
+  const artistUrl = `https://koala-art.co.kr/artists/${artist.artistCode}`;
+
   return (
     <div className="min-h-screen bg-white">
+      <Helmet>
+        <title>{artist.name} 작가 — KoALa</title>
+        <meta name="description" content={artistDescription} />
+        <link rel="canonical" href={artistUrl} />
+
+        {/* Open Graph */}
+        <meta property="og:type" content="profile" />
+        <meta property="og:title" content={`${artist.name} 작가 — KoALa`} />
+        <meta property="og:description" content={artistDescription} />
+        <meta property="og:image" content={artistImage} />
+        <meta property="og:image:width" content="800" />
+        <meta property="og:image:height" content="800" />
+        <meta property="og:url" content={artistUrl} />
+
+        {/* Twitter Card */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={`${artist.name} 작가 — KoALa`} />
+        <meta name="twitter:description" content={artistDescription} />
+        <meta name="twitter:image" content={artistImage} />
+      </Helmet>
+
       <Navigation />
 
       <main className="pt-24 pb-24 px-5 md:px-8 max-w-2xl mx-auto w-full">
