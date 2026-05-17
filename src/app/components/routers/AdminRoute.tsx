@@ -3,7 +3,7 @@ import { useAdminAuth } from '@/app/context/AdminAuthContext';
 import { AdminLayout } from '@/app/components/layouts/AdminLayout';
 
 export default function AdminRoute(){
-    const {token, loading} = useAdminAuth();
+    const {admin, loading} = useAdminAuth();
     if(loading){
         return(
             <div className="min-h-screen flex items-center justify-center bg-[#FAFAFA]">
@@ -11,7 +11,7 @@ export default function AdminRoute(){
             </div>
         );
     }
-    if (!token) return <Navigate to = "/admin/login" replace />;
+    if (!admin) return <Navigate to="/admin/login" replace />;
     return (
         <AdminLayout>
             <Outlet/>

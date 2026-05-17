@@ -11,7 +11,8 @@ const adminInstance = axios.create({
 adminInstance.interceptors.response.use(
   (res) => res,
   (error) => {
-    if (error.response?.status === 401) {
+    // 이미 로그인 페이지에 있을 때는 리다이렉트 하지 않음 (무한 루프 방지)
+    if (error.response?.status === 401 && window.location.pathname !== '/admin/login') {
       window.location.href = '/admin/login';
     }
     return Promise.reject(error);
