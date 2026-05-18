@@ -35,14 +35,14 @@ export default function Contact() {
               </div>
               <div>
                 <p className="text-xs text-gray-400 font-bold uppercase tracking-widest">이메일</p>
-                <p className="text-sm font-bold text-gray-900">support@koala-art.co.kr</p>
+                <p className="text-sm font-bold text-gray-900">koala-art@heron.kr</p>
               </div>
             </div>
             <p className="text-xs text-gray-500 leading-relaxed">
               이메일 문의 시 주문번호를 함께 기재해 주시면 보다 빠른 처리가 가능합니다.
             </p>
             <a
-              href="mailto:support@koala-art.co.kr"
+              href="mailto:koala-art@heron.kr"
               className="block w-full py-2.5 bg-black text-white text-xs font-bold rounded-xl text-center hover:bg-gray-800 transition-colors"
             >
               이메일 보내기
@@ -121,7 +121,7 @@ export default function Contact() {
         </section>
 
         <div className="pt-4 pb-8 text-xs text-gray-400 text-center border-t border-gray-100">
-          파트너십 및 작가 입점 문의는 <a href="mailto:partnership@koala-art.co.kr" className="underline underline-offset-2 hover:text-black transition-colors">partnership@koala-art.co.kr</a>로 연락해 주세요.
+          파트너십 및 작가 입점 문의는 <a href="mailto:koala-art@heron.kr" className="underline underline-offset-2 hover:text-black transition-colors">koala-art@heron.kr</a>로 연락해 주세요.
         </div>
 
       </div>

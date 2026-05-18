@@ -73,6 +73,22 @@ export function ProductInfo({ sku, selectedColor, onColorSelect }: Props) {
             })}
           </p>
         )}
+
+        {/* 뱃지 */}
+        {(sku.hasAuthenticity || sku.hasWorldwideShipping) && (
+          <div className="flex flex-wrap gap-2 mt-3">
+            {sku.hasAuthenticity && (
+              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-gray-200 text-xs font-medium text-gray-600">
+                ✓ 진품 보증
+              </span>
+            )}
+            {sku.hasWorldwideShipping && (
+              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-gray-200 text-xs font-medium text-gray-600">
+                🌐 전세계 배송
+              </span>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Color swatches */}

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import { Bell, BellOff } from 'lucide-react';
 import { ImageWithFallback } from '@/app/components/fallback/ImageWithFallback';
@@ -26,6 +26,10 @@ export function ArtistProfileSection({
   const [isFollowing, setIsFollowing] = useState(initialFollowing);
   const [count, setCount] = useState(followCount);
   const [loading, setLoading] = useState(false);
+
+  // API 응답 후 prop 변경 시 로컬 상태 동기화
+  useEffect(() => { setIsFollowing(initialFollowing); }, [initialFollowing]);
+  useEffect(() => { setCount(followCount); }, [followCount]);
 
   const handleFollow = async () => {
     if (!artistCode) return;

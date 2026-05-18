@@ -20,7 +20,16 @@ const SKU_TYPES = [
   { value: 'ARTWORK', label: '아트워크 (원화·판화 등)' },
   { value: 'GOODS', label: '굿즈' },
 ];
-const GENRES = ['회화', '조각', '사진', '드로잉', '판화', '디지털아트', '기타'];
+const GENRES = [
+  { value: 'ART_TOY',      label: '아트 토이' },
+  { value: 'SCULPTURE',    label: '조각' },
+  { value: 'PAINTING',     label: '페인팅' },
+  { value: 'PRINT',        label: '판화 / 프린트' },
+  { value: 'PHOTOGRAPH',   label: '사진' },
+  { value: 'INSTALLATION', label: '설치 미술' },
+  { value: 'TEXTILE',      label: '섬유 / 직물' },
+  { value: 'OTHER',        label: '기타' },
+];
 
 const inputCls = 'w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black/10';
 
@@ -36,6 +45,8 @@ interface CreateForm {
   isLimitedEdition: boolean;
   editionSize: string;
   editionNumber: string;
+  hasAuthenticity: boolean;
+  hasWorldwideShipping: boolean;
   widthCm: string;
   heightCm: string;
   depthCm: string;
@@ -47,6 +58,7 @@ const EMPTY_FORM: CreateForm = {
   skuType: 'ARTWORK', genre: '',
   listPrice: '', salePrice: '',
   isLimitedEdition: false, editionSize: '', editionNumber: '',
+  hasAuthenticity: false, hasWorldwideShipping: false,
   widthCm: '', heightCm: '', depthCm: '', weightKg: '',
 };
 
@@ -145,6 +157,8 @@ export default function AdminProductList() {
         // isLimitedEdition=false 이면 edition 값을 무조건 undefined (DB 제약)
         editionSize: form.isLimitedEdition && form.editionSize ? Number(form.editionSize) : undefined,
         editionNumber: form.isLimitedEdition && form.editionNumber ? Number(form.editionNumber) : undefined,
+        hasAuthenticity: form.hasAuthenticity,
+        hasWorldwideShipping: form.hasWorldwideShipping,
         widthCm: form.widthCm ? Number(form.widthCm) : undefined,
         heightCm: form.heightCm ? Number(form.heightCm) : undefined,
         depthCm: form.depthCm ? Number(form.depthCm) : undefined,
@@ -393,7 +407,7 @@ export default function AdminProductList() {
                   <label className="block text-xs text-gray-500 mb-1.5">장르</label>
                   <select value={form.genre} onChange={(e) => setF({ genre: e.target.value })} className={inputCls}>
                     <option value="">-- 선택 --</option>
-                    {GENRES.map((g) => <option key={g} value={g}>{g}</option>)}
+                    {GENRES.map((g) => <option key={g.value} value={g.value}>{g.label}</option>)}
                   </select>
                 </div>
               </div>
@@ -470,6 +484,20 @@ export default function AdminProductList() {
                     </div>
                   </div>
                 )}
+              </div>
+
+              {/* 진품 보증 / 전세계 배송 */}
+              <div className="space-y-2">
+                <label className="flex items-center gap-2 text-xs text-gray-600 cursor-pointer">
+                  <input type="checkbox" checked={form.hasAuthenticity}
+                    onChange={(e) => setF({ hasAuthenticity: e.target.checked })} className="rounded" />
+                  진품 보증
+                </label>
+                <label className="flex items-center gap-2 text-xs text-gray-600 cursor-pointer">
+                  <input type="checkbox" checked={form.hasWorldwideShipping}
+                    onChange={(e) => setF({ hasWorldwideShipping: e.target.checked })} className="rounded" />
+                  전세계 배송
+                </label>
               </div>
 
               {/* 사이즈/무게 */}

@@ -137,7 +137,7 @@ export default function Privacy() {
           <div className="bg-gray-50 rounded-xl p-4 space-y-1 text-xs">
             <p><span className="font-medium text-gray-800">회사명:</span> 헤론</p>
             <p><span className="font-medium text-gray-800">책임자:</span> KoALa 개인정보 보호팀</p>
-            <p><span className="font-medium text-gray-800">이메일:</span> privacy@koala-art.co.kr</p>
+            <p><span className="font-medium text-gray-800">이메일:</span> koala-art@heron.kr</p>
             <p><span className="font-medium text-gray-800">처리 기간:</span> 접수 후 영업일 3일 이내</p>
           </div>
           <p className="text-xs text-gray-500 mt-2">

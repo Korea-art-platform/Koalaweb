@@ -84,10 +84,10 @@ export default function Help() {
             <p className="text-xs text-gray-500">영업일 기준 24시간 이내 답변드립니다.</p>
           </div>
           <a
-            href="mailto:support@koala-art.co.kr"
+            href="mailto:koala-art@heron.kr"
             className="flex-shrink-0 px-5 py-2.5 bg-black text-white text-xs font-bold rounded-xl hover:bg-gray-800 transition-colors"
           >
-            support@koala-art.co.kr
+            koala-art@heron.kr
           </a>
         </div>
 

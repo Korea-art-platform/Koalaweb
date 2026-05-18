@@ -126,6 +126,11 @@ function InfoTab({ sku, onSaved }: { sku: any; onSaved: () => void }) {
     genre: sku.genre ?? 'ART_TOY',
     listPrice: String(sku.listPrice ?? ''),
     salePrice: sku.salePrice ? String(sku.salePrice) : '',
+    isLimitedEdition: sku.isLimitedEdition ?? false,
+    editionSize: sku.editionSize ? String(sku.editionSize) : '',
+    editionNumber: sku.editionNumber ? String(sku.editionNumber) : '',
+    hasAuthenticity: sku.hasAuthenticity ?? false,
+    hasWorldwideShipping: sku.hasWorldwideShipping ?? false,
   });
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
@@ -147,6 +152,11 @@ function InfoTab({ sku, onSaved }: { sku: any; onSaved: () => void }) {
         listPrice: Number(form.listPrice),
         salePrice: form.salePrice ? Number(form.salePrice) : undefined,
         primaryImageUrl: sku.primaryImageUrl,
+        isLimitedEdition: form.isLimitedEdition,
+        editionSize: form.editionSize ? Number(form.editionSize) : undefined,
+        editionNumber: form.editionNumber ? Number(form.editionNumber) : undefined,
+        hasAuthenticity: form.hasAuthenticity,
+        hasWorldwideShipping: form.hasWorldwideShipping,
       });
       setSuccess(true);
       setTimeout(() => setSuccess(false), 2000);
@@ -211,6 +221,43 @@ function InfoTab({ sku, onSaved }: { sku: any; onSaved: () => void }) {
           <textarea value={form.description} onChange={(e) => setF({ description: e.target.value })}
             rows={5} className={`${inputCls} resize-none`} />
         </div>
+
+        {/* 뱃지 설정 */}
+        <div className="border border-gray-100 rounded-lg p-4 space-y-3">
+          <p className="text-xs font-semibold text-gray-500">뱃지 설정</p>
+          <label className="flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" checked={form.isLimitedEdition}
+              onChange={(e) => setF({ isLimitedEdition: e.target.checked })} className="w-4 h-4" />
+            <span className="text-sm">한정 에디션 (LIMITED EDITION)</span>
+          </label>
+          {form.isLimitedEdition && (
+            <div className="grid grid-cols-2 gap-3 ml-6">
+              <div>
+                <label className="block text-xs text-gray-500 mb-1">에디션 번호</label>
+                <input type="number" value={form.editionNumber}
+                  onChange={(e) => setF({ editionNumber: e.target.value })}
+                  className={inputCls} placeholder="예: 125" min="1" />
+              </div>
+              <div>
+                <label className="block text-xs text-gray-500 mb-1">에디션 총 수량</label>
+                <input type="number" value={form.editionSize}
+                  onChange={(e) => setF({ editionSize: e.target.value })}
+                  className={inputCls} placeholder="예: 500" min="1" />
+              </div>
+            </div>
+          )}
+          <label className="flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" checked={form.hasAuthenticity}
+              onChange={(e) => setF({ hasAuthenticity: e.target.checked })} className="w-4 h-4" />
+            <span className="text-sm">진품 보증</span>
+          </label>
+          <label className="flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" checked={form.hasWorldwideShipping}
+              onChange={(e) => setF({ hasWorldwideShipping: e.target.checked })} className="w-4 h-4" />
+            <span className="text-sm">전세계 배송</span>
+          </label>
+        </div>
+
         {error && <p className="text-xs text-red-500">{error}</p>}
         <button onClick={handleSave} disabled={saving}
           className="flex items-center gap-2 px-5 py-2.5 text-sm bg-black text-white rounded-lg hover:bg-gray-800 disabled:opacity-50">

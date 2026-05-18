@@ -34,7 +34,7 @@ export default function Terms() {
           <p><span className="font-medium text-gray-700 w-28 inline-block">통신판매업 신고</span>제2024-서울서초-3956호</p>
           <p><span className="font-medium text-gray-700 w-28 inline-block">대표자</span>정동훈</p>
           <p><span className="font-medium text-gray-700 w-28 inline-block">소재지</span>서울특별시 강서구 마곡중앙6로 21, 이너매스마곡 제619호</p>
-          <p><span className="font-medium text-gray-700 w-28 inline-block">이메일</span>privacy@koala-art.co.kr</p>
+          <p><span className="font-medium text-gray-700 w-28 inline-block">이메일</span>koala-art@heron.kr</p>
           <p><span className="font-medium text-gray-700 w-28 inline-block">웹사이트</span>https://koala-art.co.kr</p>
         </div>
 

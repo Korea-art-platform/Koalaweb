@@ -23,7 +23,7 @@ export default function Returns() {
           <p className="font-semibold text-gray-900 text-sm mb-2">핵심 요약</p>
           <p>· 상품 수령 후 <strong>7일 이내</strong> 교환/반품 신청 가능</p>
           <p>· 환불은 반품 상품 확인 후 <strong>영업일 3~5일</strong> 이내 처리</p>
-          <p>· 신청 방법: 마이페이지 주문 내역 또는 support@koala-art.co.kr</p>
+          <p>· 신청 방법: 마이페이지 주문 내역 또는 koala-art@heron.kr</p>
         </div>
 
         <section className="space-y-3">
@@ -38,7 +38,7 @@ export default function Returns() {
           <h2 className="font-semibold text-gray-900">2. 교환/반품 신청 방법</h2>
           <ol className="space-y-2 text-gray-600 list-decimal list-inside">
             <li>마이페이지 &gt; 주문 내역에서 해당 주문 선택 후 교환/반품 신청</li>
-            <li>또는 고객센터(support@koala-art.co.kr)로 주문번호와 사유 기재하여 이메일 발송</li>
+            <li>또는 고객센터(koala-art@heron.kr)로 주문번호와 사유 기재하여 이메일 발송</li>
             <li>담당자 확인 후 영업일 기준 1~2일 이내 회수 방법 안내</li>
             <li>반품 상품 회수 및 검수 완료 후 환불/교환 처리</li>
           </ol>
@@ -119,7 +119,7 @@ export default function Returns() {
 
         <div className="bg-gray-50 rounded-xl p-5 text-xs text-gray-500 leading-relaxed space-y-1">
           <p className="font-semibold text-gray-800">교환/반품 문의</p>
-          <p>이메일: support@koala-art.co.kr</p>
+          <p>이메일: koala-art@heron.kr</p>
           <p>운영 시간: 평일 10:00 – 18:00 (주말·공휴일 제외)</p>
         </div>
 

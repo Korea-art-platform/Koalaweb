@@ -106,7 +106,7 @@ export default function Footer() {
             상호명: (주)코알라 &nbsp;|&nbsp; 대표이사: 정동훈 &nbsp;|&nbsp; 사업자등록번호: 203-87-01972
             &nbsp;|&nbsp; 통신판매업 신고번호: 제2024-서울서초-3956호
             <br className="hidden sm:block" />
-            &nbsp;|&nbsp; 주소: 서울특별시 강서구 마곡중앙6로 21, 이너매스마곡 제619호 &nbsp;|&nbsp; 이메일: support@koala-art.co.kr
+            &nbsp;|&nbsp; 주소: 서울특별시 강서구 마곡중앙6로 21, 이너매스마곡 제619호 &nbsp;|&nbsp; 이메일: koala-art@heron.kr
           </p>
 
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">

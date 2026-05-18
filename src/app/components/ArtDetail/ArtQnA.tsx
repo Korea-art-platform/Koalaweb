@@ -24,7 +24,7 @@ const DEFAULT_ITEMS: QnAItem[] = [
   { id: 'q-05', question: '결제 방식', answer: '카드, 계좌이체, 간편결제 등 다양한 방식을 지원합니다.' },
 ];
 
-export function ArtQnA({ items = DEFAULT_ITEMS, contactEmail = 'help@koala.co.kr' }: ArtQnAProps) {
+export function ArtQnA({ items = DEFAULT_ITEMS, contactEmail = 'koala-art@heron.kr' }: ArtQnAProps) {
   return (
     <section className="mb-16">
       <h3 className="text-lg font-semibold mb-1">QnA</h3>

@@ -91,7 +91,7 @@ export default function Shipping() {
           </p>
           <div className="bg-gray-50 rounded-xl p-4 text-xs text-gray-500 leading-relaxed">
             배송 중 파손이 발생한 경우, 수령 후 24시간 이내에 포장 상태 및 파손 사진을 포함하여
-            고객센터(support@koala-art.co.kr)로 연락해 주세요.
+            고객센터(koala-art@heron.kr)로 연락해 주세요.
           </div>
         </section>
 

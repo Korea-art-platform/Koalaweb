@@ -109,7 +109,7 @@ export default function Cookies() {
         <section className="space-y-2">
           <h2 className="font-semibold text-gray-900">6. 문의</h2>
           <div className="bg-gray-50 rounded-xl p-4 text-xs space-y-1">
-            <p><span className="font-medium text-gray-800">이메일:</span> privacy@koala-art.co.kr</p>
+            <p><span className="font-medium text-gray-800">이메일:</span> koala-art@heron.kr</p>
             <p><span className="font-medium text-gray-800">처리 기간:</span> 접수 후 영업일 3일 이내</p>
           </div>
         </section>
