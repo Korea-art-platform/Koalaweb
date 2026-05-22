@@ -2,12 +2,34 @@ import { defineConfig } from 'vite'
 import tailwindcss from '@tailwindcss/vite'
 import react from '@vitejs/plugin-react'
 import tsconfigPaths from 'vite-tsconfig-paths'
+import viteImagemin from '@vheemstra/vite-plugin-imagemin'
+import imageminMozjpeg from 'imagemin-mozjpeg'
+import imageminPngquant from 'imagemin-pngquant'
+import imageminSvgo from 'imagemin-svgo'
+import imageminWebp from 'imagemin-webp'
 
 export default defineConfig(({ command }) => ({
   plugins: [
     react(),
     tailwindcss(),
     tsconfigPaths(),
+    // 프로덕션 빌드 시에만 이미지 압축 + WebP 생성
+    ...(command === 'build' ? [
+      viteImagemin({
+        plugins: {
+          jpg: imageminMozjpeg({ quality: 82 }),
+          png: imageminPngquant({ quality: [0.7, 0.9], strip: true }),
+          svg: imageminSvgo({ plugins: [{ name: 'preset-default' }] }),
+        },
+        // 원본 옆에 .webp 파일도 함께 생성
+        makeWebp: {
+          plugins: {
+            jpg: imageminWebp({ quality: 80 }),
+            png: imageminWebp({ quality: 80 }),
+          },
+        },
+      }),
+    ] : []),
   ],
   esbuild: {
     drop: command === 'build' ? ['console', 'debugger'] : [],

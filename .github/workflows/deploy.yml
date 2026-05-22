@@ -1,0 +1,72 @@
+name: Deploy Frontend
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # ── 1. 소스 체크아웃 ────────────────────────────────────────────────────
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # ── 2. Node.js 세팅 + npm 캐시 ────────────────────────────────────────
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      # ── 3. 의존성 설치 ──────────────────────────────────────────────────────
+      - name: Install dependencies
+        run: npm ci
+
+      # ── 4. 프로덕션 빌드 ────────────────────────────────────────────────────
+      - name: Build
+        env:
+          VITE_API_BASE_URL: https://koala-art.co.kr
+          VITE_OAUTH_KAKAO_URL: https://koala-art.co.kr/oauth2/authorization/kakao
+          VITE_OAUTH_NAVER_URL: https://koala-art.co.kr/oauth2/authorization/naver
+          VITE_GTM_ID: GTM-KHDT3ZKX
+          VITE_TOSS_CLIENT_KEY: ${{ secrets.VITE_TOSS_CLIENT_KEY }}
+          VITE_SENTRY_DSN: ${{ secrets.VITE_SENTRY_DSN }}
+        run: npm run build
+
+      # ── 5. AWS 인증 ─────────────────────────────────────────────────────────
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      # ── 6. S3 배포 ──────────────────────────────────────────────────────────
+      # JS/CSS/폰트 등 해시 파일: 1년 장기 캐시
+      # index.html + .json: 캐시 없음 (항상 최신 버전 보장)
+      - name: Deploy to S3
+        run: |
+          # 해시 포함 정적 자산 (1년 캐시)
+          aws s3 sync dist/ s3://${{ secrets.AWS_S3_BUCKET }} \
+            --delete \
+            --cache-control "public,max-age=31536000,immutable" \
+            --exclude "*.html" \
+            --exclude "*.json" \
+            --exclude "*.txt"
+
+          # HTML / JSON / txt (캐시 없음)
+          aws s3 sync dist/ s3://${{ secrets.AWS_S3_BUCKET }} \
+            --cache-control "no-cache,no-store,must-revalidate" \
+            --exclude "*" \
+            --include "*.html" \
+            --include "*.json" \
+            --include "*.txt"
+
+      # ── 7. CloudFront 캐시 무효화 ───────────────────────────────────────────
+      - name: Invalidate CloudFront
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id ${{ secrets.AWS_CLOUDFRONT_DISTRIBUTION_ID }} \
+            --paths "/*.html" "/asset-manifest.json"
