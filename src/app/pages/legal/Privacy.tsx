@@ -22,7 +22,7 @@ export default function Privacy() {
         <p className="text-xs text-gray-400">최종 업데이트: 2026년 5월 13일</p>
 
         <p>
-          헤론(이하 "회사")이 운영하는 KoALa 서비스는 「개인정보 보호법」,
+          헤론(이하 "회사")이 운영하는 KOALA 서비스는 「개인정보 보호법」,
           「정보통신망 이용촉진 및 정보보호 등에 관한 법률」 등 관련 법령을 준수하며,
           이용자의 개인정보를 안전하게 보호합니다. 본 방침은 회사가 수집하는 개인정보의 항목,
           수집 목적, 보유 기간 및 처리 방법을 안내합니다.
@@ -136,7 +136,7 @@ export default function Privacy() {
           <p>이용자는 아래 담당자에게 개인정보 관련 문의, 열람, 정정·삭제, 처리 정지 요청을 할 수 있습니다.</p>
           <div className="bg-gray-50 rounded-xl p-4 space-y-1 text-xs">
             <p><span className="font-medium text-gray-800">회사명:</span> 헤론</p>
-            <p><span className="font-medium text-gray-800">책임자:</span> KoALa 개인정보 보호팀</p>
+            <p><span className="font-medium text-gray-800">책임자:</span> KOALA 개인정보 보호팀</p>
             <p><span className="font-medium text-gray-800">이메일:</span> koala-art@heron.kr</p>
             <p><span className="font-medium text-gray-800">처리 기간:</span> 접수 후 영업일 3일 이내</p>
           </div>

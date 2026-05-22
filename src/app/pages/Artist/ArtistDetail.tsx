@@ -14,7 +14,7 @@ import {
   ArtistWorksCarousel,
 } from '@/app/components/ArtistDetail';
 import type { WorkItem } from '@/app/components/ArtistDetail';
-import { ArtInfo, ArtQnA } from '@/app/components/ArtDetail';
+import { ArtQnA } from '@/app/components/ArtDetail';
 
 export default function ArtistDetail() {
   const { id } = useParams();
@@ -33,20 +33,20 @@ export default function ArtistDetail() {
 
   const artistDescription = artist.description
     ? artist.description.slice(0, 155) + (artist.description.length > 155 ? '…' : '')
-    : `${artist.name} 작가의 작품을 KoALa에서 만나보세요.`;
+    : `${artist.name} 작가의 작품을 KOALA에서 만나보세요.`;
   const artistImage = artist.profileImageUrl ?? 'https://koala-art.co.kr/og-image.svg';
   const artistUrl = `https://koala-art.co.kr/artists/${artist.artistCode}`;
 
   return (
     <div className="min-h-screen bg-white">
       <Helmet>
-        <title>{artist.name} 작가 — KoALa</title>
+        <title>{artist.name} 작가 — KOALA</title>
         <meta name="description" content={artistDescription} />
         <link rel="canonical" href={artistUrl} />
 
         {/* Open Graph */}
         <meta property="og:type" content="profile" />
-        <meta property="og:title" content={`${artist.name} 작가 — KoALa`} />
+        <meta property="og:title" content={`${artist.name} 작가 — KOALA`} />
         <meta property="og:description" content={artistDescription} />
         <meta property="og:image" content={artistImage} />
         <meta property="og:image:width" content="800" />
@@ -55,7 +55,7 @@ export default function ArtistDetail() {
 
         {/* Twitter Card */}
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={`${artist.name} 작가 — KoALa`} />
+        <meta name="twitter:title" content={`${artist.name} 작가 — KOALA`} />
         <meta name="twitter:description" content={artistDescription} />
         <meta name="twitter:image" content={artistImage} />
       </Helmet>
@@ -104,14 +104,6 @@ export default function ArtistDetail() {
         <ArtistWorksCarousel works={works} artistId={id} />
 
         <div className="mt-20 border-t border-gray-100 pt-16">
-          <ArtInfo
-            items={[
-              { label: '전공', value: artist.specialty ?? '-' },
-              { label: '활동', value: '-' },
-              { label: '소속', value: '-' },
-              { label: '연락처', value: '-' },
-            ]}
-          />
           <ArtQnA />
         </div>
       </main>

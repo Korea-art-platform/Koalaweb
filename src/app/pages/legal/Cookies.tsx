@@ -20,7 +20,7 @@ export default function Cookies() {
         <p className="text-xs text-gray-400">최종 업데이트: 2026년 5월 13일</p>
 
         <p>
-          헤론(이하 "회사")이 운영하는 KoALa 서비스는 서비스 제공, 보안 유지 및 사용자 경험 향상을
+          헤론(이하 "회사")이 운영하는 KOALA 서비스는 서비스 제공, 보안 유지 및 사용자 경험 향상을
           위해 쿠키를 사용합니다. 본 정책은 회사가 사용하는 쿠키의 종류와 목적, 관리 방법을 안내합니다.
         </p>
 
@@ -74,7 +74,7 @@ export default function Cookies() {
         <section className="space-y-3">
           <h2 className="font-semibold text-gray-900">3. 인증 쿠키 보안</h2>
           <p>
-            KoALa의 로그인 인증 토큰은 <strong>HttpOnly</strong> 쿠키로 저장됩니다.
+            KOALA의 로그인 인증 토큰은 <strong>HttpOnly</strong> 쿠키로 저장됩니다.
             HttpOnly 쿠키는 JavaScript로 접근이 불가하여 XSS(크로스 사이트 스크립팅) 공격으로부터
             보호됩니다. 또한 프로덕션 환경에서는 <strong>Secure</strong> 속성이 적용되어
             HTTPS 연결에서만 전송됩니다.

@@ -20,7 +20,7 @@ export default function Contact() {
 
         <div>
           <p className="text-sm text-gray-600 leading-relaxed">
-            KoALa 고객센터는 여러분의 소중한 작품 경험을 위해 최선을 다합니다.
+            KOALA 고객센터는 여러분의 소중한 작품 경험을 위해 최선을 다합니다.
             문의 전 <Link to="/faq" className="text-black underline underline-offset-2">자주 묻는 질문</Link>에서
             빠르게 해결책을 찾아보세요.
           </p>

@@ -71,7 +71,7 @@ const PAGE_SECTIONS = [
   },
 ] as const;
 
-const CAREER_CATEGORIES = ['학력', '개인전', '그룹전'] as const;
+const CAREER_CATEGORIES = ['학력', '개인전', '그룹전', '수상', '소장', '방송', '그 외'] as const;
 
 // ────────────────────────────────────────────────────────────
 export default function AdminArtistDetail() {
@@ -551,18 +551,18 @@ function CareerTab({
   onChanged: () => void;
 }) {
   const [adding, setAdding] = useState(false);
-  const [addForm, setAddForm] = useState({ category: '학력', year: new Date().getFullYear(), content: '' });
+  const [addForm, setAddForm] = useState<{ category: string; year: number | null; content: string }>({ category: '학력', year: new Date().getFullYear(), content: '' });
   const [addError, setAddError] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
   const [editId, setEditId] = useState<number | null>(null);
-  const [editForm, setEditForm] = useState({ category: '학력', year: 2024, content: '' });
+  const [editForm, setEditForm] = useState<{ category: string; year: number | null; content: string }>({ category: '학력', year: null, content: '' });
 
   const [deleting, setDeleting] = useState<number | null>(null);
 
   const grouped = CAREER_CATEGORIES.map((cat) => ({
     cat,
-    items: careerList.filter((c) => c.category === cat).sort((a, b) => b.year - a.year || a.sortOrder - b.sortOrder),
+    items: careerList.filter((c) => c.category === cat).sort((a, b) => (b.year ?? 0) - (a.year ?? 0) || a.sortOrder - b.sortOrder),
   }));
 
   const handleAdd = async () => {
@@ -576,7 +576,7 @@ function CareerTab({
         content: addForm.content.trim(),
       });
       setAdding(false);
-      setAddForm({ category: '학력', year: new Date().getFullYear(), content: '' });
+      setAddForm({ category: '학력', year: new Date().getFullYear(), content: '' } as { category: string; year: number | null; content: string });
       onChanged();
     } catch {
       setAddError('추가에 실패했습니다.');
@@ -640,22 +640,30 @@ function CareerTab({
               </select>
             </div>
             <div>
-              <label className="block text-xs text-gray-500 mb-1">연도</label>
+              <label className="block text-xs text-gray-500 mb-1">연도 <span className="text-gray-400">(미공개면 빈칸)</span></label>
               <input
                 type="number"
-                value={addForm.year}
+                value={addForm.year ?? ''}
                 min={1900} max={2100}
-                onChange={(e) => setAddForm((f) => ({ ...f, year: Number(e.target.value) }))}
-                className={`${inputCls} py-1.5 w-24`}
+                placeholder="미공개"
+                onChange={(e) => setAddForm((f) => ({ ...f, year: e.target.value === '' ? null : Number(e.target.value) }))}
+                className={`${inputCls} py-1.5 w-28`}
               />
             </div>
           </div>
           <div className="mb-3">
-            <label className="block text-xs text-gray-500 mb-1">내용</label>
-            <input
+            <div className="flex justify-between items-center mb-1">
+              <label className="block text-xs text-gray-500">내용</label>
+              <span className={`text-[10px] ${addForm.content.length > 900 ? 'text-red-400' : 'text-gray-400'}`}>
+                {addForm.content.length}/1000
+              </span>
+            </div>
+            <textarea
               value={addForm.content}
               onChange={(e) => setAddForm((f) => ({ ...f, content: e.target.value }))}
-              className={inputCls}
+              className={`${inputCls} resize-none`}
+              rows={2}
+              maxLength={1000}
               placeholder="홍익대학교 서양화과 졸업"
             />
           </div>
@@ -701,9 +709,10 @@ function CareerTab({
                     </select>
                     <input
                       type="number"
-                      value={editForm.year}
+                      value={editForm.year ?? ''}
                       min={1900} max={2100}
-                      onChange={(e) => setEditForm((f) => ({ ...f, year: Number(e.target.value) }))}
+                      placeholder="미공개"
+                      onChange={(e) => setEditForm((f) => ({ ...f, year: e.target.value === '' ? null : Number(e.target.value) }))}
                       className="text-xs border border-gray-200 rounded px-2 py-1 focus:outline-none w-20"
                     />
                     <input
@@ -725,10 +734,10 @@ function CareerTab({
                 ) : (
                   /* 읽기 모드 */
                   <div key={c.id} className="flex items-center gap-3 bg-white rounded-lg px-3 py-2.5 border border-gray-100 hover:border-gray-200 group">
-                    <span className="text-xs font-mono text-gray-400 w-10 shrink-0">{c.year}</span>
+                    <span className="text-xs font-mono text-gray-400 w-10 shrink-0">{c.year ?? '–'}</span>
                     <span className="flex-1 text-sm text-gray-700">{c.content}</span>
                     <button
-                      onClick={() => { setEditId(c.id); setEditForm({ category: c.category, year: c.year, content: c.content }); }}
+                      onClick={() => { setEditId(c.id); setEditForm({ category: c.category, year: c.year ?? null, content: c.content }); }}
                       className="opacity-0 group-hover:opacity-100 text-gray-400 hover:text-gray-700 transition-opacity"
                     >
                       <Pencil className="w-3.5 h-3.5" />

@@ -24,6 +24,7 @@ import {
 
 import ProductDetailPage from '@/app/components/products/ProductDetailPage';
 import { ArtImages, ArtArtist, ArtInfo, ArtQnA } from '@/app/components/ArtDetail';
+import TrendingArtists from '@/app/components/Artist/TrendingArtists';
 
 export default function ProductDetail() {
   const { id } = useParams();
@@ -156,28 +157,27 @@ export default function ProductDetail() {
       ? sku.mediaList.map((m) => m.fileUrl).slice(0, 5)
       : [sku.primaryImageUrl ?? 'https://via.placeholder.com/400'];
 
-  // '작품 - 상세' 섹션: DETAIL 롤 이미지만 (최대 5장)
+  // '작품 - 상세' 섹션: DETAIL 롤 이미지만 (제한 없음)
   const detailImgs = (sku.mediaList ?? [])
     .filter((m) => m.mediaRole === 'DETAIL')
-    .map((m) => m.fileUrl)
-    .slice(0, 5);
+    .map((m) => m.fileUrl);
 
   const pageDescription = sku.description
     ? sku.description.slice(0, 155) + (sku.description.length > 155 ? '…' : '')
-    : `${sku.name} — KoALa에서 만나는 한국 작가의 작품`;
+    : `${sku.name} — KOALA에서 만나는 한국 작가의 작품`;
   const pageImage = sku.primaryImageUrl ?? 'https://koala-art.co.kr/og-image.svg';
   const pageUrl = `https://koala-art.co.kr/products/${sku.skuCode}`;
 
   return (
     <div className="min-h-screen bg-white relative">
       <Helmet>
-        <title>{sku.name} — KoALa</title>
+        <title>{sku.name} — KOALA</title>
         <meta name="description" content={pageDescription} />
         <link rel="canonical" href={pageUrl} />
 
         {/* Open Graph — 카카오톡·SNS 공유 시 상품 이미지+이름 노출 */}
         <meta property="og:type" content="product" />
-        <meta property="og:title" content={`${sku.name} — KoALa`} />
+        <meta property="og:title" content={`${sku.name} — KOALA`} />
         <meta property="og:description" content={pageDescription} />
         <meta property="og:image" content={pageImage} />
         <meta property="og:image:width" content="800" />
@@ -186,7 +186,7 @@ export default function ProductDetail() {
 
         {/* Twitter Card */}
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={`${sku.name} — KoALa`} />
+        <meta name="twitter:title" content={`${sku.name} — KOALA`} />
         <meta name="twitter:description" content={pageDescription} />
         <meta name="twitter:image" content={pageImage} />
       </Helmet>
@@ -263,6 +263,9 @@ export default function ProductDetail() {
             />
             <ArtQnA />
           </div>
+
+          {/* Trending Artists */}
+          <TrendingArtists excludeArtistCode={(sku as any).artistCode} />
 
         </div>
       </div>

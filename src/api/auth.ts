@@ -40,3 +40,11 @@ export const loginWithKakao = (): void => {
 export const loginWithNaver = (): void => {
     window.location.href = import.meta.env.VITE_OAUTH_NAVER_URL as string;
 };
+
+// 토스 로그인 (앱인토스 환경 전용)
+export const loginWithToss = async (): Promise<void> => {
+    const { appLogin } = await import('@apps-in-toss/web-framework');
+    const { authorizationCode, referrer } = await appLogin();
+    // 백엔드에서 JWT 쿠키를 Set-Cookie로 설정
+    await instance.post('/api/v1/auth/toss/login', { authorizationCode, referrer });
+};

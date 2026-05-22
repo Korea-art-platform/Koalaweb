@@ -50,7 +50,7 @@ export default function ServerError({ onReset }: Props) {
         }}
       >
         <span className="text-white/40 text-xs font-medium tracking-[0.2em] uppercase">
-          KoALa
+          KOALA
         </span>
       </div>
 

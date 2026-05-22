@@ -33,6 +33,8 @@ const GENRES = [
 
 const inputCls = 'w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black/10';
 
+interface BadgeItem { text: string; type: string; }
+
 interface CreateForm {
   artistCode: string;
   name: string;
@@ -45,8 +47,7 @@ interface CreateForm {
   isLimitedEdition: boolean;
   editionSize: string;
   editionNumber: string;
-  hasAuthenticity: boolean;
-  hasWorldwideShipping: boolean;
+  badges: BadgeItem[];
   widthCm: string;
   heightCm: string;
   depthCm: string;
@@ -58,9 +59,24 @@ const EMPTY_FORM: CreateForm = {
   skuType: 'ARTWORK', genre: '',
   listPrice: '', salePrice: '',
   isLimitedEdition: false, editionSize: '', editionNumber: '',
-  hasAuthenticity: false, hasWorldwideShipping: false,
+  badges: [],
   widthCm: '', heightCm: '', depthCm: '', weightKg: '',
 };
+
+// ── 뱃지 색상 정의 ──────────────────────────────────────────
+const BADGE_COLORS: Record<string, string> = {
+  green:   'bg-green-50 text-green-700 border-green-200',
+  amber:   'bg-amber-50 text-amber-600 border-amber-200',
+  blue:    'bg-blue-50 text-blue-600 border-blue-200',
+  default: 'bg-gray-50 text-gray-600 border-gray-200',
+};
+
+const PREDEFINED_BADGES: BadgeItem[] = [
+  { text: '진품 보증',    type: 'blue'  },
+  { text: '전세계 배송',  type: 'green' },
+  { text: '아티스트 사인', type: 'amber' },
+  { text: '케어 포함',    type: 'green' },
+];
 
 export default function AdminProductList() {
   const navigate = useNavigate();
@@ -157,8 +173,7 @@ export default function AdminProductList() {
         // isLimitedEdition=false 이면 edition 값을 무조건 undefined (DB 제약)
         editionSize: form.isLimitedEdition && form.editionSize ? Number(form.editionSize) : undefined,
         editionNumber: form.isLimitedEdition && form.editionNumber ? Number(form.editionNumber) : undefined,
-        hasAuthenticity: form.hasAuthenticity,
-        hasWorldwideShipping: form.hasWorldwideShipping,
+        badges: form.badges.length > 0 ? JSON.stringify(form.badges) : undefined,
         widthCm: form.widthCm ? Number(form.widthCm) : undefined,
         heightCm: form.heightCm ? Number(form.heightCm) : undefined,
         depthCm: form.depthCm ? Number(form.depthCm) : undefined,
@@ -486,19 +501,8 @@ export default function AdminProductList() {
                 )}
               </div>
 
-              {/* 진품 보증 / 전세계 배송 */}
-              <div className="space-y-2">
-                <label className="flex items-center gap-2 text-xs text-gray-600 cursor-pointer">
-                  <input type="checkbox" checked={form.hasAuthenticity}
-                    onChange={(e) => setF({ hasAuthenticity: e.target.checked })} className="rounded" />
-                  진품 보증
-                </label>
-                <label className="flex items-center gap-2 text-xs text-gray-600 cursor-pointer">
-                  <input type="checkbox" checked={form.hasWorldwideShipping}
-                    onChange={(e) => setF({ hasWorldwideShipping: e.target.checked })} className="rounded" />
-                  전세계 배송
-                </label>
-              </div>
+              {/* 뱃지 */}
+              <BadgeEditor badges={form.badges} onChange={(badges) => setF({ badges })} />
 
               {/* 사이즈/무게 */}
               <div>
@@ -533,6 +537,104 @@ export default function AdminProductList() {
               </button>
             </div>
           </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ────────────────────────────────────────────────────────────
+// 뱃지 에디터 (공통)
+// ────────────────────────────────────────────────────────────
+function BadgeEditor({
+  badges,
+  onChange,
+}: {
+  badges: BadgeItem[];
+  onChange: (badges: BadgeItem[]) => void;
+}) {
+  const [customText, setCustomText] = useState('');
+
+  const togglePredefined = (badge: BadgeItem) => {
+    const exists = badges.some((b) => b.text === badge.text && b.type === badge.type);
+    if (exists) {
+      onChange(badges.filter((b) => !(b.text === badge.text && b.type === badge.type)));
+    } else {
+      onChange([...badges, badge]);
+    }
+  };
+
+  const addCustom = () => {
+    const text = customText.trim();
+    if (!text) return;
+    if (badges.some((b) => b.text === text)) return;
+    onChange([...badges, { text, type: 'default' }]);
+    setCustomText('');
+  };
+
+  const remove = (idx: number) => onChange(badges.filter((_, i) => i !== idx));
+
+  return (
+    <div className="space-y-2">
+      <p className="text-xs font-semibold text-gray-500">뱃지</p>
+
+      {/* 미리 정의된 뱃지 */}
+      <div className="flex flex-wrap gap-2">
+        {PREDEFINED_BADGES.map((badge) => {
+          const active = badges.some((b) => b.text === badge.text && b.type === badge.type);
+          return (
+            <button
+              key={badge.text}
+              type="button"
+              onClick={() => togglePredefined(badge)}
+              className={`px-3 py-1 rounded-full border text-xs font-medium transition-all ${
+                active
+                  ? BADGE_COLORS[badge.type] + ' ring-2 ring-offset-1 ring-current'
+                  : 'bg-white text-gray-400 border-gray-200 hover:border-gray-400'
+              }`}
+            >
+              {active ? '✓ ' : ''}{badge.text}
+            </button>
+          );
+        })}
+      </div>
+
+      {/* 커스텀 뱃지 입력 */}
+      <div className="flex gap-2">
+        <input
+          value={customText}
+          onChange={(e) => setCustomText(e.target.value)}
+          onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); addCustom(); }}}
+          className="flex-1 border border-gray-200 rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-black/10"
+          placeholder="직접 입력 후 Enter (회색 뱃지)"
+        />
+        <button
+          type="button"
+          onClick={addCustom}
+          className="px-3 py-1.5 text-xs bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200"
+        >
+          추가
+        </button>
+      </div>
+
+      {/* 현재 선택된 뱃지들 */}
+      {badges.length > 0 && (
+        <div className="flex flex-wrap gap-1.5 pt-1">
+          {badges.map((badge, idx) => (
+            <span
+              key={idx}
+              className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full border text-xs font-medium ${BADGE_COLORS[badge.type] ?? BADGE_COLORS.default}`}
+            >
+              {badge.text}
+              <button
+                type="button"
+                onClick={() => remove(idx)}
+                className="ml-0.5 hover:opacity-60 font-bold leading-none"
+              >
+                ×
+              </button>
+            </span>
+          ))}
         </div>
       )}
     </div>

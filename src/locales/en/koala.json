@@ -39,9 +39,10 @@
     }
   },
   "header": {
-    "logo": "KoALa",
+    "logo": "KOALA",
     "menus": {
       "gallery": "작품 갤러리",
+      "artGallery": "3D Gallery",
       "lab": "작가의 연구소",
       "store": "스마트 스토어"
     },
@@ -49,7 +50,7 @@
   },
   "footer": {
     "brand": {
-      "logo": "KoALa",
+      "logo": "KOALA",
       "subtitle": "코리안 아트 랩 (Korean Art Lab)",
       "description": "한국 현대미술의 선구자들이 펼치는 창조적 여정과 영감을 경험하세요. 작품 갤러리, 작가의 연구소, 스마트 스토어, AR 뷰어 등 다양한 콘텐츠로 한국 미술의 매력을 소개합니다."
     },
@@ -74,7 +75,7 @@
     "company": {
       "title": "회사 소개",
       "links": {
-        "about": "KoALa 소개",
+        "about": "KOALA 소개",
         "careers": "채용 정보",
         "press": "언론 보도",
         "blog": "공식 블로그",
@@ -82,7 +83,7 @@
       }
     },
     "bottom": {
-      "copyright": "© 2026 KoALa. 모든 권리 보유.",
+      "copyright": "© 2026 KOALA. 모든 권리 보유.",
       "privacy": "개인정보처리방침",
       "terms": "이용약관",
       "cookies": "쿠키 정책"
@@ -112,7 +113,7 @@
     },
     "popularProducts": {
       "title": "인기상품",
-      "subtitle": "KoALa가 큐레이션한 이달의 가장 핫한 아티스트 작품",
+      "subtitle": "KOALA가 큐레이션한 이달의 가장 핫한 아티스트 작품",
       "viewAll": "전체 보기",
       "viewAllMobile": "전체 상품 보기",
       "noData": {
@@ -122,9 +123,9 @@
       "saleBadge": "특가"
     },
     "intro": {
-      "badge": "KoALa 플랫폼",
+      "badge": "KOALA 플랫폼",
       "title": "글로벌 K-아트의 새로운 기준을 만듭니다.",
-      "description": "아티스트와 컬렉터, 디지털과 피지컬을 잇는 가장 매끄러운 아트 에코시스템. 당신의 일상에 스며드는 예술의 힘을 KoALa와 함께 경험하세요.",
+      "description": "아티스트와 컬렉터, 디지털과 피지컬을 잇는 가장 매끄러운 아트 에코시스템. 당신의 일상에 스며드는 예술의 힘을 KOALA와 함께 경험하세요.",
       "exploreArtist": "작가 탐색하기",
       "tryAR": "AR 뷰어 체험하기"
     }
@@ -190,7 +191,7 @@
     },
     "login": {
       "title": "Welcome Back",
-      "subtitle": "Sign in to your KoALa account",
+      "subtitle": "Sign in to your KOALA account",
       "submit": "Sign In",
       "submitting": "Signing in...",
       "success": "로그인이 완료되었습니다. 홈으로 이동합니다.",
@@ -270,7 +271,7 @@
       "skip": "건너뛰기",
       "skipLater": "나중에 설정하기",
       "welcome": {
-        "title": "KoALa에 오신 것을 환영합니다",
+        "title": "KOALA에 오신 것을 환영합니다",
         "desc": "사용자님께 꼭 맞는 한국 예술 경험을 위해 몇 가지만 설정해볼까요? 1분이면 충분합니다.",
         "start": "시작하기"
       },
@@ -434,7 +435,7 @@
       "total": "최종 결제 금액",
       "vatIncluded": "부가가치세 포함",
       "checkout": "주문 결제하기",
-      "securePayment": "KoALa의 안전 결제 시스템이 적용됩니다"
+      "securePayment": "KOALA의 안전 결제 시스템이 적용됩니다"
     },
     "alerts": {
       "removeConfirm": "장바구니에서 해당 상품을 삭제하시겠습니까?",

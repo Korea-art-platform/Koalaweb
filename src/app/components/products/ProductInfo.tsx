@@ -6,6 +6,18 @@ interface ColorOption {
   hex: string;
 }
 
+interface BadgeItem {
+  text: string;
+  type: string;
+}
+
+const BADGE_COLORS: Record<string, string> = {
+  green:   'bg-green-50 text-green-700 border-green-200',
+  amber:   'bg-amber-50 text-amber-600 border-amber-200',
+  blue:    'bg-blue-50 text-blue-600 border-blue-200',
+  default: 'bg-gray-50 text-gray-600 border-gray-200',
+};
+
 interface Props {
   sku: any;
   selectedColor?: string;
@@ -22,6 +34,11 @@ export function ProductInfo({ sku, selectedColor, onColorSelect }: Props) {
     val ? val.toLocaleString() : t('product.detail.info.priceOnRequest');
 
   const colorOptions: ColorOption[] = sku.colorOptions ?? [];
+
+  const badges: BadgeItem[] = (() => {
+    try { return sku.badges ? JSON.parse(sku.badges) : []; }
+    catch { return []; }
+  })();
 
   return (
     <div className="flex flex-col">
@@ -75,18 +92,16 @@ export function ProductInfo({ sku, selectedColor, onColorSelect }: Props) {
         )}
 
         {/* 뱃지 */}
-        {(sku.hasAuthenticity || sku.hasWorldwideShipping) && (
-          <div className="flex flex-wrap gap-2 mt-3">
-            {sku.hasAuthenticity && (
-              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-gray-200 text-xs font-medium text-gray-600">
-                ✓ 진품 보증
+        {badges.length > 0 && (
+          <div className="flex flex-wrap gap-2 mt-3 bg-gray-50 rounded-xl px-4 py-3">
+            {badges.map((badge, idx) => (
+              <span
+                key={idx}
+                className={`inline-flex items-center px-3 py-1.5 rounded-full border text-xs font-medium ${BADGE_COLORS[badge.type] ?? BADGE_COLORS.default}`}
+              >
+                {badge.text}
               </span>
-            )}
-            {sku.hasWorldwideShipping && (
-              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-gray-200 text-xs font-medium text-gray-600">
-                🌐 전세계 배송
-              </span>
-            )}
+            ))}
           </div>
         )}
       </div>

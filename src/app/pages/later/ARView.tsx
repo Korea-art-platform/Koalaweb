@@ -176,7 +176,7 @@ export default function ARView() {
               ) : (
                 <div>
                   <div className="text-[10px] text-gray-400 uppercase tracking-widest mb-3 font-bold">Premium Art Toy</div>
-                  <h3 className="text-2xl font-medium mb-1 leading-tight">KoALa AR Viewer</h3>
+                  <h3 className="text-2xl font-medium mb-1 leading-tight">KOALA AR Viewer</h3>
                   <p className="text-sm text-gray-500 font-medium mt-4 leading-relaxed">{t('ar.noSkuDesc')}</p>
                   <Link to="/store" className="block w-full mt-8 py-4 bg-black text-white text-center rounded-2xl hover:bg-gray-800 transition-all font-bold text-sm">{t('order.history.goStore')}</Link>
                 </div>

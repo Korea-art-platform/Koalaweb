@@ -4,6 +4,7 @@ import Navigation from '@/app/components/layouts/Header';
 import StoreHero from '@/app/components/Hero/StoreHero';
 import StoreFilter from '@/app/components/store/StoreFilter';
 import StoreProductGrid from '@/app/components/store/StoreProductGrid';
+import TrendingArtists from '@/app/components/Artist/TrendingArtists';
 import { getSkus } from '@/api/sku';
 import { getWishlist, addWishlist, removeWishlist } from '@/api/wishlist';
 import type { Sku, WishlistItem, PageResponse } from '@/api/types';
@@ -102,6 +103,11 @@ export default function SmartStore() {
         wishlistLoading={wishlistLoading}
         onWishlistClick={handleWishlist}
       />
+
+      {/* 작가 섹션 */}
+      <div className="px-6 md:px-8 max-w-[1600px] mx-auto pb-20">
+        <TrendingArtists />
+      </div>
     </div>
   );
 }

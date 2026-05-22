@@ -17,7 +17,7 @@ export default function AboutMission() {
             <h2 className="text-5xl md:text-7xl font-black text-black tracking-tighter leading-none uppercase">Our<br/>Mission</h2>
           </div>
           <div className="lg:w-2/3 pt-4 text-xl md:text-3xl text-zinc-500 leading-snug font-medium">
-            KoALa는 기술과 예술의 경계를 허물고, 누구나 컬렉터가 될 수 있는 새로운 아트 에코시스템을 구축합니다.
+            KOALA는 기술과 예술의 경계를 허물고, 누구나 컬렉터가 될 수 있는 새로운 아트 에코시스템을 구축합니다.
           </div>
         </motion.div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-20 gap-y-20">

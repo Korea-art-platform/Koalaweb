@@ -86,7 +86,7 @@ export default function Shipping() {
         <section className="space-y-3 text-sm text-gray-700 leading-relaxed">
           <h2 className="font-semibold text-gray-900 text-base">작품 포장 안내</h2>
           <p className="text-gray-600">
-            KoALa의 모든 작품은 작품 손상 방지를 위해 에어캡, 완충재, 전용 박스로 안전하게 포장됩니다.
+            KOALA의 모든 작품은 작품 손상 방지를 위해 에어캡, 완충재, 전용 박스로 안전하게 포장됩니다.
             한정판 에디션은 별도의 보증서 및 아트박스가 함께 제공됩니다.
           </p>
           <div className="bg-gray-50 rounded-xl p-4 text-xs text-gray-500 leading-relaxed">

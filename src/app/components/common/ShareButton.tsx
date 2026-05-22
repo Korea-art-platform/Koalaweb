@@ -31,7 +31,7 @@ export function ShareButton({ title, description, imageUrl, url }: ShareButtonPr
       objectType: 'feed',
       content: {
         title,
-        description: description ?? 'KoALa — Korean Art Lab',
+        description: description ?? 'KOALA — Korean Art Lab',
         imageUrl: imageUrl ?? `${window.location.origin}/og-image.png`,
         link: { mobileWebUrl: shareUrl, webUrl: shareUrl },
       },
@@ -46,7 +46,7 @@ export function ShareButton({ title, description, imageUrl, url }: ShareButtonPr
   };
 
   const shareX = () => {
-    const text = encodeURIComponent(`${title} — KoALa`);
+    const text = encodeURIComponent(`${title} — KOALA`);
     const encodedUrl = encodeURIComponent(shareUrl);
     window.open(`https://x.com/intent/tweet?text=${text}&url=${encodedUrl}`, '_blank');
     setOpen(false);

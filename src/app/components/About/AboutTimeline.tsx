@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 
 const milestones = [
-  { year: '2023', title: 'KoALa 설립', description: '프리미엄 K-Art 플랫폼 론칭' },
+  { year: '2023', title: 'KOALA 설립', description: '프리미엄 K-Art 플랫폼 론칭' },
   { year: '2023', title: '첫 전시 개최', description: '20명의 아티스트와 함께 시작' },
   { year: '2024', title: '글로벌 확장', description: '일본, 미국 시장 진출' },
   { year: '2025', title: 'AR Gallery 오픈', description: '세계 최초 AR 기반 갤러리 론칭' },

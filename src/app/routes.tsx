@@ -26,6 +26,8 @@ import About from "@/app/pages/About";
 import Home from "@/app/pages/Home";
 import Search from "@/app/pages/Search";
 import SmartStore from "@/app/pages/product/SmartStore";
+import { lazy, Suspense } from 'react';
+const Gallery = lazy(() => import('@/app/pages/gallery/Gallery'));
 import ARView from "@/app/pages/later/ARView";
 import ResellMarket from "@/app/pages/later/ResellMarket";
 
@@ -81,6 +83,7 @@ import AdminBannerList from '@/app/pages/Admin/banners/AdminBannerList';
 import AdminUserList from '@/app/pages/Admin/users/AdminUserList';
 import AdminReturnList from '@/app/pages/Admin/returns/AdminReturnList';
 import AdminReturnDetail from '@/app/pages/Admin/returns/AdminReturnDetail';
+import AdminNoticeList from '@/app/pages/Admin/notices/AdminNoticeList';
 
 
 export function AppRoutes() {
@@ -90,8 +93,9 @@ export function AppRoutes() {
       
       {/* 메인 */}
       <Route path="/" element={<Home />} />
+      <Route path="/gallery" element={<Suspense fallback={<div style={{position:'fixed',inset:0,background:'#f6f4ef'}} />}><Gallery /></Suspense>} />
       <Route path="/search" element={<Search />} />
-      <Route path="/about" element={<About/>}/>
+      {/* <Route path="/about" element={<About/>}/> */}
 
       {/* 스토어 */}
       <Route path="/smart-store" element={<SmartStore />} />
@@ -175,6 +179,7 @@ export function AppRoutes() {
           <Route path="/admin/users" element={<AdminUserList />} />
           <Route path="/admin/returns" element={<AdminReturnList />} />
           <Route path="/admin/returns/:returnNo" element={<AdminReturnDetail />} />
+          <Route path="/admin/notices" element={<AdminNoticeList />} />
         </Route>
       </Route>
 

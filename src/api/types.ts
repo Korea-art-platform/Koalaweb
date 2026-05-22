@@ -136,7 +136,7 @@ export interface ArtistMedia {
 
 export interface ArtistCareer {
   id: number;
-  category: '학력' | '개인전' | '그룹전';
+  category: '학력' | '개인전' | '그룹전' | '그 외';
   year: number;
   content: string;
   sortOrder: number;

@@ -14,11 +14,13 @@ export default function Footer() {
           
           {/* Brand Section */}
           <div className="lg:col-span-2">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="text-2xl font-bold tracking-tight text-white">{t('footer.brand.logo')}</div>
-              <div className="text-[10px] text-white/50 tracking-[0.2em] uppercase pt-1">
-                {t('footer.brand.subtitle')}
-              </div>
+            <div className="mb-6">
+              <img
+                src="/logo.png"
+                alt="KOALA"
+                className="h-12 w-auto"
+                style={{ filter: 'invert(1)', mixBlendMode: 'screen' }}
+              />
             </div>
             <p className="text-sm text-gray-400 leading-relaxed mb-8 max-w-sm break-keep">
               {t('footer.brand.description')}

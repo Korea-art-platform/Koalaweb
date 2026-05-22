@@ -8,7 +8,8 @@ import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { CART_QUERY_KEY } from '@/app/hooks/useCart';
 import { getCart } from '@/api/cart';
-import type { Cart } from '@/api/types';
+import { getArtists } from '@/api/artist';
+import type { Cart, Artist, PageResponse } from '@/api/types';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/app/context/AuthContext';
 import { logout as logoutApi } from '@/api/auth';
@@ -17,13 +18,30 @@ export function Header() {
   const { t } = useTranslation();
   const location = useLocation();
   const navigate = useNavigate();
-  const { setAuthenticated } = useAuth();
+
+  const isGallery = location.pathname === '/gallery';
+  const { setAuthenticated, isAuthenticated } = useAuth();
   const [isHeroActive, setIsHeroActive] = useState(false);
   const [isHeroDark, setIsHeroDark] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  useEffect(() => {
+    document.body.classList.toggle('menu-open', isMenuOpen);
+  }, [isMenuOpen]);
   const [isPop, setIsPop] = useState(false);
 
-  // 1. 장바구니 수량 — react-query 캐시에서 읽기
+  // 1. 작가 목록 (헤더 노출용)
+  const { data: artists = [] } = useQuery<Artist[]>({
+    queryKey: ['artists', 'header'],
+    queryFn: async () => {
+      const res = await getArtists(0, 10);
+      const page: PageResponse<Artist> = res.data.data;
+      return page.content ?? [];
+    },
+    staleTime: 1000 * 60 * 10, // 10분 캐시
+  });
+
+  // 2. 장바구니 수량 — react-query 캐시에서 읽기
   const { data: cart } = useQuery<Cart | null>({
     queryKey: CART_QUERY_KEY,
     queryFn: async () => {
@@ -38,7 +56,7 @@ export function Header() {
   useEffect(() => {
     const updateHeaderState = () => {
       // 투명 헤더를 허용할 경로 정의
-      const allowedPaths = ['/', '/about'];
+      const allowedPaths = ['/', '/about', '/gallery'];
       const isAllowed = allowedPaths.includes(location.pathname);
 
       // 허용된 페이지가 아니거나 [data-hero] 요소가 없으면 일반 헤더로 강제 고정
@@ -81,11 +99,10 @@ export function Header() {
     ? 'bg-transparent border-transparent'
     : 'bg-white/95 border-b border-gray-100 backdrop-blur-sm shadow-sm';
 
-  const logoClass = isTransparent && isHeroDark ? 'text-white' : 'text-black';
   const iconClass = isTransparent && isHeroDark ? 'text-white/80 hover:text-white' : 'text-gray-400 hover:text-black';
 
   const menus = [
-    { key: 'gallery', path: '/' },
+    { key: 'gallery', path: '/gallery' },
     { key: 'lab', path: '/artist-lab' },
     { key: 'store', path: '/store' },
     //{ key: 'about', path: '/about'}
@@ -100,20 +117,29 @@ export function Header() {
   return (
     <>
       {/* 상단 네비게이션 바 */}
-      <nav className={`fixed top-0 left-0 right-0 transition-all duration-300 ${isMenuOpen ? 'z-[110] bg-white' : 'z-50 ' + navBgClass}`}>
+      <nav className={`fixed top-0 left-0 right-0 transition-all duration-300 ${isMenuOpen ? 'z-[400] bg-white' : 'z-50 ' + navBgClass}`}>
         <div className="max-w-[1600px] mx-auto px-6 md:px-12 py-4">
           <div className="flex items-center justify-between">
             {/* 로고 */}
             <Link
               to="/"
               onClick={() => setIsMenuOpen(false)}
-              className={`text-2xl font-bold tracking-tight z-[120] transition-colors ${isMenuOpen ? 'text-black' : logoClass}`}
+              className="z-[120]"
             >
-              {t('header.logo')}
+              <img
+                src="/logo.png"
+                alt="KOALA"
+                className="h-12 w-auto"
+                style={
+                  !isMenuOpen && isTransparent && isHeroDark
+                    ? { filter: 'invert(1)', mixBlendMode: 'screen' }
+                    : { mixBlendMode: 'multiply' }
+                }
+              />
             </Link>
 
             {/* [WEB] 중앙 메뉴 */}
-            <div className="hidden lg:flex items-center gap-10">
+            <div className="hidden lg:flex items-center gap-8">
               {menus.map((menu) => (
                 <Link
                   key={menu.key}
@@ -124,6 +150,26 @@ export function Header() {
                   }`}
                 >
                   {t(`header.menus.${menu.key}`)}
+                </Link>
+              ))}
+
+              {/* 구분선 */}
+              {artists.length > 0 && (
+                <span className={`text-xs ${isTransparent && isHeroDark ? 'text-white/20' : 'text-gray-200'}`}>|</span>
+              )}
+
+              {/* 작가 링크 */}
+              {artists.map((artist) => (
+                <Link
+                  key={artist.artistCode}
+                  to={`/artist/${artist.artistCode}`}
+                  className={`text-sm font-medium transition-colors ${
+                    location.pathname === `/artist/${artist.artistCode}`
+                      ? (isTransparent && isHeroDark ? 'text-white' : 'text-black')
+                      : (isTransparent && isHeroDark ? 'text-white/60 hover:text-white' : 'text-gray-400 hover:text-black')
+                  }`}
+                >
+                  {artist.name}
                 </Link>
               ))}
             </div>
@@ -164,9 +210,8 @@ export function Header() {
       </nav>
 
       {/* [MOBILE] 사이드바(드로어) 메뉴 */}
-      <div className={`fixed top-0 left-0 w-full h-[100dvh] z-[100] bg-white lg:hidden transition-all duration-400 ease-in-out ${isMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible pointer-events-none'}`}>
-        <div className="h-full w-full flex flex-col pt-28 pb-10 px-8">
-          
+      <div className={`fixed top-0 left-0 w-full h-[100dvh] z-[300] bg-white lg:hidden overflow-y-auto transition-all duration-400 ease-in-out ${isMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible pointer-events-none'}`}>
+        <div className="flex flex-col px-8 pt-28 pb-[max(48px,env(safe-area-inset-bottom))]">
           <div className="flex flex-col gap-6 mb-10">
             {menus.map((menu, index) => (
               <Link
@@ -179,9 +224,29 @@ export function Header() {
                 {t(`header.menus.${menu.key}`)}
               </Link>
             ))}
+
+            {/* 작가 목록 */}
+            {artists.length > 0 && (
+              <div className={`border-t border-gray-100 pt-6 flex flex-col gap-4 transition-all duration-500 ${isMenuOpen ? 'opacity-100' : 'opacity-0'}`}
+                style={{ transitionDelay: `${menus.length * 50 + 50}ms` }}
+              >
+                <p className="text-xs text-gray-400 tracking-widest uppercase font-semibold">작가</p>
+                {artists.map((artist, index) => (
+                  <Link
+                    key={artist.artistCode}
+                    to={`/artist/${artist.artistCode}`}
+                    className={`text-2xl font-bold text-black tracking-tight transition-all duration-500 transform ${isMenuOpen ? 'translate-x-0 opacity-100' : '-translate-x-4 opacity-0'}`}
+                    style={{ transitionDelay: `${(menus.length + index) * 50 + 100}ms` }}
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    {artist.name}
+                  </Link>
+                ))}
+              </div>
+            )}
           </div>
 
-          <div className={`flex-1 overflow-y-auto border-t pt-8 space-y-1 transition-all duration-700 delay-150 ${isMenuOpen ? 'opacity-100' : 'opacity-0'}`}>
+          <div className={`border-t border-gray-100 pt-6 space-y-1 transition-all duration-700 delay-150 ${isMenuOpen ? 'opacity-100' : 'opacity-0'}`}>
             {subMenus.map((item) => (
               <Link
                 key={item.key}
@@ -197,26 +262,28 @@ export function Header() {
               </Link>
             ))}
 
-            <button
-              className="w-full flex items-center justify-between py-4 px-2 -mx-2 active:bg-red-50 rounded-lg transition-colors group"
-              onClick={async () => {
-                setIsMenuOpen(false);
-                try { await logoutApi(); } catch { /* ignore */ }
-                finally {
-                  setAuthenticated(false);
-                  window.dispatchEvent(new Event('cart-updated'));
-                  navigate('/login');
-                }
-              }}
-            >
-              <div className="flex items-center gap-4">
-                <LogOut className="w-5 h-5 text-red-400" />
-                <span className="text-lg font-medium text-red-500">{t('header.logout')}</span>
-              </div>
-            </button>
+            {isAuthenticated && (
+              <button
+                className="w-full flex items-center justify-between py-4 px-2 -mx-2 active:bg-red-50 rounded-lg transition-colors group"
+                onClick={async () => {
+                  setIsMenuOpen(false);
+                  try { await logoutApi(); } catch { /* ignore */ }
+                  finally {
+                    setAuthenticated(false);
+                    window.dispatchEvent(new Event('cart-updated'));
+                    navigate('/login');
+                  }
+                }}
+              >
+                <div className="flex items-center gap-4">
+                  <LogOut className="w-5 h-5 text-red-400" />
+                  <span className="text-lg font-medium text-red-500">{t('header.logout')}</span>
+                </div>
+              </button>
+            )}
           </div>
 
-          <div className="flex-shrink-0 mt-auto pt-6">
+          <div className="mt-8">
             <div className="flex items-center gap-3">
               <Link
                 to="/account/orders"

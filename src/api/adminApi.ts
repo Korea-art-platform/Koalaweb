@@ -184,7 +184,7 @@ export async function deleteArtistMedia(artistCode: string, mediaId: number) {
 // ── Artist Careers ────────────────────────────────────────────────────────────
 export async function addArtistCareer(artistCode: string, body: {
   category: string;
-  year: number;
+  year: number | null;
   content: string;
   sortOrder?: number;
 }) {
@@ -194,7 +194,7 @@ export async function addArtistCareer(artistCode: string, body: {
 
 export async function updateArtistCareer(artistCode: string, careerId: number, body: {
   category: string;
-  year: number;
+  year: number | null;
   content: string;
   sortOrder?: number;
 }) {
@@ -379,8 +379,8 @@ export interface ArtistMediaResponse {
 
 export interface ArtistCareerResponse {
   id: number;
-  category: '학력' | '개인전' | '그룹전';
-  year: number;
+  category: '학력' | '개인전' | '그룹전' | '수상' | '소장' | '방송' | '그 외';
+  year: number | null;
   content: string;
   sortOrder: number;
 }
@@ -447,3 +447,44 @@ export interface BannerResponse {
   visibleTo?: string;
   createdAt: string;
 }
+
+// ── Notices ───────────────────────────────────────────────────────────────────
+export interface NoticeResponse {
+  id: number;
+  noticeCode: string;
+  title: string;
+  content: string;
+  isPinned: boolean;
+  isActive: boolean;
+  createdByAdminName?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export async function getAdminNotices() {
+  const res = await adminInstance.get(`${BASE}/notices`);
+  return res.data.data as NoticeResponse[];
+}
+
+export async function createNotice(body: { title: string; content: string; isPinned?: boolean }) {
+  const res = await adminInstance.post(`${BASE}/notices`, body);
+  return res.data.data as NoticeResponse;
+}
+
+export async function updateNotice(noticeCode: string, body: { title: string; content: string; isPinned?: boolean }) {
+  const res = await adminInstance.put(`${BASE}/notices/${noticeCode}`, body);
+  return res.data.data as NoticeResponse;
+}
+
+export async function activateNotice(noticeCode: string) {
+  await adminInstance.patch(`${BASE}/notices/${noticeCode}/activate`);
+}
+
+export async function deactivateNotice(noticeCode: string) {
+  await adminInstance.patch(`${BASE}/notices/${noticeCode}/deactivate`);
+}
+
+export async function deleteNotice(noticeCode: string) {
+  await adminInstance.delete(`${BASE}/notices/${noticeCode}`);
+}
+

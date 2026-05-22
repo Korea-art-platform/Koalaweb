@@ -110,7 +110,7 @@ export default function Returns() {
                 </tr>
                 <tr>
                   <td className="px-4 py-3 text-gray-600">불량 / 오배송 / 파손</td>
-                  <td className="px-4 py-3 text-gray-600">KoALa 부담</td>
+                  <td className="px-4 py-3 text-gray-600">KOALA 부담</td>
                 </tr>
               </tbody>
             </table>

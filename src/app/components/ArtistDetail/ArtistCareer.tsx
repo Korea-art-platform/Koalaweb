@@ -4,7 +4,7 @@ interface ArtistCareerProps {
   items?: ArtistCareerItem[];
 }
 
-const CATEGORIES = ['학력', '개인전', '그룹전'] as const;
+const CATEGORIES = ['학력', '개인전', '그룹전', '그 외'] as const;
 
 export function ArtistCareer({ items = [] }: ArtistCareerProps) {
   if (items.length === 0) return null;

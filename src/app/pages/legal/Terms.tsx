@@ -22,14 +22,14 @@ export default function Terms() {
         <p className="text-xs text-gray-400">최종 업데이트: 2026년 5월 13일</p>
 
         <p>
-          KoALa(이하 "서비스")를 이용해 주셔서 감사합니다. 본 이용약관은 KoALa가 제공하는
+          KOALA(이하 "서비스")를 이용해 주셔서 감사합니다. 본 이용약관은 KOALA가 제공하는
           모든 서비스의 이용 조건 및 절차, 회원과 회사 간의 권리·의무 및 책임사항을 규정합니다.
         </p>
 
         {/* 사업자 정보 — 전자상거래법 제10조 필수 고지 */}
         <div className="bg-gray-50 rounded-xl p-4 text-xs text-gray-600 space-y-1 leading-relaxed">
           <p className="font-semibold text-gray-800 mb-2">사업자 정보</p>
-          <p><span className="font-medium text-gray-700 w-28 inline-block">상호명</span>헤론 (KoALa)</p>
+          <p><span className="font-medium text-gray-700 w-28 inline-block">상호명</span>헤론 (KOALA)</p>
           <p><span className="font-medium text-gray-700 w-28 inline-block">사업자등록번호</span>203-87-01972</p>
           <p><span className="font-medium text-gray-700 w-28 inline-block">통신판매업 신고</span>제2024-서울서초-3956호</p>
           <p><span className="font-medium text-gray-700 w-28 inline-block">대표자</span>정동훈</p>
@@ -41,7 +41,7 @@ export default function Terms() {
         <section className="space-y-2">
           <h2 className="font-semibold text-gray-900">제1조 (목적)</h2>
           <p>
-            본 약관은 헤론(이하 "회사")이 운영하는 미술품 거래 플랫폼 KoALa(이하 "서비스")의
+            본 약관은 헤론(이하 "회사")이 운영하는 미술품 거래 플랫폼 KOALA(이하 "서비스")의
             이용과 관련하여 회사와 이용자 간의 권리·의무 및 책임사항을 규정함을 목적으로 합니다.
           </p>
         </section>
@@ -52,7 +52,7 @@ export default function Terms() {
             <li>"서비스"란 회사가 제공하는 미술품 거래, 아티스트 플랫폼, 리셀 마켓 등 일체의 서비스를 말합니다.</li>
             <li>"회원"이란 본 약관에 동의하고 회원가입을 완료한 자를 말합니다.</li>
             <li>"비회원"이란 회원가입 없이 서비스를 이용하는 자를 말합니다.</li>
-            <li>"아티스트"란 KoALa 플랫폼을 통해 작품을 등록·판매하는 창작자를 말합니다.</li>
+            <li>"아티스트"란 KOALA 플랫폼을 통해 작품을 등록·판매하는 창작자를 말합니다.</li>
             <li>"콘텐츠"란 서비스 내 게시된 작품 이미지, 설명, 가격 정보 등을 말합니다.</li>
             <li>"SKU"란 아티스트가 등록한 개별 판매 상품 단위를 말합니다.</li>
           </ul>

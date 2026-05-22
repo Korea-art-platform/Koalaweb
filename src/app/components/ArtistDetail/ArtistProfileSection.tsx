@@ -85,7 +85,7 @@ export function ArtistProfileSection({
               </button>
               <span className="text-sm text-gray-400">{count.toLocaleString()}명</span>
               <ShareButton
-                title={`${name} — KoALa 작가`}
+                title={`${name} — KOALA 작가`}
                 description={description}
                 imageUrl={profileImageUrl}
               />

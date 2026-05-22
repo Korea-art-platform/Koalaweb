@@ -31,9 +31,9 @@ export default function AdminLogin() {
     <div className="min-h-screen bg-[#F5F5F5] flex items-center justify-center">
       <div className="w-full max-w-sm">
         <div className="bg-white rounded-2xl border border-gray-200 p-8 shadow-sm">
-          <div className="mb-8">
-            <div className="text-2xl font-bold tracking-tight text-gray-900">KoALa</div>
-            <div className="text-xs text-gray-400 tracking-[0.2em] uppercase mt-1">Admin</div>
+          <div className="mb-8 flex flex-col items-center">
+            <img src="/logo.png" alt="KOALA" className="h-10 w-auto mb-2" />
+            <div className="text-xs text-gray-400 tracking-[0.2em] uppercase">Admin</div>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">

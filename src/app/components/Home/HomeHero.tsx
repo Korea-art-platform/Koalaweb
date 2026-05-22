@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { Link } from 'react-router';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import type { Banner } from '@/api/types';
 
@@ -12,6 +12,11 @@ export default function HomeHero({ banners }: HomeHeroProps) {
   const { t } = useTranslation();
   const [current, setCurrent] = useState(0);
   const [animating, setAnimating] = useState(false);
+
+  // 터치 스와이프
+  const touchStartX = useRef<number | null>(null);
+  const touchEndX = useRef<number | null>(null);
+  const SWIPE_THRESHOLD = 50;
 
   const total = banners.length;
 
@@ -31,11 +36,44 @@ export default function HomeHero({ banners }: HomeHeroProps) {
     setTimeout(() => setAnimating(false), 700);
   }
 
+  function goPrev() {
+    goToIndex((current - 1 + total) % total);
+  }
+
+  function goNext() {
+    goToIndex((current + 1) % total);
+  }
+
+  // 터치 핸들러
+  function handleTouchStart(e: React.TouchEvent) {
+    touchStartX.current = e.touches[0].clientX;
+    touchEndX.current = null;
+  }
+
+  function handleTouchMove(e: React.TouchEvent) {
+    touchEndX.current = e.touches[0].clientX;
+  }
+
+  function handleTouchEnd() {
+    if (touchStartX.current === null || touchEndX.current === null) return;
+    const diff = touchStartX.current - touchEndX.current;
+    if (Math.abs(diff) >= SWIPE_THRESHOLD) {
+      diff > 0 ? goNext() : goPrev();
+    }
+    touchStartX.current = null;
+    touchEndX.current = null;
+  }
+
   const banner = banners[current] ?? null;
 
   return (
-    <section data-hero="dark" className="relative h-[55vh] min-h-[420px] md:h-[85vh] overflow-hidden bg-black">
-
+    <section
+      data-hero="dark"
+      className="relative h-[55vh] min-h-[420px] md:h-[85vh] overflow-hidden bg-black"
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+    >
       {/* 배너 이미지 레이어 (페이드 전환) */}
       {banners.map((b, i) => (
         <div
@@ -50,8 +88,6 @@ export default function HomeHero({ banners }: HomeHeroProps) {
           />
         </div>
       ))}
-
-      {/* 배너 없을 때 빈 다크 배경만 표시 */}
 
       {/* 그라디언트 오버레이 */}
       <div className="absolute inset-0 bg-gradient-to-b md:bg-gradient-to-r from-black/80 via-black/40 to-transparent" />
@@ -82,6 +118,26 @@ export default function HomeHero({ banners }: HomeHeroProps) {
           </div>
         </div>
       </div>
+
+      {/* 이전 / 다음 버튼 (배너 2개 이상 + 데스크탑에서만 표시) */}
+      {total > 1 && (
+        <>
+          <button
+            onClick={goPrev}
+            className="hidden md:flex absolute left-5 top-1/2 -translate-y-1/2 w-10 h-10 items-center justify-center rounded-full bg-white/10 hover:bg-white/25 backdrop-blur-sm border border-white/20 text-white transition-all"
+            aria-label="이전 배너"
+          >
+            <ChevronLeft className="w-5 h-5" />
+          </button>
+          <button
+            onClick={goNext}
+            className="hidden md:flex absolute right-5 top-1/2 -translate-y-1/2 w-10 h-10 items-center justify-center rounded-full bg-white/10 hover:bg-white/25 backdrop-blur-sm border border-white/20 text-white transition-all"
+            aria-label="다음 배너"
+          >
+            <ChevronRight className="w-5 h-5" />
+          </button>
+        </>
+      )}
 
       {/* 도트 인디케이터 (배너 2개 이상일 때만) */}
       {total > 1 && (

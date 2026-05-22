@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router';
-import { LayoutDashboard, Package, Users, ShoppingBag, Star, Image as ImageIcon, RotateCcw } from 'lucide-react';
+import { LayoutDashboard, Package, Users, ShoppingBag, Star, Image as ImageIcon, RotateCcw, Bell } from 'lucide-react';
 
 interface AdminLayoutProps {
   children: React.ReactNode;
@@ -16,6 +16,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
     { label: '반품/교환', path: '/admin/returns', icon: RotateCcw },
     { label: '리뷰', path: '/admin/reviews', icon: Star },
     { label: '배너', path: '/admin/banners', icon: ImageIcon },
+    { label: '공지사항', path: '/admin/notices', icon: Bell },
   ];
 
   return (
@@ -24,7 +25,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
       <aside className="w-[240px] bg-white border-r border-gray-200 flex-shrink-0 hidden md:flex flex-col fixed h-full">
         <div className="p-6">
           <Link to="/" className="block">
-            <div className="text-2xl font-bold tracking-tight">KoALa</div>
+            <div className="text-2xl font-bold tracking-tight">KOALA</div>
             <div className="text-xs text-gray-400 tracking-wide mt-1">ADMIN</div>
           </Link>
         </div>

@@ -11,20 +11,48 @@ import type { Cart, UserAddress } from '@/api/types';
 
 const TOSS_CLIENT_KEY = import.meta.env.VITE_TOSS_CLIENT_KEY as string;
 
-type PaymentMethodType = 'TOSS' | 'KAKAOPAY' | 'NAVERPAY' | 'CARD';
+type PaymentMethodType = 'TOSS' | 'TRANSFER';
+
+// ── 토스페이 공식 로고 ─────────────────────────────────────────────────────────
+function TossPayIcon({ size = 48 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect width="48" height="48" rx="12" fill="#0064FF" />
+      <text x="50%" y="54%" dominantBaseline="middle" textAnchor="middle"
+        fill="white" fontSize="22" fontWeight="800" fontFamily="'Pretendard','Apple SD Gothic Neo',sans-serif"
+        letterSpacing="-1">
+        toss
+      </text>
+    </svg>
+  );
+}
+
+// ── 계좌이체 아이콘 ────────────────────────────────────────────────────────────
+function BankTransferIcon({ size = 48 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect width="48" height="48" rx="12" fill="#F2F4F6" />
+      {/* 지붕 삼각형 */}
+      <path d="M24 10L38 19H10L24 10Z" fill="#4E5968" />
+      {/* 기둥들 */}
+      <rect x="13" y="21" width="4" height="12" rx="1" fill="#4E5968" />
+      <rect x="22" y="21" width="4" height="12" rx="1" fill="#4E5968" />
+      <rect x="31" y="21" width="4" height="12" rx="1" fill="#4E5968" />
+      {/* 바닥 */}
+      <rect x="10" y="34" width="28" height="3" rx="1.5" fill="#4E5968" />
+    </svg>
+  );
+}
 
 interface PaymentMethod {
   id: PaymentMethodType;
   nameKo: string;
-  icon: string;
   description: string;
 }
 
 const paymentMethods: PaymentMethod[] = [
-  { id: 'TOSS', nameKo: '토스페이', icon: '💙', description: '토스 앱 간편 결제' },
-  { id: 'KAKAOPAY', nameKo: '카카오페이', icon: '💛', description: '카카오톡 간편 결제' },
-  { id: 'NAVERPAY', nameKo: '네이버페이', icon: '💚', description: '네이버 포인트 적립' },
-  { id: 'CARD', nameKo: '신용/체크카드', icon: '💳', description: '일반 카드 결제' },
+  { id: 'TOSS',     nameKo: '토스페이', description: '토스 앱 간편 결제' },
+  { id: 'TRANSFER', nameKo: '계좌이체', description: '실시간 계좌이체' },
 ];
 
 export default function Checkout() {
@@ -219,18 +247,8 @@ export default function Checkout() {
       const customerKey = profile?.id ? `user_${profile.id}` : ANONYMOUS;
       const payment = tossPayments.payment({ customerKey });
 
-      // 간편결제사 코드 매핑 (SDK v2: method는 모두 'CARD', easyPay로 결제사 구분)
-      const EASY_PAY_CODE: Record<string, string> = {
-        TOSS:     'TOSSPAY',
-        KAKAOPAY: 'KAKAOPAY',
-        NAVERPAY: 'NAVERPAY',
-      };
-
-      const easyPayCode = EASY_PAY_CODE[selectedMethod];
-
-      await payment.requestPayment({
-        method: 'CARD',
-        amount: { currency: 'KRW', value: total },
+      const commonParams = {
+        amount: { currency: 'KRW' as const, value: total },
         orderId: order.orderNo,
         orderName,
         successUrl: `${window.location.origin}/payment/success`,
@@ -238,10 +256,22 @@ export default function Checkout() {
         customerEmail: form.ordererEmail || undefined,
         customerName: form.ordererName || undefined,
         customerMobilePhone: mobilePhone,
-        card: easyPayCode
-          ? { flowMode: 'DIRECT', easyPay: easyPayCode }
-          : { useEscrow: false, useCardPoint: false },
-      });
+      };
+
+      if (selectedMethod === 'TRANSFER') {
+        await payment.requestPayment({
+          method: 'TRANSFER',
+          ...commonParams,
+          transfer: { cashReceiptType: 'PERSONAL', customerIdentityNumber: mobilePhone },
+        });
+      } else {
+        // TOSS: 토스페이 간편결제
+        await payment.requestPayment({
+          method: 'CARD',
+          ...commonParams,
+          card: { flowMode: 'DIRECT', easyPay: 'TOSSPAY' },
+        });
+      }
     } catch (e: unknown) {
       const code = (e as { code?: string })?.code;
       if (code === 'USER_CANCEL') return;  // 사용자가 결제창을 직접 닫은 경우
@@ -455,7 +485,7 @@ export default function Checkout() {
                 <h2 className="text-xl font-medium flex items-center gap-2 mb-6">
                   <CreditCard className="w-5 h-5 text-gray-400" /> 결제 수단
                 </h2>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="grid grid-cols-2 gap-4">
                   {paymentMethods.map((method) => (
                     <button
                       key={method.id}
@@ -465,8 +495,8 @@ export default function Checkout() {
                           : 'border-gray-100 hover:border-gray-200 bg-white'
                         }`}
                     >
-                      <div className="text-3xl transition-transform group-hover:scale-110">
-                        {method.icon}
+                      <div className="transition-transform group-hover:scale-110">
+                        {method.id === 'TOSS' ? <TossPayIcon size={48} /> : <BankTransferIcon size={48} />}
                       </div>
                       <div className="flex flex-col items-center">
                         <span className="text-sm font-bold text-gray-900">{method.nameKo}</span>

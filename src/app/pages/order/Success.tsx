@@ -17,7 +17,7 @@ export default function CheckoutSuccess() {
       // state 없으면 주문 목록으로
       navigate('/account/orders');
     }
-  }, [location]);
+  }, [location, navigate]);
 
   if (!orderData) {
     return (
@@ -49,7 +49,7 @@ export default function CheckoutSuccess() {
               주문이 완료되었습니다!
             </h1>
             <p className="text-gray-400">
-              KoALa와 함께해주셔서 감사합니다. 소중한 작품을 곧 보내드릴게요.
+              KOALA와 함께해주셔서 감사합니다. 소중한 작품을 곧 보내드릴게요.
             </p>
           </div>
 

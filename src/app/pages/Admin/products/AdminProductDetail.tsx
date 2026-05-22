@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback, useRef, KeyboardEvent } from 'react';
 import { useParams, useNavigate } from 'react-router';
 import { ArrowLeft, Check, ImagePlus, Trash2, Star } from 'lucide-react';
 import {
@@ -114,10 +114,31 @@ const GENRES = [
   { value: 'OTHER',        label: '기타' },
 ];
 
+interface BadgeItem { text: string; type: string; }
+
+const BADGE_COLORS: Record<string, string> = {
+  green:   'bg-green-50 text-green-700 border-green-200',
+  amber:   'bg-amber-50 text-amber-600 border-amber-200',
+  blue:    'bg-blue-50 text-blue-600 border-blue-200',
+  default: 'bg-gray-50 text-gray-600 border-gray-200',
+};
+
+const PREDEFINED_BADGES: BadgeItem[] = [
+  { text: '진품 보증',     type: 'blue'  },
+  { text: '전세계 배송',   type: 'green' },
+  { text: '아티스트 사인', type: 'amber' },
+  { text: '케어 포함',     type: 'green' },
+];
+
 // ────────────────────────────────────────────────────────────
 // 기본 정보 탭
 // ────────────────────────────────────────────────────────────
 function InfoTab({ sku, onSaved }: { sku: any; onSaved: () => void }) {
+  const parsedBadges: BadgeItem[] = (() => {
+    try { return sku.badges ? JSON.parse(sku.badges) : []; }
+    catch { return []; }
+  })();
+
   const [form, setForm] = useState({
     name: sku.name ?? '',
     slug: sku.slug ?? '',
@@ -129,8 +150,7 @@ function InfoTab({ sku, onSaved }: { sku: any; onSaved: () => void }) {
     isLimitedEdition: sku.isLimitedEdition ?? false,
     editionSize: sku.editionSize ? String(sku.editionSize) : '',
     editionNumber: sku.editionNumber ? String(sku.editionNumber) : '',
-    hasAuthenticity: sku.hasAuthenticity ?? false,
-    hasWorldwideShipping: sku.hasWorldwideShipping ?? false,
+    badges: parsedBadges as BadgeItem[],
   });
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
@@ -140,6 +160,9 @@ function InfoTab({ sku, onSaved }: { sku: any; onSaved: () => void }) {
   const handleSave = async () => {
     if (!form.name.trim() || !form.slug.trim()) { setError('이름과 슬러그는 필수입니다.'); return; }
     if (!form.listPrice || isNaN(Number(form.listPrice))) { setError('정가를 올바르게 입력해 주세요.'); return; }
+    if (form.salePrice && Number(form.salePrice) > Number(form.listPrice)) {
+      setError('판매가는 정가보다 클 수 없습니다.'); return;
+    }
     setError('');
     setSaving(true);
     try {
@@ -155,8 +178,7 @@ function InfoTab({ sku, onSaved }: { sku: any; onSaved: () => void }) {
         isLimitedEdition: form.isLimitedEdition,
         editionSize: form.editionSize ? Number(form.editionSize) : undefined,
         editionNumber: form.editionNumber ? Number(form.editionNumber) : undefined,
-        hasAuthenticity: form.hasAuthenticity,
-        hasWorldwideShipping: form.hasWorldwideShipping,
+        badges: form.badges.length > 0 ? JSON.stringify(form.badges) : undefined,
       });
       setSuccess(true);
       setTimeout(() => setSuccess(false), 2000);
@@ -222,9 +244,9 @@ function InfoTab({ sku, onSaved }: { sku: any; onSaved: () => void }) {
             rows={5} className={`${inputCls} resize-none`} />
         </div>
 
-        {/* 뱃지 설정 */}
+        {/* 한정 에디션 */}
         <div className="border border-gray-100 rounded-lg p-4 space-y-3">
-          <p className="text-xs font-semibold text-gray-500">뱃지 설정</p>
+          <p className="text-xs font-semibold text-gray-500">한정 에디션</p>
           <label className="flex items-center gap-2 cursor-pointer">
             <input type="checkbox" checked={form.isLimitedEdition}
               onChange={(e) => setF({ isLimitedEdition: e.target.checked })} className="w-4 h-4" />
@@ -246,16 +268,14 @@ function InfoTab({ sku, onSaved }: { sku: any; onSaved: () => void }) {
               </div>
             </div>
           )}
-          <label className="flex items-center gap-2 cursor-pointer">
-            <input type="checkbox" checked={form.hasAuthenticity}
-              onChange={(e) => setF({ hasAuthenticity: e.target.checked })} className="w-4 h-4" />
-            <span className="text-sm">진품 보증</span>
-          </label>
-          <label className="flex items-center gap-2 cursor-pointer">
-            <input type="checkbox" checked={form.hasWorldwideShipping}
-              onChange={(e) => setF({ hasWorldwideShipping: e.target.checked })} className="w-4 h-4" />
-            <span className="text-sm">전세계 배송</span>
-          </label>
+        </div>
+
+        {/* 뱃지 */}
+        <div className="border border-gray-100 rounded-lg p-4">
+          <BadgeEditor
+            badges={form.badges}
+            onChange={(badges) => setF({ badges })}
+          />
         </div>
 
         {error && <p className="text-xs text-red-500">{error}</p>}
@@ -671,6 +691,106 @@ function StockStatusTab({
           </button>
         </div>
       </div>
+    </div>
+  );
+}
+
+// ────────────────────────────────────────────────────────────
+// 뱃지 에디터
+// ────────────────────────────────────────────────────────────
+function BadgeEditor({
+  badges,
+  onChange,
+}: {
+  badges: BadgeItem[];
+  onChange: (badges: BadgeItem[]) => void;
+}) {
+  const [customText, setCustomText] = useState('');
+
+  const togglePredefined = (badge: BadgeItem) => {
+    const exists = badges.some((b) => b.text === badge.text && b.type === badge.type);
+    if (exists) {
+      onChange(badges.filter((b) => !(b.text === badge.text && b.type === badge.type)));
+    } else {
+      onChange([...badges, badge]);
+    }
+  };
+
+  const addCustom = () => {
+    const text = customText.trim();
+    if (!text) return;
+    if (badges.some((b) => b.text === text)) return;
+    onChange([...badges, { text, type: 'default' }]);
+    setCustomText('');
+  };
+
+  const remove = (idx: number) => onChange(badges.filter((_, i) => i !== idx));
+
+  return (
+    <div className="space-y-2">
+      <p className="text-xs font-semibold text-gray-500">뱃지</p>
+
+      {/* 미리 정의된 뱃지 */}
+      <div className="flex flex-wrap gap-2">
+        {PREDEFINED_BADGES.map((badge) => {
+          const active = badges.some((b) => b.text === badge.text && b.type === badge.type);
+          return (
+            <button
+              key={badge.text}
+              type="button"
+              onClick={() => togglePredefined(badge)}
+              className={`px-3 py-1 rounded-full border text-xs font-medium transition-all ${
+                active
+                  ? BADGE_COLORS[badge.type] + ' ring-2 ring-offset-1 ring-current'
+                  : 'bg-white text-gray-400 border-gray-200 hover:border-gray-400'
+              }`}
+            >
+              {active ? '✓ ' : ''}{badge.text}
+            </button>
+          );
+        })}
+      </div>
+
+      {/* 커스텀 뱃지 입력 */}
+      <div className="flex gap-2">
+        <input
+          value={customText}
+          onChange={(e) => setCustomText(e.target.value)}
+          onKeyDown={(e: KeyboardEvent<HTMLInputElement>) => {
+            if (e.key === 'Enter') { e.preventDefault(); addCustom(); }
+          }}
+          className="flex-1 border border-gray-200 rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-black/10"
+          placeholder="직접 입력 후 Enter (회색 뱃지)"
+        />
+        <button
+          type="button"
+          onClick={addCustom}
+          className="px-3 py-1.5 text-xs bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200"
+        >
+          추가
+        </button>
+      </div>
+
+      {/* 현재 선택된 뱃지들 */}
+      {badges.length > 0 && (
+        <div className="flex flex-wrap gap-1.5 pt-1">
+          {badges.map((badge, idx) => (
+            <span
+              key={idx}
+              className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full border text-xs font-medium ${BADGE_COLORS[badge.type] ?? BADGE_COLORS.default}`}
+            >
+              {badge.text}
+              <button
+                type="button"
+                onClick={() => remove(idx)}
+                className="ml-0.5 hover:opacity-60 font-bold leading-none"
+              >
+                ×
+              </button>
+            </span>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
