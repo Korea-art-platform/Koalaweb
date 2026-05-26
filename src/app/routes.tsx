@@ -84,7 +84,9 @@ import AdminUserList from '@/app/pages/Admin/users/AdminUserList';
 import AdminReturnList from '@/app/pages/Admin/returns/AdminReturnList';
 import AdminReturnDetail from '@/app/pages/Admin/returns/AdminReturnDetail';
 import AdminNoticeList from '@/app/pages/Admin/notices/AdminNoticeList';
-
+import AdminInquiryList from '@/app/pages/Admin/inquiries/AdminInquiryList';
+import AdminInquiryDetail from '@/app/pages/Admin/inquiries/AdminInquiryDetail';
+import AccountInquiry from '@/app/pages/account/AccountInquiry';
 
 export function AppRoutes() {
   return (
@@ -157,6 +159,7 @@ export function AppRoutes() {
           <Route path="/account/addresses" element={<AccountAddresses />} />
           <Route path="/account/payment-methods" element={<AccountPaymentMethods />} />
           <Route path="/account/wishlist" element={<AccountWishlist />} />
+          <Route path="/account/inquiry" element={<AccountInquiry />} />
           <Route path="/account/settings" element={<AccountSettings />} />
         </Route>
 
@@ -180,6 +183,8 @@ export function AppRoutes() {
           <Route path="/admin/returns" element={<AdminReturnList />} />
           <Route path="/admin/returns/:returnNo" element={<AdminReturnDetail />} />
           <Route path="/admin/notices" element={<AdminNoticeList />} />
+          <Route path="/admin/inquiries" element={<AdminInquiryList />} />
+          <Route path="/admin/inquiries/:inquiryCode" element={<AdminInquiryDetail />} />
         </Route>
       </Route>
 

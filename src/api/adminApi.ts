@@ -515,3 +515,50 @@ export async function deleteNotice(noticeCode: string) {
   await adminInstance.delete(`${BASE}/notices/${noticeCode}`);
 }
 
+// ── Inquiries ─────────────────────────────────────────────────────────────────
+export interface AdminInquiryResponse {
+  id: number;
+  inquiryCode: string;
+  userId: number;
+  userName: string;
+  userEmail: string;
+  orderId?: number;
+  orderNo?: string;
+  category: string;
+  title: string;
+  content: string;
+  status: 'PENDING' | 'ANSWERED' | 'CLOSED';
+  isSecret: boolean;
+  answerContent?: string;
+  answeredByName?: string;
+  answeredAt?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export async function getAdminInquiries(page = 0, size = 20, status?: string) {
+  const res = await adminInstance.get(`${BASE}/inquiries`, {
+    params: { page, size, ...(status ? { status } : {}) },
+  });
+  return res.data.data as {
+    content: AdminInquiryResponse[];
+    totalPages: number;
+    totalElements: number;
+    page: number;
+  };
+}
+
+export async function getAdminInquiry(inquiryCode: string) {
+  const res = await adminInstance.get(`${BASE}/inquiries/${inquiryCode}`);
+  return res.data.data as AdminInquiryResponse;
+}
+
+export async function answerInquiry(inquiryCode: string, answerContent: string) {
+  const res = await adminInstance.post(`${BASE}/inquiries/${inquiryCode}/answer`, { answerContent });
+  return res.data.data as AdminInquiryResponse;
+}
+
+export async function closeInquiry(inquiryCode: string) {
+  await adminInstance.patch(`${BASE}/inquiries/${inquiryCode}/close`);
+}
+
