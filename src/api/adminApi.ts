@@ -219,6 +219,33 @@ export async function suspendUser(userId: number) {
 export async function activateUser(userId: number) {
   await adminInstance.patch(`${BASE}/users/${userId}/activate`);
 }
+// ── Dashboard ─────────────────────────────────────────────────────────────────
+export interface DashboardStats{
+  todayOrders: number;
+  weekOrders: number;
+  monthOrders: number;
+  totalOrders: number;
+  monthRevenue: number;
+  totalRevenue: number;
+  todaySignups: number;
+  totalUsers: number;
+  pendingOrders: number;
+  processingOrders: number;
+}
+export interface DailyRevenue{
+  date: string;
+  revenue: number;
+  orderCount: number;
+}
+export async function getDashboardStats() {
+  const res = await adminInstance.get<{ data: DashboardStats }>(`${BASE}/dashboard/stats`);
+  return res.data.data;
+}
+export async function getDailyRevenue() {
+  const res = await adminInstance.get<{ data: DailyRevenue[] }>(`${BASE}/dashboard/daily-revenue`);
+  return res.data.data;
+}
+
 
 // ── Banners ───────────────────────────────────────────────────────────────────
 export async function getAdminBanners() {
