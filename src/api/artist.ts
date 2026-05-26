@@ -14,3 +14,6 @@ export const followArtist = (artistCode: string) =>
 
 export const unfollowArtist = (artistCode: string) =>
     instance.delete(`/api/v1/artists/${artistCode}/follow`);
+
+export const getArtistFollowStatus = (artistCode: string) =>
+    instance.get<{data: boolean}>(`/api/v1/artists/${artistCode}/following`);

@@ -18,7 +18,7 @@ import { ArtQnA } from '@/app/components/ArtDetail';
 
 export default function ArtistDetail() {
   const { id } = useParams();
-  const { loading, artist, interviewVideo, interviewImage, studioImages, handsImages } = useArtistDetail(id);
+  const { loading, artist, interviewVideo, interviewImage, studioImages, handsImages, isFollowing } = useArtistDetail(id);
   const { skus } = useArtistSkus(artist?.artistCode);
 
   if (loading) return <ArtistDetailSkeleton />;
@@ -75,7 +75,7 @@ export default function ArtistDetail() {
           profileImageUrl={artist.profileImageUrl}
           artistCode={artist.artistCode}
           followCount={artist.followCount ?? 0}
-          isFollowing={artist.isFollowing ?? false}
+          isFollowing={isFollowing}
         />
 
         {artist.artistNote && (
