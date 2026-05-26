@@ -76,7 +76,8 @@
         "shipping": "배송 정보",
         "returns": "교환 및 반품",
         "contact": "1:1 문의하기",
-        "faq": "자주 묻는 질문"
+        "faq": "자주 묻는 질문",
+        "notice": "공지사항"
       }
     },
     "company": {

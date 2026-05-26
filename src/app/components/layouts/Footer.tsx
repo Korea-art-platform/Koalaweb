@@ -74,6 +74,7 @@ export default function Footer() {
                   { key: 'shipping', path: '/shipping' },
                   { key: 'returns', path: '/returns' },
                   { key: 'contact', path: '/contact' },
+                  { key: 'notice', path: '/notive'},
                   { key: 'faq', path: '/faq' }
                 ].map((link) => (
                   <li key={link.key}>
