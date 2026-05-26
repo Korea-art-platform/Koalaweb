@@ -87,6 +87,7 @@ import AdminNoticeList from '@/app/pages/Admin/notices/AdminNoticeList';
 import AdminInquiryList from '@/app/pages/Admin/inquiries/AdminInquiryList';
 import AdminInquiryDetail from '@/app/pages/Admin/inquiries/AdminInquiryDetail';
 import AccountInquiry from '@/app/pages/account/AccountInquiry';
+import AdminUserDetail from '@/app/pages/Admin/users/AdminUserDetail';
 
 export function AppRoutes() {
   return (
@@ -185,6 +186,7 @@ export function AppRoutes() {
           <Route path="/admin/notices" element={<AdminNoticeList />} />
           <Route path="/admin/inquiries" element={<AdminInquiryList />} />
           <Route path="/admin/inquiries/:inquiryCode" element={<AdminInquiryDetail />} />
+          <Route path="/admin/users/:userId" element={<AdminUserDetail />} />
         </Route>
       </Route>
 

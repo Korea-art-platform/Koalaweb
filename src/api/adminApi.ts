@@ -212,6 +212,16 @@ export async function getAdminUsers(page = 0, size = 20) {
   return res.data.data;
 }
 
+export async function getAdminUser(userId: number){
+  const res = await adminInstance.get(`${BASE}users/${userId}`);
+  return res.data.data;
+}
+
+export async function getAdminUserOrders(userId: number, page = 0, size = 10){
+  const res = await adminInstance.get(`${BASE}orders`, {params: {userId, page, size}});
+  return res.data.data;
+}
+
 export async function suspendUser(userId: number) {
   await adminInstance.patch(`${BASE}/users/${userId}/suspend`);
 }
@@ -219,6 +229,7 @@ export async function suspendUser(userId: number) {
 export async function activateUser(userId: number) {
   await adminInstance.patch(`${BASE}/users/${userId}/activate`);
 }
+
 // ── Dashboard ─────────────────────────────────────────────────────────────────
 export interface DashboardStats{
   todayOrders: number;

@@ -1,6 +1,7 @@
 ﻿import { useState, useEffect, useCallback } from 'react';
 import { getAdminUsers, suspendUser, activateUser } from '@/api/adminApi';
 import { UserCog } from 'lucide-react';
+import { Link } from 'react-router';
 
 const USER_STATUS_COLOR: Record<string, string> = {
   ACTIVE: 'bg-green-50 text-green-700',
@@ -71,7 +72,14 @@ export default function AdminUserList() {
               <tbody className="divide-y divide-gray-50">
                 {users.map((u: any) => (
                   <tr key={u.id} className="hover:bg-gray-50 transition-colors">
-                    <td className="px-5 py-4 font-medium text-gray-900">{u.name ?? '-'}</td>
+                    <td className="px-5 py-4 font-medium text-gray-900">
+                      <Link
+                        to={`/admin/users/${u.id}`}
+                        className="hover:text-blue-600 hover:underline transition-colors"
+                      >
+                        {u.name ?? '-'}
+                      </Link>
+                    </td>
                     <td className="px-5 py-4 text-gray-600 text-sm">{u.email}</td>
                     <td className="px-5 py-4">
                       <span className="text-xs text-gray-500">
