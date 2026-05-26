@@ -1,12 +1,14 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router';
+import { Helmet } from 'react-helmet-async';
 import Navigation from '@/app/components/layouts/Header';
-import { Bell, Pin, ChevronDown, ChevronUp } from 'lucide-react';
+import { Bell, Pin, ChevronRight } from 'lucide-react';
 import { getNotices, type NoticeItem } from '@/api/notice';
 
-export default function Notice() {
+export default function NoticeList() {
   const [notices, setNotices] = useState<NoticeItem[]>([]);
   const [loading, setLoading] = useState(true);
-  const [expanded, setExpanded] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     getNotices()
@@ -14,12 +16,15 @@ export default function Notice() {
       .finally(() => setLoading(false));
   }, []);
 
-  const toggle = (code: string) =>
-    setExpanded((prev) => (prev === code ? null : code));
-
   return (
     <div className="min-h-screen bg-[#FAFAFA]">
+      <Helmet>
+        <title>공지사항 — KOALA</title>
+        <meta name="description" content="KOALA 공지사항을 확인하세요." />
+      </Helmet>
+
       <Navigation />
+
       <div className="pt-32 pb-20 px-6 max-w-2xl mx-auto">
         <div className="mb-10">
           <p className="text-xs text-gray-400 tracking-widest uppercase mb-2">Notice</p>
@@ -38,30 +43,26 @@ export default function Notice() {
         ) : (
           <div className="divide-y divide-gray-100">
             {notices.map((n) => (
-              <div key={n.noticeCode} className="py-4">
-                <button
-                  onClick={() => toggle(n.noticeCode)}
-                  className="w-full flex items-center justify-between gap-3 text-left"
-                >
-                  <div className="flex items-center gap-2 min-w-0">
-                    {n.isPinned && <Pin className="w-3.5 h-3.5 text-orange-400 flex-shrink-0" />}
-                    <span className="font-medium text-gray-900 text-sm truncate">{n.title}</span>
-                  </div>
-                  <div className="flex items-center gap-3 flex-shrink-0">
-                    <span className="text-xs text-gray-400">
-                      {new Date(n.createdAt).toLocaleDateString('ko-KR')}
-                    </span>
-                    {expanded === n.noticeCode
-                      ? <ChevronUp className="w-4 h-4 text-gray-400" />
-                      : <ChevronDown className="w-4 h-4 text-gray-400" />}
-                  </div>
-                </button>
-                {expanded === n.noticeCode && (
-                  <div className="mt-3 text-sm text-gray-600 whitespace-pre-wrap leading-relaxed bg-gray-50 rounded-lg px-4 py-3">
-                    {n.content}
-                  </div>
-                )}
-              </div>
+              <button
+                key={n.noticeCode}
+                onClick={() => navigate(`/notice/${n.noticeCode}`)}
+                className="w-full py-4 flex items-center justify-between gap-3 text-left hover:bg-gray-50 transition-colors rounded-lg px-2 -mx-2"
+              >
+                <div className="flex items-center gap-2 min-w-0">
+                  {n.isPinned && (
+                    <Pin className="w-3.5 h-3.5 text-orange-400 flex-shrink-0" />
+                  )}
+                  <span className="font-medium text-gray-900 text-sm truncate">
+                    {n.title}
+                  </span>
+                </div>
+                <div className="flex items-center gap-3 flex-shrink-0">
+                  <span className="text-xs text-gray-400">
+                    {new Date(n.createdAt).toLocaleDateString('ko-KR')}
+                  </span>
+                  <ChevronRight className="w-4 h-4 text-gray-300" />
+                </div>
+              </button>
             ))}
           </div>
         )}

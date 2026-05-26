@@ -17,6 +17,7 @@ import Returns from "@/app/pages/support/Returns";
 
 // 공지사항
 import Notice from "@/app/pages/Notice";
+import NoticeDetail from "@/app/pages/NoticeDetail";
 
 // 404
 import NotFound from "@/app/pages/NotFound";
@@ -127,6 +128,7 @@ export function AppRoutes() {
 
       {/* 공지사항 */}
       <Route path="/notice" element={<Notice />} />
+      <Route path="/notice/:noticeCode" element={<NoticeDetail />} />
 
       {/* 고객 지원 */}
       <Route path="/faq" element={<FAQ />} />
