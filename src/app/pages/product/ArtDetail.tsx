@@ -9,11 +9,24 @@ import { ProductSkeleton, ProductNotFound } from '@/app/components/products';
 import {
   ArtDetailHeader,
   ArtImages,
+  ArtMaterial,
+  ArtPackaging,
   ArtArtist,
   ArtInfo,
   ArtQnA,
 } from '@/app/components/ArtDetail';
 import { ShareButton } from '@/app/components/common/ShareButton';
+
+const GENRE_LABELS: Record<string, string> = {
+  ART_TOY:      '아트 토이',
+  SCULPTURE:    '조각',
+  PAINTING:     '페인팅',
+  PRINT:        '판화 / 프린트',
+  PHOTOGRAPH:   '사진',
+  INSTALLATION: '설치 미술',
+  TEXTILE:      '섬유 / 직물',
+  OTHER:        '기타',
+};
 
 export default function ArtDetail() {
   const { id } = useParams();
@@ -49,14 +62,28 @@ export default function ArtDetail() {
   if (!sku) return <ProductNotFound />;
 
   // 대표 이미지(MAIN) — 썸네일·공유 등에 사용
-  const mainImage  = sku.mediaList?.find((m) => m.mediaRole === 'MAIN')?.fileUrl ?? sku.primaryImageUrl;
-  // 상세 이미지(DETAIL) — '작품 - 상세' 섹션에 별도 표시
-  const detailImgs = sku.mediaList?.filter((m) => m.mediaRole === 'DETAIL').map((m) => m.fileUrl) ?? [];
+  const mainImage = sku.mediaList?.find((m) => m.mediaRole === 'MAIN')?.fileUrl ?? sku.primaryImageUrl;
+
+  // 작품 상세 이미지(DETAIL)
+  const detailImgs = sku.mediaList
+    ?.filter((m) => m.mediaRole === 'DETAIL')
+    .map((m) => m.fileUrl) ?? [];
+
+  // 재질 이미지(MATERIAL)
+  const materialImgs = sku.mediaList
+    ?.filter((m) => m.mediaRole === 'MATERIAL')
+    .map((m) => m.fileUrl) ?? [];
+
+  // 포장 이미지(PACKAGING)
+  const packagingImgs = sku.mediaList
+    ?.filter((m) => m.mediaRole === 'PACKAGING')
+    .map((m) => m.fileUrl) ?? [];
 
   const artInfoItems = [
-    { label: '소재', value: sku.genre ?? '-' },
-    { label: '크기', value: (sku as any).widthCm ? `${(sku as any).widthCm}cm × ${(sku as any).heightCm}cm` : '-' },
-    { label: '무게', value: (sku as any).weightKg ? `${(sku as any).weightKg}kg` : '-' },
+    { label: '아트 종류', value: GENRE_LABELS[sku.genre] ?? sku.genre ?? '-' },
+    { label: '소재',     value: sku.material || '-' },
+    { label: '크기',     value: sku.widthCm ? `${sku.widthCm}cm × ${sku.heightCm}cm` : '-' },
+    { label: '무게',     value: sku.weightKg ? `${sku.weightKg}kg` : '-' },
     { label: '배달비용', value: '-' },
   ];
 
@@ -81,19 +108,42 @@ export default function ArtDetail() {
           />
         </div>
 
+        {/* 1. 작품 헤더 */}
         <ArtDetailHeader
           breadcrumb="작품 소개"
           worldViewTitle={sku.name}
           worldViewDesc={sku.description ?? ''}
         />
+
+        {/* 2. 작품 상세 이미지 */}
         <ArtImages images={detailImgs} title={sku.name} />
+
+        {/* 3. 재질 / 소재 사진 + 설명 */}
+        <ArtMaterial
+          images={materialImgs}
+          description={sku.materialDescription}
+          title={sku.name}
+        />
+
+        {/* 4. 포장 사진 */}
+        <ArtPackaging
+          images={packagingImgs}
+          packagingTitle={sku.packagingTitle}
+          title={sku.name}
+        />
+
+        {/* 5. 아티스트 */}
         <ArtArtist
           artistCode={(sku as any).artistCode}
           artistName={sku.artistName}
           artistDescription={artist?.bio}
           artistImageUrl={artist?.profileImageUrl}
         />
+
+        {/* 6. 작품 스펙 테이블 */}
         <ArtInfo items={artInfoItems} />
+
+        {/* 7. Q&A */}
         <ArtQnA />
       </main>
     </div>

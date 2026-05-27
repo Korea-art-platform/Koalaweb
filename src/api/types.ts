@@ -70,6 +70,7 @@ export type SkuStatus = 'ACTIVE' | 'OUT_OF_STOCK' | 'COMING_SOON';
 export interface SkuMedia {
   fileUrl: string;
   mediaType: 'VIDEO' | 'IMAGE';
+  mediaRole?: string; // MAIN | DETAIL | MATERIAL | PACKAGING | GALLERY | SPINE_360
 }
 
 export interface Sku {
@@ -92,6 +93,9 @@ export interface Sku {
   heightCm?: number;
   depthCm?: number;
   weightKg?: number;
+  material?: string;
+  materialDescription?: string;
+  packagingTitle?: string;
   spinePicturesJson?: string[];
 }
 

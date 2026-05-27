@@ -145,6 +145,9 @@ function InfoTab({ sku, onSaved }: { sku: any; onSaved: () => void }) {
     description: sku.description ?? '',
     skuType: sku.skuType ?? 'ARTWORK',
     genre: sku.genre ?? 'ART_TOY',
+    material: sku.material ?? '',
+    materialDescription: sku.materialDescription ?? '',
+    packagingTitle: sku.packagingTitle ?? '',
     listPrice: String(sku.listPrice ?? ''),
     salePrice: sku.salePrice ? String(sku.salePrice) : '',
     isLimitedEdition: sku.isLimitedEdition ?? false,
@@ -172,6 +175,9 @@ function InfoTab({ sku, onSaved }: { sku: any; onSaved: () => void }) {
         description: form.description.trim() || undefined,
         skuType: form.skuType,
         genre: form.genre,
+        material: form.material.trim() || undefined,
+        materialDescription: form.materialDescription.trim() || undefined,
+        packagingTitle: form.packagingTitle.trim() || undefined,
         listPrice: Number(form.listPrice),
         salePrice: form.salePrice ? Number(form.salePrice) : undefined,
         primaryImageUrl: sku.primaryImageUrl,
@@ -224,6 +230,40 @@ function InfoTab({ sku, onSaved }: { sku: any; onSaved: () => void }) {
               ))}
             </select>
           </div>
+        </div>
+
+        {/* 재질/소재 */}
+        <div>
+          <label className="block text-xs text-gray-500 mb-1.5">재질 / 소재</label>
+          <input
+            value={form.material}
+            onChange={(e) => setF({ material: e.target.value })}
+            className={inputCls}
+            placeholder="예: 레진, 아크릴 / 캔버스에 유화 / 브론즈"
+          />
+        </div>
+
+        {/* 재질 상세 설명 */}
+        <div>
+          <label className="block text-xs text-gray-500 mb-1.5">재질 상세 설명</label>
+          <textarea
+            value={form.materialDescription}
+            onChange={(e) => setF({ materialDescription: e.target.value })}
+            rows={3}
+            className={`${inputCls} resize-none`}
+            placeholder="재질/소재 섹션에 표시될 상세 설명을 입력하세요"
+          />
+        </div>
+
+        {/* 포장 섹션 제목 */}
+        <div>
+          <label className="block text-xs text-gray-500 mb-1.5">포장 섹션 제목</label>
+          <input
+            value={form.packagingTitle}
+            onChange={(e) => setF({ packagingTitle: e.target.value })}
+            className={inputCls}
+            placeholder="예: 안전하게 포장하여 배송됩니다"
+          />
         </div>
 
         <div className="grid grid-cols-2 gap-3">
@@ -307,9 +347,11 @@ function ImagesTab({ skuCode, onChanged }: { skuCode: string; onChanged: () => v
   const [deleting, setDeleting] = useState<number | null>(null);
   const [replaceTarget, setReplaceTarget] = useState<{ id: number; role: string } | null>(null);
 
-  const mainInputRef   = useRef<HTMLInputElement>(null);
-  const detailInputRef = useRef<HTMLInputElement>(null);
-  const replaceInputRef = useRef<HTMLInputElement>(null);
+  const mainInputRef      = useRef<HTMLInputElement>(null);
+  const detailInputRef    = useRef<HTMLInputElement>(null);
+  const materialInputRef  = useRef<HTMLInputElement>(null);
+  const packagingInputRef = useRef<HTMLInputElement>(null);
+  const replaceInputRef   = useRef<HTMLInputElement>(null);
 
   const reload = useCallback(async () => {
     setLoading(true);
@@ -319,17 +361,25 @@ function ImagesTab({ skuCode, onChanged }: { skuCode: string; onChanged: () => v
 
   useEffect(() => { reload(); }, [reload]);
 
-  const mainImage    = mediaList.find((m) => m.mediaRole === 'MAIN') ?? null;
-  const detailImages = mediaList.filter((m) => m.mediaRole === 'DETAIL');
+  const mainImage       = mediaList.find((m) => m.mediaRole === 'MAIN') ?? null;
+  const detailImages    = mediaList.filter((m) => m.mediaRole === 'DETAIL');
+  const materialImages  = mediaList.filter((m) => m.mediaRole === 'MATERIAL');
+  const packagingImages = mediaList.filter((m) => m.mediaRole === 'PACKAGING');
 
   const handleUpload = async (file: File, role: string, replaceId?: number) => {
     setUploading(role);
+    const sortOrderMap: Record<string, number> = {
+      MAIN:      0,
+      DETAIL:    detailImages.length,
+      MATERIAL:  materialImages.length,
+      PACKAGING: packagingImages.length,
+    };
     try {
       await addSkuMedia(skuCode, file, {
         mediaType: 'IMAGE',
         mediaRole: role,
         isPrimary: role === 'MAIN',
-        sortOrder: role === 'MAIN' ? 0 : detailImages.length,
+        sortOrder: sortOrderMap[role] ?? 0,
       });
       if (replaceId !== undefined) await deleteSkuMedia(skuCode, replaceId);
       await reload();
@@ -339,9 +389,11 @@ function ImagesTab({ skuCode, onChanged }: { skuCode: string; onChanged: () => v
     } finally {
       setUploading(null);
       setReplaceTarget(null);
-      if (mainInputRef.current)    mainInputRef.current.value    = '';
-      if (detailInputRef.current)  detailInputRef.current.value  = '';
-      if (replaceInputRef.current) replaceInputRef.current.value = '';
+      if (mainInputRef.current)      mainInputRef.current.value      = '';
+      if (detailInputRef.current)    detailInputRef.current.value    = '';
+      if (materialInputRef.current)  materialInputRef.current.value  = '';
+      if (packagingInputRef.current) packagingInputRef.current.value = '';
+      if (replaceInputRef.current)   replaceInputRef.current.value   = '';
     }
   };
 
@@ -456,12 +508,44 @@ function ImagesTab({ skuCode, onChanged }: { skuCode: string; onChanged: () => v
         )}
       </div>
 
+      {/* ── 재질 이미지 (MATERIAL) ── */}
+      <div>
+        <SectionLabel badge="재질" desc="재질/소재 섹션에 표시되는 사진 (기본정보 탭의 재질 상세 설명과 함께 노출)" />
+        <GridImageSlots
+          images={materialImages}
+          role="MATERIAL"
+          uploading={uploading}
+          deleting={deleting}
+          onClickEmpty={() => materialInputRef.current?.click()}
+          onReplace={(id) => triggerReplace(id, 'MATERIAL')}
+          onDelete={handleDelete}
+        />
+      </div>
+
+      {/* ── 포장 이미지 (PACKAGING) ── */}
+      <div>
+        <SectionLabel badge="포장" desc="포장 섹션에 표시되는 사진 (기본정보 탭의 포장 섹션 제목과 함께 노출)" />
+        <GridImageSlots
+          images={packagingImages}
+          role="PACKAGING"
+          uploading={uploading}
+          deleting={deleting}
+          onClickEmpty={() => packagingInputRef.current?.click()}
+          onReplace={(id) => triggerReplace(id, 'PACKAGING')}
+          onDelete={handleDelete}
+        />
+      </div>
+
       {/* 히든 파일 인풋들 */}
-      <input ref={mainInputRef}    type="file" accept="image/*" className="hidden"
+      <input ref={mainInputRef}      type="file" accept="image/*" className="hidden"
         onChange={(e) => e.target.files?.[0] && handleUpload(e.target.files[0], 'MAIN')} />
-      <input ref={detailInputRef}  type="file" accept="image/*" className="hidden"
+      <input ref={detailInputRef}    type="file" accept="image/*" className="hidden"
         onChange={(e) => e.target.files?.[0] && handleUpload(e.target.files[0], 'DETAIL')} />
-      <input ref={replaceInputRef} type="file" accept="image/*" className="hidden"
+      <input ref={materialInputRef}  type="file" accept="image/*" className="hidden"
+        onChange={(e) => e.target.files?.[0] && handleUpload(e.target.files[0], 'MATERIAL')} />
+      <input ref={packagingInputRef} type="file" accept="image/*" className="hidden"
+        onChange={(e) => e.target.files?.[0] && handleUpload(e.target.files[0], 'PACKAGING')} />
+      <input ref={replaceInputRef}   type="file" accept="image/*" className="hidden"
         onChange={(e) => {
           if (e.target.files?.[0] && replaceTarget)
             handleUpload(e.target.files[0], replaceTarget.role, replaceTarget.id);
@@ -565,6 +649,54 @@ function VisualSlot({
           </button>
         )}
       </div>
+    </div>
+  );
+}
+
+// ────────────────────────────────────────────────────────────
+// 그리드 이미지 슬롯 모음 (MATERIAL / PACKAGING 등 2열 그리드)
+// ────────────────────────────────────────────────────────────
+function GridImageSlots({
+  images,
+  role,
+  uploading,
+  deleting,
+  onClickEmpty,
+  onReplace,
+  onDelete,
+}: {
+  images: SkuMediaItem[];
+  role: string;
+  uploading: string | null;
+  deleting: number | null;
+  onClickEmpty: () => void;
+  onReplace: (id: number) => void;
+  onDelete: (id: number) => void;
+}) {
+  return (
+    <div className="grid grid-cols-2 gap-2">
+      {images.map((img, idx) => (
+        <VisualSlot
+          key={img.id}
+          image={img}
+          aspectClass="aspect-square"
+          emptyLabel={`${role} 이미지 ${idx + 1}`}
+          uploading={uploading === role}
+          deleting={deleting === img.id}
+          onReplace={() => onReplace(img.id)}
+          onDelete={() => onDelete(img.id)}
+          index={idx + 1}
+        />
+      ))}
+      {/* 추가 슬롯 */}
+      <VisualSlot
+        image={null}
+        aspectClass="aspect-square"
+        emptyLabel={`이미지 ${images.length + 1} 추가`}
+        uploading={uploading === role}
+        deleting={false}
+        onClickEmpty={onClickEmpty}
+      />
     </div>
   );
 }
