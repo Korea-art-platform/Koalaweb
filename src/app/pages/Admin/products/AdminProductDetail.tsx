@@ -148,6 +148,7 @@ function InfoTab({ sku, onSaved }: { sku: any; onSaved: () => void }) {
     material: sku.material ?? '',
     materialDescription: sku.materialDescription ?? '',
     packagingTitle: sku.packagingTitle ?? '',
+    packagingDescription: sku.packagingDescription ?? '',
     listPrice: String(sku.listPrice ?? ''),
     salePrice: sku.salePrice ? String(sku.salePrice) : '',
     isLimitedEdition: sku.isLimitedEdition ?? false,
@@ -178,6 +179,7 @@ function InfoTab({ sku, onSaved }: { sku: any; onSaved: () => void }) {
         material: form.material.trim() || undefined,
         materialDescription: form.materialDescription.trim() || undefined,
         packagingTitle: form.packagingTitle.trim() || undefined,
+        packagingDescription: form.packagingDescription.trim() || undefined,
         listPrice: Number(form.listPrice),
         salePrice: form.salePrice ? Number(form.salePrice) : undefined,
         primaryImageUrl: sku.primaryImageUrl,
@@ -255,15 +257,26 @@ function InfoTab({ sku, onSaved }: { sku: any; onSaved: () => void }) {
           />
         </div>
 
-        {/* 포장 섹션 제목 */}
-        <div>
-          <label className="block text-xs text-gray-500 mb-1.5">포장 섹션 제목</label>
-          <input
-            value={form.packagingTitle}
-            onChange={(e) => setF({ packagingTitle: e.target.value })}
-            className={inputCls}
-            placeholder="예: 안전하게 포장하여 배송됩니다"
-          />
+        {/* 포장 섹션 제목 + 설명 */}
+        <div className="grid grid-cols-2 gap-3">
+          <div>
+            <label className="block text-xs text-gray-500 mb-1.5">포장 섹션 제목</label>
+            <input
+              value={form.packagingTitle}
+              onChange={(e) => setF({ packagingTitle: e.target.value })}
+              className={inputCls}
+              placeholder="예: 안전하게 포장하여 배송됩니다"
+            />
+          </div>
+          <div>
+            <label className="block text-xs text-gray-500 mb-1.5">포장 섹션 설명</label>
+            <input
+              value={form.packagingDescription}
+              onChange={(e) => setF({ packagingDescription: e.target.value })}
+              className={inputCls}
+              placeholder="예: 특수 에어캡으로 안전 포장"
+            />
+          </div>
         </div>
 
         <div className="grid grid-cols-2 gap-3">

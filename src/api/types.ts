@@ -96,6 +96,7 @@ export interface Sku {
   material?: string;
   materialDescription?: string;
   packagingTitle?: string;
+  packagingDescription?: string;
   spinePicturesJson?: string[];
 }
 

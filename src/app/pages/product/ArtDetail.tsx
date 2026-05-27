@@ -129,6 +129,7 @@ export default function ArtDetail() {
         <ArtPackaging
           images={packagingImgs}
           packagingTitle={sku.packagingTitle}
+          packagingDescription={sku.packagingDescription}
           title={sku.name}
         />
 

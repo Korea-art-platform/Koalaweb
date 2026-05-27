@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useMemo, useState, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router';
 import { Helmet } from 'react-helmet-async';
 import { ArrowLeft } from 'lucide-react';
@@ -23,7 +23,7 @@ import {
 } from '@/app/components/products';
 
 import ProductDetailPage from '@/app/components/products/ProductDetailPage';
-import { ArtImages, ArtArtist, ArtInfo, ArtQnA } from '@/app/components/ArtDetail';
+import { ArtImages, ArtMaterial, ArtPackaging, ArtArtist, ArtInfo, ArtQnA } from '@/app/components/ArtDetail';
 import TrendingArtists from '@/app/components/Artist/TrendingArtists';
 
 export default function ProductDetail() {
@@ -148,19 +148,46 @@ export default function ProductDetail() {
     }
   }, [isAuthenticated, sku?.skuCode]);
 
-  if (loading) return <ProductSkeleton />;
-  if (!sku) return <ProductNotFound />;
-
   // 갤러리: 전체 미디어 최대 5장 (MAIN + DETAIL 합산)
-  const images =
-    sku.mediaList && sku.mediaList.length > 0
-      ? sku.mediaList.map((m) => m.fileUrl).slice(0, 5)
-      : [sku.primaryImageUrl ?? 'https://via.placeholder.com/400'];
+  const images = useMemo(
+    () => {
+      if (!sku) return [];
+      return sku.mediaList && sku.mediaList.length > 0
+        ? sku.mediaList.map((m) => m.fileUrl).slice(0, 5)
+        : [sku.primaryImageUrl ?? 'https://via.placeholder.com/400'];
+    },
+    [sku],
+  );
 
   // '작품 - 상세' 섹션: DETAIL 롤 이미지만 (제한 없음)
-  const detailImgs = (sku.mediaList ?? [])
-    .filter((m) => m.mediaRole === 'DETAIL')
-    .map((m) => m.fileUrl);
+  const detailImgs = useMemo(
+    () =>
+      (sku?.mediaList ?? [])
+        .filter((m) => m.mediaRole === 'DETAIL')
+        .map((m) => m.fileUrl),
+    [sku?.mediaList],
+  );
+
+  // 재질/소재 이미지(MATERIAL)
+  const materialImgs = useMemo(
+    () =>
+      (sku?.mediaList ?? [])
+        .filter((m) => m.mediaRole === 'MATERIAL')
+        .map((m) => m.fileUrl),
+    [sku?.mediaList],
+  );
+
+  // 포장 이미지(PACKAGING)
+  const packagingImgs = useMemo(
+    () =>
+      (sku?.mediaList ?? [])
+        .filter((m) => m.mediaRole === 'PACKAGING')
+        .map((m) => m.fileUrl),
+    [sku?.mediaList],
+  );
+
+  if (loading) return <ProductSkeleton />;
+  if (!sku) return <ProductNotFound />;
 
   const pageDescription = sku.description
     ? sku.description.slice(0, 155) + (sku.description.length > 155 ? '…' : '')
@@ -247,10 +274,21 @@ export default function ProductDetail() {
               images={detailImgs}
               title={sku.name}
             />
+            <ArtMaterial
+              images={materialImgs}
+              description={sku.materialDescription}
+              title={sku.name}
+            />
+            <ArtPackaging
+              images={packagingImgs}
+              packagingTitle={sku.packagingTitle}
+              packagingDescription={sku.packagingDescription}
+              title={sku.name}
+            />
             <ArtArtist
               artistCode={(sku as any).artistCode}
               artistName={sku.artistName}
-              artistDescription={artist?.bio}
+              artistDescription={artist?.description}
               artistImageUrl={artist?.profileImageUrl}
             />
             <ArtInfo
