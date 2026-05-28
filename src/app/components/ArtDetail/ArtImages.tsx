@@ -19,7 +19,7 @@ export function ArtImages({ images, title = '작품' }: ArtImagesProps) {
   return (
     <>
       <section className="mb-16">
-        <p className="text-xs text-gray-400 tracking-widest uppercase mb-4">작품 - 상세</p>
+        <h2 className="text-xl font-bold text-gray-400 mb-5">작품 - 상세</h2>
 
         {/* 1장: 전체 너비 정사각 */}
         {images.length === 1 && (
