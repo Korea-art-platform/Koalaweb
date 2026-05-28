@@ -47,7 +47,7 @@ function skuToArtwork(sku: Sku, idx: number): Artwork {
     medium: sku.genre ?? '현대미술',
     kind: (sku.genre ?? 'ART').toUpperCase(),
     desc: sku.description ?? '',
-    price: (sku as any).price ?? 0,
+    price: sku.salePrice ?? sku.listPrice ?? 0,
     palette: PALETTES[idx % PALETTES.length],
     motif: MOTIFS[idx % MOTIFS.length],
     imageUrl: sku.primaryImageUrl,

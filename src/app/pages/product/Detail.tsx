@@ -293,7 +293,7 @@ export default function ProductDetail() {
             />
             <ArtInfo
               items={[
-                { label: '소재', value: sku.genre ?? '-' },
+                { label: '소재', value: sku.material ?? '-' },
                 { label: '크기', value: (sku as any).widthCm ? `${(sku as any).widthCm}cm × ${(sku as any).heightCm}cm` : '-' },
                 { label: '무게', value: (sku as any).weightKg ? `${(sku as any).weightKg}kg` : '-' },
                 { label: '배달비용', value: '-' },

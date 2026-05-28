@@ -137,7 +137,7 @@ export default function ArtDetail() {
         <ArtArtist
           artistCode={(sku as any).artistCode}
           artistName={sku.artistName}
-          artistDescription={artist?.bio}
+          artistDescription={artist?.description}
           artistImageUrl={artist?.profileImageUrl}
         />
 
