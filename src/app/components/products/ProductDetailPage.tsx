@@ -5,7 +5,7 @@ interface Props {
   skuCode: string;
 }
 
-export default function ProductDetailPag({ skuCode}: Props){
+export default function ProductDetailPage({ skuCode }: Props) {
     const [detailImage, setDetailImage] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
 
@@ -31,9 +31,9 @@ export default function ProductDetailPag({ skuCode}: Props){
     return(
         <div className="w-full">
             <img
-             src = {detailImage}
-             alt = "상품 상세 설명"
-             className= "w-full object-contail"/>
+             src={detailImage}
+             alt="상품 상세 설명"
+             className="w-full object-contain" />
         </div>
     )
 
