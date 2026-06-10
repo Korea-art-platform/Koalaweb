@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { Image as ImageIcon, Upload, X, RefreshCw } from 'lucide-react';
 import {
-  getAdminBanners, createBanner, activateBanner, deactivateBanner, deleteBanner,
+  getAdminBanners, createBanner, updateBanner, activateBanner, deactivateBanner, deleteBanner,
   uploadBannerImage, updateBannerImage,
   type BannerResponse,
 } from '@/api/adminApi';
@@ -55,6 +55,12 @@ export default function AdminBannerList() {
   const [replacePreview, setReplacePreview] = useState('');
   const [replacing, setReplacing] = useState(false);
   const replaceInputRef = useRef<HTMLInputElement>(null);
+
+  // 정보 수정 모달
+  const [editTarget, setEditTarget] = useState<BannerResponse | null>(null);
+  const [editForm, setEditForm] = useState({ title: '', subtitle: '', linkUrl: '', sortOrder: '0' });
+  const [editSubmitting, setEditSubmitting] = useState(false);
+  const [editError, setEditError] = useState('');
 
   const load = useCallback(() => {
     setLoading(true);
@@ -137,6 +143,50 @@ export default function AdminBannerList() {
     if (!window.confirm('"' + b.title + '" 배너를 삭제하시겠습니까?')) return;
     await deleteBanner(b.bannerCode);
     load();
+  };
+
+  // 배너 정보 수정 (이미지는 별도 교체 모달 사용)
+  const openEdit = (b: BannerResponse) => {
+    setEditTarget(b);
+    setEditForm({
+      title: b.title ?? '',
+      subtitle: b.subtitle ?? '',
+      linkUrl: b.linkUrl ?? '',
+      sortOrder: String(b.sortOrder ?? 0),
+    });
+    setEditError('');
+  };
+
+  const handleUpdate = async () => {
+    if (!editTarget) return;
+    if (!editForm.title.trim()) {
+      setEditError('제목은 필수 항목입니다.');
+      return;
+    }
+    setEditError('');
+    setEditSubmitting(true);
+    try {
+      // imageUrl은 @NotBlank 필수 — 기존 값을 그대로 보내고, 나머지 미편집 필드도 보존
+      await updateBanner(editTarget.bannerCode, {
+        title: editForm.title.trim(),
+        subtitle: editForm.subtitle.trim() || null,
+        imageUrl: editTarget.imageUrl,
+        mobileImageUrl: editTarget.mobileImageUrl ?? null,
+        linkUrl: editForm.linkUrl.trim() || null,
+        linkTarget: editTarget.linkTarget ?? null,
+        bgColor: editTarget.bgColor ?? null,
+        textColor: editTarget.textColor ?? null,
+        sortOrder: Number(editForm.sortOrder) || 0,
+        visibleFrom: editTarget.visibleFrom ?? null,
+        visibleTo: editTarget.visibleTo ?? null,
+      });
+      setEditTarget(null);
+      load();
+    } catch {
+      setEditError('배너 수정에 실패했습니다.');
+    } finally {
+      setEditSubmitting(false);
+    }
   };
 
   // 이미지 교체
@@ -223,6 +273,12 @@ export default function AdminBannerList() {
                     ${b.isActive ? 'bg-green-50 text-green-700 hover:bg-green-100' : 'bg-gray-100 text-gray-500 hover:bg-gray-200'}`}
                 >
                   {b.isActive ? '공개중' : '비공개'}
+                </button>
+                <button
+                  onClick={() => openEdit(b)}
+                  className="px-3 py-1.5 text-xs rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors font-medium"
+                >
+                  수정
                 </button>
                 <button onClick={() => handleDelete(b)} className="text-xs text-red-400 hover:text-red-600 font-medium">삭제</button>
               </div>
@@ -369,6 +425,82 @@ export default function AdminBannerList() {
                 className="flex-1 py-2.5 text-sm bg-black text-white rounded-lg hover:bg-gray-800 disabled:opacity-50"
               >
                 {uploading ? '업로드 중...' : submitting ? '생성 중...' : '생성'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── 배너 정보 수정 모달 ── */}
+      {editTarget && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl p-6 w-full max-w-sm shadow-xl max-h-[90vh] overflow-y-auto">
+            <h2 className="font-semibold text-gray-900 mb-1">배너 수정</h2>
+            <p className="text-xs text-gray-400 mb-4">
+              <span className="font-medium text-gray-500">{editTarget.bannerType}</span> · 이미지는 목록에서 썸네일을 클릭해 교체하세요.
+            </p>
+            <div className="space-y-3">
+              {/* 제목 */}
+              <div>
+                <label className="block text-xs text-gray-500 mb-1.5">제목 *</label>
+                <input
+                  value={editForm.title}
+                  onChange={(e) => setEditForm((f) => ({ ...f, title: e.target.value }))}
+                  className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-black/10"
+                  placeholder="배너 제목"
+                />
+              </div>
+
+              {/* 부제목 */}
+              <div>
+                <label className="block text-xs text-gray-500 mb-1.5">부제목 (선택)</label>
+                <input
+                  value={editForm.subtitle}
+                  onChange={(e) => setEditForm((f) => ({ ...f, subtitle: e.target.value }))}
+                  className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-black/10"
+                  placeholder="부제목"
+                />
+              </div>
+
+              {/* 링크 URL */}
+              <div>
+                <label className="block text-xs text-gray-500 mb-1.5">링크 URL (선택)</label>
+                <input
+                  value={editForm.linkUrl}
+                  onChange={(e) => setEditForm((f) => ({ ...f, linkUrl: e.target.value }))}
+                  className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-black/10"
+                  placeholder="/store 또는 https://..."
+                />
+              </div>
+
+              {/* 표시 순서 */}
+              <div>
+                <label className="block text-xs text-gray-500 mb-1.5">표시 순서</label>
+                <input
+                  type="number"
+                  value={editForm.sortOrder}
+                  onChange={(e) => setEditForm((f) => ({ ...f, sortOrder: e.target.value }))}
+                  className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-black/10"
+                  placeholder="0"
+                />
+              </div>
+            </div>
+
+            {editError && <p className="text-xs text-red-500 mt-3">{editError}</p>}
+
+            <div className="flex gap-2 mt-5">
+              <button
+                onClick={() => { setEditTarget(null); setEditError(''); }}
+                className="flex-1 py-2.5 text-sm border border-gray-200 rounded-lg hover:bg-gray-50"
+              >
+                취소
+              </button>
+              <button
+                onClick={handleUpdate}
+                disabled={editSubmitting}
+                className="flex-1 py-2.5 text-sm bg-black text-white rounded-lg hover:bg-gray-800 disabled:opacity-50"
+              >
+                {editSubmitting ? '저장 중...' : '저장'}
               </button>
             </div>
           </div>
