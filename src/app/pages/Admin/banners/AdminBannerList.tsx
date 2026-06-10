@@ -21,6 +21,8 @@ interface BannerForm {
   bannerType: string;
   title: string;
   subtitle: string;
+  badge: string;
+  description: string;
   linkUrl: string;
   sortOrder: string;
 }
@@ -29,6 +31,8 @@ const DEFAULT_FORM: BannerForm = {
   bannerType: 'MAIN',
   title: '',
   subtitle: '',
+  badge: '',
+  description: '',
   linkUrl: '',
   sortOrder: '0',
 };
@@ -58,7 +62,7 @@ export default function AdminBannerList() {
 
   // 정보 수정 모달
   const [editTarget, setEditTarget] = useState<BannerResponse | null>(null);
-  const [editForm, setEditForm] = useState({ title: '', subtitle: '', linkUrl: '', sortOrder: '0' });
+  const [editForm, setEditForm] = useState({ title: '', subtitle: '', badge: '', description: '', linkUrl: '', sortOrder: '0' });
   const [editSubmitting, setEditSubmitting] = useState(false);
   const [editError, setEditError] = useState('');
 
@@ -109,6 +113,8 @@ export default function AdminBannerList() {
         title: form.title.trim(),
         imageUrl: finalImageUrl,
         subtitle: form.subtitle.trim() || undefined,
+        badge: form.badge.trim() || undefined,
+        description: form.description.trim() || undefined,
         linkUrl: form.linkUrl.trim() || undefined,
         sortOrder: Number(form.sortOrder) || 0,
       });
@@ -151,6 +157,8 @@ export default function AdminBannerList() {
     setEditForm({
       title: b.title ?? '',
       subtitle: b.subtitle ?? '',
+      badge: b.badge ?? '',
+      description: b.description ?? '',
       linkUrl: b.linkUrl ?? '',
       sortOrder: String(b.sortOrder ?? 0),
     });
@@ -170,6 +178,8 @@ export default function AdminBannerList() {
       await updateBanner(editTarget.bannerCode, {
         title: editForm.title.trim(),
         subtitle: editForm.subtitle.trim() || null,
+        badge: editForm.badge.trim() || null,
+        description: editForm.description.trim() || null,
         imageUrl: editTarget.imageUrl,
         mobileImageUrl: editTarget.mobileImageUrl ?? null,
         linkUrl: editForm.linkUrl.trim() || null,
@@ -386,6 +396,29 @@ export default function AdminBannerList() {
                 />
               </div>
 
+              {/* 뱃지 (메인 히어로 상단 작은 라벨) */}
+              <div>
+                <label className="block text-xs text-gray-500 mb-1.5">뱃지 (선택)</label>
+                <input
+                  value={form.badge}
+                  onChange={(e) => setForm((f) => ({ ...f, badge: e.target.value }))}
+                  className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-black/10"
+                  placeholder="예: 신제품 드랍!"
+                />
+              </div>
+
+              {/* 부연 설명 (메인 히어로 제목 아래 문구) */}
+              <div>
+                <label className="block text-xs text-gray-500 mb-1.5">부연 설명 (선택)</label>
+                <textarea
+                  value={form.description}
+                  onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
+                  rows={2}
+                  className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-black/10 resize-none"
+                  placeholder="메인 화면 제목 아래 설명 문구"
+                />
+              </div>
+
               {/* 링크 URL */}
               <div>
                 <label className="block text-xs text-gray-500 mb-1.5">링크 URL (선택)</label>
@@ -459,6 +492,29 @@ export default function AdminBannerList() {
                   onChange={(e) => setEditForm((f) => ({ ...f, subtitle: e.target.value }))}
                   className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-black/10"
                   placeholder="부제목"
+                />
+              </div>
+
+              {/* 뱃지 */}
+              <div>
+                <label className="block text-xs text-gray-500 mb-1.5">뱃지 (선택)</label>
+                <input
+                  value={editForm.badge}
+                  onChange={(e) => setEditForm((f) => ({ ...f, badge: e.target.value }))}
+                  className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-black/10"
+                  placeholder="예: 신제품 드랍!"
+                />
+              </div>
+
+              {/* 부연 설명 */}
+              <div>
+                <label className="block text-xs text-gray-500 mb-1.5">부연 설명 (선택)</label>
+                <textarea
+                  value={editForm.description}
+                  onChange={(e) => setEditForm((f) => ({ ...f, description: e.target.value }))}
+                  rows={2}
+                  className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-black/10 resize-none"
+                  placeholder="메인 화면 제목 아래 설명 문구"
                 />
               </div>
 

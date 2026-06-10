@@ -207,6 +207,9 @@ export interface Banner {
   imageUrl: string;
   linkUrl?: string;
   title?: string;
+  subtitle?: string;
+  badge?: string;
+  description?: string;
 }
 
 // ─── 위시리스트 ───────────────────────────────────────────────────────────────

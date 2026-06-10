@@ -100,13 +100,13 @@ export default function HomeHero({ banners }: HomeHeroProps) {
             style={{ opacity: animating ? 0.6 : 1 }}
           >
             <div className="inline-block px-3 py-1 bg-white/10 backdrop-blur-md text-[10px] md:text-xs tracking-widest uppercase rounded-full mb-4 md:mb-6 border border-white/20">
-              {t('home.hero.badge')}
+              {banner?.badge ?? t('home.hero.badge')}
             </div>
             <h1 className="text-3xl sm:text-4xl md:text-7xl mb-4 md:mb-6 font-bold tracking-tighter leading-[1.1]">
               {banner?.title ?? t('home.hero.defaultTitle')}
             </h1>
             <p className="hidden sm:block text-base md:text-xl text-gray-200 mb-6 md:mb-8 max-w-lg break-keep opacity-90">
-              {t('home.hero.description')}
+              {banner?.description ?? t('home.hero.description')}
             </p>
             <Link
               to={banner?.linkUrl ?? '/store'}
