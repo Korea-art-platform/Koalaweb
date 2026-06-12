@@ -121,6 +121,7 @@ export default function Footer() {
               {[
                 { key: 'privacy', path: '/privacy' },
                 { key: 'terms', path: '/terms' },
+                { key: 'youthProtection', path: '/youth-protection' },
                 { key: 'cookies', path: '/cookies' }
               ].map((link) => (
                 <Link key={link.key} to={link.path} className="text-[10px] md:text-xs text-gray-500 hover:text-white transition-colors">

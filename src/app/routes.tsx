@@ -7,6 +7,7 @@ import AccountLayout from "@/app/components/layouts/AccountLayout";
 import Terms from "@/app/pages/legal/Terms";
 import Privacy from "@/app/pages/legal/Privacy";
 import Cookies from "@/app/pages/legal/Cookies";
+import YouthProtection from "@/app/pages/legal/YouthProtection";
 
 // 고객 지원
 import FAQ from "@/app/pages/support/FAQ";
@@ -125,6 +126,7 @@ export function AppRoutes() {
       <Route path="/terms" element={<Terms />} />
       <Route path="/privacy" element={<Privacy />} />
       <Route path="/cookies" element={<Cookies />} />
+      <Route path="/youth-protection" element={<YouthProtection />} />
 
       {/* 공지사항 */}
       <Route path="/notice" element={<Notice />} />
