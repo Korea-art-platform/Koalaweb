@@ -44,15 +44,16 @@ export default function TrendingArtists({ excludeArtistCode }: TrendingArtistsPr
       </div>
 
       {/* 가로 스크롤 카드 목록 */}
-      <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide -mx-1 px-1">
+      {/* 적으면 늘어나 가득 채우고(꽉), 많아지면 가로 슬라이드 */}
+      <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide -mx-1 px-1 snap-x">
         {filtered.map((artist) => (
           <Link
             key={artist.artistCode}
             to={`/artist/${artist.artistCode}`}
-            className="flex-shrink-0 w-32 group"
+            className="flex-1 min-w-[180px] snap-start group"
           >
             {/* 프로필 이미지 */}
-            <div className="w-32 h-36 rounded-2xl overflow-hidden bg-gray-100 mb-3">
+            <div className="w-full aspect-[4/5] rounded-2xl overflow-hidden bg-gray-100 mb-3">
               <ImageWithFallback
                 src={artist.profileImageUrl ?? ''}
                 alt={artist.name}
@@ -61,9 +62,9 @@ export default function TrendingArtists({ excludeArtistCode }: TrendingArtistsPr
             </div>
 
             {/* 이름 + 역할 */}
-            <p className="text-xs font-semibold text-gray-900 truncate">{artist.name}</p>
+            <p className="text-sm font-semibold text-gray-900 truncate">{artist.name}</p>
             {artist.bio && (
-              <p className="text-[10px] text-gray-400 truncate mt-0.5">{artist.bio}</p>
+              <p className="text-xs text-gray-400 truncate mt-0.5">{artist.bio}</p>
             )}
           </Link>
         ))}

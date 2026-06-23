@@ -28,7 +28,7 @@ export default function StoreFilter({
                 onClick={() => onSelectCategory(category)}
                 className={`px-4 py-1.5 rounded-full text-xs md:text-sm transition-all whitespace-nowrap border ${
                   selectedCategory === category
-                    ? 'bg-koala-navy text-white border-black'
+                    ? 'bg-koala-red text-white border-koala-red'
                     : 'bg-white text-gray-500 border-gray-200 hover:border-gray-900'
                 }`}>
                 {t(`store.categories.${category}`) as string}

@@ -584,7 +584,7 @@ export default function Checkout() {
                   onClick={handleOrder}
                   disabled={cartItems.length === 0 || !selectedMethod || !allAgreed || isProcessing}
                   className={`w-full py-5 rounded-2xl font-bold flex items-center justify-center gap-2 transition-all shadow-lg ${cartItems.length > 0 && selectedMethod && allAgreed && !isProcessing
-                      ? 'bg-koala-navy text-white hover:bg-koala-navy-hover shadow-black/10 active:scale-[0.98]'
+                      ? 'bg-koala-red text-white hover:bg-koala-red-hover shadow-black/10 active:scale-[0.98]'
                       : 'bg-gray-100 text-gray-300 cursor-not-allowed shadow-none'
                     }`}
                 >

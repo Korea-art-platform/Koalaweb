@@ -167,7 +167,7 @@ export default function Search() {
                     onClick={() => setActiveFilter(filter.key as typeof activeFilter)}
                     className={`px-4 py-3 text-sm border-b-2 transition-colors ${
                       activeFilter === filter.key
-                        ? 'border-black text-black'
+                        ? 'border-koala-red text-koala-red'
                         : 'border-transparent text-gray-400 hover:text-black'
                     }`}
                   >

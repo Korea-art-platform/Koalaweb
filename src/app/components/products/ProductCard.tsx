@@ -38,7 +38,7 @@ export default function ProductCard({
               {t(`store.categories.${sku.genre}`, { defaultValue: sku.genre }) as string}
             </div>
             {sku.isLimitedEdition && (
-              <div className="w-fit px-2 py-1 md:px-3 md:py-1.5 rounded-md bg-koala-navy text-white text-[9px] md:text-xs font-bold uppercase shadow-sm">
+              <div className="w-fit px-2 py-1 md:px-3 md:py-1.5 rounded-md bg-koala-red text-white text-[9px] md:text-xs font-bold uppercase shadow-sm">
                 {/* 💡 수정 2: as string 추가 */}
                 {t('store.product.limited') as string}
               </div>
@@ -69,7 +69,7 @@ export default function ProductCard({
             onClick={(e) => onWishlistClick(e, sku.skuCode)}
             disabled={isWishlistLoading}
             className={`absolute bottom-2.5 right-2.5 md:bottom-4 md:right-4 p-2 md:p-2.5 rounded-full backdrop-blur-sm shadow-sm transition-all duration-200 ${
-              isWishlisted ? 'bg-red-500 text-white' : 'bg-white/90 text-gray-500 hover:bg-white hover:text-red-400'
+              isWishlisted ? 'bg-koala-red text-white' : 'bg-white/90 text-gray-500 hover:bg-white hover:text-koala-red'
             } ${isWishlistLoading ? 'opacity-60 cursor-wait' : ''}`}
           >
             <Heart className="w-4 h-4 md:w-4.5 md:h-4.5" fill={isWishlisted ? 'currentColor' : 'none'} />

@@ -94,7 +94,7 @@ export default function AccountWishlist() {
                                         />
                                         {item.isLimitedEdition && (
                                             <div className="absolute top-3 left-3">
-                                                <span className="px-2 py-1 bg-koala-navy text-white text-[10px] font-bold rounded-lg">
+                                                <span className="px-2 py-1 bg-koala-red text-white text-[10px] font-bold rounded-lg">
                                                     Limited
                                                 </span>
                                             </div>

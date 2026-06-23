@@ -70,10 +70,10 @@ export function ProductInfo({ sku, selectedColor, onColorSelect }: Props) {
       {/* Price */}
       <div className="mb-5">
         <div className="flex items-baseline gap-2 flex-wrap">
-          <span className="text-2xl font-bold text-rose-500 tracking-tight">
+          <span className={`text-2xl font-bold tracking-tight ${hasDiscount ? 'text-koala-red' : 'text-gray-900'}`}>
             {formatPrice(price)}
           </span>
-          <span className="text-sm font-semibold text-rose-400">KRW</span>
+          <span className={`text-sm font-semibold ${hasDiscount ? 'text-koala-red' : 'text-gray-500'}`}>KRW</span>
           {hasDiscount && (
             <span className="text-sm text-gray-400 line-through">
               {formatPrice(sku.listPrice)}

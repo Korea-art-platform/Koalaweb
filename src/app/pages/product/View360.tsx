@@ -334,7 +334,7 @@ export default function Product360View() {
               )}
               <div className="pt-3 border-t border-white/20">
                 <span className="text-white/60 text-xs">{t('view360.price')}</span>
-                <p className="text-2xl mt-1 font-bold">
+                <p className={`text-2xl mt-1 font-bold ${sku.salePrice && sku.salePrice < sku.listPrice ? 'text-koala-red' : ''}`}>
                   ₩{(sku.salePrice ?? sku.listPrice).toLocaleString()}
                 </p>
                 {sku.salePrice && sku.salePrice < sku.listPrice && (

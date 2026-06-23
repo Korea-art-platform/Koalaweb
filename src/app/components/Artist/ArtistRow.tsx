@@ -112,7 +112,7 @@ export default function ArtistRow({ artist, index }: ArtistRowProps) {
                   <div className="flex items-center gap-1.5 mt-1">
                     {artist.featuredSku.salePrice ? (
                       <>
-                        <span className="text-sm font-bold text-red-500">₩{fmt(artist.featuredSku.salePrice)}</span>
+                        <span className="text-sm font-bold text-koala-red">₩{fmt(artist.featuredSku.salePrice)}</span>
                         <span className="text-xs text-gray-400 line-through">₩{fmt(artist.featuredSku.listPrice)}</span>
                       </>
                     ) : (

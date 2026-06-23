@@ -33,7 +33,7 @@ export function ProductActions({ sku, cartLoading, isWishlisted, onAddToCart, on
       >
         <Heart
           className={`w-5 h-5 transition-colors ${
-            isWishlisted ? 'text-red-500 fill-red-500' : 'text-gray-400'
+            isWishlisted ? 'text-koala-red fill-koala-red' : 'text-gray-400'
           }`}
         />
       </button>
