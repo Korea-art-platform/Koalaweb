@@ -30,7 +30,7 @@ export default function Contact() {
         <div className="grid gap-4 md:grid-cols-2">
           <div className="border border-gray-100 rounded-2xl p-6 space-y-3">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-black rounded-xl flex items-center justify-center">
+              <div className="w-10 h-10 bg-koala-navy rounded-xl flex items-center justify-center">
                 <Mail className="w-4 h-4 text-white" />
               </div>
               <div>
@@ -43,7 +43,7 @@ export default function Contact() {
             </p>
             <a
               href="mailto:koala-art@heron.kr"
-              className="block w-full py-2.5 bg-black text-white text-xs font-bold rounded-xl text-center hover:bg-gray-800 transition-colors"
+              className="block w-full py-2.5 bg-koala-navy text-white text-xs font-bold rounded-xl text-center hover:bg-koala-navy-hover transition-colors"
             >
               이메일 보내기
             </a>

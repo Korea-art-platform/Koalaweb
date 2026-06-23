@@ -181,7 +181,7 @@ export default function AdminInquiryDetail() {
             <button
               onClick={handleAnswer}
               disabled={submitting}
-              className="flex-1 flex items-center justify-center gap-1.5 py-2.5 text-sm bg-black text-white rounded-lg hover:bg-gray-800 disabled:opacity-50 transition-colors"
+              className="flex-1 flex items-center justify-center gap-1.5 py-2.5 text-sm bg-koala-navy text-white rounded-lg hover:bg-koala-navy-hover disabled:opacity-50 transition-colors"
             >
               <Send className="w-3.5 h-3.5" />
               {submitting ? '저장 중...' : inquiry.status === 'ANSWERED' ? '답변 수정' : '답변 등록'}

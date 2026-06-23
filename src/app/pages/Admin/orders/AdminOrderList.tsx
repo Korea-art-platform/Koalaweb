@@ -100,7 +100,7 @@ export default function AdminOrderList() {
           />
           <button
             onClick={handleSearch}
-            className="px-3 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors"
+            className="px-3 py-2 bg-koala-navy text-white rounded-lg hover:bg-koala-navy-hover transition-colors"
           >
             <Search className="w-4 h-4" />
           </button>

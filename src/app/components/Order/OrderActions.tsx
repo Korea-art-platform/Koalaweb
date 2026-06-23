@@ -26,7 +26,7 @@ export function OrderActions({ order, onCancel, cancelling, onReturnSuccess }: O
     <>
       <div className="flex flex-col sm:flex-row gap-3">
         {order.orderStatus === 'SHIPPED' && (
-          <button className="flex items-center justify-center gap-2 px-6 py-4 bg-black text-white rounded-2xl font-bold text-sm hover:bg-gray-800 transition-all">
+          <button className="flex items-center justify-center gap-2 px-6 py-4 bg-koala-navy text-white rounded-2xl font-bold text-sm hover:bg-koala-navy-hover transition-all">
             <Box className="w-4 h-4" /> {t('order.detail.trackShipping')}
           </button>
         )}

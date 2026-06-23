@@ -107,7 +107,7 @@ export default function AddressStep({ address, onChange, onNext, onSkip }: Props
           <button
             type="button"
             onClick={handleAddressSearch}
-            className="px-4 py-3 bg-black text-white rounded-xl hover:bg-gray-800 transition-colors font-medium text-sm flex items-center gap-2 whitespace-nowrap"
+            className="px-4 py-3 bg-koala-navy text-white rounded-xl hover:bg-koala-navy-hover transition-colors font-medium text-sm flex items-center gap-2 whitespace-nowrap"
           >
             <Search className="w-4 h-4" /> 주소 찾기
           </button>
@@ -132,7 +132,7 @@ export default function AddressStep({ address, onChange, onNext, onSkip }: Props
         <button onClick={onSkip} className="flex-1 py-4 border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors">
           {t('onboarding.address.later')}
         </button>
-        <button onClick={onNext} className="flex-1 py-4 bg-black text-white rounded-xl hover:bg-gray-800 transition-colors">
+        <button onClick={onNext} className="flex-1 py-4 bg-koala-navy text-white rounded-xl hover:bg-koala-navy-hover transition-colors">
           {t('onboarding.address.save')}
         </button>
       </div>

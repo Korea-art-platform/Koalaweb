@@ -34,7 +34,7 @@ export default function PreferencesStep({ preferences, onChange, onNext, onSkip 
                 <div className="font-semibold text-gray-900">{t(`onboarding.preferences.items.${key}.label`)}</div>
                 <div className="text-sm text-gray-400">{t(`onboarding.preferences.items.${key}.desc`)}</div>
               </div>
-              <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${preferences[key] ? 'border-black bg-black' : 'border-gray-200'}`}>
+              <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${preferences[key] ? 'border-black bg-koala-navy' : 'border-gray-200'}`}>
                 {preferences[key] && <Check className="w-4 h-4 text-white" />}
               </div>
             </div>
@@ -46,7 +46,7 @@ export default function PreferencesStep({ preferences, onChange, onNext, onSkip 
         <button onClick={onSkip} className="flex-1 py-4 border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors">
           {t('onboarding.preferences.skip')}
         </button>
-        <button onClick={onNext} className="flex-1 py-4 bg-black text-white rounded-xl hover:bg-gray-800 transition-colors font-medium">
+        <button onClick={onNext} className="flex-1 py-4 bg-koala-navy text-white rounded-xl hover:bg-koala-navy-hover transition-colors font-medium">
           {t('onboarding.preferences.next')}
         </button>
       </div>

@@ -231,7 +231,7 @@ export default function AdminBannerList() {
         <h1 className="text-xl font-bold text-gray-900">배너 목록</h1>
         <button
           onClick={() => { setCreateOpen(true); setFormError(''); resetCreateForm(); }}
-          className="px-3 py-2 text-xs bg-black text-white rounded-lg hover:bg-gray-800 transition-colors"
+          className="px-3 py-2 text-xs bg-koala-navy text-white rounded-lg hover:bg-koala-navy-hover transition-colors"
         >
           + 배너 추가
         </button>
@@ -360,7 +360,7 @@ export default function AdminBannerList() {
                         <img src={imagePreview} alt="preview" className="h-20 rounded-lg object-cover border" />
                         <button
                           onClick={() => { handleFileChange(null); if (fileInputRef.current) fileInputRef.current.value = ''; }}
-                          className="absolute -top-1.5 -right-1.5 bg-black text-white rounded-full p-0.5 hover:bg-red-600"
+                          className="absolute -top-1.5 -right-1.5 bg-koala-navy text-white rounded-full p-0.5 hover:bg-red-600"
                         >
                           <X className="w-3 h-3" />
                         </button>
@@ -455,7 +455,7 @@ export default function AdminBannerList() {
               <button
                 onClick={handleCreate}
                 disabled={submitting || uploading}
-                className="flex-1 py-2.5 text-sm bg-black text-white rounded-lg hover:bg-gray-800 disabled:opacity-50"
+                className="flex-1 py-2.5 text-sm bg-koala-navy text-white rounded-lg hover:bg-koala-navy-hover disabled:opacity-50"
               >
                 {uploading ? '업로드 중...' : submitting ? '생성 중...' : '생성'}
               </button>
@@ -554,7 +554,7 @@ export default function AdminBannerList() {
               <button
                 onClick={handleUpdate}
                 disabled={editSubmitting}
-                className="flex-1 py-2.5 text-sm bg-black text-white rounded-lg hover:bg-gray-800 disabled:opacity-50"
+                className="flex-1 py-2.5 text-sm bg-koala-navy text-white rounded-lg hover:bg-koala-navy-hover disabled:opacity-50"
               >
                 {editSubmitting ? '저장 중...' : '저장'}
               </button>
@@ -583,7 +583,7 @@ export default function AdminBannerList() {
                 <img src={replacePreview} alt="preview" className="h-24 rounded-lg object-cover border" />
                 <button
                   onClick={() => { handleReplaceFileChange(null); if (replaceInputRef.current) replaceInputRef.current.value = ''; }}
-                  className="absolute -top-1.5 -right-1.5 bg-black text-white rounded-full p-0.5 hover:bg-red-600"
+                  className="absolute -top-1.5 -right-1.5 bg-koala-navy text-white rounded-full p-0.5 hover:bg-red-600"
                 >
                   <X className="w-3 h-3" />
                 </button>
@@ -608,7 +608,7 @@ export default function AdminBannerList() {
               <button
                 onClick={handleReplaceImage}
                 disabled={!replaceFile || replacing}
-                className="flex-1 py-2.5 text-sm bg-black text-white rounded-lg hover:bg-gray-800 disabled:opacity-50"
+                className="flex-1 py-2.5 text-sm bg-koala-navy text-white rounded-lg hover:bg-koala-navy-hover disabled:opacity-50"
               >
                 {replacing ? '교체 중...' : '교체'}
               </button>

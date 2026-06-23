@@ -29,7 +29,7 @@ export function ArtistHero({ artist }: ArtistHeroProps) {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 md:gap-16 lg:gap-24 mb-20 md:mb-32">
         <div className="relative overflow-hidden rounded-[2rem] md:rounded-[3rem] bg-gray-50 aspect-[3/4] shadow-xl">
           <ImageWithFallback
-            src={artist.profileImageUrl ?? 'https://via.placeholder.com/400'}
+            src={artist.profileImageUrl ?? '/placeholder.svg'}
             alt={artist.name}
             className="w-full h-full object-cover transition-transform duration-1000 hover:scale-105"
           />
@@ -51,7 +51,7 @@ export function ArtistHero({ artist }: ArtistHeroProps) {
           <div className="flex flex-col sm:flex-row gap-3">
             <Link
               to="/smart-store"
-              className="flex-1 py-4 md:py-5 bg-black text-white rounded-full font-bold text-sm md:text-base hover:bg-gray-800 transition-all active:scale-95 text-center"
+              className="flex-1 py-4 md:py-5 bg-koala-navy text-white rounded-full font-bold text-sm md:text-base hover:bg-koala-navy-hover transition-all active:scale-95 text-center"
             >
               {t('detail.viewWorks')}
             </Link>

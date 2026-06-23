@@ -10,7 +10,7 @@ export function ProductNotFound() {
       <Navigation />
       <div className="pt-32 pb-32 px-8 flex flex-col items-center">
         <h1 className="text-3xl mb-8 font-medium">{t('product.detail.notFound.title')}</h1>
-        <Link to="/store" className="px-8 py-4 bg-black text-white rounded-full font-medium">
+        <Link to="/store" className="px-8 py-4 bg-koala-navy text-white rounded-full font-medium">
           {t('product.detail.notFound.backToStore')}
         </Link>
       </div>

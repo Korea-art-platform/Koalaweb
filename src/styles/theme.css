@@ -8,8 +8,13 @@
   --card-foreground: oklch(0.145 0 0);
   --popover: #FFFFFF;
   --popover-foreground: oklch(0.145 0 0);
-  --primary: #000000;
+  --primary: #181848;
   --primary-foreground: #FFFFFF;
+  /* ── KOALA 브랜드 컬러 (CI 컨셉 E) ── */
+  --koala-navy: #181848;
+  --koala-navy-hover: #262566;
+  --koala-red: #D83018;
+  --koala-red-hover: #B82610;
   --secondary: #F4F4F4;
   --secondary-foreground: #000000;
   --muted: #EAEAEA;
@@ -87,6 +92,10 @@
   --color-popover-foreground: var(--popover-foreground);
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
+  --color-koala-navy: var(--koala-navy);
+  --color-koala-navy-hover: var(--koala-navy-hover);
+  --color-koala-red: var(--koala-red);
+  --color-koala-red-hover: var(--koala-red-hover);
   --color-secondary: var(--secondary);
   --color-secondary-foreground: var(--secondary-foreground);
   --color-muted: var(--muted);

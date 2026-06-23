@@ -96,7 +96,7 @@ export default function LoginForm() {
       <button
         type="submit"
         disabled={isSubmitting}
-        className="w-full py-3 bg-black text-white rounded-xl hover:bg-gray-900 transition-colors disabled:opacity-50"
+        className="w-full py-3 bg-koala-navy text-white rounded-xl hover:bg-koala-navy-hover transition-colors disabled:opacity-50"
       >
         {isSubmitting ? t('auth.login.submitting') : t('auth.login.submit')}
       </button>

@@ -186,7 +186,7 @@ export function Header() {
                 <ShoppingCart className="w-5 h-5" />
                 {cartCount > 0 && (
                   <span className={`absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full flex items-center justify-center text-[9px] font-bold ${
-                    isMenuOpen ? 'bg-black text-white' : (isTransparent && isHeroDark ? 'bg-white text-black' : 'bg-black text-white')
+                    isMenuOpen ? 'bg-koala-navy text-white' : (isTransparent && isHeroDark ? 'bg-white text-black' : 'bg-koala-navy text-white')
                   }`}>
                     {cartCount}
                   </span>

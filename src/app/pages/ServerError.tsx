@@ -24,7 +24,7 @@ export default function ServerError({ onReset }: Props) {
   };
 
   return (
-    <div className="min-h-screen bg-black flex flex-col overflow-hidden relative">
+    <div className="min-h-screen bg-koala-navy flex flex-col overflow-hidden relative">
 
       {/* 배경 */}
       <div

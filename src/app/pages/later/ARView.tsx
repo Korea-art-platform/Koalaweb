@@ -84,7 +84,7 @@ export default function ARView() {
 
       {showToast && (
         <div className="fixed bottom-10 left-1/2 -translate-x-1/2 z-[100] animate-in fade-in slide-in-from-bottom-4 duration-300">
-          <div className="bg-black text-white px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-4 min-w-[300px]">
+          <div className="bg-koala-navy text-white px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-4 min-w-[300px]">
             <CheckCircle2 className="w-5 h-5 text-green-400 flex-shrink-0" />
             <div className="flex-1">
               <p className="text-sm font-semibold">{toastMessage}</p>
@@ -105,7 +105,7 @@ export default function ARView() {
         <div className="flex-1 relative bg-gradient-to-br from-gray-50 to-white overflow-hidden">
           <div className="absolute inset-0 flex items-center justify-center p-4">
             {mode === 'ar' ? (
-              <div className="relative w-full max-w-2xl aspect-square flex items-center justify-center bg-black rounded-3xl overflow-hidden">
+              <div className="relative w-full max-w-2xl aspect-square flex items-center justify-center bg-koala-navy rounded-3xl overflow-hidden">
                 <div className="text-center text-white">
                   <Camera className="w-16 h-16 mx-auto mb-4 opacity-40" />
                   <p className="text-lg font-bold mb-2">{t('ar.comingSoonTitle')}</p>
@@ -139,8 +139,8 @@ export default function ARView() {
 
           <div className="absolute top-8 left-1/2 -translate-x-1/2 z-10 w-full max-w-xs px-4">
             <div className="flex items-center gap-2 p-1.5 rounded-full bg-white/90 backdrop-blur-md shadow-xl border border-gray-100">
-              <button onClick={() => setMode('360')} className={`flex-1 py-2 rounded-full text-xs font-bold transition-all ${mode === '360' ? 'bg-black text-white' : 'text-gray-400 hover:text-black'}`}>{t('ar.tab360')}</button>
-              <button onClick={handleARMode} className={`flex-1 py-2 rounded-full text-xs font-bold transition-all ${mode === 'ar' ? 'bg-black text-white' : 'text-gray-400 hover:text-black'}`}>{t('ar.tabAr')}</button>
+              <button onClick={() => setMode('360')} className={`flex-1 py-2 rounded-full text-xs font-bold transition-all ${mode === '360' ? 'bg-koala-navy text-white' : 'text-gray-400 hover:text-black'}`}>{t('ar.tab360')}</button>
+              <button onClick={handleARMode} className={`flex-1 py-2 rounded-full text-xs font-bold transition-all ${mode === 'ar' ? 'bg-koala-navy text-white' : 'text-gray-400 hover:text-black'}`}>{t('ar.tabAr')}</button>
             </div>
           </div>
 
@@ -170,7 +170,7 @@ export default function ARView() {
                   </div>
                   <div className="flex gap-3">
                     <Link to={`/product/${sku.skuCode}`} className="flex-1 py-4 border border-gray-200 text-black text-center rounded-2xl hover:bg-gray-50 transition-colors text-sm font-bold">{t('ar.viewDetail')}</Link>
-                    <button onClick={handleAddToCart} disabled={cartLoading || sku.status === 'OUT_OF_STOCK'} className="flex-1 py-4 bg-black text-white rounded-2xl hover:bg-gray-800 transition-all font-bold text-sm disabled:opacity-50">{sku.status === 'OUT_OF_STOCK' ? t('product.detail.actions.outOfStock') : cartLoading ? t('product.detail.actions.addingToCart') : t('ar.addToCartShort')}</button>
+                    <button onClick={handleAddToCart} disabled={cartLoading || sku.status === 'OUT_OF_STOCK'} className="flex-1 py-4 bg-koala-navy text-white rounded-2xl hover:bg-koala-navy-hover transition-all font-bold text-sm disabled:opacity-50">{sku.status === 'OUT_OF_STOCK' ? t('product.detail.actions.outOfStock') : cartLoading ? t('product.detail.actions.addingToCart') : t('ar.addToCartShort')}</button>
                   </div>
                 </>
               ) : (
@@ -178,7 +178,7 @@ export default function ARView() {
                   <div className="text-[10px] text-gray-400 uppercase tracking-widest mb-3 font-bold">Premium Art Toy</div>
                   <h3 className="text-2xl font-medium mb-1 leading-tight">KOALA AR Viewer</h3>
                   <p className="text-sm text-gray-500 font-medium mt-4 leading-relaxed">{t('ar.noSkuDesc')}</p>
-                  <Link to="/store" className="block w-full mt-8 py-4 bg-black text-white text-center rounded-2xl hover:bg-gray-800 transition-all font-bold text-sm">{t('order.history.goStore')}</Link>
+                  <Link to="/store" className="block w-full mt-8 py-4 bg-koala-navy text-white text-center rounded-2xl hover:bg-koala-navy-hover transition-all font-bold text-sm">{t('order.history.goStore')}</Link>
                 </div>
               )}
             </div>
@@ -202,7 +202,7 @@ export default function ARView() {
                   <span className="text-[10px] text-gray-400 font-bold uppercase">Price</span>
                   <span className="text-lg font-black text-black">₩{(sku.salePrice ?? sku.listPrice).toLocaleString()}</span>
                 </div>
-                <button onClick={handleAddToCart} disabled={cartLoading || sku.status === 'OUT_OF_STOCK'} className="flex-1 py-4 bg-black text-white rounded-xl font-bold text-sm disabled:opacity-50">{sku.status === 'OUT_OF_STOCK' ? t('product.detail.actions.outOfStock') : t('product.detail.actions.addToCart')}</button>
+                <button onClick={handleAddToCart} disabled={cartLoading || sku.status === 'OUT_OF_STOCK'} className="flex-1 py-4 bg-koala-navy text-white rounded-xl font-bold text-sm disabled:opacity-50">{sku.status === 'OUT_OF_STOCK' ? t('product.detail.actions.outOfStock') : t('product.detail.actions.addToCart')}</button>
               </div>
             </div>
           )}

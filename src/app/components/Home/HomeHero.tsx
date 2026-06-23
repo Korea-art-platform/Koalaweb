@@ -69,7 +69,7 @@ export default function HomeHero({ banners }: HomeHeroProps) {
   return (
     <section
       data-hero="dark"
-      className="relative h-[55vh] min-h-[420px] md:h-[85vh] overflow-hidden bg-black"
+      className="relative h-[55vh] min-h-[420px] md:h-[85vh] overflow-hidden bg-koala-navy"
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
@@ -99,7 +99,7 @@ export default function HomeHero({ banners }: HomeHeroProps) {
             className="max-w-2xl text-white transition-opacity duration-500"
             style={{ opacity: animating ? 0.6 : 1 }}
           >
-            <div className="inline-block px-3 py-1 bg-white/10 backdrop-blur-md text-[10px] md:text-xs tracking-widest uppercase rounded-full mb-4 md:mb-6 border border-white/20">
+            <div className="inline-block px-3 py-1 bg-koala-red text-white text-[10px] md:text-xs tracking-widest uppercase rounded-full mb-4 md:mb-6 font-medium">
               {banner?.badge ?? t('home.hero.badge')}
             </div>
             <h1 className="text-3xl sm:text-4xl md:text-7xl mb-4 md:mb-6 font-bold tracking-tighter leading-[1.1]">

@@ -32,7 +32,7 @@ export default function ArtistRow({ artist, index }: ArtistRowProps) {
         <Link to={`/artist/${artist.artistCode}`} className="group block">
           <div className="relative overflow-hidden rounded-2xl md:rounded-3xl bg-gray-50 aspect-[4/5] sm:aspect-[3/4]">
             <ImageWithFallback
-              src={artist.profileImageUrl ?? 'https://via.placeholder.com/400'}
+              src={artist.profileImageUrl ?? '/placeholder.svg'}
               alt={artist.name}
               className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
             />
@@ -79,7 +79,7 @@ export default function ArtistRow({ artist, index }: ArtistRowProps) {
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-1">
             <Link
               to={`/artist/${artist.artistCode}`}
-              className="inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-black text-white rounded-full hover:bg-gray-800 transition-all font-medium text-sm"
+              className="inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-koala-navy text-white rounded-full hover:bg-koala-navy-hover transition-all font-medium text-sm"
             >
               {t('artistLab.row.viewProfile') as string}
               <ArrowRight className="w-4 h-4" />

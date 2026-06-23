@@ -1,69 +1,71 @@
-import { useState } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router';
 import { Search as SearchIcon, X, TrendingUp, Clock, ArrowLeft } from 'lucide-react';
 import Navigation from '@/app/components/layouts/Header';
 import { useViewMode } from '@/app/context/ViewModeContext';
 import { useTranslation } from 'react-i18next';
+import { getSkus } from '@/api/sku';
+import { getArtists } from '@/api/artist';
+import { ImageWithFallback } from '@/app/components/fallback/ImageWithFallback';
 
-// Mock data for search results
-const mockArtworks = [
-  { id: 1, title: 'Urban Rhythm', artist: 'Kim Soo-ja', price: 2500000, image: 'abstract painting cityscape' },
-  { id: 2, title: 'Hanbok Fusion', artist: 'Park Min-ji', price: 1800000, image: 'korean traditional fashion modern' },
-  { id: 3, title: 'Seoul Nights', artist: 'Lee Jae-hyun', price: 3200000, image: 'seoul night photography' },
-];
-
-const mockProducts = [
-  { id: 1, name: 'Tiger Spirit Figure', artist: 'Kim Soo-ja', price: 89000, image: 'korean tiger toy figure' },
-  { id: 2, name: 'Hanbok Bear Limited', artist: 'Park Min-ji', price: 125000, image: 'teddy bear hanbok limited edition' },
-  { id: 3, name: 'K-Culture Set', artist: 'Lee Jae-hyun', price: 68000, image: 'korean culture collectible set' },
-];
-
-const mockArtists = [
-  { id: 1, name: 'Kim Soo-ja', specialty: 'Contemporary Abstract', image: 'asian female artist portrait' },
-  { id: 2, name: 'Park Min-ji', specialty: 'Digital & Fashion', image: 'asian female artist digital' },
-  { id: 3, name: 'Lee Jae-hyun', specialty: 'Photography', image: 'asian male photographer' },
-];
-
-const trendingSearches = [
-  'Limited Edition',
-  'Korean Traditional',
-  'Abstract Art',
-  'Designer Toys',
-  'Collaboration',
-];
+const trendingSearches = ['리미티드 에디션', '아트 토이', '조각', '회화', '도자기'];
 
 export default function Search() {
   const { mode } = useViewMode();
   const { t } = useTranslation();
   const [searchQuery, setSearchQuery] = useState('');
-  const [recentSearches, setRecentSearches] = useState([
-    'Kim Soo-ja',
-    'Urban Art',
-    'Limited Edition Toys',
-  ]);
-  const [activeFilter, setActiveFilter] = useState<'all' | 'artworks' | 'products' | 'artists'>('all');
+  const [recentSearches, setRecentSearches] = useState<string[]>([]);
+  const [activeFilter, setActiveFilter] = useState<'all' | 'artworks' | 'artists'>('all');
 
-  const hasSearched = searchQuery.length > 0;
+  // 검색 대상 데이터 (한 번 로드 후 클라이언트 필터링)
+  const [skus, setSkus] = useState<any[]>([]);
+  const [artists, setArtists] = useState<any[]>([]);
+
+  useEffect(() => {
+    getSkus(0, 100)
+      .then((res) => setSkus(res.data.data?.content ?? res.data.data ?? []))
+      .catch(() => {});
+    getArtists(0, 100)
+      .then((res) => setArtists(res.data.data?.content ?? res.data.data ?? []))
+      .catch(() => {});
+  }, []);
+
+  const q = searchQuery.trim().toLowerCase();
+  const hasSearched = q.length > 0;
+
+  const skuResults = useMemo(() => {
+    if (!q) return [];
+    return skus.filter(
+      (s) =>
+        (s.name ?? '').toLowerCase().includes(q) ||
+        (s.artistName ?? '').toLowerCase().includes(q) ||
+        (s.genre ?? '').toLowerCase().includes(q),
+    );
+  }, [skus, q]);
+
+  const artistResults = useMemo(() => {
+    if (!q) return [];
+    return artists.filter((a) => (a.name ?? '').toLowerCase().includes(q));
+  }, [artists, q]);
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
-    if (query.trim() && !recentSearches.includes(query)) {
-      setRecentSearches([query, ...recentSearches.slice(0, 4)]);
+    const trimmed = query.trim();
+    if (trimmed && !recentSearches.includes(trimmed)) {
+      setRecentSearches([trimmed, ...recentSearches.slice(0, 4)]);
     }
   };
 
-  const clearSearch = () => {
-    setSearchQuery('');
-  };
+  const clearSearch = () => setSearchQuery('');
+  const removeRecentSearch = (search: string) =>
+    setRecentSearches(recentSearches.filter((s) => s !== search));
 
-  const removeRecentSearch = (search: string) => {
-    setRecentSearches(recentSearches.filter(s => s !== search));
-  };
+  const noResults = hasSearched && skuResults.length === 0 && artistResults.length === 0;
 
   return (
     <div className="min-h-screen bg-[#FAFAFA]">
       <Navigation />
-      
+
       <div className="pt-24 pb-16 px-8">
         <div className="max-w-[1400px] mx-auto">
           {/* Search Header */}
@@ -143,7 +145,7 @@ export default function Search() {
                     <button
                       key={index}
                       onClick={() => handleSearch(trend)}
-                      className="px-4 py-2 bg-white rounded-full text-sm hover:bg-black hover:text-white transition-colors"
+                      className="px-4 py-2 bg-white rounded-full text-sm hover:bg-koala-navy hover:text-white transition-colors"
                     >
                       {trend}
                     </button>
@@ -177,24 +179,24 @@ export default function Search() {
               {/* Search Results */}
               <div className="space-y-12">
                 {/* Artists Section */}
-                {(activeFilter === 'all' || activeFilter === 'artists') && (
+                {(activeFilter === 'all' || activeFilter === 'artists') && artistResults.length > 0 && (
                   <div>
                     <h2 className="text-2xl tracking-tight mb-6">{t('search.filters.artists')}</h2>
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                      {mockArtists.map((artist) => (
-                        <Link
-                          key={artist.id}
-                          to={`/artist/${artist.id}`}
-                          className="group"
-                        >
+                      {artistResults.map((artist) => (
+                        <Link key={artist.artistCode} to={`/artist/${artist.artistCode}`} className="group">
                           <div className="bg-white rounded-2xl p-6 hover:shadow-lg transition-all">
-                            <div className="w-20 h-20 bg-gray-200 rounded-full mb-4 mx-auto" />
-                            <h3 className="text-lg mb-1 text-center group-hover:underline">
-                              {artist.name}
-                            </h3>
-                            <p className="text-sm text-gray-400 text-center">
-                              {artist.specialty}
-                            </p>
+                            <div className="w-20 h-20 rounded-full mb-4 mx-auto overflow-hidden bg-gray-100">
+                              <ImageWithFallback
+                                src={artist.profileImageUrl ?? '/placeholder.svg'}
+                                alt={artist.name}
+                                className="w-full h-full object-cover"
+                              />
+                            </div>
+                            <h3 className="text-lg mb-1 text-center group-hover:underline">{artist.name}</h3>
+                            {artist.genre && (
+                              <p className="text-sm text-gray-400 text-center">{artist.genre}</p>
+                            )}
                           </div>
                         </Link>
                       ))}
@@ -203,30 +205,26 @@ export default function Search() {
                 )}
 
                 {/* Artworks/Products Section */}
-                {(activeFilter === 'all' || activeFilter === 'artworks') && (
+                {(activeFilter === 'all' || activeFilter === 'artworks') && skuResults.length > 0 && (
                   <div>
                     <h2 className="text-2xl tracking-tight mb-6">
                       {mode === 'gallery' ? t('search.filters.artworks') : t('search.filters.products')}
                     </h2>
                     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                      {(mode === 'gallery' ? mockArtworks : mockProducts).map((item) => (
-                        <Link
-                          key={item.id}
-                          to={`/product/${item.id}`}
-                          className="group"
-                        >
+                      {skuResults.map((item) => (
+                        <Link key={item.skuCode} to={`/product/${item.skuCode}`} className="group">
                           <div className="bg-white rounded-2xl overflow-hidden hover:shadow-lg transition-all">
-                            <div className="aspect-square bg-gray-200" />
+                            <div className="aspect-square bg-gray-100 overflow-hidden">
+                              <ImageWithFallback
+                                src={item.primaryImageUrl ?? '/placeholder.svg'}
+                                alt={item.name}
+                                className="w-full h-full object-cover"
+                              />
+                            </div>
                             <div className="p-4">
-                              <h3 className="text-sm mb-1 group-hover:underline">
-                                {'title' in item ? item.title : item.name}
-                              </h3>
-                              <p className="text-xs text-gray-400 mb-2">
-                                {item.artist}
-                              </p>
-                              <p className="text-sm">
-                                ₩{item.price.toLocaleString()}
-                              </p>
+                              <h3 className="text-sm mb-1 group-hover:underline truncate">{item.name}</h3>
+                              <p className="text-xs text-gray-400 mb-2">{item.artistName}</p>
+                              <p className="text-sm">₩{(item.salePrice ?? item.listPrice ?? 0).toLocaleString()}</p>
                             </div>
                           </div>
                         </Link>
@@ -236,20 +234,15 @@ export default function Search() {
                 )}
 
                 {/* No Results */}
-                {searchQuery.length > 2 && (
+                {noResults && (
                   <div className="text-center py-16">
                     <div className="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
                       <SearchIcon className="w-8 h-8 text-gray-300" />
                     </div>
                     <p className="text-gray-400 mb-2">
-                      {activeFilter === 'all'
-                        ? t('search.results.showingAll', { query: searchQuery })
-                        : t('search.results.showingFilter', { query: searchQuery, filter: activeFilter })
-                      }
+                      {t('search.results.showingAll', { query: searchQuery })}
                     </p>
-                    <p className="text-sm text-gray-400">
-                      {t('search.results.noResultsDesc')}
-                    </p>
+                    <p className="text-sm text-gray-400">{t('search.results.noResultsDesc')}</p>
                   </div>
                 )}
               </div>

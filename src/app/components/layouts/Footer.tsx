@@ -6,7 +6,7 @@ export default function Footer() {
   const { t } = useTranslation();
 
   return (
-    <footer className="bg-black border-t border-white/10">
+    <footer className="bg-koala-navy border-t border-white/10">
       <div className="max-w-[1600px] mx-auto px-6 md:px-8 py-12 md:py-16">
         
         {/* 상단 섹션: 그리드 레이아웃 */}

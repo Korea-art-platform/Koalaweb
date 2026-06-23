@@ -22,7 +22,7 @@ export default function Auth() {
           <div className="relative flex bg-[#F4F4F4] rounded-2xl p-1.5 mb-8 shadow-inner border border-gray-100">
             {/* 스르륵 움직이는 까만색 배경 (Sliding Pill) */}
             <div
-              className={`absolute top-1.5 bottom-1.5 w-[calc(50%-6px)] bg-black rounded-xl shadow-sm transition-transform duration-300 ease-in-out ${
+              className={`absolute top-1.5 bottom-1.5 w-[calc(50%-6px)] bg-koala-navy rounded-xl shadow-sm transition-transform duration-300 ease-in-out ${
                 isSignup ? 'translate-x-full' : 'translate-x-0'
               }`}
             />

@@ -4,7 +4,7 @@ import { Heart, ArrowRight } from 'lucide-react';
 
 export default function AboutCTA() {
   return (
-    <section className="py-32 md:py-48 px-6 bg-black text-center">
+    <section className="py-32 md:py-48 px-6 bg-koala-navy text-center">
       <motion.div initial={{ opacity: 0, y: 50 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
         <Heart className="w-16 h-16 text-zinc-700 mx-auto mb-12" />
         <h2 className="text-6xl md:text-8xl font-black text-white mb-12 tracking-tighter leading-none uppercase">Start Your<br/>Collection</h2>

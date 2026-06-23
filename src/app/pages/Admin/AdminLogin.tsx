@@ -67,7 +67,7 @@ export default function AdminLogin() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-2.5 bg-black text-white text-sm font-medium rounded-lg hover:bg-gray-800 transition-colors disabled:opacity-50 mt-2"
+              className="w-full py-2.5 bg-koala-navy text-white text-sm font-medium rounded-lg hover:bg-koala-navy-hover transition-colors disabled:opacity-50 mt-2"
             >
               {loading ? '로그인 중...' : '로그인'}
             </button>

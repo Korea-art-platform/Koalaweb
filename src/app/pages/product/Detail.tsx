@@ -154,7 +154,7 @@ export default function ProductDetail() {
       if (!sku) return [];
       return sku.mediaList && sku.mediaList.length > 0
         ? sku.mediaList.map((m) => m.fileUrl).slice(0, 5)
-        : [sku.primaryImageUrl ?? 'https://via.placeholder.com/400'];
+        : [sku.primaryImageUrl ?? '/placeholder.svg'];
     },
     [sku],
   );

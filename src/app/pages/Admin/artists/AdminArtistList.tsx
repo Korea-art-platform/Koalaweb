@@ -84,7 +84,7 @@ export default function AdminArtistList() {
       </div>
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-xl font-bold text-gray-900">아티스트 목록</h1>
-        <button onClick={() => { setCreateOpen(true); setFormError(''); }} className="px-3 py-2 text-xs bg-black text-white rounded-lg hover:bg-gray-800 transition-colors">
+        <button onClick={() => { setCreateOpen(true); setFormError(''); }} className="px-3 py-2 text-xs bg-koala-navy text-white rounded-lg hover:bg-koala-navy-hover transition-colors">
           + 아티스트 추가
         </button>
       </div>
@@ -195,7 +195,7 @@ export default function AdminArtistList() {
             {formError && <p className="text-xs text-red-500 mt-3">{formError}</p>}
             <div className="flex gap-2 mt-5">
               <button onClick={() => { setCreateOpen(false); setForm({ name: '', slug: '', description: '', profileImageUrl: '' }); setFormError(''); }} className="flex-1 py-2.5 text-sm border border-gray-200 rounded-lg hover:bg-gray-50">취소</button>
-              <button onClick={handleCreate} disabled={submitting} className="flex-1 py-2.5 text-sm bg-black text-white rounded-lg hover:bg-gray-800 disabled:opacity-50">{submitting ? '생성 중...' : '생성'}</button>
+              <button onClick={handleCreate} disabled={submitting} className="flex-1 py-2.5 text-sm bg-koala-navy text-white rounded-lg hover:bg-koala-navy-hover disabled:opacity-50">{submitting ? '생성 중...' : '생성'}</button>
             </div>
           </div>
         </div>

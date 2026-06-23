@@ -36,7 +36,7 @@ function VideoPlayer({ url, thumbnail, title }: { url: string; thumbnail?: strin
       ) : (
         <>
           <ImageWithFallback
-            src={thumbnail ?? 'https://via.placeholder.com/800x450'}
+            src={thumbnail ?? '/placeholder.svg'}
             alt={title ?? ''}
             className="w-full h-full object-cover opacity-80"
           />

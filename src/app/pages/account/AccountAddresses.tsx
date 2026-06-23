@@ -57,7 +57,7 @@ export default function AccountAddresses() {
         <h2 className="text-xl md:text-2xl font-bold italic">{t('account.addresses.title')}</h2>
         <button
           onClick={handleOpenCreateModal}
-          className="flex items-center gap-2 px-6 py-3 bg-black text-white rounded-xl hover:bg-gray-900 transition-colors text-sm font-bold"
+          className="flex items-center gap-2 px-6 py-3 bg-koala-navy text-white rounded-xl hover:bg-koala-navy-hover transition-colors text-sm font-bold"
         >
           <Plus className="w-4 h-4" /> {t('account.addresses.addButton')}
         </button>
@@ -82,7 +82,7 @@ export default function AccountAddresses() {
                   <div className="flex items-center gap-3 mb-2">
                     <h3 className="text-lg font-bold text-gray-900">{address.label}</h3>
                     {address.isDefault && (
-                      <span className="px-3 py-1 bg-black text-white text-[10px] font-bold rounded-full">
+                      <span className="px-3 py-1 bg-koala-navy text-white text-[10px] font-bold rounded-full">
                         {t('account.addresses.defaultBadge')}
                       </span>
                     )}

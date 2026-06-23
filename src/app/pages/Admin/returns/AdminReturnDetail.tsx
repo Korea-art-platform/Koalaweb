@@ -121,7 +121,7 @@ export default function AdminReturnDetail() {
           {isApproved && ret.returnType === 'EXCHANGE' && (
             <button
               onClick={handleComplete}
-              className="px-3 py-2 text-xs bg-black text-white rounded-lg hover:bg-gray-800 transition-colors"
+              className="px-3 py-2 text-xs bg-koala-navy text-white rounded-lg hover:bg-koala-navy-hover transition-colors"
             >
               교환 완료 처리
             </button>

@@ -86,7 +86,7 @@ export default function AdminNoticeList() {
         <h1 className="text-xl font-bold text-gray-900">공지사항 목록</h1>
         <button
           onClick={openCreate}
-          className="px-3 py-2 text-xs bg-black text-white rounded-lg hover:bg-gray-800 transition-colors"
+          className="px-3 py-2 text-xs bg-koala-navy text-white rounded-lg hover:bg-koala-navy-hover transition-colors"
         >
           + 공지 등록
         </button>
@@ -203,7 +203,7 @@ export default function AdminNoticeList() {
               <button
                 onClick={handleSubmit}
                 disabled={submitting}
-                className="flex-1 py-2.5 text-sm bg-black text-white rounded-lg hover:bg-gray-800 disabled:opacity-50"
+                className="flex-1 py-2.5 text-sm bg-koala-navy text-white rounded-lg hover:bg-koala-navy-hover disabled:opacity-50"
               >
                 {submitting ? '저장 중...' : editTarget ? '수정' : '등록'}
               </button>

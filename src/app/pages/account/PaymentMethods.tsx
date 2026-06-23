@@ -41,7 +41,7 @@ export default function AccountPaymentMethods() {
       <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 mb-6">
         <div className="flex items-center justify-between mb-6">
           <h3 className="text-lg font-bold">{t('account.payment.savedCards.title')}</h3>
-          <button className="flex items-center gap-2 px-4 py-2 bg-black text-white rounded-xl text-sm font-bold hover:bg-gray-800 transition-colors">
+          <button className="flex items-center gap-2 px-4 py-2 bg-koala-navy text-white rounded-xl text-sm font-bold hover:bg-koala-navy-hover transition-colors">
             <Plus className="w-4 h-4" />
             {t('account.payment.savedCards.addCard')}
           </button>

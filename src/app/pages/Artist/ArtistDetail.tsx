@@ -27,7 +27,7 @@ export default function ArtistDetail() {
   const works: WorkItem[] = skus.map((sku) => ({
     id: sku.skuCode,
     title: sku.name,
-    imageUrl: sku.primaryImageUrl ?? 'https://via.placeholder.com/280x350',
+    imageUrl: sku.primaryImageUrl ?? '/placeholder.svg',
     price: sku.salePrice ?? sku.listPrice,
   }));
 

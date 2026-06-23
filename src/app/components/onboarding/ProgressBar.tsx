@@ -24,7 +24,7 @@ export default function ProgressBar({ currentStep, onSkip }: ProgressBarProps) {
       </div>
       <div className="h-1 bg-gray-200 rounded-full overflow-hidden">
         <div
-          className="h-full bg-black transition-all duration-500 ease-out"
+          className="h-full bg-koala-navy transition-all duration-500 ease-out"
           style={{ width: `${(stepNumber / TOTAL_STEPS) * 100}%` }}
         />
       </div>

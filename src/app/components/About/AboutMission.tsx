@@ -23,7 +23,7 @@ export default function AboutMission() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-20 gap-y-20">
           {values.map((v, i) => (
             <motion.div key={i} className="group border-t border-zinc-100 pt-12" initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}>
-              <div className="w-14 h-14 bg-zinc-50 rounded-2xl flex items-center justify-center group-hover:bg-black transition-all">
+              <div className="w-14 h-14 bg-zinc-50 rounded-2xl flex items-center justify-center group-hover:bg-koala-navy transition-all">
                 <v.icon className="w-7 h-7 text-black group-hover:text-white transition-colors" />
               </div>
               <h3 className="text-2xl font-bold text-black mt-6 mb-4">{v.title}</h3>

@@ -24,7 +24,7 @@ export default function CheckoutSuccess() {
       <div className="min-h-screen flex flex-col items-center justify-center bg-[#FAFAFA]">
         <Package className="w-16 h-16 text-gray-200 mb-4" />
         <p className="text-gray-500 mb-8">{t('order.detail.noShippingInfo')}</p>
-        <Link to="/" className="px-8 py-3 bg-black text-white rounded-2xl font-medium">
+        <Link to="/" className="px-8 py-3 bg-koala-navy text-white rounded-2xl font-medium">
           {t('search.backToHome')}
         </Link>
       </div>
@@ -121,7 +121,7 @@ export default function CheckoutSuccess() {
                 <div key={idx} className="flex gap-5 items-center">
                   <div className="w-16 h-16 rounded-2xl overflow-hidden bg-gray-50 border border-gray-100 flex-shrink-0">
                     <img
-                      src={item.primaryImageUrl ?? 'https://via.placeholder.com/64'}
+                      src={item.primaryImageUrl ?? '/placeholder.svg'}
                       className="w-full h-full object-cover"
                       alt={item.skuName}
                     />
@@ -162,7 +162,7 @@ export default function CheckoutSuccess() {
           <div className="flex flex-col sm:flex-row gap-4">
             <Link
               to="/account/orders"
-              className="flex-1 py-5 bg-black text-white rounded-[24px] font-bold flex items-center justify-center gap-2 hover:bg-gray-800 transition-all active:scale-[0.98]"
+              className="flex-1 py-5 bg-koala-navy text-white rounded-[24px] font-bold flex items-center justify-center gap-2 hover:bg-koala-navy-hover transition-all active:scale-[0.98]"
             >
               {t('order.history.viewDetail')} <ChevronRight className="w-4 h-4" />
             </Link>

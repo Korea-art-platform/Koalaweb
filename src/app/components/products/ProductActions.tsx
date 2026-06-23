@@ -18,7 +18,7 @@ export function ProductActions({ sku, cartLoading, isWishlisted, onAddToCart, on
       <button
         onClick={onAddToCart}
         disabled={cartLoading || isOutOfStock}
-        className="flex-1 py-3.5 bg-black text-white rounded-xl font-bold text-sm hover:bg-gray-800 transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
+        className="flex-1 py-3.5 bg-koala-navy text-white rounded-xl font-bold text-sm hover:bg-koala-navy-hover transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {isOutOfStock
           ? t('product.detail.actions.outOfStock')

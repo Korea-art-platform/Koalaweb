@@ -10,7 +10,7 @@ export default function ArtistWorks() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { loading: artistLoading, artist } = useArtistDetail(id);
-  const { skus, isLoading: skusLoading } = useArtistSkus(artist?.name);
+  const { skus, isLoading: skusLoading } = useArtistSkus(artist?.artistCode);
 
   if (artistLoading) return <ArtistDetailSkeleton />;
   if (!artist) return <ArtistNotFound />;
@@ -32,7 +32,7 @@ export default function ArtistWorks() {
         <div className="flex items-center gap-4 mb-10 pb-6 border-b border-gray-100">
           <div className="w-14 h-14 rounded-full bg-gray-100 overflow-hidden flex-shrink-0">
             <ImageWithFallback
-              src={artist.profileImageUrl ?? 'https://via.placeholder.com/56x56'}
+              src={artist.profileImageUrl ?? '/placeholder.svg'}
               alt={artist.name}
               className="w-full h-full object-cover"
             />
@@ -68,7 +68,7 @@ export default function ArtistWorks() {
               <Link key={sku.skuCode} to={`/art/${sku.skuCode}`} className="group block">
                 <div className="aspect-square bg-gray-100 overflow-hidden mb-3">
                   <ImageWithFallback
-                    src={sku.primaryImageUrl ?? 'https://via.placeholder.com/280x280'}
+                    src={sku.primaryImageUrl ?? '/placeholder.svg'}
                     alt={sku.name}
                     className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                   />

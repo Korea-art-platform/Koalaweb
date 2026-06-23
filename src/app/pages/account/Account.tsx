@@ -60,7 +60,7 @@ export default function Account() {
             <input type="tel" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} placeholder={t('account.profile.phonePlaceholder')} className="w-full px-4 py-3 bg-[#F4F4F4] border border-transparent rounded-xl focus:outline-none focus:border-gray-300" />
           </div>
           <div className="flex gap-4 pt-4">
-            <button type="submit" disabled={saving} className="px-8 py-3 bg-black text-white rounded-xl hover:bg-gray-900 disabled:opacity-50">{saving ? t('account.profile.saving') : t('account.profile.saveButton')}</button>
+            <button type="submit" disabled={saving} className="px-8 py-3 bg-koala-navy text-white rounded-xl hover:bg-koala-navy-hover disabled:opacity-50">{saving ? t('account.profile.saving') : t('account.profile.saveButton')}</button>
             <button type="button" onClick={() => setForm({ name: user?.name ?? '', phone: user?.phone ?? '' })} className="px-8 py-3 border border-gray-200 rounded-xl hover:bg-gray-50">{t('account.profile.cancel')}</button>
           </div>
         </form>

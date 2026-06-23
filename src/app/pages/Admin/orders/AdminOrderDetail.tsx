@@ -106,7 +106,7 @@ export default function AdminOrderDetail() {
         </div>
         <div className="flex gap-2 flex-wrap justify-end flex-shrink-0">
           {canRegisterTracking && (
-            <button onClick={() => setTrackingOpen(true)} className="flex items-center gap-1.5 px-3 py-2 text-xs bg-black text-white rounded-lg hover:bg-gray-800 transition-colors">
+            <button onClick={() => setTrackingOpen(true)} className="flex items-center gap-1.5 px-3 py-2 text-xs bg-koala-navy text-white rounded-lg hover:bg-koala-navy-hover transition-colors">
               <Truck className="w-3.5 h-3.5" /> 운송장 등록
             </button>
           )}
@@ -201,7 +201,7 @@ export default function AdminOrderDetail() {
             </div>
             <div className="flex gap-2 mt-5">
               <button onClick={() => { setTrackingOpen(false); setCarrierCode(''); setTrackingNo(''); }} className="flex-1 py-2.5 text-sm border border-gray-200 rounded-lg hover:bg-gray-50">취소</button>
-              <button onClick={handleRegisterTracking} disabled={submitting || !carrierCode.trim() || !trackingNo.trim()} className="flex-1 py-2.5 text-sm bg-black text-white rounded-lg hover:bg-gray-800 disabled:opacity-50">{submitting ? '등록 중...' : '등록'}</button>
+              <button onClick={handleRegisterTracking} disabled={submitting || !carrierCode.trim() || !trackingNo.trim()} className="flex-1 py-2.5 text-sm bg-koala-navy text-white rounded-lg hover:bg-koala-navy-hover disabled:opacity-50">{submitting ? '등록 중...' : '등록'}</button>
             </div>
           </div>
         </div>

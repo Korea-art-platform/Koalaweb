@@ -12,7 +12,7 @@ export default function NotFound() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-black flex flex-col overflow-hidden relative">
+    <div className="min-h-screen bg-koala-navy flex flex-col overflow-hidden relative">
 
       {/* 배경 — 추상적인 원형 오브제 */}
       <div

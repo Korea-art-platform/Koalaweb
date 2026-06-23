@@ -50,7 +50,7 @@ export default function AccountSidebar({ currentPath, user }: Props) {
     <div className="bg-white rounded-2xl md:rounded-3xl p-4 md:p-6 shadow-sm border border-gray-100 lg:sticky lg:top-28">
       {/* 유저 프로필 */}
       <div className="flex items-center gap-4 pb-4 md:pb-6 mb-4 md:mb-6 border-b border-gray-100">
-        <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-black flex items-center justify-center text-white font-bold text-sm">
+        <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-koala-navy flex items-center justify-center text-white font-bold text-sm">
           {initials}
         </div>
         <div className="overflow-hidden">
@@ -73,7 +73,7 @@ export default function AccountSidebar({ currentPath, user }: Props) {
               to={item.path}
               className={`flex items-center gap-2 md:gap-3 px-4 py-3 md:py-3 rounded-xl transition-all whitespace-nowrap min-h-[44px] ${
                 isActive
-                  ? 'bg-black text-white font-bold'
+                  ? 'bg-koala-navy text-white font-bold'
                   : 'text-gray-400 hover:text-black hover:bg-gray-50'
               }`} >
               <Icon className="w-4 h-4 flex-shrink-0" />

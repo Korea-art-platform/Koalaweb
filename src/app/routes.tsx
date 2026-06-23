@@ -8,6 +8,7 @@ import Terms from "@/app/pages/legal/Terms";
 import Privacy from "@/app/pages/legal/Privacy";
 import Cookies from "@/app/pages/legal/Cookies";
 import YouthProtection from "@/app/pages/legal/YouthProtection";
+import AccountDeletion from "@/app/pages/legal/AccountDeletion";
 
 // 고객 지원
 import FAQ from "@/app/pages/support/FAQ";
@@ -100,7 +101,7 @@ export function AppRoutes() {
       <Route path="/" element={<Home />} />
       <Route path="/gallery" element={<Suspense fallback={<div style={{position:'fixed',inset:0,background:'#f6f4ef'}} />}><Gallery /></Suspense>} />
       <Route path="/search" element={<Search />} />
-      {/* <Route path="/about" element={<About/>}/> */}
+      <Route path="/about" element={<About/>}/>
 
       {/* 스토어 */}
       <Route path="/smart-store" element={<SmartStore />} />
@@ -127,6 +128,7 @@ export function AppRoutes() {
       <Route path="/privacy" element={<Privacy />} />
       <Route path="/cookies" element={<Cookies />} />
       <Route path="/youth-protection" element={<YouthProtection />} />
+      <Route path="/account-deletion" element={<AccountDeletion />} />
 
       {/* 공지사항 */}
       <Route path="/notice" element={<Notice />} />

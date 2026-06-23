@@ -26,7 +26,7 @@ export default function ProductCard({
       <div className="relative overflow-hidden rounded-xl md:rounded-2xl bg-gray-100">
         <div className={`relative w-full ${viewMode === 'grid' ? 'aspect-[3/4] sm:aspect-square' : 'aspect-[4/3]'}`}>
           <ImageWithFallback
-            src={sku.primaryImageUrl ?? 'https://via.placeholder.com/400'}
+            src={sku.primaryImageUrl ?? '/placeholder.svg'}
             alt={sku.name}
             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
           />
@@ -38,7 +38,7 @@ export default function ProductCard({
               {t(`store.categories.${sku.genre}`, { defaultValue: sku.genre }) as string}
             </div>
             {sku.isLimitedEdition && (
-              <div className="w-fit px-2 py-1 md:px-3 md:py-1.5 rounded-md bg-black text-white text-[9px] md:text-xs font-bold uppercase shadow-sm">
+              <div className="w-fit px-2 py-1 md:px-3 md:py-1.5 rounded-md bg-koala-navy text-white text-[9px] md:text-xs font-bold uppercase shadow-sm">
                 {/* 💡 수정 2: as string 추가 */}
                 {t('store.product.limited') as string}
               </div>

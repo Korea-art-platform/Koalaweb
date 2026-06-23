@@ -10,7 +10,7 @@ export default function WelcomeStep({ onNext }: { onNext: () => void }) {
       </div>
       <h1 className="text-4xl font-medium tracking-tight mb-4">{t('onboarding.welcome.title')}</h1>
       <p className="text-gray-400 leading-relaxed mb-8 max-w-md mx-auto">{t('onboarding.welcome.desc')}</p>
-      <button onClick={onNext} className="inline-flex items-center gap-2 px-10 py-4 bg-black text-white rounded-xl hover:bg-gray-800 transition-all active:scale-95">
+      <button onClick={onNext} className="inline-flex items-center gap-2 px-10 py-4 bg-koala-navy text-white rounded-xl hover:bg-koala-navy-hover transition-all active:scale-95">
         {t('onboarding.welcome.start')}
         <ChevronRight className="w-4 h-4" />
       </button>

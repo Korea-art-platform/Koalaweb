@@ -61,7 +61,7 @@ export function ReturnRequestModal({ orderNo, onClose, onSuccess }: ReturnReques
                   onClick={() => setReturnType(type)}
                   className={`flex-1 py-2.5 text-sm rounded-xl border transition-colors font-medium ${
                     returnType === type
-                      ? 'border-black bg-black text-white'
+                      ? 'border-black bg-koala-navy text-white'
                       : 'border-gray-200 text-gray-600 hover:border-gray-400'
                   }`}
                 >
@@ -131,7 +131,7 @@ export function ReturnRequestModal({ orderNo, onClose, onSuccess }: ReturnReques
           <button
             onClick={handleSubmit}
             disabled={submitting}
-            className="flex-1 py-3 text-sm bg-black text-white rounded-xl hover:bg-gray-800 transition-colors font-medium disabled:opacity-50"
+            className="flex-1 py-3 text-sm bg-koala-navy text-white rounded-xl hover:bg-koala-navy-hover transition-colors font-medium disabled:opacity-50"
           >
             {submitting
               ? t('order.detail.returnModal.submitting')

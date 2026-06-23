@@ -35,14 +35,14 @@ export default function NotificationsStep({ notifications, onChange, onNext }: P
                 onChange={(e) => onChange({ ...notifications, [key]: e.target.checked })}
                 className="sr-only peer"
               />
-              <span className="absolute inset-0 bg-gray-300 rounded-full transition-colors peer-checked:bg-black" />
+              <span className="absolute inset-0 bg-gray-300 rounded-full transition-colors peer-checked:bg-koala-navy" />
               <span className="absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full transition-transform peer-checked:translate-x-6" />
             </label>
           </div>
         ))}
       </div>
 
-      <button onClick={onNext} className="w-full py-4 bg-black text-white rounded-xl hover:bg-gray-800 transition-all font-semibold shadow-lg shadow-black/10">
+      <button onClick={onNext} className="w-full py-4 bg-koala-navy text-white rounded-xl hover:bg-koala-navy-hover transition-all font-semibold shadow-lg shadow-black/10">
         {t('onboarding.notifications.start')}
       </button>
       <p className="text-xs text-gray-400 text-center mt-4">{t('onboarding.notifications.changeAnytime')}</p>

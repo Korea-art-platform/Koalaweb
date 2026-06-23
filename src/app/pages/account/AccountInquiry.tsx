@@ -95,7 +95,7 @@ export default function AccountInquiry() {
         </div>
         <button
           onClick={() => { setShowForm(true); setForm(DEFAULT_FORM); setFormError(''); }}
-          className="flex items-center gap-1.5 px-4 py-2 bg-black text-white text-xs font-medium rounded-lg hover:bg-gray-800 transition-colors"
+          className="flex items-center gap-1.5 px-4 py-2 bg-koala-navy text-white text-xs font-medium rounded-lg hover:bg-koala-navy-hover transition-colors"
         >
           <Plus className="w-3.5 h-3.5" />
           문의하기
@@ -188,7 +188,7 @@ export default function AccountInquiry() {
             <button
               onClick={handleSubmit}
               disabled={submitting}
-              className="flex-1 py-2.5 text-sm bg-black text-white rounded-lg hover:bg-gray-800 disabled:opacity-50"
+              className="flex-1 py-2.5 text-sm bg-koala-navy text-white rounded-lg hover:bg-koala-navy-hover disabled:opacity-50"
             >
               {submitting ? '등록 중...' : '문의 등록'}
             </button>
@@ -296,7 +296,7 @@ export default function AccountInquiry() {
               key={i}
               onClick={() => setPage(i)}
               className={`w-8 h-8 text-xs rounded-lg transition-colors
-                ${page === i ? 'bg-black text-white' : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50'}`}
+                ${page === i ? 'bg-koala-navy text-white' : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50'}`}
             >
               {i + 1}
             </button>

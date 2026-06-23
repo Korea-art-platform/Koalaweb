@@ -228,7 +228,7 @@ export default function AddressModal({ isOpen, mode, address, onClose, onSuccess
               <button
                 type="button"
                 onClick={handleAddressSearch}
-                className="px-4 py-3 bg-black text-white rounded-xl hover:bg-gray-800 transition-colors font-medium text-sm flex items-center gap-2 whitespace-nowrap"
+                className="px-4 py-3 bg-koala-navy text-white rounded-xl hover:bg-koala-navy-hover transition-colors font-medium text-sm flex items-center gap-2 whitespace-nowrap"
               >
                 <Search className="w-4 h-4" /> 찾기
               </button>
@@ -282,7 +282,7 @@ export default function AddressModal({ isOpen, mode, address, onClose, onSuccess
             <button
               type="submit"
               disabled={isSubmitting}
-              className="flex-1 px-4 py-3 bg-black text-white rounded-xl hover:bg-gray-800 transition-colors font-medium disabled:opacity-50 flex items-center justify-center gap-2"
+              className="flex-1 px-4 py-3 bg-koala-navy text-white rounded-xl hover:bg-koala-navy-hover transition-colors font-medium disabled:opacity-50 flex items-center justify-center gap-2"
             >
               {isSubmitting ? (
                 <>

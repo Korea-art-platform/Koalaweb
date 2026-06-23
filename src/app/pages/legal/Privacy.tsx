@@ -49,6 +49,8 @@ export default function Privacy() {
             <p className="font-medium text-gray-800 mt-2">서비스 이용 과정에서 자동 수집</p>
             <ul className="space-y-1 list-disc list-inside text-gray-600">
               <li>접속 IP 주소, 쿠키, 브라우저 환경 정보, 서비스 이용 기록</li>
+              <li>푸시 알림 토큰 (FCM 등록 토큰)</li>
+              <li>앱 진단 및 오류 로그 (오류 메시지, 기기 환경 정보, 발생 시점 등)</li>
             </ul>
           </div>
         </section>
@@ -59,6 +61,8 @@ export default function Privacy() {
             <li>회원 가입 및 본인 확인</li>
             <li>상품 주문, 결제 및 배송 처리</li>
             <li>고객 문의 및 분쟁 처리</li>
+            <li>푸시 알림 발송 (주문·배송 안내, 서비스 알림 등)</li>
+            <li>서비스 안정성 확보 및 오류 진단·개선</li>
             <li>서비스 개선 및 맞춤형 콘텐츠 제공</li>
             <li>법령상 의무 이행</li>
           </ul>
@@ -105,6 +109,14 @@ export default function Privacy() {
                 <tr>
                   <td className="px-4 py-2 text-gray-600">Amazon Web Services</td>
                   <td className="px-4 py-2 text-gray-600">서버 인프라 운영</td>
+                </tr>
+                <tr>
+                  <td className="px-4 py-2 text-gray-600">Google (Firebase)</td>
+                  <td className="px-4 py-2 text-gray-600">푸시 알림 발송</td>
+                </tr>
+                <tr>
+                  <td className="px-4 py-2 text-gray-600">Sentry</td>
+                  <td className="px-4 py-2 text-gray-600">앱 오류 진단 및 모니터링</td>
                 </tr>
               </tbody>
             </table>

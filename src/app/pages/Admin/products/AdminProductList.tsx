@@ -244,7 +244,7 @@ export default function AdminProductList() {
         <h1 className="text-xl font-bold text-gray-900">상품 (SKU) 목록</h1>
         <button
           onClick={openCreate}
-          className="px-3 py-2 text-xs bg-black text-white rounded-lg hover:bg-gray-800 transition-colors"
+          className="px-3 py-2 text-xs bg-koala-navy text-white rounded-lg hover:bg-koala-navy-hover transition-colors"
         >
           + 상품 추가
         </button>
@@ -368,7 +368,7 @@ export default function AdminProductList() {
                 <button onClick={() => { setStockModal(null); setTargetQty(''); setMemo(''); }}
                   className="flex-1 py-2.5 text-sm border border-gray-200 rounded-lg hover:bg-gray-50">취소</button>
                 <button onClick={handleStockAdjust} disabled={adjusting || !isValid}
-                  className="flex-1 py-2.5 text-sm bg-black text-white rounded-lg hover:bg-gray-800 disabled:opacity-50">
+                  className="flex-1 py-2.5 text-sm bg-koala-navy text-white rounded-lg hover:bg-koala-navy-hover disabled:opacity-50">
                   {adjusting ? '처리 중...' : '적용'}
                 </button>
               </div>
@@ -461,7 +461,7 @@ export default function AdminProductList() {
                     <button
                       type="button"
                       onClick={() => { handlePrimaryFileChange(null); if (primaryInputRef.current) primaryInputRef.current.value = ''; }}
-                      className="absolute -top-1.5 -right-1.5 bg-black text-white rounded-full p-0.5 hover:bg-red-600"
+                      className="absolute -top-1.5 -right-1.5 bg-koala-navy text-white rounded-full p-0.5 hover:bg-red-600"
                     >
                       <X className="w-3 h-3" />
                     </button>
@@ -532,7 +532,7 @@ export default function AdminProductList() {
               <button onClick={() => setCreateOpen(false)}
                 className="flex-1 py-2.5 text-sm border border-gray-200 rounded-lg hover:bg-gray-50">취소</button>
               <button onClick={handleCreate} disabled={submitting}
-                className="flex-1 py-2.5 text-sm bg-black text-white rounded-lg hover:bg-gray-800 disabled:opacity-50">
+                className="flex-1 py-2.5 text-sm bg-koala-navy text-white rounded-lg hover:bg-koala-navy-hover disabled:opacity-50">
                 {submitting ? '등록 중...' : '등록'}
               </button>
             </div>

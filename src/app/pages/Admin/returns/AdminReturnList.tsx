@@ -82,7 +82,7 @@ export default function AdminReturnList() {
             onClick={() => handleFilterChange(f.value)}
             className={`px-3 py-1.5 text-xs rounded-lg font-medium transition-colors ${
               statusFilter === f.value
-                ? 'bg-black text-white'
+                ? 'bg-koala-navy text-white'
                 : 'bg-white border border-gray-200 text-gray-500 hover:border-gray-400'
             }`}
           >

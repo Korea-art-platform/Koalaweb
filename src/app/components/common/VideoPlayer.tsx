@@ -69,7 +69,7 @@ export default function VideoPlayer({
       ) : (
         <>
           <ImageWithFallback
-            src={thumbnail ?? 'https://via.placeholder.com/800x450'}
+            src={thumbnail ?? '/placeholder.svg'}
             alt={title ?? ''}
             className="w-full h-full object-cover opacity-80 transition-transform duration-500 group-hover:scale-105" />
           <div

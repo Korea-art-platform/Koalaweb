@@ -64,7 +64,7 @@ export default function AccountOrders() {
         <div className="bg-white rounded-3xl p-12 md:p-20 shadow-sm border border-dashed border-gray-200 text-center">
           <Package className="w-12 h-12 text-gray-200 mx-auto mb-4" />
           <h3 className="text-lg md:text-xl font-bold mb-2">{t('order.history.emptyMessage')}</h3>
-          <Link to="/store" className="inline-block mt-6 px-8 py-3.5 bg-black text-white rounded-2xl hover:bg-gray-800 font-bold text-sm">
+          <Link to="/store" className="inline-block mt-6 px-8 py-3.5 bg-koala-navy text-white rounded-2xl hover:bg-koala-navy-hover font-bold text-sm">
             {t('order.history.goStore')}
           </Link>
         </div>
@@ -90,7 +90,7 @@ export default function AccountOrders() {
               <div className="p-5 md:p-8">
                 <div className="flex gap-4 items-center">
                   <div className="w-16 h-16 md:w-20 md:h-20 rounded-xl overflow-hidden bg-gray-100 border border-gray-50">
-                    <img src={order.firstSkuImageUrl ?? 'https://via.placeholder.com/80'} alt="" className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
+                    <img src={order.firstSkuImageUrl ?? '/placeholder.svg'} alt="" className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <h4 className="font-bold text-gray-900 text-sm md:text-base truncate">{order.firstSkuName}</h4>
@@ -100,7 +100,7 @@ export default function AccountOrders() {
                 </div>
                 <div className="flex gap-2 mt-8 pt-6 border-t border-gray-50">
                   {order.orderStatus === 'SHIPPED' && (
-                    <button className="flex items-center gap-2 px-5 py-3 bg-black text-white rounded-xl text-xs font-bold"><Box className="w-4 h-4" /> {t('order.detail.trackShipping')}</button>
+                    <button className="flex items-center gap-2 px-5 py-3 bg-koala-navy text-white rounded-xl text-xs font-bold"><Box className="w-4 h-4" /> {t('order.detail.trackShipping')}</button>
                   )}
                   {['PENDING_PAYMENT', 'PAID', 'PREPARING'].includes(order.orderStatus) && (
                     <button onClick={() => handleCancel(order.orderNo)} className="flex items-center gap-2 px-5 py-3 border border-red-200 text-red-500 rounded-xl text-xs font-bold">{t('order.detail.cancelOrder')}</button>

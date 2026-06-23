@@ -57,7 +57,7 @@ export function ArtistProfileSection({
       <div className="flex flex-col md:flex-row gap-8 items-start">
         <div className="w-full md:w-64 flex-shrink-0 aspect-[3/4] bg-gray-100 overflow-hidden">
           <ImageWithFallback
-            src={profileImageUrl ?? 'https://via.placeholder.com/300x400'}
+            src={profileImageUrl ?? '/placeholder.svg'}
             alt={name}
             className="w-full h-full object-cover"
           />
@@ -76,7 +76,7 @@ export function ArtistProfileSection({
                 disabled={loading}
                 className={`inline-flex items-center gap-2 px-5 py-2 rounded-full text-sm font-semibold transition-all disabled:opacity-50 ${
                   isFollowing
-                    ? 'bg-black text-white hover:bg-gray-800'
+                    ? 'bg-koala-navy text-white hover:bg-koala-navy-hover'
                     : 'border border-gray-300 text-gray-700 hover:border-black hover:text-black'
                 }`}
               >

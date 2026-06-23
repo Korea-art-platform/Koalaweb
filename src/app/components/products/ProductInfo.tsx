@@ -48,7 +48,7 @@ export function ProductInfo({ sku, selectedColor, onColorSelect }: Props) {
           {sku.genre}
         </span>
         {sku.isLimitedEdition && (
-          <span className="text-[10px] font-bold px-2.5 py-1 bg-amber-50 text-amber-600 border border-amber-200 rounded-full tracking-wide whitespace-nowrap">
+          <span className="text-[10px] font-bold px-2.5 py-1 bg-koala-red text-white rounded-full tracking-wide whitespace-nowrap">
             {t('product.detail.gallery.limitedEdition')}
           </span>
         )}

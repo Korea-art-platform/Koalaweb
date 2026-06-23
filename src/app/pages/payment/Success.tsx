@@ -69,6 +69,12 @@ export default function PaymentSuccess() {
               shipping: 0,
               items: orderDetail.orderItems ?? orderDetail.items ?? [],
             } : null,
+            shippingAddress: orderDetail?.shipment ? {
+              recipient: orderDetail.shipment.recipientName,
+              phone: orderDetail.shipment.recipientPhone,
+              address: `[${orderDetail.shipment.zipCode}] ${orderDetail.shipment.address1}`,
+              address2: orderDetail.shipment.address2,
+            } : null,
             paymentMethod: '토스페이먼츠',
           },
           replace: true,
@@ -99,7 +105,7 @@ export default function PaymentSuccess() {
           <div className="space-y-3">
             <button
               onClick={() => navigate('/cart')}
-              className="w-full py-3 bg-black text-white rounded-xl hover:bg-gray-900 transition-colors"
+              className="w-full py-3 bg-koala-navy text-white rounded-xl hover:bg-koala-navy-hover transition-colors"
             >
               장바구니로 돌아가기
             </button>

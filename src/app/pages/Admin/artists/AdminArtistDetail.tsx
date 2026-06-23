@@ -231,7 +231,7 @@ function InfoTab({
       <button
         onClick={handleSave}
         disabled={saving}
-        className="px-5 py-2.5 text-sm bg-black text-white rounded-lg hover:bg-gray-800 disabled:opacity-50 flex items-center gap-2"
+        className="px-5 py-2.5 text-sm bg-koala-navy text-white rounded-lg hover:bg-koala-navy-hover disabled:opacity-50 flex items-center gap-2"
       >
         {success ? <><Check className="w-4 h-4" /> 저장됨</> : saving ? '저장 중...' : '저장'}
       </button>
@@ -437,7 +437,7 @@ function SectionCard({
               <button
                 onClick={handleSaveUrl}
                 disabled={urlSaving || !urlInput.trim()}
-                className="px-4 py-2 text-sm bg-black text-white rounded-lg hover:bg-gray-800 disabled:opacity-50 whitespace-nowrap"
+                className="px-4 py-2 text-sm bg-koala-navy text-white rounded-lg hover:bg-koala-navy-hover disabled:opacity-50 whitespace-nowrap"
               >
                 {urlSaving ? '저장 중...' : current ? '교체' : '등록'}
               </button>
@@ -465,7 +465,7 @@ function SectionCard({
               <button
                 onClick={() => fileInputRef.current?.click()}
                 disabled={uploading}
-                className="flex items-center gap-1.5 px-3 py-1.5 text-xs bg-black text-white rounded-lg hover:bg-gray-800 disabled:opacity-50"
+                className="flex items-center gap-1.5 px-3 py-1.5 text-xs bg-koala-navy text-white rounded-lg hover:bg-koala-navy-hover disabled:opacity-50"
               >
                 <Upload className="w-3.5 h-3.5" />
                 {current ? '교체' : '업로드'}
@@ -618,7 +618,7 @@ function CareerTab({
       {!adding && (
         <button
           onClick={() => setAdding(true)}
-          className="flex items-center gap-1.5 px-3 py-2 text-xs bg-black text-white rounded-lg hover:bg-gray-800 mb-6"
+          className="flex items-center gap-1.5 px-3 py-2 text-xs bg-koala-navy text-white rounded-lg hover:bg-koala-navy-hover mb-6"
         >
           <Plus className="w-3.5 h-3.5" /> 약력 추가
         </button>
@@ -672,7 +672,7 @@ function CareerTab({
             <button
               onClick={handleAdd}
               disabled={submitting}
-              className="px-4 py-1.5 text-xs bg-black text-white rounded-lg hover:bg-gray-800 disabled:opacity-50"
+              className="px-4 py-1.5 text-xs bg-koala-navy text-white rounded-lg hover:bg-koala-navy-hover disabled:opacity-50"
             >
               {submitting ? '추가 중...' : '추가'}
             </button>
@@ -1004,7 +1004,7 @@ function FeaturedTab({
               <button
                 onClick={handleAddSku}
                 disabled={addBusy}
-                className="flex-1 py-2.5 text-sm bg-black text-white rounded-lg hover:bg-gray-800 disabled:opacity-50"
+                className="flex-1 py-2.5 text-sm bg-koala-navy text-white rounded-lg hover:bg-koala-navy-hover disabled:opacity-50"
               >
                 {addBusy ? '등록 중...' : '작품 등록 + 대표 설정'}
               </button>
@@ -1062,12 +1062,12 @@ function FeaturedTab({
                     </div>
                   </div>
                   {isCurrent ? (
-                    <span className="text-[10px] font-semibold bg-black text-white px-2 py-1 rounded-full">대표</span>
+                    <span className="text-[10px] font-semibold bg-koala-navy text-white px-2 py-1 rounded-full">대표</span>
                   ) : (
                     <button
                       onClick={() => handleSet(sku.skuCode)}
                       disabled={busy}
-                      className="px-3 py-1.5 text-xs bg-black text-white rounded-lg hover:bg-gray-800 disabled:opacity-40 whitespace-nowrap"
+                      className="px-3 py-1.5 text-xs bg-koala-navy text-white rounded-lg hover:bg-koala-navy-hover disabled:opacity-40 whitespace-nowrap"
                     >
                       설정
                     </button>

@@ -213,12 +213,12 @@ export async function getAdminUsers(page = 0, size = 20) {
 }
 
 export async function getAdminUser(userId: number){
-  const res = await adminInstance.get(`${BASE}users/${userId}`);
+  const res = await adminInstance.get(`${BASE}/users/${userId}`);
   return res.data.data;
 }
 
 export async function getAdminUserOrders(userId: number, page = 0, size = 10){
-  const res = await adminInstance.get(`${BASE}orders`, {params: {userId, page, size}});
+  const res = await adminInstance.get(`${BASE}/orders`, {params: {userId, page, size}});
   return res.data.data;
 }
 

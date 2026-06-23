@@ -42,7 +42,7 @@ function MiniBarChart({ data }: { data: DailyRevenue[] }) {
       {data.map((d) => (
         <div key={d.date} className="flex-1 flex flex-col items-center gap-1 group relative">
           <div
-            className="w-full bg-black rounded-sm transition-all"
+            className="w-full bg-koala-navy rounded-sm transition-all"
             style={{ height: `${(Number(d.revenue) / max) * 72}px`, minHeight: 2 }}
           />
           <div className="absolute bottom-full mb-1 left-1/2 -translate-x-1/2 bg-gray-900 text-white text-[10px] rounded px-1.5 py-0.5 whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">

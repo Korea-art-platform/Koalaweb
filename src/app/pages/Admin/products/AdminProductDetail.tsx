@@ -333,7 +333,7 @@ function InfoTab({ sku, onSaved }: { sku: any; onSaved: () => void }) {
 
         {error && <p className="text-xs text-red-500">{error}</p>}
         <button onClick={handleSave} disabled={saving}
-          className="flex items-center gap-2 px-5 py-2.5 text-sm bg-black text-white rounded-lg hover:bg-gray-800 disabled:opacity-50">
+          className="flex items-center gap-2 px-5 py-2.5 text-sm bg-koala-navy text-white rounded-lg hover:bg-koala-navy-hover disabled:opacity-50">
           {success ? <><Check className="w-4 h-4" /> 저장됨</> : saving ? '저장 중...' : '저장'}
         </button>
       </div>
@@ -795,7 +795,7 @@ function StockStatusTab({
           <button
             onClick={handleAdjust}
             disabled={stockBusy || delta === 0 || delta === null || isNaN(targetNum) || targetNum < 0}
-            className="w-full py-2 text-sm bg-black text-white rounded-lg hover:bg-gray-800 disabled:opacity-50"
+            className="w-full py-2 text-sm bg-koala-navy text-white rounded-lg hover:bg-koala-navy-hover disabled:opacity-50"
           >
             {stockBusy ? '처리 중...' : '재고 수정'}
           </button>

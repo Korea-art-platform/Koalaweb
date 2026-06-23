@@ -75,7 +75,7 @@ export default function AccountWishlist() {
                     </p>
                     <Link
                         to="/store"
-                        className="inline-block px-8 py-3.5 bg-black text-white rounded-2xl hover:bg-gray-800 transition-all font-bold text-sm"
+                        className="inline-block px-8 py-3.5 bg-koala-navy text-white rounded-2xl hover:bg-koala-navy-hover transition-all font-bold text-sm"
                     >
                         {t('order.history.goStore')}
                     </Link>
@@ -88,13 +88,13 @@ export default function AccountWishlist() {
                                 <Link to={`/product/${item.skuCode}`}>
                                     <div className="relative aspect-square overflow-hidden bg-gray-50">
                                         <img
-                                            src={item.primaryImageUrl ?? 'https://via.placeholder.com/400'}
+                                            src={item.primaryImageUrl ?? '/placeholder.svg'}
                                             alt={item.skuName}
                                             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                                         />
                                         {item.isLimitedEdition && (
                                             <div className="absolute top-3 left-3">
-                                                <span className="px-2 py-1 bg-black text-white text-[10px] font-bold rounded-lg">
+                                                <span className="px-2 py-1 bg-koala-navy text-white text-[10px] font-bold rounded-lg">
                                                     Limited
                                                 </span>
                                             </div>
@@ -118,7 +118,7 @@ export default function AccountWishlist() {
                                     <div className="flex gap-2">
                                         <button
                                             onClick={() => handleAddToCart(item.skuCode)}
-                                            className="flex-1 flex items-center justify-center gap-1.5 py-2.5 bg-black text-white rounded-xl text-xs font-bold hover:bg-gray-800 transition-colors"
+                                            className="flex-1 flex items-center justify-center gap-1.5 py-2.5 bg-koala-navy text-white rounded-xl text-xs font-bold hover:bg-koala-navy-hover transition-colors"
                                         >
                                             <ShoppingCart className="w-3.5 h-3.5" />
                                             {t('account.wishlist.addToCart')}

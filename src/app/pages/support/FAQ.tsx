@@ -131,7 +131,7 @@ export default function FAQ() {
               onClick={() => handleCategoryChange(i)}
               className={`px-4 py-2 rounded-full text-xs font-bold transition-all ${
                 activeCategory === i
-                  ? 'bg-black text-white'
+                  ? 'bg-koala-navy text-white'
                   : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
               }`}
             >
@@ -169,7 +169,7 @@ export default function FAQ() {
           <p className="text-xs text-gray-500 mb-4">평일 10:00 - 18:00, 고객센터에서 도움드립니다.</p>
           <a
             href="/contact"
-            className="inline-block px-6 py-3 bg-black text-white text-xs font-bold rounded-xl hover:bg-gray-800 transition-colors"
+            className="inline-block px-6 py-3 bg-koala-navy text-white text-xs font-bold rounded-xl hover:bg-koala-navy-hover transition-colors"
           >
             1:1 문의하기
           </a>

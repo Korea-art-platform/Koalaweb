@@ -88,7 +88,7 @@ export default function Account() {
             <button
               type="submit"
               disabled={saving}
-              className="px-8 py-3 bg-black text-white rounded-xl hover:bg-gray-900 transition-colors disabled:opacity-50"
+              className="px-8 py-3 bg-koala-navy text-white rounded-xl hover:bg-koala-navy-hover transition-colors disabled:opacity-50"
             >
               {saving ? t('account.profile.saving') : t('account.profile.saveButton')}
             </button>

@@ -78,7 +78,7 @@ export default function AdminInquiryList() {
             onClick={() => handleFilterChange(f.value)}
             className={`px-3 py-1.5 text-xs rounded-full transition-colors font-medium
               ${statusFilter === f.value
-                ? 'bg-black text-white'
+                ? 'bg-koala-navy text-white'
                 : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50'}`}
           >
             {f.label}
@@ -153,7 +153,7 @@ export default function AdminInquiryList() {
                   key={i}
                   onClick={() => setPage(i)}
                   className={`w-8 h-8 text-xs rounded-lg transition-colors
-                    ${page === i ? 'bg-black text-white' : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50'}`}
+                    ${page === i ? 'bg-koala-navy text-white' : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50'}`}
                 >
                   {i + 1}
                 </button>

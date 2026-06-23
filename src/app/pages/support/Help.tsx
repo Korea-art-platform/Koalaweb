@@ -63,7 +63,7 @@ export default function Help() {
               to={path}
               className="group border border-gray-100 rounded-2xl p-6 hover:border-gray-300 hover:shadow-sm transition-all space-y-4"
             >
-              <div className="w-10 h-10 bg-gray-50 group-hover:bg-black rounded-xl flex items-center justify-center transition-colors">
+              <div className="w-10 h-10 bg-gray-50 group-hover:bg-koala-navy rounded-xl flex items-center justify-center transition-colors">
                 <Icon className="w-4 h-4 text-gray-500 group-hover:text-white transition-colors" />
               </div>
               <div className="space-y-1">
@@ -85,7 +85,7 @@ export default function Help() {
           </div>
           <a
             href="mailto:koala-art@heron.kr"
-            className="flex-shrink-0 px-5 py-2.5 bg-black text-white text-xs font-bold rounded-xl hover:bg-gray-800 transition-colors"
+            className="flex-shrink-0 px-5 py-2.5 bg-koala-navy text-white text-xs font-bold rounded-xl hover:bg-koala-navy-hover transition-colors"
           >
             koala-art@heron.kr
           </a>

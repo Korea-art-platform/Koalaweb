@@ -409,7 +409,7 @@ export default function Checkout() {
                       <button
                         type="button"
                         onClick={handleAddressSearch}
-                        className="px-5 py-3 bg-black text-white rounded-xl hover:bg-gray-800 transition-colors font-medium text-sm flex items-center gap-2 whitespace-nowrap"
+                        className="px-5 py-3 bg-koala-navy text-white rounded-xl hover:bg-koala-navy-hover transition-colors font-medium text-sm flex items-center gap-2 whitespace-nowrap"
                       >
                         <Search className="w-4 h-4" /> 찾기
                       </button>
@@ -464,7 +464,7 @@ export default function Checkout() {
                   {cartItems.map((item) => (
                     <div key={item.id} className="flex gap-4 p-4 bg-gray-50 rounded-2xl items-center">
                       <img
-                        src={item.primaryImageUrl ?? 'https://via.placeholder.com/80'}
+                        src={item.primaryImageUrl ?? '/placeholder.svg'}
                         className="w-20 h-20 rounded-xl object-cover border bg-white"
                         alt={item.skuName}
                       />
@@ -503,7 +503,7 @@ export default function Checkout() {
                         <span className="text-[10px] text-gray-400">{method.description}</span>
                       </div>
                       {selectedMethod === method.id && (
-                        <div className="w-5 h-5 bg-black rounded-full flex items-center justify-center">
+                        <div className="w-5 h-5 bg-koala-navy rounded-full flex items-center justify-center">
                           <Check className="w-3 h-3 text-white" />
                         </div>
                       )}
@@ -549,7 +549,7 @@ export default function Checkout() {
                     onClick={toggleAll}
                     className="w-full flex items-center gap-3 px-5 py-4 bg-gray-50 hover:bg-gray-100 transition-colors text-left"
                   >
-                    <span className={`w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 transition-colors ${allAgreed ? 'bg-black border-black' : 'border-gray-300'}`}>
+                    <span className={`w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 transition-colors ${allAgreed ? 'bg-koala-navy border-black' : 'border-gray-300'}`}>
                       {allAgreed && <Check className="w-3 h-3 text-white" />}
                     </span>
                     <span className="text-sm font-bold text-gray-900">아래 약관에 모두 동의합니다</span>
@@ -565,7 +565,7 @@ export default function Checkout() {
                         <button
                           type="button"
                           onClick={() => setAgreed((prev) => ({ ...prev, [key]: !prev[key] }))}
-                          className={`w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 transition-colors ${agreed[key] ? 'bg-black border-black' : 'border-gray-300'}`}
+                          className={`w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 transition-colors ${agreed[key] ? 'bg-koala-navy border-black' : 'border-gray-300'}`}
                         >
                           {agreed[key] && <Check className="w-3 h-3 text-white" />}
                         </button>
@@ -584,7 +584,7 @@ export default function Checkout() {
                   onClick={handleOrder}
                   disabled={cartItems.length === 0 || !selectedMethod || !allAgreed || isProcessing}
                   className={`w-full py-5 rounded-2xl font-bold flex items-center justify-center gap-2 transition-all shadow-lg ${cartItems.length > 0 && selectedMethod && allAgreed && !isProcessing
-                      ? 'bg-black text-white hover:bg-gray-800 shadow-black/10 active:scale-[0.98]'
+                      ? 'bg-koala-navy text-white hover:bg-koala-navy-hover shadow-black/10 active:scale-[0.98]'
                       : 'bg-gray-100 text-gray-300 cursor-not-allowed shadow-none'
                     }`}
                 >

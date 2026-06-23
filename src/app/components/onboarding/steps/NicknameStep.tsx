@@ -38,7 +38,7 @@ export default function NicknameStep({ nickname, onChange, onNext }: Props) {
         />
         <p className="text-xs text-gray-400 mt-2">{t('onboarding.nickname.hint')}</p>
       </div>
-      <button onClick={handleNextClick} className="w-full py-4 bg-black text-white rounded-xl hover:bg-gray-800 transition-all font-medium">
+      <button onClick={handleNextClick} className="w-full py-4 bg-koala-navy text-white rounded-xl hover:bg-koala-navy-hover transition-all font-medium">
         {t('onboarding.nickname.next')}
       </button>
     </div>

@@ -68,10 +68,10 @@ export default function Shipping() {
         <section className="space-y-3 text-sm text-gray-700 leading-relaxed">
           <h2 className="font-semibold text-gray-900 text-base">배송 기간</h2>
           <ul className="space-y-2 text-gray-600">
-            <li className="flex gap-2"><span className="w-1.5 h-1.5 rounded-full bg-black mt-2 flex-shrink-0" />결제 완료 후 영업일 기준 1~2일 이내 출고됩니다.</li>
-            <li className="flex gap-2"><span className="w-1.5 h-1.5 rounded-full bg-black mt-2 flex-shrink-0" />출고 후 CJ대한통운 기준 수도권 1~2일, 지방 2~3일이 소요됩니다.</li>
-            <li className="flex gap-2"><span className="w-1.5 h-1.5 rounded-full bg-black mt-2 flex-shrink-0" />한정판 및 특수 포장 작품은 정밀 포장으로 인해 최대 5~7 영업일이 소요될 수 있습니다.</li>
-            <li className="flex gap-2"><span className="w-1.5 h-1.5 rounded-full bg-black mt-2 flex-shrink-0" />주말·공휴일·연휴에는 출고가 이루어지지 않습니다.</li>
+            <li className="flex gap-2"><span className="w-1.5 h-1.5 rounded-full bg-koala-navy mt-2 flex-shrink-0" />결제 완료 후 영업일 기준 1~2일 이내 출고됩니다.</li>
+            <li className="flex gap-2"><span className="w-1.5 h-1.5 rounded-full bg-koala-navy mt-2 flex-shrink-0" />출고 후 CJ대한통운 기준 수도권 1~2일, 지방 2~3일이 소요됩니다.</li>
+            <li className="flex gap-2"><span className="w-1.5 h-1.5 rounded-full bg-koala-navy mt-2 flex-shrink-0" />한정판 및 특수 포장 작품은 정밀 포장으로 인해 최대 5~7 영업일이 소요될 수 있습니다.</li>
+            <li className="flex gap-2"><span className="w-1.5 h-1.5 rounded-full bg-koala-navy mt-2 flex-shrink-0" />주말·공휴일·연휴에는 출고가 이루어지지 않습니다.</li>
           </ul>
         </section>
 

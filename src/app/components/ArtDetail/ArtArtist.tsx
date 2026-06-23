@@ -18,7 +18,7 @@ export function ArtArtist({
     <div className="flex flex-col md:flex-row gap-8 items-start">
       <div className="w-full md:w-56 flex-shrink-0 aspect-[3/4] bg-gray-100 overflow-hidden">
         <ImageWithFallback
-          src={artistImageUrl ?? 'https://via.placeholder.com/224x300'}
+          src={artistImageUrl ?? '/placeholder.svg'}
           alt={artistName}
           className="w-full h-full object-cover"
         />

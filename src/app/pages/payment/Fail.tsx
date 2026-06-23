@@ -44,7 +44,7 @@ export default function PaymentFail() {
         <div className="space-y-3">
           <button
             onClick={() => navigate('/checkout')}
-            className="w-full py-3 bg-black text-white rounded-xl hover:bg-gray-900 transition-colors"
+            className="w-full py-3 bg-koala-navy text-white rounded-xl hover:bg-koala-navy-hover transition-colors"
           >
             다시 시도
           </button>
