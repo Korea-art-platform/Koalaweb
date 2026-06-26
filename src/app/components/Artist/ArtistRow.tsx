@@ -51,7 +51,7 @@ export default function ArtistRow({ artist, index }: ArtistRowProps) {
             </div>
             <h2 className="text-2xl md:text-4xl mb-3 font-bold">{artist.name}</h2>
             {artist.description && (
-              <p className="text-sm md:text-base text-gray-500 leading-relaxed break-keep line-clamp-2">
+              <p className="text-base md:text-lg text-gray-500 leading-relaxed break-keep line-clamp-3">
                 {artist.description}
               </p>
             )}
@@ -95,11 +95,11 @@ export default function ArtistRow({ artist, index }: ArtistRowProps) {
           {/* 대표 작품 카드 */}
           {artist.featuredSku && (
             <Link
-              to={`/products/${artist.featuredSku.skuCode}`}
+              to={`/product/${artist.featuredSku.skuCode}`}
               className="group block border border-gray-200 rounded-2xl overflow-hidden hover:border-gray-400 transition-colors mt-2"
             >
-              <div className="flex items-center gap-4 p-3">
-                <div className="w-16 h-16 flex-shrink-0 rounded-xl overflow-hidden bg-gray-100">
+              <div className="flex items-center gap-5 p-4">
+                <div className="w-24 h-24 flex-shrink-0 rounded-xl overflow-hidden bg-gray-100">
                   <ImageWithFallback
                     src={artist.featuredSku.imageUrl ?? ''}
                     alt={artist.featuredSku.name}
@@ -107,20 +107,20 @@ export default function ArtistRow({ artist, index }: ArtistRowProps) {
                   />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-[10px] text-gray-400 uppercase tracking-widest mb-0.5">대표 작품</p>
-                  <p className="text-sm font-semibold text-gray-900 truncate">{artist.featuredSku.name}</p>
-                  <div className="flex items-center gap-1.5 mt-1">
+                  <p className="text-xs text-gray-400 uppercase tracking-widest mb-1">대표 작품</p>
+                  <p className="text-base font-semibold text-gray-900 truncate">{artist.featuredSku.name}</p>
+                  <div className="flex items-center gap-2 mt-1.5">
                     {artist.featuredSku.salePrice ? (
                       <>
-                        <span className="text-sm font-bold text-koala-red">₩{fmt(artist.featuredSku.salePrice)}</span>
-                        <span className="text-xs text-gray-400 line-through">₩{fmt(artist.featuredSku.listPrice)}</span>
+                        <span className="text-base font-bold text-koala-red">₩{fmt(artist.featuredSku.salePrice)}</span>
+                        <span className="text-sm text-gray-400 line-through">₩{fmt(artist.featuredSku.listPrice)}</span>
                       </>
                     ) : (
-                      <span className="text-sm font-bold text-gray-900">₩{fmt(artist.featuredSku.listPrice)}</span>
+                      <span className="text-base font-bold text-gray-900">₩{fmt(artist.featuredSku.listPrice)}</span>
                     )}
                   </div>
                 </div>
-                <ArrowRight className="w-4 h-4 text-gray-300 group-hover:text-gray-700 transition-colors flex-shrink-0" />
+                <ArrowRight className="w-5 h-5 text-gray-300 group-hover:text-gray-700 transition-colors flex-shrink-0" />
               </div>
             </Link>
           )}
