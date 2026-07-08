@@ -5,11 +5,33 @@ import Navigation from '@/app/components/layouts/Header';
 import LoginForm from '@/app/components/Auth/LoginForm';
 import SignupForm from '@/app/components/Auth/SignupForm';
 import SocialLogin from '@/app/components/Auth/SocialLogin';
+import { isAppsInToss } from '@/utils/appsInToss';
 
 export default function Auth() {
   const { t } = useTranslation();
   const location = useLocation();
   const [isSignup, setIsSignup] = useState(location.pathname === '/signup');
+  const inToss = isAppsInToss();
+
+  // 앱인토스 검수 요건: 미니앱에서는 토스 로그인만 제공 (이메일/카카오/네이버 금지)
+  if (inToss) {
+    return (
+      <div className="min-h-screen bg-[#FAFAFA]">
+        <Navigation />
+        <div className="pt-24 pb-16 px-8">
+          <div className="max-w-md mx-auto">
+            <div className="text-center mb-8">
+              <h1 className="text-3xl tracking-tight mb-3">{t('auth.login.title')}</h1>
+              <p className="text-sm text-gray-400">{t('auth.login.subtitle')}</p>
+            </div>
+            <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100">
+              <SocialLogin isSignup={false} />
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#FAFAFA]">
@@ -17,7 +39,7 @@ export default function Auth() {
 
       <div className="pt-24 pb-16 px-8">
         <div className="max-w-md mx-auto">
-          
+
           {/* 🌟 쫀득한 슬라이딩 탭 토글 */}
           <div className="relative flex bg-[#F4F4F4] rounded-2xl p-1.5 mb-8 shadow-inner border border-gray-100">
             {/* 스르륵 움직이는 까만색 배경 (Sliding Pill) */}

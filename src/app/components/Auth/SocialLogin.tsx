@@ -14,14 +14,17 @@ export default function SocialLogin({ isSignup }: SocialLoginProps) {
 
   return (
     <>
-      <div className="relative my-8">
-        <div className="absolute inset-0 flex items-center">
-          <div className="w-full border-t border-gray-100" />
+      {/* 토스 미니앱: 위에 이메일 폼이 없으므로 "또는" 구분선 생략 */}
+      {!inToss && (
+        <div className="relative my-8">
+          <div className="absolute inset-0 flex items-center">
+            <div className="w-full border-t border-gray-100" />
+          </div>
+          <div className="relative flex justify-center text-xs">
+            <span className="px-4 bg-white text-gray-400">{t('auth.common.orContinueWith')}</span>
+          </div>
         </div>
-        <div className="relative flex justify-center text-xs">
-          <span className="px-4 bg-white text-gray-400">{t('auth.common.orContinueWith')}</span>
-        </div>
-      </div>
+      )}
 
       <div className="space-y-3">
         {/* 앱인토스 환경: 토스 로그인 버튼만 표시 */}

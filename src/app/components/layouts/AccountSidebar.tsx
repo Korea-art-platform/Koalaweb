@@ -63,7 +63,7 @@ export default function AccountSidebar({ currentPath, user }: Props) {
         </div>
       </div>
 
-      <nav className="flex lg:flex-col gap-1 overflow-x-auto no-scrollbar pb-2 lg:pb-0">
+      <nav className="grid grid-cols-2 lg:flex lg:flex-col gap-1.5 lg:gap-1">
         {menuItems.map((item) => {
           const Icon = item.icon;
           const isActive = currentPath === item.path;
@@ -71,7 +71,7 @@ export default function AccountSidebar({ currentPath, user }: Props) {
             <Link
               key={item.path}
               to={item.path}
-              className={`flex items-center gap-2 md:gap-3 px-4 py-3 md:py-3 rounded-xl transition-all whitespace-nowrap min-h-[44px] ${
+              className={`flex items-center gap-2 md:gap-3 px-3 md:px-4 py-3 rounded-xl transition-all whitespace-nowrap min-h-[44px] ${
                 isActive
                   ? 'bg-koala-navy text-white font-bold'
                   : 'text-gray-400 hover:text-black hover:bg-gray-50'

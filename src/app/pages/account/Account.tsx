@@ -43,8 +43,8 @@ export default function Account() {
 
   return (
     <>
-      <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100">
-        <h2 className="text-2xl mb-8">{t('account.profile.title')}</h2>
+      <div className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-gray-100">
+        <h2 className="text-xl md:text-2xl font-bold mb-6 md:mb-8">{t('account.profile.title')}</h2>
         <form className="space-y-6" onSubmit={handleSubmit}>
           <div>
             <label className="block text-sm mb-2 text-gray-700">{t('account.profile.nameLabel')}</label>
