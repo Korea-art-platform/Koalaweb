@@ -2,13 +2,12 @@ import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router';
 import { loadTossPayments, ANONYMOUS } from '@tosspayments/tosspayments-sdk';
 import { Check, ChevronRight } from 'lucide-react';
-import { isAppsInToss } from '@/utils/appsInToss';
-import instance from '@/api/instance';
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Toss Payment API 개별 연동 방식 (test_ck_... 키 사용)
-// 위젯(test_gck_...) 심사 전까지 사용하는 방식
-// 흐름: loadTossPayments → payment() → requestPayment() → success/fail redirect
+// 토스페이먼츠 PG 결제 (개별 결제창 연동, test_ck_... 키)
+// 표준 결제수단 전체 지원: 카드(+간편결제) / 계좌이체 / 휴대폰결제
+// 흐름: loadTossPayments → payment() → requestPayment(method) → success/fail redirect
+//       → /payment/success 에서 백엔드 confirm 으로 최종 승인
 // ─────────────────────────────────────────────────────────────────────────────
 
 const CLIENT_KEY = import.meta.env.VITE_TOSS_CLIENT_KEY as string;
@@ -23,23 +22,20 @@ export interface PaymentPageState {
   customerMobilePhone?: string;
 }
 
-type PaymentMethod = 'TOSS' | 'TRANSFER';
+type PaymentMethod = 'CARD' | 'TRANSFER' | 'MOBILE_PHONE';
 
-// ── 토스페이 공식 로고 ─────────────────────────────────────────────────────────
-function TossPayIcon({ size = 40 }: { size?: number }) {
+// ── 아이콘 ─────────────────────────────────────────────────────────────────────
+function CardIcon({ size = 40 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect width="48" height="48" rx="12" fill="#0064FF" />
-      <text x="50%" y="54%" dominantBaseline="middle" textAnchor="middle"
-        fill="white" fontSize="22" fontWeight="800" fontFamily="'Pretendard','Apple SD Gothic Neo',sans-serif"
-        letterSpacing="-1">
-        toss
-      </text>
+      <rect width="48" height="48" rx="12" fill="#181848" />
+      <rect x="10" y="15" width="28" height="18" rx="3" fill="white" />
+      <rect x="10" y="19" width="28" height="4" fill="#181848" />
+      <rect x="14" y="28" width="8" height="2.5" rx="1.25" fill="#181848" />
     </svg>
   );
 }
 
-// ── 계좌이체 아이콘 ────────────────────────────────────────────────────────────
 function BankTransferIcon({ size = 40 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -53,18 +49,29 @@ function BankTransferIcon({ size = 40 }: { size?: number }) {
   );
 }
 
+function MobileIcon({ size = 40 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect width="48" height="48" rx="12" fill="#F2F4F6" />
+      <rect x="16" y="10" width="16" height="28" rx="3" fill="#4E5968" />
+      <rect x="19" y="13" width="10" height="18" rx="1" fill="#F2F4F6" />
+      <circle cx="24" cy="34.5" r="1.5" fill="#F2F4F6" />
+    </svg>
+  );
+}
+
 const METHODS: { id: PaymentMethod; label: string; desc: string }[] = [
-  { id: 'TOSS',     label: '토스페이', desc: '토스 앱 간편결제' },
-  { id: 'TRANSFER', label: '계좌이체', desc: '실시간 계좌이체' },
+  { id: 'CARD',         label: '카드·간편결제', desc: '카드 / 토스·카카오·네이버페이' },
+  { id: 'TRANSFER',     label: '계좌이체',      desc: '실시간 계좌이체' },
+  { id: 'MOBILE_PHONE', label: '휴대폰결제',    desc: '휴대폰 소액결제' },
 ];
 
 export default function PaymentPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const state = location.state as PaymentPageState | null;
-  const inToss = isAppsInToss();
 
-  const [selected, setSelected]       = useState<PaymentMethod>('TOSS');
+  const [selected, setSelected]         = useState<PaymentMethod>('CARD');
   const [isProcessing, setIsProcessing] = useState(false);
 
   if (!state?.orderId || !state?.amount) {
@@ -72,45 +79,7 @@ export default function PaymentPage() {
     return null;
   }
 
-  // ── 앱인토스 환경: 토스페이 SDK 결제 ─────────────────────────────────────
-  const handleTossPayPayment = async () => {
-    setIsProcessing(true);
-    try {
-      // 1. 백엔드에서 결제 토큰 생성
-      // TODO: 앱인토스 mTLS 인증서 설정 후 백엔드 API 연결
-      const { data } = await instance.post<{ data: { payToken: string } }>(
-        '/api/v1/payments/toss/create',
-        {
-          orderId: state.orderId,
-          amount: state.amount,
-          orderName: state.orderName,
-        }
-      );
-      const payToken = data.data.payToken;
-
-      // 2. 토스페이 결제창 호출
-      const { checkoutPayment } = await import('@apps-in-toss/web-framework');
-      const result = await checkoutPayment({ payToken });
-
-      if (result.success) {
-        // 3. 백엔드에서 결제 최종 승인
-        await instance.post('/api/v1/payments/toss/execute', { payToken, orderId: state.orderId });
-        navigate('/payment/success', { state: { orderId: state.orderId } });
-      } else {
-        if (result.reason !== 'USER_CANCEL') {
-          alert(result.reason ?? '결제에 실패했습니다. 다시 시도해 주세요.');
-        }
-      }
-    } catch (e: unknown) {
-      const msg = (e as { message?: string })?.message;
-      alert(msg ?? '결제 요청에 실패했습니다. 다시 시도해 주세요.');
-    } finally {
-      setIsProcessing(false);
-    }
-  };
-
-  // ── 일반 웹: 토스페이먼츠 PG 결제 ────────────────────────────────────────
-  const handleTossPaymentsPayment = async () => {
+  const handlePayment = async () => {
     setIsProcessing(true);
     try {
       const tossPayments = await loadTossPayments(CLIENT_KEY);
@@ -130,17 +99,15 @@ export default function PaymentPage() {
       };
 
       if (selected === 'TRANSFER') {
-        await payment.requestPayment({
-          method: 'TRANSFER',
-          ...commonParams,
-          transfer: { cashReceiptType: 'PERSONAL', customerIdentityNumber: state.customerMobilePhone ?? '' },
-        });
+        await payment.requestPayment({ method: 'TRANSFER', ...commonParams });
+      } else if (selected === 'MOBILE_PHONE') {
+        await payment.requestPayment({ method: 'MOBILE_PHONE', ...commonParams });
       } else {
-        // TOSS: 토스페이 간편결제
+        // CARD — 표준 카드 결제창(간편결제 탭 포함)
         await payment.requestPayment({
           method: 'CARD',
           ...commonParams,
-          card: { flowMode: 'DIRECT', easyPay: 'TOSSPAY' },
+          card: { useEscrow: false, flowMode: 'DEFAULT', useCardPoint: false, useAppCardOnly: false },
         });
       }
     } catch (e: unknown) {
@@ -154,7 +121,10 @@ export default function PaymentPage() {
     }
   };
 
-  const handlePayment = isAppsInToss() ? handleTossPayPayment : handleTossPaymentsPayment;
+  const iconFor = (id: PaymentMethod, size: number) =>
+    id === 'CARD' ? <CardIcon size={size} />
+      : id === 'TRANSFER' ? <BankTransferIcon size={size} />
+      : <MobileIcon size={size} />;
 
   return (
     <div className="min-h-screen bg-[#FAFAFA]">
@@ -176,43 +146,30 @@ export default function PaymentPage() {
         <div className="bg-white rounded-[24px] border border-gray-100 p-6 mb-4">
           <h2 className="text-sm font-bold text-gray-500 mb-4">결제 수단</h2>
 
-          {inToss ? (
-            /* 앱인토스: 토스페이만 표시 */
-            <div className="flex items-center gap-3 p-4 rounded-2xl border-2 border-black bg-gray-50">
-              <TossPayIcon size={36} />
-              <div>
-                <p className="text-xs font-bold text-gray-900">토스페이</p>
-                <p className="text-[10px] text-gray-400">토스 앱 간편결제</p>
-              </div>
-              <div className="ml-auto w-4 h-4 bg-koala-navy rounded-full flex items-center justify-center">
-                <Check className="w-2.5 h-2.5 text-white" />
-              </div>
-            </div>
-          ) : (
-            /* 일반 웹: 결제 수단 선택 */
-            <div className="grid grid-cols-2 gap-3">
-              {METHODS.map((m) => (
-                <button
-                  key={m.id}
-                  onClick={() => setSelected(m.id)}
-                  className={`p-4 rounded-2xl border-2 flex flex-col items-center gap-2 transition-all ${
-                    selected === m.id
-                      ? 'border-black bg-gray-50'
-                      : 'border-gray-100 hover:border-gray-200'
-                  }`}
-                >
-                  {m.id === 'TOSS' ? <TossPayIcon size={40} /> : <BankTransferIcon size={40} />}
-                  <span className="text-xs font-bold text-gray-900">{m.label}</span>
-                  <span className="text-[10px] text-gray-400">{m.desc}</span>
-                  {selected === m.id && (
-                    <div className="w-4 h-4 bg-koala-navy rounded-full flex items-center justify-center">
-                      <Check className="w-2.5 h-2.5 text-white" />
-                    </div>
-                  )}
-                </button>
-              ))}
-            </div>
-          )}
+          <div className="grid grid-cols-3 gap-3">
+            {METHODS.map((m) => (
+              <button
+                key={m.id}
+                onClick={() => setSelected(m.id)}
+                className={`relative p-4 rounded-2xl border-2 flex flex-col items-center gap-2 transition-all ${
+                  selected === m.id
+                    ? 'border-black bg-gray-50'
+                    : 'border-gray-100 hover:border-gray-200'
+                }`}
+              >
+                {iconFor(m.id, 40)}
+                <span className="text-xs font-bold text-gray-900 text-center leading-tight">{m.label}</span>
+                {selected === m.id && (
+                  <div className="absolute top-2 right-2 w-4 h-4 bg-koala-navy rounded-full flex items-center justify-center">
+                    <Check className="w-2.5 h-2.5 text-white" />
+                  </div>
+                )}
+              </button>
+            ))}
+          </div>
+          <p className="text-[11px] text-gray-400 mt-3 text-center">
+            {METHODS.find((m) => m.id === selected)?.desc}
+          </p>
         </div>
 
         {/* 금액 요약 */}
