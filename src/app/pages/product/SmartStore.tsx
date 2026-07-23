@@ -5,17 +5,27 @@ import StoreHero from '@/app/components/Hero/StoreHero';
 import StoreFilter from '@/app/components/store/StoreFilter';
 import StoreProductGrid from '@/app/components/store/StoreProductGrid';
 import TrendingArtists from '@/app/components/Artist/TrendingArtists';
-import { getSkus } from '@/api/sku';
+import { getSkus, getGenreCounts } from '@/api/sku';
 import { getWishlist, addWishlist, removeWishlist } from '@/api/wishlist';
 import type { Sku, WishlistItem, PageResponse } from '@/api/types';
 
-const categories = ['All', 'ART_TOY', 'SCULPTURE', 'CERAMIC', 'PAINTING', 'GOODS'];
+const ALL_CATEGORIES = ['All', 'ART_TOY', 'SCULPTURE', 'CERAMIC', 'PAINTING', 'GOODS'];
 
 export default function SmartStore() {
   const queryClient = useQueryClient();
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [viewMode, setViewMode] = useState<'grid' | 'large'>('grid');
   const [page, setPage] = useState(0);
+
+  // 장르별 상품 수 → 상품 있는 카테고리만 노출 ('전체'는 항상 표시)
+  const { data: genreCounts = {} } = useQuery<Record<string, number>>({
+    queryKey: ['genre-counts'],
+    queryFn: async () => {
+      const res = await getGenreCounts();
+      return (res.data.data ?? {}) as Record<string, number>;
+    },
+  });
+  const categories = ALL_CATEGORIES.filter((c) => c === 'All' || (genreCounts[c] ?? 0) > 0);
 
   // SKU 목록
   const { data: skuPage, isLoading: loading } = useQuery({

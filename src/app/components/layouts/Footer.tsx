@@ -53,7 +53,6 @@ export default function Footer() {
               <h3 className="text-xs font-bold tracking-widest mb-5 text-white uppercase">{t('footer.explore.title')}</h3>
               <ul className="space-y-3">
                 {[
-                  { key: 'gallery', path: '/' },
                   { key: 'artistLab', path: '/artist-lab' },
                   { key: 'store', path: '/store' }
                 ].map((link) => (

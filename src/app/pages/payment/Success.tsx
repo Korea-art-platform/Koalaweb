@@ -65,8 +65,8 @@ export default function PaymentSuccess() {
             orderNo: orderId,
             orderInfo: orderDetail ? {
               total: orderDetail.totalAmount,
-              subtotal: orderDetail.totalAmount,
-              shipping: 0,
+              subtotal: orderDetail.productAmount ?? orderDetail.subtotal ?? orderDetail.totalAmount,
+              shipping: orderDetail.shippingAmount ?? orderDetail.shippingFee ?? 0,
               items: orderDetail.orderItems ?? orderDetail.items ?? [],
             } : null,
             shippingAddress: orderDetail?.shipment ? {

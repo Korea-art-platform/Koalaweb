@@ -32,13 +32,13 @@ export default function TrendingArtists({ excludeArtistCode }: TrendingArtistsPr
       {/* 헤더 */}
       <div className="flex items-center justify-between mb-8">
         <h2 className="text-base font-semibold text-gray-900 flex items-center gap-2">
-          <span className="text-gray-400">→</span> Trending Artists
+          <span className="text-gray-400">→</span> 인기 작가
         </h2>
         <Link
           to="/artist-lab"
           className="flex items-center gap-1 text-xs text-gray-400 hover:text-black transition-colors"
         >
-          View All Artists
+          작가 전체보기
           <ArrowRight className="w-3.5 h-3.5" />
         </Link>
       </div>

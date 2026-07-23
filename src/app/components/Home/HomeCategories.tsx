@@ -11,6 +11,12 @@ export default function HomeCategories({ categories }: HomeCategoriesProps) {
   const { t } = useTranslation();
   const scrollRef = useRef<HTMLDivElement>(null);
 
+  // 상품이 있는 카테고리만 노출 ('전체'는 항상 표시)
+  const visibleCategories = categories.filter((c) => c.id === 'all' || c.count > 0);
+
+  // 표시할 카테고리가 '전체' 하나뿐이면 (= 상품 자체가 없으면) 섹션 숨김
+  if (visibleCategories.length <= 1) return null;
+
   const scroll = (direction: 'left' | 'right') => {
     if (scrollRef.current) {
       scrollRef.current.scrollBy({
@@ -38,7 +44,7 @@ export default function HomeCategories({ categories }: HomeCategoriesProps) {
           </div>
         </div>
         <div ref={scrollRef} className="flex gap-4 overflow-x-auto no-scrollbar scroll-smooth">
-          {categories.map((category) => (
+          {visibleCategories.map((category) => (
             <Link key={category.id} to={`/smart-store?category=${category.id}`} className="flex-shrink-0 group">
               <div className="px-5 md:px-8 py-4 md:py-6 bg-gray-50 rounded-2xl border border-transparent group-hover:border-black group-hover:bg-white transition-all duration-300 min-w-[140px] md:min-w-[200px]">
                 <h3 className="text-sm md:text-lg font-bold mb-1">{t(`home.categories.list.${category.id}`)}</h3>

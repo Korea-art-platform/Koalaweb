@@ -19,7 +19,6 @@ export function Header() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const isGallery = location.pathname === '/gallery';
   const { setAuthenticated, isAuthenticated } = useAuth();
   const [isHeroActive, setIsHeroActive] = useState(false);
   const [isHeroDark, setIsHeroDark] = useState(false);
@@ -56,7 +55,7 @@ export function Header() {
   useEffect(() => {
     const updateHeaderState = () => {
       // 투명 헤더를 허용할 경로 정의
-      const allowedPaths = ['/', '/about', '/gallery'];
+      const allowedPaths = ['/', '/about'];
       const isAllowed = allowedPaths.includes(location.pathname);
 
       // 허용된 페이지가 아니거나 [data-hero] 요소가 없으면 일반 헤더로 강제 고정
@@ -102,7 +101,6 @@ export function Header() {
   const iconClass = isTransparent && isHeroDark ? 'text-white/80 hover:text-white' : 'text-gray-400 hover:text-black';
 
   const menus = [
-    { key: 'gallery', path: '/gallery' },
     { key: 'lab', path: '/artist-lab' },
     { key: 'store', path: '/store' },
     //{ key: 'about', path: '/about'}
@@ -110,7 +108,7 @@ export function Header() {
 
   const subMenus = [
     { key: 'notice', path: '/notice', icon: Bell },
-    { key: 'customerService', path: '/notice', icon: Headset },
+    { key: 'customerService', path: '/contact', icon: Headset },
     { key: 'settings', path: '/account/settings', icon: Settings },
   ];
 
@@ -176,7 +174,13 @@ export function Header() {
 
             {/* 오른쪽 아이콘 섹션 */}
             <div className="flex items-center gap-4 md:gap-6">
-              <Search className={`hidden lg:block w-5 h-5 cursor-pointer ${iconClass}`} />
+              <button
+                onClick={() => { setIsMenuOpen(false); navigate('/search'); }}
+                aria-label="검색"
+                className={`z-[120] transition-colors ${isMenuOpen ? 'text-black' : iconClass}`}
+              >
+                <Search className="w-5 h-5" />
+              </button>
 
               <Link
                 to="/cart"

@@ -1,8 +1,9 @@
-import { Navigate, Outlet } from 'react-router';
+import { Navigate, Outlet, useLocation } from 'react-router';
 import { useAuth } from '@/app/context/AuthContext';
 
 export default function ProtectedRoute() {
   const { isAuthenticated } = useAuth();
+  const location = useLocation();
 
   // 초기 인증 확인 중 — 깜빡임 없이 대기
   if (isAuthenticated === null) {
@@ -14,7 +15,8 @@ export default function ProtectedRoute() {
   }
 
   if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
+    // 로그인 후 원래 가려던 곳으로 돌아오도록 목적지를 넘긴다
+    return <Navigate to="/login" replace state={{ from: location.pathname + location.search }} />;
   }
 
   return <Outlet />;

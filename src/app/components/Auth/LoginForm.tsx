@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate, Link } from 'react-router';
+import { useNavigate, useLocation, Link } from 'react-router';
 import { Mail, Lock } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
@@ -14,7 +14,10 @@ type LoginFormData = {
 export default function LoginForm() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const location = useLocation();
   const { setAuthenticated } = useAuth();
+  // 보호된 페이지(장바구니/결제 등)에서 넘어온 경우, 로그인 후 그곳으로 복귀
+  const from = (location.state as { from?: string } | null)?.from;
   const [serverError, setServerError] = useState('');
   const [success, setSuccess] = useState('');
 
@@ -31,7 +34,7 @@ export default function LoginForm() {
       await login(data);
       setAuthenticated(true);
       setSuccess(t('auth.login.success'));
-      setTimeout(() => navigate('/'), 0);
+      setTimeout(() => navigate(from || '/', { replace: true }), 0);
     } catch (err: unknown) {
       const msg = (err as { response?: { data?: { message?: string } } })?.response?.data?.message;
       setServerError(msg || t('auth.login.error'));
@@ -83,11 +86,7 @@ export default function LoginForm() {
         </div>
       </div>
 
-      <div className="flex items-center justify-between text-sm">
-        <label className="flex items-center gap-2 cursor-pointer">
-          <input type="checkbox" className="w-4 h-4 rounded border-gray-300" />
-          <span className="text-gray-600">{t('auth.common.rememberMe')}</span>
-        </label>
+      <div className="flex items-center justify-end text-sm">
         <Link to="/forgot-password" className="text-gray-400 hover:text-black transition-colors">
           {t('auth.common.forgotPassword')}
         </Link>

@@ -30,7 +30,6 @@ import Home from "@/app/pages/Home";
 import Search from "@/app/pages/Search";
 import SmartStore from "@/app/pages/product/SmartStore";
 import { lazy, Suspense } from 'react';
-const Gallery = lazy(() => import('@/app/pages/gallery/Gallery'));
 import ARView from "@/app/pages/later/ARView";
 import ResellMarket from "@/app/pages/later/ResellMarket";
 
@@ -99,7 +98,6 @@ export function AppRoutes() {
       
       {/* 메인 */}
       <Route path="/" element={<Home />} />
-      <Route path="/gallery" element={<Suspense fallback={<div style={{position:'fixed',inset:0,background:'#f6f4ef'}} />}><Gallery /></Suspense>} />
       <Route path="/search" element={<Search />} />
       <Route path="/about" element={<About/>}/>
 
