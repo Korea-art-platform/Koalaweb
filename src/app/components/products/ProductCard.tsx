@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Heart, ShoppingCart, Check, ArrowRight } from 'lucide-react';
+import { Heart, ShoppingCart, Check, ArrowRight, ChevronDown } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link, useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
@@ -26,6 +26,7 @@ export default function ProductCard({
   const navigate = useNavigate();
   const detailPath = `/product/${sku.skuCode}`;
 
+  const [expanded, setExpanded] = useState(false);
   const [adding, setAdding] = useState(false);
   const [added, setAdded] = useState(false);
 
@@ -35,7 +36,7 @@ export default function ProductCard({
     if (adding || added) return;
     setAdding(true);
     try {
-      // 로딩 애니메이션이 보이도록 최소 표시 시간 확보 (SaveToggle 느낌)
+      // 로딩 애니메이션이 보이도록 최소 표시 시간 확보
       await Promise.all([
         addCartItem(sku.skuCode, 1),
         new Promise((r) => setTimeout(r, 500)),
@@ -46,7 +47,6 @@ export default function ProductCard({
     } catch (err) {
       const status = (err as { response?: { status?: number } })?.response?.status;
       if (status === 401 || status === 403) {
-        // 비로그인 → 로그인 후 이 상품으로 복귀
         navigate('/login', { state: { from: detailPath } });
       } else {
         alert(t('product.detail.toast.cartAddFailed', { defaultValue: '장바구니 담기에 실패했습니다.' }) as string);
@@ -56,19 +56,26 @@ export default function ProductCard({
     }
   };
 
+  const toggleExpand = () => setExpanded((v) => !v);
+
   return (
-    <div className="group relative flex flex-col">
-      {/* 이미지 */}
-      <div className="relative overflow-hidden rounded-xl md:rounded-2xl bg-gray-100">
-        <Link to={detailPath} className="block">
-          <div className={`relative w-full ${viewMode === 'grid' ? 'aspect-[3/4] sm:aspect-square' : 'aspect-[4/3]'}`}>
-            <ImageWithFallback
-              src={sku.primaryImageUrl ?? '/placeholder.svg'}
-              alt={sku.name}
-              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-            />
-          </div>
-        </Link>
+    <div className="group flex flex-col">
+      {/* 이미지 — 클릭 시 설명 펼침 */}
+      <div
+        role="button"
+        tabIndex={0}
+        onClick={toggleExpand}
+        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleExpand(); } }}
+        aria-expanded={expanded}
+        className="relative overflow-hidden rounded-xl md:rounded-2xl bg-gray-100 cursor-pointer"
+      >
+        <div className={`relative w-full ${viewMode === 'grid' ? 'aspect-[3/4] sm:aspect-square' : 'aspect-[4/3]'}`}>
+          <ImageWithFallback
+            src={sku.primaryImageUrl ?? '/placeholder.svg'}
+            alt={sku.name}
+            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+          />
+        </div>
 
         {/* 뱃지 */}
         <div className="absolute top-2.5 left-2.5 md:top-4 md:left-4 flex flex-col gap-1.5 pointer-events-none">
@@ -101,6 +108,14 @@ export default function ProductCard({
           </div>
         </div>
 
+        {/* 펼치기 힌트 (설명 있을 때만) */}
+        {sku.description && (
+          <div className="absolute bottom-2.5 left-2.5 md:bottom-4 md:left-4 flex items-center gap-1 px-2 py-1 rounded-full bg-black/45 backdrop-blur-sm text-white text-[10px] font-medium pointer-events-none">
+            <ChevronDown className={`w-3 h-3 transition-transform duration-300 ${expanded ? 'rotate-180' : ''}`} />
+            {expanded ? '접기' : '설명'}
+          </div>
+        )}
+
         {/* 찜 버튼 */}
         <motion.button
           onClick={(e) => onWishlistClick(e, sku.skuCode)}
@@ -127,80 +142,68 @@ export default function ProductCard({
         </motion.button>
       </div>
 
-      {/* 정보 */}
+      {/* 정보 (공통: 이름·작가·가격) */}
       <div className="mt-4 px-0.5 flex flex-col">
-        <Link to={detailPath} className="block">
-          <div className="text-[10px] md:text-xs text-gray-400 tracking-wider uppercase mb-1.5 font-medium">
-            {t(`store.categories.${sku.genre}`, { defaultValue: sku.genre }) as string}
-          </div>
-          <h3 className="text-sm md:text-lg lg:text-xl font-bold mb-1 group-hover:text-gray-600 transition-colors truncate">
-            {sku.name}
-          </h3>
-        </Link>
+        <div className="text-[10px] md:text-xs text-gray-400 tracking-wider uppercase mb-1.5 font-medium">
+          {t(`store.categories.${sku.genre}`, { defaultValue: sku.genre }) as string}
+        </div>
+        <h3 className="text-sm md:text-lg lg:text-xl font-bold mb-1 truncate">{sku.name}</h3>
         <p className="text-[12px] md:text-sm text-gray-500 mb-2 font-medium">{sku.artistName}</p>
         <p className="text-sm md:text-lg font-black tracking-tight">
           ₩{(sku.salePrice ?? sku.listPrice).toLocaleString()}
         </p>
 
-        {/* 확장 영역 — 데스크탑: 호버 시 펼침 / 모바일: 항상 표시 */}
-        <div
-          className="grid grid-rows-[1fr] opacity-100 md:grid-rows-[0fr] md:opacity-0 md:group-hover:grid-rows-[1fr] md:group-hover:opacity-100 transition-all duration-300 ease-out"
-        >
-          <div className="overflow-hidden min-h-0">
-            {sku.description && (
-              <p className="mt-2.5 text-xs text-gray-500 leading-relaxed line-clamp-2 break-keep">
+        {/* 펼침 영역: 작품 설명 (클릭 시 애니메이션) */}
+        <AnimatePresence initial={false}>
+          {expanded && sku.description && (
+            <motion.div
+              key="desc"
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.3, ease: 'easeOut' }}
+              className="overflow-hidden"
+            >
+              <p className="mt-3 text-xs text-gray-500 leading-relaxed line-clamp-3 break-keep">
                 {sku.description}
               </p>
-            )}
-            <div className="flex gap-2 mt-3">
-              <motion.button
-                onClick={handleAddToCart}
-                disabled={adding}
-                whileTap={{ scale: 0.96 }}
-                className={`relative flex-1 flex items-center justify-center py-2.5 rounded-xl text-xs font-bold overflow-hidden transition-colors duration-300 disabled:opacity-90 ${
-                  added ? 'bg-green-600 text-white' : 'bg-koala-navy text-white hover:bg-koala-navy-hover'
-                }`}
-              >
-                <AnimatePresence mode="wait" initial={false}>
-                  {added ? (
-                    <motion.span
-                      key="added"
-                      initial={{ y: 14, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: -14, opacity: 0 }}
-                      transition={{ duration: 0.18 }}
-                      className="flex items-center gap-1.5"
-                    >
-                      <Check className="w-3.5 h-3.5" /> 담겼어요
-                    </motion.span>
-                  ) : adding ? (
-                    <motion.span
-                      key="loading"
-                      initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-                      transition={{ duration: 0.15 }}
-                      className="flex items-center gap-1.5"
-                    >
-                      <span className="w-3.5 h-3.5 border-2 border-white/40 border-t-white rounded-full animate-spin" />
-                      담는 중
-                    </motion.span>
-                  ) : (
-                    <motion.span
-                      key="idle"
-                      initial={{ y: 14, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: -14, opacity: 0 }}
-                      transition={{ duration: 0.18 }}
-                      className="flex items-center gap-1.5"
-                    >
-                      <ShoppingCart className="w-3.5 h-3.5" /> 장바구니
-                    </motion.span>
-                  )}
-                </AnimatePresence>
-              </motion.button>
-              <Link
-                to={detailPath}
-                className="flex items-center justify-center gap-1 px-3 py-2.5 rounded-xl border border-gray-200 text-xs font-bold text-gray-600 hover:border-gray-900 hover:text-gray-900 transition-colors whitespace-nowrap"
-              >
-                자세히 <ArrowRight className="w-3.5 h-3.5" />
-              </Link>
-            </div>
-          </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* 버튼 2개 (공통: 항상 표시) */}
+        <div className="flex gap-2 mt-3">
+          <motion.button
+            onClick={handleAddToCart}
+            disabled={adding}
+            whileTap={{ scale: 0.96 }}
+            className={`relative flex-1 flex items-center justify-center py-2.5 rounded-xl text-xs font-bold overflow-hidden transition-colors duration-300 disabled:opacity-90 ${
+              added ? 'bg-green-600 text-white' : 'bg-koala-navy text-white hover:bg-koala-navy-hover'
+            }`}
+          >
+            <AnimatePresence mode="wait" initial={false}>
+              {added ? (
+                <motion.span key="added" initial={{ y: 14, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: -14, opacity: 0 }} transition={{ duration: 0.18 }} className="flex items-center gap-1.5">
+                  <Check className="w-3.5 h-3.5" /> 담겼어요
+                </motion.span>
+              ) : adding ? (
+                <motion.span key="loading" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }} className="flex items-center gap-1.5">
+                  <span className="w-3.5 h-3.5 border-2 border-white/40 border-t-white rounded-full animate-spin" /> 담는 중
+                </motion.span>
+              ) : (
+                <motion.span key="idle" initial={{ y: 14, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: -14, opacity: 0 }} transition={{ duration: 0.18 }} className="flex items-center gap-1.5">
+                  <ShoppingCart className="w-3.5 h-3.5" /> 장바구니
+                </motion.span>
+              )}
+            </AnimatePresence>
+          </motion.button>
+
+          <Link
+            to={detailPath}
+            className="flex items-center justify-center gap-1 px-3 py-2.5 rounded-xl border border-gray-200 text-xs font-bold text-gray-600 hover:border-gray-900 hover:text-gray-900 transition-colors whitespace-nowrap"
+          >
+            자세히 <ArrowRight className="w-3.5 h-3.5" />
+          </Link>
         </div>
       </div>
     </div>
