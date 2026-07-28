@@ -1,4 +1,5 @@
-import { Filter, Grid3x3, LayoutGrid } from 'lucide-react';
+import { Grid3x3, LayoutGrid } from 'lucide-react';
+import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 
 interface StoreFilterProps {
@@ -20,24 +21,36 @@ export default function StoreFilter({
     <section className="px-5 md:px-8 lg:px-12 pb-8 md:pb-12">
       <div className="max-w-[1600px] mx-auto">
         <div className="flex items-center justify-between gap-6 pb-6 border-b border-gray-100">
-          <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-1 shrink-1">
-            <Filter className="w-4 h-4 text-gray-400 shrink-0 mr-1" />
-            {categories.map((category) => (
-              <button
-                key={category}
-                onClick={() => onSelectCategory(category)}
-                className={`px-4 py-1.5 rounded-full text-xs md:text-sm transition-all whitespace-nowrap border ${
-                  selectedCategory === category
-                    ? 'bg-koala-red text-white border-koala-red'
-                    : 'bg-white text-gray-500 border-gray-200 hover:border-gray-900'
-                }`}>
-                {t(`store.categories.${category}`) as string}
-              </button>
-            ))}
+          {/* 카테고리 — 텍스트 필터 (선택 항목에 미끄러지는 하이라이트) */}
+          <div className="flex items-center gap-1 overflow-x-auto no-scrollbar py-1">
+            {categories.map((category) => {
+              const active = selectedCategory === category;
+              return (
+                <button
+                  key={category}
+                  onClick={() => onSelectCategory(category)}
+                  className={`relative px-4 py-2 rounded-full text-xs md:text-sm font-medium whitespace-nowrap transition-colors duration-200 ${
+                    active ? 'text-white' : 'text-gray-500 hover:text-gray-900'
+                  }`}
+                >
+                  {active && (
+                    <motion.span
+                      layoutId="store-filter-pill"
+                      className="absolute inset-0 bg-koala-navy rounded-full"
+                      transition={{ type: 'spring', stiffness: 420, damping: 34 }}
+                    />
+                  )}
+                  <span className="relative z-10">{t(`store.categories.${category}`) as string}</span>
+                </button>
+              );
+            })}
           </div>
+
+          {/* 보기 방식 (그리드/크게) */}
           <div className="hidden md:flex items-center gap-2 shrink-0">
             <button
               onClick={() => onViewModeChange('grid')}
+              aria-label="그리드 보기"
               className={`p-2 rounded-lg transition-colors ${
                 viewMode === 'grid' ? 'bg-gray-100 text-black' : 'text-gray-400 hover:bg-gray-50'
               }`}>
@@ -45,6 +58,7 @@ export default function StoreFilter({
             </button>
             <button
               onClick={() => onViewModeChange('large')}
+              aria-label="크게 보기"
               className={`p-2 rounded-lg transition-colors ${
                 viewMode === 'large' ? 'bg-gray-100 text-black' : 'text-gray-400 hover:bg-gray-50'
               }`}>

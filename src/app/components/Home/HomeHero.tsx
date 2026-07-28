@@ -89,11 +89,11 @@ export default function HomeHero({ banners }: HomeHeroProps) {
         </div>
       ))}
 
-      {/* 그라디언트 오버레이 */}
-      <div className="absolute inset-0 bg-gradient-to-b md:bg-gradient-to-r from-black/80 via-black/40 to-transparent" />
+      {/* 그라디언트 오버레이 — 하단만 어둡게 (위쪽 상품 노출) */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/35 to-transparent" />
 
-      {/* 텍스트 콘텐츠 */}
-      <div className="relative h-full flex items-center px-6 md:px-12">
+      {/* 텍스트 콘텐츠 — 하단 정렬 (상품 사진 가림 방지) */}
+      <div className="relative h-full flex items-end px-6 md:px-12 pb-16 md:pb-24">
         <div className="max-w-[1800px] mx-auto w-full">
           <div
             className="max-w-2xl text-white transition-opacity duration-500"

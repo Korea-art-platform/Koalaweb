@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { AnimatePresence } from 'framer-motion';
 import { ImageWithFallback } from '@/app/components/fallback/ImageWithFallback';
 import { ImageLightbox } from '@/app/components/common/ImageLightbox';
 
@@ -74,14 +75,16 @@ export function ArtImages({ images, title = '작품' }: ArtImagesProps) {
         )}
       </section>
 
-      {lightboxIndex !== null && (
-        <ImageLightbox
-          images={images}
-          initialIndex={lightboxIndex}
-          title={title}
-          onClose={() => setLightboxIndex(null)}
-        />
-      )}
+      <AnimatePresence>
+        {lightboxIndex !== null && (
+          <ImageLightbox
+            images={images}
+            initialIndex={lightboxIndex}
+            title={title}
+            onClose={() => setLightboxIndex(null)}
+          />
+        )}
+      </AnimatePresence>
     </>
   );
 }

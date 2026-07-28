@@ -36,7 +36,7 @@ export function ArtistProfileSection({
     setLoading(true);
     try {
       if (isFollowing) {
-        await unfollowArtist(artistCode);
+        await unfollowArtist(artistCode); 
         setIsFollowing(false);
         setCount((c) => Math.max(0, c - 1));
       } else {
