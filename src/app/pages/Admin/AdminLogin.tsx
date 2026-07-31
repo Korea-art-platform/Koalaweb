@@ -32,7 +32,7 @@ export default function AdminLogin() {
       <div className="w-full max-w-sm">
         <div className="bg-white rounded-2xl border border-gray-200 p-8 shadow-sm">
           <div className="mb-8 flex flex-col items-center">
-            <img src="/logo.png" alt="KOALA" className="h-10 w-auto mb-2" />
+            <img src="/logo.svg" alt="KOALA" className="h-10 w-auto mb-2" />
             <div className="text-xs text-gray-400 tracking-[0.2em] uppercase">Admin</div>
           </div>
 

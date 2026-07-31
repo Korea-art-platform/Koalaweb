@@ -125,14 +125,9 @@ export function Header() {
               className="z-[120]"
             >
               <img
-                src="/logo.png"
+                src={!isMenuOpen && isTransparent && isHeroDark ? '/logo-white.svg' : '/logo.svg'}
                 alt="KOALA"
                 className="h-12 w-auto"
-                style={
-                  !isMenuOpen && isTransparent && isHeroDark
-                    ? { filter: 'invert(1)', mixBlendMode: 'screen' }
-                    : { mixBlendMode: 'multiply' }
-                }
               />
             </Link>
 

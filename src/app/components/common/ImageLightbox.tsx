@@ -94,7 +94,7 @@ export function ImageLightbox({ images, initialIndex = 0, title = '', onClose }:
         animate={{ scale: 1, opacity: 1 }}
         transition={{ type: 'spring', stiffness: 260, damping: 26 }}
       >
-        <AnimatePresence initial={false} custom={direction} mode="popLayout">
+        <AnimatePresence initial={false} custom={direction}>
           <motion.img
             key={index}
             src={images[index]}

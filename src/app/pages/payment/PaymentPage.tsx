@@ -28,10 +28,10 @@ type PaymentMethod = 'CARD' | 'TRANSFER' | 'MOBILE_PHONE';
 function CardIcon({ size = 40 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect width="48" height="48" rx="12" fill="#181848" />
+      <rect width="48" height="48" rx="12" fill="#3E2259" />
       <rect x="10" y="15" width="28" height="18" rx="3" fill="white" />
-      <rect x="10" y="19" width="28" height="4" fill="#181848" />
-      <rect x="14" y="28" width="8" height="2.5" rx="1.25" fill="#181848" />
+      <rect x="10" y="19" width="28" height="4" fill="#3E2259" />
+      <rect x="14" y="28" width="8" height="2.5" rx="1.25" fill="#3E2259" />
     </svg>
   );
 }

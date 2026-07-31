@@ -1,6 +1,8 @@
 import { Link } from 'react-router';
 import { ArrowRight } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import ProductCard from '@/app/components/products/ProductCard';
+import { useWishlistToggle } from '@/app/hooks/useWishlistToggle';
 
 interface HomePopularProductsProps {
   skus: any[];
@@ -9,6 +11,7 @@ interface HomePopularProductsProps {
 
 export default function HomePopularProducts({ skus, loading }: HomePopularProductsProps) {
   const { t } = useTranslation();
+  const { wishlistedCodes, wishlistLoading, handleWishlist } = useWishlistToggle();
 
   if (loading) {
     return (
@@ -45,22 +48,16 @@ export default function HomePopularProducts({ skus, loading }: HomePopularProduc
             {t('home.popularProducts.viewAll')} <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 md:grid-flow-row-dense gap-4 md:gap-8">
-          {skus.map((sku, index) => (
-            <Link key={sku.skuCode} to={`/product/${sku.skuCode}`} className={`group flex flex-col ${index === 0 ? 'md:col-span-2 md:row-span-2' : ''}`}>
-              <div className="relative flex-1 rounded-3xl overflow-hidden bg-gray-100 mb-4">
-                <img src={sku.primaryImageUrl} alt={sku.name} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" />
-                <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                  <div className="w-12 h-12 rounded-full bg-white flex items-center justify-center transform translate-y-4 group-hover:translate-y-0 transition-all">
-                    <ArrowRight className="w-6 h-6 text-black" />
-                  </div>
-                </div>
-              </div>
-              <div className="px-1">
-                <h3 className="text-base md:text-xl font-bold mb-1 group-hover:text-gray-500 transition-colors">{sku.name}</h3>
-                <p className="text-sm md:text-lg font-black tracking-tight">₩{(sku.salePrice ?? sku.listPrice).toLocaleString()}</p>
-              </div>
-            </Link>
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-8">
+          {skus.map((sku) => (
+            <ProductCard
+              key={sku.skuCode}
+              sku={sku}
+              viewMode="grid"
+              isWishlisted={wishlistedCodes.has(sku.skuCode)}
+              isWishlistLoading={wishlistLoading.has(sku.skuCode)}
+              onWishlistClick={handleWishlist}
+            />
           ))}
         </div>
       </div>

@@ -16,10 +16,9 @@ export default function Footer() {
           <div className="lg:col-span-2">
             <div className="mb-6">
               <img
-                src="/logo.png"
+                src="/logo-white.svg"
                 alt="KOALA"
                 className="h-12 w-auto"
-                style={{ filter: 'invert(1)', mixBlendMode: 'screen' }}
               />
             </div>
             <p className="text-sm text-gray-400 leading-relaxed mb-8 max-w-sm break-keep">
