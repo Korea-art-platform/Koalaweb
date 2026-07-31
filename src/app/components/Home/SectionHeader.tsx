@@ -1,0 +1,47 @@
+import { Link } from 'react-router';
+import { ArrowRight } from 'lucide-react';
+
+interface SectionHeaderProps {
+  /** 섹션 번호 (예: '001') */
+  num: string;
+  /** 번호 옆 영문 라벨 (예: 'Limited') */
+  eyebrow: string;
+  /** 큰 제목 (한국어) */
+  title: string;
+  /** 부제 */
+  sub?: string;
+  /** 우측 '전체보기' 링크 */
+  viewAllHref?: string;
+  viewAllLabel?: string;
+}
+
+export default function SectionHeader({
+  num,
+  eyebrow,
+  title,
+  sub,
+  viewAllHref,
+  viewAllLabel = '전체보기',
+}: SectionHeaderProps) {
+  return (
+    <div className="mb-6 md:mb-10 flex flex-wrap items-end justify-between gap-3">
+      <div className="flex flex-col gap-1.5 md:gap-2.5">
+        <span className="text-[10px] md:text-xs font-bold uppercase tracking-[0.24em] text-koala-purple">
+          + {num} — {eyebrow}
+        </span>
+        <h2 className="text-2xl md:text-4xl lg:text-5xl font-bold tracking-tight text-gray-900">
+          {title}
+        </h2>
+        {sub && <p className="text-xs md:text-base text-gray-500 font-medium break-keep">{sub}</p>}
+      </div>
+      {viewAllHref && (
+        <Link
+          to={viewAllHref}
+          className="flex items-center gap-1.5 border-b-2 border-gray-900 pb-1 text-xs md:text-sm font-bold text-gray-900 hover:text-koala-purple hover:border-koala-purple transition-colors"
+        >
+          {viewAllLabel} <ArrowRight className="w-4 h-4" />
+        </Link>
+      )}
+    </div>
+  );
+}

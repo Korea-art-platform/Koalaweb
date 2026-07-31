@@ -77,6 +77,8 @@ export interface Sku {
   skuCode: string;
   name: string;
   genre: string;
+  /** ARTWORK | GOODS */
+  skuType?: string;
   artistName: string;
   artistCode?: string;
   listPrice: number;
