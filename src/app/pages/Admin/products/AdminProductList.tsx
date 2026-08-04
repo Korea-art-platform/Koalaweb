@@ -145,6 +145,17 @@ export default function AdminProductList() {
     if (!form.slug.trim()) { setFormError('슬러그를 입력해 주세요.'); return; }
     if (!form.listPrice || isNaN(Number(form.listPrice))) { setFormError('정가를 올바르게 입력해 주세요.'); return; }
     if (Number(form.listPrice) < 0) { setFormError('정가는 0원 이상이어야 합니다.'); return; }
+    // ── 신규 등록 필수: 작품 설명 · 규격(가로·세로·무게) ──
+    // 상세 페이지와 상품 카드에 노출되는 정보라 등록 시점에 반드시 받는다.
+    if (!form.description.trim()) { setFormError('작품 설명을 입력해 주세요. (상세 페이지에 노출됩니다)'); return; }
+    for (const [key, label] of [['widthCm', '가로'], ['heightCm', '세로'], ['weightKg', '무게']] as const) {
+      const v = form[key];
+      if (!v) { setFormError(`규격 - ${label}을(를) 입력해 주세요.`); return; }
+      if (isNaN(Number(v)) || Number(v) <= 0) { setFormError(`규격 - ${label}은(는) 0보다 큰 숫자로 입력해 주세요.`); return; }
+    }
+    if (form.depthCm && (isNaN(Number(form.depthCm)) || Number(form.depthCm) < 0)) {
+      setFormError('규격 - 깊이는 0 이상의 숫자로 입력해 주세요.'); return;
+    }
     if (form.salePrice) {
       if (isNaN(Number(form.salePrice))) { setFormError('판매가를 올바르게 입력해 주세요.'); return; }
       if (Number(form.salePrice) < 0) { setFormError('판매가는 0원 이상이어야 합니다.'); return; }
@@ -504,25 +515,36 @@ export default function AdminProductList() {
               {/* 뱃지 */}
               <BadgeEditor badges={form.badges} onChange={(badges) => setF({ badges })} />
 
-              {/* 사이즈/무게 */}
+              {/* 사이즈/무게 — 깊이만 선택, 나머지는 필수 */}
               <div>
-                <p className="text-xs text-gray-500 mb-2">작품 크기 / 무게 (선택)</p>
+                <p className="text-xs text-gray-500 mb-2">
+                  작품 크기 / 무게 <span className="text-red-500">*</span>
+                  <span className="text-gray-400 ml-1">(깊이는 평면 작품이면 비워두세요)</span>
+                </p>
                 <div className="grid grid-cols-4 gap-2">
-                  {(['widthCm', 'heightCm', 'depthCm', 'weightKg'] as const).map((key) => (
-                    <div key={key}>
-                      <label className="block text-xs text-gray-400 mb-1">{{ widthCm: '가로(cm)', heightCm: '세로(cm)', depthCm: '깊이(cm)', weightKg: '무게(kg)' }[key]}</label>
-                      <input type="number" value={form[key]} onChange={(e) => setF({ [key]: e.target.value })}
-                        className={inputCls + ' py-1.5'} placeholder="0" min="0" step="0.1" />
-                    </div>
-                  ))}
+                  {(['widthCm', 'heightCm', 'depthCm', 'weightKg'] as const).map((key) => {
+                    const label = { widthCm: '가로(cm)', heightCm: '세로(cm)', depthCm: '깊이(cm)', weightKg: '무게(kg)' }[key];
+                    const optional = key === 'depthCm';
+                    return (
+                      <div key={key}>
+                        <label className="block text-xs text-gray-400 mb-1">
+                          {label}{!optional && <span className="text-red-500 ml-0.5">*</span>}
+                        </label>
+                        <input type="number" value={form[key]} onChange={(e) => setF({ [key]: e.target.value })}
+                          className={inputCls + ' py-1.5'} placeholder="0" min="0" step="0.1" />
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
 
-              {/* 설명 */}
+              {/* 설명 — 필수 */}
               <div>
-                <label className="block text-xs text-gray-500 mb-1.5">작품 설명 (선택)</label>
+                <label className="block text-xs text-gray-500 mb-1.5">
+                  작품 설명 <span className="text-red-500">*</span>
+                </label>
                 <textarea value={form.description} onChange={(e) => setF({ description: e.target.value })}
-                  rows={3} className={`${inputCls} resize-none`} placeholder="작품에 대한 설명" />
+                  rows={3} className={`${inputCls} resize-none`} placeholder="작품에 대한 설명 (상세 페이지·상품 카드에 노출됩니다)" />
               </div>
             </div>
 
