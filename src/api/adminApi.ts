@@ -257,6 +257,26 @@ export async function getDailyRevenue() {
   return res.data.data;
 }
 
+/** PG 응답을 못 받아 승인/취소 여부가 확정되지 않은 결제 — 수동 확인 필요 */
+export type PaymentNeedingAttention = {
+  paymentNo: string;
+  orderNo: string;
+  provider: string;
+  method: string;
+  status: string;
+  requestedAmount: number;
+  failureCode?: string | null;
+  failureMessage?: string | null;
+  createdAt?: string | null;
+};
+
+export async function getPaymentsNeedingAttention() {
+  const res = await adminInstance.get<{ data: PaymentNeedingAttention[] }>(
+    `${BASE}/payments/attention`,
+  );
+  return res.data.data;
+}
+
 
 // ── Banners ───────────────────────────────────────────────────────────────────
 export async function getAdminBanners() {

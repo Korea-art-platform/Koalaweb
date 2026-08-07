@@ -10,6 +10,9 @@ const ORDER_STATUS_LABEL: Record<string, string> = {
 const PAYMENT_STATUS_LABEL: Record<string, string> = {
   READY: '결제전', PAID: '결제완료', CANCELLED: '취소/환불',
   FAILED: '실패', PARTIAL_REFUNDED: '부분환불', REFUNDED: '환불완료',
+  // payments.status 쪽 값 — PG 응답을 못 받아 확정되지 않은 상태들
+  CAPTURED: '결제완료', IN_PROGRESS: '승인 처리 중',
+  IN_DOUBT: '승인 여부 미확정', CANCEL_IN_PROGRESS: '환불 처리 중',
 };
 
 export default function AdminOrderDetail() {

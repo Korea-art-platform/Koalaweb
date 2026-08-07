@@ -4,12 +4,19 @@ import { useAdminAuth } from '@/app/context/AdminAuthContext';
 import {
   ShoppingBag, Package, Users, Star, Image as ImageIcon,
   LogOut, UserCog, RotateCcw, TrendingUp, Bell,
-  ShoppingCart, Clock,
+  ShoppingCart, Clock, AlertTriangle,
 } from 'lucide-react';
 import {
-  getDashboardStats, getDailyRevenue,
-  type DashboardStats, type DailyRevenue,
+  getDashboardStats, getDailyRevenue, getPaymentsNeedingAttention,
+  type DashboardStats, type DailyRevenue, type PaymentNeedingAttention,
 } from '@/api/adminApi';
+
+/** 확인 필요 결제 상태 라벨 — 백엔드 payments.status 값 기준 */
+const ATTENTION_STATUS_LABEL: Record<string, string> = {
+  IN_DOUBT: '승인 여부 미확정',
+  IN_PROGRESS: '승인 처리 중',
+  CANCEL_IN_PROGRESS: '환불 처리 중',
+};
 
 const NAV_CARDS = [
   { label: '주문 관리',  desc: '신규 주문 확인 및 배송 처리',     icon: ShoppingBag, href: '/admin/orders',   color: 'bg-blue-50 text-blue-600' },
@@ -75,10 +82,12 @@ export default function AdminDashboard() {
   const { admin, logout } = useAdminAuth();
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [daily, setDaily] = useState<DailyRevenue[]>([]);
+  const [attention, setAttention] = useState<PaymentNeedingAttention[]>([]);
 
   useEffect(() => {
     getDashboardStats().then(setStats).catch(() => {});
     getDailyRevenue().then(setDaily).catch(() => {});
+    getPaymentsNeedingAttention().then(setAttention).catch(() => {});
   }, []);
 
   return (
@@ -100,6 +109,48 @@ export default function AdminDashboard() {
           로그아웃
         </button>
       </div>
+
+      {/* 확인 필요 결제 — PG 응답을 못 받아 승인/취소가 확정되지 않은 건.
+          방치하면 "돈은 빠져나갔는데 주문은 미결제" 로 남으므로 최상단에 노출한다. */}
+      {attention.length > 0 && (
+        <div className="bg-red-50 border border-red-200 rounded-xl p-5 mb-6">
+          <div className="flex items-center gap-2 mb-3">
+            <AlertTriangle className="w-4 h-4 text-red-600" />
+            <h2 className="text-sm font-bold text-red-900">
+              확인 필요 결제 {attention.length}건
+            </h2>
+          </div>
+          <p className="text-xs text-red-700 mb-3">
+            PG 응답을 받지 못해 승인·취소 여부가 확정되지 않았습니다.
+            토스 콘솔에서 실제 상태를 확인한 뒤 수동 처리해 주세요.
+          </p>
+          <div className="space-y-2">
+            {attention.map((p) => (
+              <Link
+                key={p.paymentNo}
+                to={`/admin/orders/${p.orderNo}`}
+                className="flex items-center justify-between bg-white rounded-lg border border-red-100 px-4 py-2.5 hover:border-red-300 transition-colors"
+              >
+                <div className="min-w-0">
+                  <div className="text-xs font-semibold text-gray-900">
+                    {p.orderNo}
+                    <span className="ml-2 text-[11px] font-medium text-red-600">
+                      {ATTENTION_STATUS_LABEL[p.status] ?? p.status}
+                    </span>
+                  </div>
+                  <div className="text-[11px] text-gray-400 truncate">
+                    {p.paymentNo}
+                    {p.failureMessage ? ` · ${p.failureMessage}` : ''}
+                  </div>
+                </div>
+                <div className="text-xs font-semibold text-gray-700 shrink-0 ml-3">
+                  {fmt(p.requestedAmount)}원
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* 통계 카드 */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
