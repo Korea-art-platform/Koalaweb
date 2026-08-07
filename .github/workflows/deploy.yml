@@ -33,6 +33,9 @@ jobs:
           VITE_GTM_ID: GTM-KHDT3ZKX
           VITE_TOSS_CLIENT_KEY: ${{ secrets.VITE_TOSS_CLIENT_KEY }}
           VITE_SENTRY_DSN: ${{ secrets.VITE_SENTRY_DSN }}
+          # 상품 이미지 CDN — DB에 저장된 S3 직접 주소를 렌더 시점에 이 도메인으로 치환한다.
+          # (src/app/lib/imageUrl.ts) 값이 없으면 치환하지 않고 원본 S3 주소를 그대로 쓴다.
+          VITE_IMAGE_CDN_BASE: https://d21ujaa1y1qwaz.cloudfront.net
         run: npm run build
 
       # ── 5. AWS 인증 ─────────────────────────────────────────────────────────
