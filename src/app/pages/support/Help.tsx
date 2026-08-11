@@ -80,6 +80,19 @@ export default function Help() {
 
         <div className="bg-gray-50 rounded-2xl p-6 flex flex-col sm:flex-row items-start sm:items-center gap-4 justify-between">
           <div>
+            <p className="text-sm font-bold text-gray-900 mb-0.5">전화로 문의</p>
+            <p className="text-xs text-gray-500">평일 10:00 – 18:00 · 점심 13:00–14:00 제외</p>
+          </div>
+          <a
+            href="tel:18332817"
+            className="flex-shrink-0 px-5 py-2.5 bg-koala-navy text-white text-xs font-bold rounded-xl hover:bg-koala-navy-hover transition-colors"
+          >
+            1833-2817
+          </a>
+        </div>
+
+        <div className="bg-gray-50 rounded-2xl p-6 flex flex-col sm:flex-row items-start sm:items-center gap-4 justify-between">
+          <div>
             <p className="text-sm font-bold text-gray-900 mb-0.5">이메일로 직접 문의</p>
             <p className="text-xs text-gray-500">영업일 기준 24시간 이내 답변드립니다.</p>
           </div>
