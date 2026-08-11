@@ -25,7 +25,6 @@ import NoticeDetail from "@/app/pages/NoticeDetail";
 import NotFound from "@/app/pages/NotFound";
 
 // 루트 페이지
-import About from "@/app/pages/About";
 import Home from "@/app/pages/Home";
 import Search from "@/app/pages/Search";
 import SmartStore from "@/app/pages/product/SmartStore";
@@ -99,7 +98,6 @@ export function AppRoutes() {
       {/* 메인 */}
       <Route path="/" element={<Home />} />
       <Route path="/search" element={<Search />} />
-      <Route path="/about" element={<About/>}/>
 
       {/* 스토어 */}
       <Route path="/smart-store" element={<SmartStore />} />

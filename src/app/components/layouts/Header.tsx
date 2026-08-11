@@ -51,11 +51,11 @@ export function Header() {
   });
   const cartCount = cart?.items?.reduce((sum, item) => sum + item.quantity, 0) ?? 0;
 
-  // 2. 스크롤 및 투명 헤더 로직 (Home, About 전용)
+  // 2. 스크롤 및 투명 헤더 로직 (Home 전용)
   useEffect(() => {
     const updateHeaderState = () => {
       // 투명 헤더를 허용할 경로 정의
-      const allowedPaths = ['/', '/about'];
+      const allowedPaths = ['/'];
       const isAllowed = allowedPaths.includes(location.pathname);
 
       // 허용된 페이지가 아니거나 [data-hero] 요소가 없으면 일반 헤더로 강제 고정
@@ -103,7 +103,6 @@ export function Header() {
   const menus = [
     { key: 'lab', path: '/artist-lab' },
     { key: 'store', path: '/store' },
-    //{ key: 'about', path: '/about'}
   ];
 
   const subMenus = [

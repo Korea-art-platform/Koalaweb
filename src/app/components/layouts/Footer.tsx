@@ -29,7 +29,7 @@ export default function Footer() {
           </div>
 
           {/* Links Sections */}
-          <div className="grid grid-cols-2 col-span-1 sm:col-span-2 lg:col-span-3 gap-8 md:gap-12 lg:grid-cols-3">
+          <div className="grid grid-cols-2 col-span-1 sm:col-span-2 lg:col-span-3 gap-8 md:gap-12">
             <div>
               <h3 className="text-xs font-bold tracking-widest mb-5 text-white uppercase">{t('footer.explore.title')}</h3>
               <ul className="space-y-3">
@@ -66,20 +66,7 @@ export default function Footer() {
               </ul>
             </div>
 
-            <div className="col-span-2 sm:col-span-1">
-              <h3 className="text-xs font-bold tracking-widest mb-5 text-white uppercase">{t('footer.company.title')}</h3>
-              <ul className="space-y-3">
-                {[
-                  { key: 'about', path: '/about' },
-                ].map((link) => (
-                  <li key={link.key}>
-                    <Link to={link.path} className="text-sm text-gray-500 hover:text-white transition-colors">
-                      {t(`footer.company.links.${link.key}`)}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
+            {/* 회사 소개 칼럼 제거 — /about 페이지를 내렸다. 페이지 복구 시 함께 되살릴 것 */}
           </div>
         </div>
 

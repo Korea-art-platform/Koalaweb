@@ -9,5 +9,4 @@ export * from './order';
 export * from './payment';
 export * from './product';
 export * from './type';
-export * from './About';
 // Note: auth/index.tsx and account/index.tsx are page components (not barrels)
