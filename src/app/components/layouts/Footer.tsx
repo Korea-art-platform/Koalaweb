@@ -86,7 +86,7 @@ export default function Footer() {
         {/* 사업자 정보 */}
         <div className="pt-8 border-t border-white/10 space-y-4">
           <p className="text-[10px] text-gray-600 leading-relaxed break-keep">
-            상호명: 헤론 &nbsp;|&nbsp; 대표이사: 정동훈 &nbsp;|&nbsp; 사업자등록번호: 203-87-01972
+            상호명: 헤론 &nbsp;|&nbsp; 서비스명: KOALA-ART &nbsp;|&nbsp; 대표이사: 정동훈 &nbsp;|&nbsp; 사업자등록번호: 203-87-01972
             &nbsp;|&nbsp; 통신판매업 신고번호: 제2024-서울서초-3956호
             <br className="hidden sm:block" />
             &nbsp;|&nbsp; 주소: 서울특별시 강서구 마곡중앙6로 21, 이너매스마곡 제619호

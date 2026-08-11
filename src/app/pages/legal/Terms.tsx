@@ -29,11 +29,13 @@ export default function Terms() {
         {/* 사업자 정보 — 전자상거래법 제10조 필수 고지 */}
         <div className="bg-gray-50 rounded-xl p-4 text-xs text-gray-600 space-y-1 leading-relaxed">
           <p className="font-semibold text-gray-800 mb-2">사업자 정보</p>
-          <p><span className="font-medium text-gray-700 w-28 inline-block">상호명</span>헤론 (KOALA)</p>
+          <p><span className="font-medium text-gray-700 w-28 inline-block">상호명</span>헤론</p>
+          <p><span className="font-medium text-gray-700 w-28 inline-block">서비스명</span>KOALA-ART</p>
           <p><span className="font-medium text-gray-700 w-28 inline-block">사업자등록번호</span>203-87-01972</p>
           <p><span className="font-medium text-gray-700 w-28 inline-block">통신판매업 신고</span>제2024-서울서초-3956호</p>
           <p><span className="font-medium text-gray-700 w-28 inline-block">대표자</span>정동훈</p>
           <p><span className="font-medium text-gray-700 w-28 inline-block">소재지</span>서울특별시 강서구 마곡중앙6로 21, 이너매스마곡 제619호</p>
+          <p><span className="font-medium text-gray-700 w-28 inline-block">고객센터</span>1833-2817</p>
           <p><span className="font-medium text-gray-700 w-28 inline-block">이메일</span>koala-art@heron.kr</p>
           <p><span className="font-medium text-gray-700 w-28 inline-block">웹사이트</span>https://koala-art.co.kr</p>
         </div>
