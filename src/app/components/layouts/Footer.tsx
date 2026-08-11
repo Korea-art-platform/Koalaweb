@@ -1,5 +1,4 @@
 import { Link } from 'react-router';
-import { Instagram, Twitter, Facebook, Youtube } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 export default function Footer() {
@@ -21,29 +20,12 @@ export default function Footer() {
                 className="h-12 w-auto"
               />
             </div>
-            <p className="text-sm text-gray-400 leading-relaxed mb-8 max-w-sm break-keep">
+            <p className="text-sm text-gray-400 leading-relaxed max-w-sm break-keep">
               {t('footer.brand.description')}
             </p>
-            
-            {/* 소셜 아이콘 */}
-            <div className="flex items-center gap-3">
-              {[
-                { Icon: Instagram, href: "https://instagram.com" },
-                { Icon: Twitter, href: "https://twitter.com" },
-                { Icon: Facebook, href: "https://facebook.com" },
-                { Icon: Youtube, href: "https://youtube.com" }
-              ].map(({ Icon, href }, index) => (
-                <a
-                  key={index}
-                  href={href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/20 transition-all duration-300"
-                >
-                  <Icon className="w-4 h-4" />
-                </a>
-              ))}
-            </div>
+
+            {/* 소셜 아이콘 — 실제 계정 개설 후 복원.
+                도메인 루트(https://instagram.com)로 걸려 있어 미완성으로 보였다. */}
           </div>
 
           {/* Links Sections */}
@@ -104,7 +86,7 @@ export default function Footer() {
         {/* 사업자 정보 */}
         <div className="pt-8 border-t border-white/10 space-y-4">
           <p className="text-[10px] text-gray-600 leading-relaxed break-keep">
-            상호명: (주)코알라 &nbsp;|&nbsp; 대표이사: 정동훈 &nbsp;|&nbsp; 사업자등록번호: 203-87-01972
+            상호명: 헤론 &nbsp;|&nbsp; 대표이사: 정동훈 &nbsp;|&nbsp; 사업자등록번호: 203-87-01972
             &nbsp;|&nbsp; 통신판매업 신고번호: 제2024-서울서초-3956호
             <br className="hidden sm:block" />
             &nbsp;|&nbsp; 주소: 서울특별시 강서구 마곡중앙6로 21, 이너매스마곡 제619호 &nbsp;|&nbsp; 이메일: koala-art@heron.kr

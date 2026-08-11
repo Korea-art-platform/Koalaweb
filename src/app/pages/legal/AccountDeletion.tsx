@@ -29,7 +29,7 @@ export default function AccountDeletion() {
         <div className="bg-gray-50 rounded-xl p-4 text-xs text-gray-600 space-y-1 leading-relaxed">
           <p className="font-semibold text-gray-800 mb-2">서비스 정보</p>
           <p><span className="font-medium text-gray-700 w-28 inline-block">앱 이름</span>KOALA</p>
-          <p><span className="font-medium text-gray-700 w-28 inline-block">개발자/운영</span>(주)코알라</p>
+          <p><span className="font-medium text-gray-700 w-28 inline-block">개발자/운영</span>헤론</p>
           <p><span className="font-medium text-gray-700 w-28 inline-block">문의 이메일</span>koala-art@heron.kr</p>
         </div>
 
