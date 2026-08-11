@@ -257,6 +257,65 @@ export async function getDailyRevenue() {
   return res.data.data;
 }
 
+// ── 상품 CSV 일괄 등록 ─────────────────────────────────────────────────────────
+
+/** 행 단위 오류 — 어느 행 어느 칸이 왜 틀렸는지 */
+export type SkuImportRowError = {
+  rowNumber: number;
+  field: string;
+  rejectedValue: unknown;
+  reason: string;
+};
+
+export type SkuImportResult = {
+  totalRows: number;
+  succeeded: number;
+  failed: number;
+  errors: SkuImportRowError[];
+};
+
+/**
+ * CSV 업로드.
+ *
+ * 검증 실패도 200 으로 오고 본문에 오류 목록이 담긴다.
+ * 파일 자체를 못 읽는 경우(빈 파일·헤더 누락·행 수 초과)만 4xx 로 온다.
+ *
+ * 서버가 동기로 처리하므로 행이 많으면 오래 걸린다.
+ * 기본 인스턴스의 60초로는 부족해 여기서만 늘린다.
+ */
+export async function importSkusCsv(file: File) {
+  const form = new FormData();
+  form.append('file', file);
+
+  const res = await adminInstance.post<{ data: SkuImportResult }>(
+    `${BASE}/skus/bulk`,
+    form,
+    { headers: { 'Content-Type': 'multipart/form-data' }, timeout: 180_000 },
+  );
+  return res.data.data;
+}
+
+/**
+ * 빈 템플릿 내려받기.
+ *
+ * 템플릿을 프론트에서 직접 만들지 않고 서버에서 받는다.
+ * 양쪽에 두면 컬럼이 바뀔 때 한쪽만 고쳐져 어긋난다.
+ */
+export async function downloadSkuCsvTemplate() {
+  const res = await adminInstance.get(`${BASE}/skus/bulk/template`, {
+    responseType: 'blob',
+  });
+
+  const url = URL.createObjectURL(res.data as Blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'sku-bulk-template.csv';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
+
 /** PG 응답을 못 받아 승인/취소 여부가 확정되지 않은 결제 — 수동 확인 필요 */
 export type PaymentNeedingAttention = {
   paymentNo: string;

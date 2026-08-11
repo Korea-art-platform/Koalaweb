@@ -1,7 +1,8 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router';
 import { getAdminSkus, createSku, addSkuMedia, publishSku, discontinueSku, deleteSku, adjustStock, getAdminArtists } from '@/api/adminApi';
-import { Package, ImagePlus, X } from 'lucide-react';
+import { Package, ImagePlus, X, FileSpreadsheet } from 'lucide-react';
+import AdminCsvImportModal from './AdminCsvImportModal';
 
 const SKU_STATUS_COLOR: Record<string, string> = {
   DRAFT:        'bg-gray-100 text-gray-500',
@@ -99,6 +100,7 @@ export default function AdminProductList() {
   const [primaryFile, setPrimaryFile] = useState<File | null>(null);
   const [primaryPreview, setPrimaryPreview] = useState<string>('');
   const primaryInputRef = useRef<HTMLInputElement>(null);
+  const [csvOpen, setCsvOpen] = useState(false);
 
   const load = useCallback(() => {
     setLoading(true);
@@ -253,12 +255,21 @@ export default function AdminProductList() {
       </div>
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-xl font-bold text-gray-900">상품 (SKU) 목록</h1>
-        <button
-          onClick={openCreate}
-          className="px-3 py-2 text-xs bg-koala-navy text-white rounded-lg hover:bg-koala-navy-hover transition-colors"
-        >
-          + 상품 추가
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setCsvOpen(true)}
+            className="flex items-center gap-1.5 px-3 py-2 text-xs border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+          >
+            <FileSpreadsheet className="w-3.5 h-3.5" />
+            CSV 일괄 등록
+          </button>
+          <button
+            onClick={openCreate}
+            className="px-3 py-2 text-xs bg-koala-navy text-white rounded-lg hover:bg-koala-navy-hover transition-colors"
+          >
+            + 상품 추가
+          </button>
+        </div>
       </div>
 
       <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
@@ -341,6 +352,13 @@ export default function AdminProductList() {
       )}
 
       {/* ── 재고 조정 모달 ── */}
+      {csvOpen && (
+        <AdminCsvImportModal
+          onClose={() => setCsvOpen(false)}
+          onImported={load}
+        />
+      )}
+
       {stockModal && (() => {
         const targetNum = parseInt(targetQty, 10);
         const delta = isNaN(targetNum) ? null : targetNum - stockModal.current;
