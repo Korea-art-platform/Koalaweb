@@ -6,6 +6,7 @@ import {
   ReactNode,
 } from 'react';
 import { getMyProfile } from '@/api/user';
+import { markSessionActive } from '@/api/instance';
 
 interface AuthContextValue {
   /** null = 초기 로딩 중, true = 로그인됨, false = 비로그인 */
@@ -33,7 +34,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return () => window.removeEventListener('auth:expired', handleExpired);
   }, []);
 
-  const setAuthenticated = (value: boolean) => setIsAuthenticated(value);
+  const setAuthenticated = (value: boolean) => {
+    // 로그인에 성공했으면 토큰 재발급을 다시 시도할 수 있게 되돌린다.
+    // (비로그인으로 확인된 뒤에는 인터셉터가 재발급을 건너뛴다)
+    if (value) markSessionActive();
+    setIsAuthenticated(value);
+  };
 
   return (
     <AuthContext.Provider value={{ isAuthenticated, setAuthenticated }}>

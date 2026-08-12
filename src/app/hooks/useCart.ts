@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { getCart, updateCartItem, removeCartItem, clearCart } from '@/api/cart';
+import { useAuth } from '@/app/context/AuthContext';
 import type { Cart } from '@/api/types';
 
 export const CART_QUERY_KEY = ['cart'] as const;
@@ -13,11 +14,15 @@ async function fetchCart(): Promise<Cart | null> {
 export function useCart() {
   const { t } = useTranslation('cart');
   const queryClient = useQueryClient();
+  const { isAuthenticated } = useAuth();
 
   const { data: cart, isLoading: loading } = useQuery<Cart | null>({
     queryKey: CART_QUERY_KEY,
     queryFn: fetchCart,
     retry: false,
+    // 비로그인 상태에서 부르면 401 이 돌아온다. react-query 는 창에 포커스가 갈 때마다
+    // 다시 부르므로, 막지 않으면 실패가 확정된 요청이 계속 쌓인다.
+    enabled: isAuthenticated === true,
   });
 
   const updateMutation = useMutation({

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { getWishlist, addWishlist, removeWishlist } from '@/api/wishlist';
+import { useAuth } from '@/app/context/AuthContext';
 import type { WishlistItem } from '@/api/types';
 
 /**
@@ -9,6 +10,7 @@ import type { WishlistItem } from '@/api/types';
  */
 export function useWishlistToggle() {
   const queryClient = useQueryClient();
+  const { isAuthenticated } = useAuth();
   const [wishlistLoading, setWishlistLoading] = useState<Set<string>>(new Set());
 
   const { data: wishlistedCodes = new Set<string>() } = useQuery<Set<string>>({
@@ -19,6 +21,8 @@ export function useWishlistToggle() {
       return new Set(items.map((item) => item.skuCode));
     },
     retry: false,
+    // 찜 목록은 로그인해야 있는 것이다. 비로그인 상태에서 부르면 401 만 쌓인다
+    enabled: isAuthenticated === true,
   });
 
   const wishlistMutation = useMutation({

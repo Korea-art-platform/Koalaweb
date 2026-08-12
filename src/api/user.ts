@@ -2,8 +2,9 @@ import instance from './instance';
 import type { UpdateProfileRequest, AddressRequest } from './types';
 
 // 내 정보 조회
+// 로그인 여부 확인용이기도 하다 — 비로그인 401 은 정상이므로 재발급을 시도하지 않는다
 export const getMyProfile = () =>
-    instance.get('/api/v1/users/me');
+    instance.get('/api/v1/users/me', { skipAuthRefresh: true });
 
 // 내 정보 수정
 export const updateMyProfile = (data: UpdateProfileRequest) =>

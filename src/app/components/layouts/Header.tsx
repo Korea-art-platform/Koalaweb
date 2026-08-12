@@ -48,6 +48,8 @@ export function Header() {
       return res.data.data ?? null;
     },
     retry: false,
+    // 헤더는 모든 화면에 있다. 비로그인 상태에서 켜 두면 창에 포커스가 갈 때마다 401 이 쌓인다
+    enabled: isAuthenticated === true,
   });
   const cartCount = cart?.items?.reduce((sum, item) => sum + item.quantity, 0) ?? 0;
 
