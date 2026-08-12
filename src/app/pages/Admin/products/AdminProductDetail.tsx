@@ -14,6 +14,7 @@ import {
 } from '@/api/adminApi';
 import adminInstance from '@/api/adminInstance';
 import { getCategories, type CategoryGroups } from '@/api/category';
+import { downscaleImage } from '@/utils/downscaleImage';
 
 const inputCls = 'w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black/10';
 
@@ -98,6 +99,15 @@ export default function AdminProductDetail() {
 
 /** 대분류가 이 코드일 때만 에디션 정보를 받는다 */
 const LIMITED = 'LIMITED';
+
+/**
+ * 업로드 허용 형식.
+ *
+ * 서버는 확장자가 아니라 파일 앞머리의 매직바이트로 형식을 확인한다.
+ * 여기 목록은 파일 선택창을 좁혀 주는 안내일 뿐이다.
+ * 이미지 10MB / 동영상 500MB 상한도 서버에서 잡는다.
+ */
+const MEDIA_ACCEPT = 'image/*,video/mp4,video/quicktime,video/webm';
 
 interface BadgeItem { text: string; type: string; }
 
@@ -363,55 +373,88 @@ function ImagesTab({ skuCode, onChanged }: { skuCode: string; onChanged: () => v
   const packagingInputRef = useRef<HTMLInputElement>(null);
   const replaceInputRef   = useRef<HTMLInputElement>(null);
 
-  const reload = useCallback(async () => {
+  useEffect(() => {
+    let alive = true;
     setLoading(true);
-    try { setMediaList(await getSkuMedia(skuCode)); }
-    finally { setLoading(false); }
+    getSkuMedia(skuCode)
+      .then((list) => { if (alive) setMediaList(list); })
+      .finally(() => { if (alive) setLoading(false); });
+    return () => { alive = false; };
   }, [skuCode]);
-
-  useEffect(() => { reload(); }, [reload]);
 
   const mainImage       = mediaList.find((m) => m.mediaRole === 'MAIN') ?? null;
   const detailImages    = mediaList.filter((m) => m.mediaRole === 'DETAIL');
   const materialImages  = mediaList.filter((m) => m.mediaRole === 'MATERIAL');
   const packagingImages = mediaList.filter((m) => m.mediaRole === 'PACKAGING');
 
-  const handleUpload = async (file: File, role: string, replaceId?: number) => {
+  const clearInputs = () => {
+    for (const ref of [mainInputRef, detailInputRef, materialInputRef, packagingInputRef, replaceInputRef]) {
+      if (ref.current) ref.current.value = '';
+    }
+  };
+
+  /**
+   * 업로드 — 목록을 다시 불러오지 않고 서버가 돌려준 항목을 그 자리에 꽂는다.
+   *
+   * <p>예전에는 한 장 올릴 때마다 전체를 재조회하면서 화면이 통째로
+   * "불러오는 중"으로 돌아가, 올릴 때마다 새로고침되는 것처럼 보였다.
+   * 응답에 만들어진 미디어가 그대로 들어 있으므로 왕복을 한 번 줄일 수 있다.
+   */
+  const handleUpload = async (files: FileList | File[], role: string, replaceId?: number) => {
+    const list = Array.from(files);
+    if (list.length === 0) return;
+
     setUploading(role);
-    const sortOrderMap: Record<string, number> = {
+    // 여러 장을 한 번에 고르면 화면에 나열되는 순서대로 번호를 이어 붙인다
+    const baseOrder: Record<string, number> = {
       MAIN:      0,
       DETAIL:    detailImages.length,
       MATERIAL:  materialImages.length,
       PACKAGING: packagingImages.length,
     };
+
     try {
-      await addSkuMedia(skuCode, file, {
-        mediaType: 'IMAGE',
-        mediaRole: role,
-        isPrimary: role === 'MAIN',
-        sortOrder: sortOrderMap[role] ?? 0,
-      });
-      if (replaceId !== undefined) await deleteSkuMedia(skuCode, replaceId);
-      await reload();
+      for (let i = 0; i < list.length; i++) {
+        // 올리기 전에 브라우저에서 줄인다 — 서버가 어차피 1600px 로 맞추므로 결과는 같다
+        const file = await downscaleImage(list[i]);
+        const created = await addSkuMedia(skuCode, file, {
+          mediaType: file.type.startsWith('video/') ? 'VIDEO' : 'IMAGE',
+          mediaRole: role,
+          isPrimary: role === 'MAIN',
+          sortOrder: (baseOrder[role] ?? 0) + i,
+        });
+        setMediaList((prev) => [...prev, created]);
+      }
+
+      if (replaceId !== undefined) {
+        await deleteSkuMedia(skuCode, replaceId);
+        setMediaList((prev) => prev.filter((m) => m.id !== replaceId));
+      }
       onChanged();
-    } catch {
-      alert('업로드에 실패했습니다.');
+    } catch (e) {
+      const msg = (e as { response?: { data?: { message?: string } } }).response?.data?.message;
+      alert(msg ?? '업로드에 실패했습니다.');
+      // 중간에 실패했을 수 있으니 이때만 서버 상태로 맞춘다
+      try { setMediaList(await getSkuMedia(skuCode)); } catch { /* 그대로 둔다 */ }
     } finally {
       setUploading(null);
       setReplaceTarget(null);
-      if (mainInputRef.current)      mainInputRef.current.value      = '';
-      if (detailInputRef.current)    detailInputRef.current.value    = '';
-      if (materialInputRef.current)  materialInputRef.current.value  = '';
-      if (packagingInputRef.current) packagingInputRef.current.value = '';
-      if (replaceInputRef.current)   replaceInputRef.current.value   = '';
+      clearInputs();
     }
   };
 
   const handleDelete = async (id: number) => {
-    if (!window.confirm('이미지를 삭제하시겠습니까?')) return;
+    if (!window.confirm('삭제하시겠습니까?')) return;
     setDeleting(id);
-    try { await deleteSkuMedia(skuCode, id); await reload(); onChanged(); }
-    finally { setDeleting(null); }
+    try {
+      await deleteSkuMedia(skuCode, id);
+      setMediaList((prev) => prev.filter((m) => m.id !== id));
+      onChanged();
+    } catch {
+      alert('삭제에 실패했습니다.');
+    } finally {
+      setDeleting(null);
+    }
   };
 
   const triggerReplace = (id: number, role: string) => {
@@ -546,19 +589,23 @@ function ImagesTab({ skuCode, onChanged }: { skuCode: string; onChanged: () => v
         />
       </div>
 
-      {/* 히든 파일 인풋들 */}
-      <input ref={mainInputRef}      type="file" accept="image/*" className="hidden"
-        onChange={(e) => e.target.files?.[0] && handleUpload(e.target.files[0], 'MAIN')} />
-      <input ref={detailInputRef}    type="file" accept="image/*" className="hidden"
-        onChange={(e) => e.target.files?.[0] && handleUpload(e.target.files[0], 'DETAIL')} />
-      <input ref={materialInputRef}  type="file" accept="image/*" className="hidden"
-        onChange={(e) => e.target.files?.[0] && handleUpload(e.target.files[0], 'MATERIAL')} />
-      <input ref={packagingInputRef} type="file" accept="image/*" className="hidden"
-        onChange={(e) => e.target.files?.[0] && handleUpload(e.target.files[0], 'PACKAGING')} />
-      <input ref={replaceInputRef}   type="file" accept="image/*" className="hidden"
+      {/*
+        히든 파일 인풋들.
+        대표 이미지는 한 장뿐이라 multiple 을 주지 않는다.
+        상세·재질·포장은 여러 장을 한 번에 골라 순서대로 올린다.
+      */}
+      <input ref={mainInputRef}      type="file" accept={MEDIA_ACCEPT} className="hidden"
+        onChange={(e) => e.target.files && handleUpload(e.target.files, 'MAIN')} />
+      <input ref={detailInputRef}    type="file" accept={MEDIA_ACCEPT} multiple className="hidden"
+        onChange={(e) => e.target.files && handleUpload(e.target.files, 'DETAIL')} />
+      <input ref={materialInputRef}  type="file" accept={MEDIA_ACCEPT} multiple className="hidden"
+        onChange={(e) => e.target.files && handleUpload(e.target.files, 'MATERIAL')} />
+      <input ref={packagingInputRef} type="file" accept={MEDIA_ACCEPT} multiple className="hidden"
+        onChange={(e) => e.target.files && handleUpload(e.target.files, 'PACKAGING')} />
+      <input ref={replaceInputRef}   type="file" accept={MEDIA_ACCEPT} className="hidden"
         onChange={(e) => {
           if (e.target.files?.[0] && replaceTarget)
-            handleUpload(e.target.files[0], replaceTarget.role, replaceTarget.id);
+            handleUpload([e.target.files[0]], replaceTarget.role, replaceTarget.id);
         }} />
     </div>
   );
@@ -624,9 +671,29 @@ function VisualSlot({
   }
 
   // ── 이미지가 있는 슬롯 ──
+  const isVideo = image.mediaType === 'VIDEO';
+
   return (
     <div className={`${aspectClass} relative group overflow-hidden rounded-xl border border-gray-200`}>
-      <img src={image.fileUrl} alt={image.altText ?? emptyLabel} className="w-full h-full object-cover" />
+      {isVideo ? (
+        // muted 가 없으면 브라우저가 자동재생을 막고 첫 프레임도 그려주지 않는다
+        <video
+          src={image.fileUrl}
+          className="w-full h-full object-cover bg-black"
+          muted
+          playsInline
+          preload="metadata"
+          controls
+        />
+      ) : (
+        <img src={image.fileUrl} alt={image.altText ?? emptyLabel} className="w-full h-full object-cover" />
+      )}
+
+      {isVideo && (
+        <span className="absolute top-2 right-2 bg-black/70 text-white text-[10px] font-bold px-1.5 py-0.5 rounded">
+          영상
+        </span>
+      )}
 
       {/* 순번 배지 */}
       {index !== undefined && (

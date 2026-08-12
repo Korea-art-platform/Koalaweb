@@ -24,6 +24,7 @@ import {
   type FeaturedSkuInfo,
 } from '@/api/adminApi';
 import { useCategories } from '@/app/hooks/useCategories';
+import { downscaleImage } from '@/utils/downscaleImage';
 
 type Tab = 'info' | 'media' | 'career' | 'featured';
 
@@ -347,7 +348,9 @@ function SectionCard({
     setError('');
     setUploading(true);
     try {
-      for (const file of Array.from(files)) {
+      for (const original of Array.from(files)) {
+        // 올리기 전에 브라우저에서 줄인다 — 서버도 어차피 1600px 로 맞춘다
+        const file = await downscaleImage(original);
         await addArtistMedia(artistCode, file, {
           mediaType,
           mediaRole: section.role,

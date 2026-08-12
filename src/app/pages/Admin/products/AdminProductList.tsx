@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router';
 import { getAdminSkus, createSku, addSkuMedia, publishSku, discontinueSku, deleteSku, adjustStock, getAdminArtists } from '@/api/adminApi';
 import { getCategories, type CategoryGroups } from '@/api/category';
+import { downscaleImage } from '@/utils/downscaleImage';
 import { Package, ImagePlus, X, FileSpreadsheet } from 'lucide-react';
 import AdminCsvImportModal from './AdminCsvImportModal';
 
@@ -213,7 +214,7 @@ export default function AdminProductList() {
     // ── 3단계: 이미지 업로드 (실패해도 생성은 유지) ─────
     if (primaryFile && createdSkuCode) {
       try {
-        await addSkuMedia(createdSkuCode, primaryFile, {
+        await addSkuMedia(createdSkuCode, await downscaleImage(primaryFile), {
           mediaType: 'IMAGE',
           mediaRole: 'MAIN',
           isPrimary: true,
