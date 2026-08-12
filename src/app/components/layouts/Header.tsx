@@ -98,7 +98,34 @@ export function Header() {
     ? 'bg-transparent border-transparent'
     : 'bg-white/95 border-b border-gray-100 backdrop-blur-sm shadow-sm';
 
-  const iconClass = isTransparent && isHeroDark ? 'text-white/80 hover:text-white' : 'text-gray-400 hover:text-black';
+  // 히어로 위에 흰 글씨로 얹혀 있는 상태인지 — 호버 색을 여기에 맞춘다
+  const onDark = isTransparent && isHeroDark;
+
+  const iconClass = onDark ? 'text-white/80 hover:text-white' : 'text-gray-400 hover:text-black';
+
+  /**
+   * 아이콘 버튼 — 원형 배경이 깔리고 살짝 커진다.
+   *
+   * <p>색만 바꾸면 어두운 히어로 위에서는 변화가 거의 안 보인다.
+   * {@code -m-2} 로 늘어난 여백을 상쇄해 아이콘 간격은 그대로 둔다.
+   */
+  const iconButtonClass = `relative p-2 -m-2 rounded-full transition-all duration-200
+    hover:scale-110 active:scale-95
+    ${onDark ? 'hover:bg-white/15' : 'hover:bg-gray-100'}`;
+
+  /** 메뉴 링크 — 밑줄이 왼쪽에서 차오른다. 현재 페이지는 밑줄이 켜진 채 고정 */
+  const navLinkClass = (active: boolean) =>
+    `group relative py-1 text-sm font-medium transition-colors duration-200 ${
+      active
+        ? (onDark ? 'text-white' : 'text-black')
+        : (onDark ? 'text-white/60 hover:text-white' : 'text-gray-400 hover:text-black')
+    }`;
+
+  const navUnderlineClass = (active: boolean) =>
+    `pointer-events-none absolute left-0 -bottom-0.5 h-[2px] w-full origin-left
+     transition-transform duration-300 ease-out group-hover:scale-x-100
+     ${active ? 'scale-x-100' : 'scale-x-0'}
+     ${onDark ? 'bg-white' : 'bg-koala-purple'}`;
 
   const menus = [
     { key: 'lab', path: '/artist-lab' },
@@ -121,49 +148,46 @@ export function Header() {
             <Link
               to="/"
               onClick={() => setIsMenuOpen(false)}
-              className="z-[120]"
+              className="z-[120] group"
             >
               <img
-                src={!isMenuOpen && isTransparent && isHeroDark ? '/logo-white.svg' : '/logo.svg'}
+                src={!isMenuOpen && onDark ? '/logo-white.svg' : '/logo.svg'}
                 alt="KOALA"
-                className="h-12 w-auto"
+                className="h-12 w-auto transition-opacity duration-200 group-hover:opacity-75"
               />
             </Link>
 
             {/* [WEB] 중앙 메뉴 */}
             <div className="hidden lg:flex items-center gap-8">
-              {menus.map((menu) => (
-                <Link
-                  key={menu.key}
-                  to={menu.path}
-                  className={`text-sm font-medium transition-colors ${location.pathname === menu.path
-                    ? (isTransparent && isHeroDark ? 'text-white' : 'text-black')
-                    : (isTransparent && isHeroDark ? 'text-white/60 hover:text-white' : 'text-gray-400 hover:text-black')
-                  }`}
-                >
-                  {t(`header.menus.${menu.key}`)}
-                </Link>
-              ))}
+              {menus.map((menu) => {
+                const active = location.pathname === menu.path;
+                return (
+                  <Link key={menu.key} to={menu.path} className={navLinkClass(active)}>
+                    {t(`header.menus.${menu.key}`)}
+                    <span className={navUnderlineClass(active)} />
+                  </Link>
+                );
+              })}
 
               {/* 구분선 */}
               {artists.length > 0 && (
-                <span className={`text-xs ${isTransparent && isHeroDark ? 'text-white/20' : 'text-gray-200'}`}>|</span>
+                <span className={`text-xs ${onDark ? 'text-white/20' : 'text-gray-200'}`}>|</span>
               )}
 
               {/* 작가 링크 */}
-              {artists.map((artist) => (
-                <Link
-                  key={artist.artistCode}
-                  to={`/artist/${artist.artistCode}`}
-                  className={`text-sm font-medium transition-colors ${
-                    location.pathname === `/artist/${artist.artistCode}`
-                      ? (isTransparent && isHeroDark ? 'text-white' : 'text-black')
-                      : (isTransparent && isHeroDark ? 'text-white/60 hover:text-white' : 'text-gray-400 hover:text-black')
-                  }`}
-                >
-                  {artist.name}
-                </Link>
-              ))}
+              {artists.map((artist) => {
+                const active = location.pathname === `/artist/${artist.artistCode}`;
+                return (
+                  <Link
+                    key={artist.artistCode}
+                    to={`/artist/${artist.artistCode}`}
+                    className={navLinkClass(active)}
+                  >
+                    {artist.name}
+                    <span className={navUnderlineClass(active)} />
+                  </Link>
+                );
+              })}
             </div>
 
             {/* 오른쪽 아이콘 섹션 */}
@@ -171,7 +195,7 @@ export function Header() {
               <button
                 onClick={() => { setIsMenuOpen(false); navigate('/search'); }}
                 aria-label="검색"
-                className={`z-[120] transition-colors ${isMenuOpen ? 'text-black' : iconClass}`}
+                className={`z-[120] ${iconButtonClass} ${isMenuOpen ? 'text-black' : iconClass}`}
               >
                 <Search className="w-5 h-5" />
               </button>
@@ -179,12 +203,14 @@ export function Header() {
               <Link
                 to="/cart"
                 onClick={() => setIsMenuOpen(false)}
-                className={`relative z-[120] transition-transform ${isMenuOpen ? 'text-black' : iconClass} ${isPop ? 'scale-110' : 'scale-100'}`}
+                aria-label="장바구니"
+                className={`z-[120] ${iconButtonClass} ${isMenuOpen ? 'text-black' : iconClass} ${isPop ? 'scale-110' : ''}`}
               >
                 <ShoppingCart className="w-5 h-5" />
+                {/* 아이콘에 p-2 가 붙어 배지도 그만큼 안쪽으로 들어온다 */}
                 {cartCount > 0 && (
-                  <span className={`absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full flex items-center justify-center text-[9px] font-bold ${
-                    isMenuOpen ? 'bg-koala-navy text-white' : (isTransparent && isHeroDark ? 'bg-white text-black' : 'bg-koala-navy text-white')
+                  <span className={`absolute top-0 right-0 w-4 h-4 rounded-full flex items-center justify-center text-[9px] font-bold ${
+                    isMenuOpen ? 'bg-koala-navy text-white' : (onDark ? 'bg-white text-black' : 'bg-koala-navy text-white')
                   }`}>
                     {cartCount}
                   </span>
@@ -194,12 +220,17 @@ export function Header() {
               {/* [MOBILE] 햄버거 버튼 */}
               <button
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className={`lg:hidden z-[120] p-2 -mr-2 transition-colors ${isMenuOpen ? 'text-black' : iconClass}`}
+                aria-label="메뉴"
+                className={`lg:hidden z-[120] ${iconButtonClass} ${isMenuOpen ? 'text-black' : iconClass}`}
               >
                 {isMenuOpen ? <X className="w-7 h-7" /> : <Menu className="w-7 h-7" />}
               </button>
 
-              <Link to="/account/orders" className={`hidden lg:block ${iconClass}`}>
+              <Link
+                to="/account/orders"
+                aria-label="마이페이지"
+                className={`hidden lg:block ${iconButtonClass} ${iconClass}`}
+              >
                 <User className="w-5 h-5" />
               </Link>
             </div>
