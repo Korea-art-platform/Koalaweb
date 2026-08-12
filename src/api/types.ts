@@ -76,8 +76,11 @@ export interface SkuMedia {
 export interface Sku {
   skuCode: string;
   name: string;
+  /** 소분류 코드 — sku_categories(type='SUB').code */
   genre: string;
-  /** ARTWORK | GOODS */
+  /** 대분류 코드 — sku_categories(type='MAIN').code (LIMITED / NORMAL / …) */
+  mainCategory?: string;
+  /** ARTWORK | GOODS — 화면에서는 더 이상 쓰지 않는다 */
   skuType?: string;
   artistName: string;
   artistCode?: string;

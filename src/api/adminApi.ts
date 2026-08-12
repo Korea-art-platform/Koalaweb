@@ -1,4 +1,5 @@
 import adminInstance from './adminInstance';
+import type { Category, CategoryGroups } from './category';
 
 const BASE = '/admin/api/v1';
 
@@ -82,6 +83,37 @@ export async function discontinueSku(skuCode: string) {
 
 export async function deleteSku(skuCode: string) {
   await adminInstance.delete(`${BASE}/skus/${skuCode}`);
+}
+
+// ── Categories ────────────────────────────────────────────────────────────────
+// 공개 API 와 달리 비활성 카테고리도 내려오고, 각 항목에 usedCount 가 붙는다.
+export async function getAdminCategories() {
+  const res = await adminInstance.get(`${BASE}/categories`);
+  return res.data.data as CategoryGroups;
+}
+
+export async function createCategory(body: {
+  type: 'MAIN' | 'SUB';
+  code: string;
+  name: string;
+  sortOrder?: number;
+}) {
+  const res = await adminInstance.post(`${BASE}/categories`, body);
+  return res.data.data as Category;
+}
+
+/** code·type 은 상품이 참조 중이라 바꿀 수 없다 */
+export async function updateCategory(
+  id: number,
+  body: { name?: string; sortOrder?: number; isActive?: boolean }
+) {
+  const res = await adminInstance.patch(`${BASE}/categories/${id}`, body);
+  return res.data.data as Category;
+}
+
+/** 실제 삭제가 아니라 비활성화 */
+export async function deactivateCategory(id: number) {
+  await adminInstance.delete(`${BASE}/categories/${id}`);
 }
 
 // ── SKU Media ─────────────────────────────────────────────────────────────────

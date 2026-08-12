@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router';
 import { getAdminSkus, createSku, addSkuMedia, publishSku, discontinueSku, deleteSku, adjustStock, getAdminArtists } from '@/api/adminApi';
+import { getCategories, type CategoryGroups } from '@/api/category';
 import { Package, ImagePlus, X, FileSpreadsheet } from 'lucide-react';
 import AdminCsvImportModal from './AdminCsvImportModal';
 
@@ -17,20 +18,8 @@ const SKU_STATUS_LABEL: Record<string, string> = {
   DISCONTINUED: '판매중단',
 };
 
-const SKU_TYPES = [
-  { value: 'ARTWORK', label: '아트워크 (원화·판화 등)' },
-  { value: 'GOODS', label: '굿즈' },
-];
-const GENRES = [
-  { value: 'ART_TOY',      label: '아트 토이' },
-  { value: 'SCULPTURE',    label: '조각' },
-  { value: 'PAINTING',     label: '페인팅' },
-  { value: 'PRINT',        label: '판화 / 프린트' },
-  { value: 'PHOTOGRAPH',   label: '사진' },
-  { value: 'INSTALLATION', label: '설치 미술' },
-  { value: 'TEXTILE',      label: '섬유 / 직물' },
-  { value: 'OTHER',        label: '기타' },
-];
+/** 대분류가 이 코드일 때만 에디션 정보를 받는다 */
+const LIMITED = 'LIMITED';
 
 const inputCls = 'w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black/10';
 
@@ -41,11 +30,12 @@ interface CreateForm {
   name: string;
   slug: string;
   description: string;
-  skuType: string;
+  /** 대분류 코드 — 한정판 여부가 여기서 정해진다 */
+  mainCategory: string;
+  /** 소분류 코드 (서버 필드명은 genre) */
   genre: string;
   listPrice: string;
   salePrice: string;
-  isLimitedEdition: boolean;
   editionSize: string;
   editionNumber: string;
   badges: BadgeItem[];
@@ -57,9 +47,9 @@ interface CreateForm {
 
 const EMPTY_FORM: CreateForm = {
   artistCode: '', name: '', slug: '', description: '',
-  skuType: 'ARTWORK', genre: '',
+  mainCategory: '', genre: '',
   listPrice: '', salePrice: '',
-  isLimitedEdition: false, editionSize: '', editionNumber: '',
+  editionSize: '', editionNumber: '',
   badges: [],
   widthCm: '', heightCm: '', depthCm: '', weightKg: '',
 };
@@ -102,6 +92,9 @@ export default function AdminProductList() {
   const primaryInputRef = useRef<HTMLInputElement>(null);
   const [csvOpen, setCsvOpen] = useState(false);
 
+  // 카테고리는 어드민이 추가할 수 있으므로 상수가 아니라 서버에서 받는다
+  const [categories, setCategories] = useState<CategoryGroups>({ main: [], sub: [] });
+
   const load = useCallback(() => {
     setLoading(true);
     getAdminSkus(page).then(setData).finally(() => setLoading(false));
@@ -122,6 +115,14 @@ export default function AdminProductList() {
     } catch {
       setArtists([]);
     }
+    try {
+      const groups = await getCategories();
+      setCategories(groups);
+      // 대분류는 반드시 하나 골라야 하므로 첫 항목을 미리 넣어둔다
+      setF({ mainCategory: groups.main[0]?.code ?? '' });
+    } catch {
+      setCategories({ main: [], sub: [] });
+    }
   };
 
   const handlePrimaryFileChange = (file: File | null) => {
@@ -136,6 +137,8 @@ export default function AdminProductList() {
 
   const setF = (patch: Partial<CreateForm>) => setForm((f) => ({ ...f, ...patch }));
 
+  const isLimited = form.mainCategory === LIMITED;
+
   const handleSlugAutoFill = (name: string) => {
     const slug = name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
     setF({ slug });
@@ -145,6 +148,9 @@ export default function AdminProductList() {
     if (!form.artistCode) { setFormError('아티스트를 선택해 주세요.'); return; }
     if (!form.name.trim()) { setFormError('상품명을 입력해 주세요.'); return; }
     if (!form.slug.trim()) { setFormError('슬러그를 입력해 주세요.'); return; }
+    if (!form.mainCategory) { setFormError('대분류를 선택해 주세요.'); return; }
+    // 소분류가 비면 메인 페이지 어느 섹션에도 걸리지 않는다
+    if (!form.genre) { setFormError('소분류를 선택해 주세요. (메인 페이지가 소분류 단위로 나뉩니다)'); return; }
     if (!form.listPrice || isNaN(Number(form.listPrice))) { setFormError('정가를 올바르게 입력해 주세요.'); return; }
     if (Number(form.listPrice) < 0) { setFormError('정가는 0원 이상이어야 합니다.'); return; }
     // ── 신규 등록 필수: 작품 설명 · 규격(가로·세로·무게) ──
@@ -178,14 +184,13 @@ export default function AdminProductList() {
         name: form.name.trim(),
         slug: form.slug.trim(),
         description: form.description.trim() || undefined,
-        skuType: form.skuType || undefined,
-        genre: form.genre || undefined,
+        mainCategory: form.mainCategory,
+        genre: form.genre,
         listPrice: Number(form.listPrice),
         salePrice: form.salePrice ? Number(form.salePrice) : undefined,
-        isLimitedEdition: form.isLimitedEdition,
-        // isLimitedEdition=false 이면 edition 값을 무조건 undefined (DB 제약)
-        editionSize: form.isLimitedEdition && form.editionSize ? Number(form.editionSize) : undefined,
-        editionNumber: form.isLimitedEdition && form.editionNumber ? Number(form.editionNumber) : undefined,
+        // 한정판이 아니면 edition 값을 무조건 undefined (DB 제약)
+        editionSize: isLimited && form.editionSize ? Number(form.editionSize) : undefined,
+        editionNumber: isLimited && form.editionNumber ? Number(form.editionNumber) : undefined,
         badges: form.badges.length > 0 ? JSON.stringify(form.badges) : undefined,
         widthCm: form.widthCm ? Number(form.widthCm) : undefined,
         heightCm: form.heightCm ? Number(form.heightCm) : undefined,
@@ -439,19 +444,24 @@ export default function AdminProductList() {
                 </div>
               </div>
 
-              {/* 타입 + 장르 */}
+              {/* 대분류 + 소분류 — 목록은 카테고리 관리에서 추가한다 */}
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs text-gray-500 mb-1.5">상품 타입</label>
-                  <select value={form.skuType} onChange={(e) => setF({ skuType: e.target.value })} className={inputCls}>
-                    {SKU_TYPES.map((t) => <option key={t.value} value={t.value}>{t.label}</option>)}
+                  <label className="block text-xs text-gray-500 mb-1.5">
+                    대분류 * <span className="text-gray-300">판매 형태</span>
+                  </label>
+                  <select value={form.mainCategory} onChange={(e) => setF({ mainCategory: e.target.value })} className={inputCls}>
+                    <option value="">-- 선택 --</option>
+                    {categories.main.map((c) => <option key={c.id} value={c.code}>{c.name}</option>)}
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs text-gray-500 mb-1.5">장르</label>
+                  <label className="block text-xs text-gray-500 mb-1.5">
+                    소분류 * <span className="text-gray-300">장르 — 메인 노출 기준</span>
+                  </label>
                   <select value={form.genre} onChange={(e) => setF({ genre: e.target.value })} className={inputCls}>
                     <option value="">-- 선택 --</option>
-                    {GENRES.map((g) => <option key={g.value} value={g.value}>{g.label}</option>)}
+                    {categories.sub.map((c) => <option key={c.id} value={c.code}>{c.name}</option>)}
                   </select>
                 </div>
               </div>
@@ -506,16 +516,13 @@ export default function AdminProductList() {
                 )}
               </div>
 
-              {/* 에디션 */}
-              <div>
-                <label className="flex items-center gap-2 text-xs text-gray-600 cursor-pointer">
-                  <input type="checkbox" checked={form.isLimitedEdition}
-                    onChange={(e) => setF({ isLimitedEdition: e.target.checked })}
-                    className="rounded" />
-                  한정 에디션
-                </label>
-                {form.isLimitedEdition && (
-                  <div className="grid grid-cols-2 gap-3 mt-2">
+              {/* 에디션 — 대분류가 한정판일 때만 나타난다 */}
+              {isLimited && (
+                <div>
+                  <p className="text-xs text-gray-500 mb-2">
+                    에디션 <span className="text-gray-400">(선택 — 정해지지 않았으면 비워두세요)</span>
+                  </p>
+                  <div className="grid grid-cols-2 gap-3">
                     <div>
                       <label className="block text-xs text-gray-500 mb-1.5">에디션 총 수량</label>
                       <input type="number" value={form.editionSize} onChange={(e) => setF({ editionSize: e.target.value })}
@@ -527,8 +534,8 @@ export default function AdminProductList() {
                         className={inputCls} placeholder="7" min="1" />
                     </div>
                   </div>
-                )}
-              </div>
+                </div>
+              )}
 
               {/* 뱃지 */}
               <BadgeEditor badges={form.badges} onChange={(badges) => setF({ badges })} />

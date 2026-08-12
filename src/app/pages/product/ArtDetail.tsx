@@ -16,21 +16,12 @@ import {
   ArtQnA,
 } from '@/app/components/ArtDetail';
 import { ShareButton } from '@/app/components/common/ShareButton';
-
-const GENRE_LABELS: Record<string, string> = {
-  ART_TOY:      '아트 토이',
-  SCULPTURE:    '조각',
-  PAINTING:     '페인팅',
-  PRINT:        '판화 / 프린트',
-  PHOTOGRAPH:   '사진',
-  INSTALLATION: '설치 미술',
-  TEXTILE:      '섬유 / 직물',
-  OTHER:        '기타',
-};
+import { useCategories } from '@/app/hooks/useCategories';
 
 export default function ArtDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { subLabel } = useCategories();
   const [sku, setSku] = useState<Sku | null>(null);
   const [artist, setArtist] = useState<Artist | null>(null);
   const [loading, setLoading] = useState(true);
@@ -80,7 +71,7 @@ export default function ArtDetail() {
     .map((m) => m.fileUrl) ?? [];
 
   const artInfoItems = [
-    { label: '아트 종류', value: GENRE_LABELS[sku.genre] ?? sku.genre ?? '-' },
+    { label: '아트 종류', value: subLabel(sku.genre) || '-' },
     { label: '소재',     value: sku.material || '-' },
     { label: '크기',     value: sku.widthCm ? `${sku.widthCm}cm × ${sku.heightCm}cm` : '-' },
     { label: '무게',     value: sku.weightKg ? `${sku.weightKg}kg` : '-' },

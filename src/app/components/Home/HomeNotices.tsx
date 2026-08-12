@@ -21,7 +21,6 @@ export default function HomeNotices({ notices }: Props) {
     <section className="px-4 md:px-12 py-12 md:py-24">
       <div className="max-w-[1800px] mx-auto">
         <SectionHeader
-          num="005"
           eyebrow="News & Help"
           title="공지사항 · 자주 묻는 질문"
           sub="새로운 소식과 자주 문의주시는 내용을 모았습니다"

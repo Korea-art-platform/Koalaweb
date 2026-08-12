@@ -1,6 +1,7 @@
 import { Grid3x3, LayoutGrid } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
+import { useCategories } from '@/app/hooks/useCategories';
 
 interface StoreFilterProps {
   categories: string[];
@@ -17,6 +18,12 @@ export default function StoreFilter({
   onViewModeChange,
 }: StoreFilterProps) {
   const { t } = useTranslation();
+  const { subLabel } = useCategories();
+
+  // 'All' 만 번역 리소스를 쓴다. 나머지는 관리자가 붙인 이름이라 서버에서 온다
+  const labelOf = (category: string) =>
+    category === 'All' ? (t('store.categories.All') as string) : subLabel(category);
+
   return (
     <section className="px-5 md:px-8 lg:px-12 pb-8 md:pb-12">
       <div className="max-w-[1600px] mx-auto">
@@ -40,7 +47,7 @@ export default function StoreFilter({
                       transition={{ type: 'spring', stiffness: 420, damping: 34 }}
                     />
                   )}
-                  <span className="relative z-10">{t(`store.categories.${category}`) as string}</span>
+                  <span className="relative z-10">{labelOf(category)}</span>
                 </button>
               );
             })}

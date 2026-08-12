@@ -77,6 +77,7 @@ export default function AdminCsvImportModal({ onClose, onImported }: Props) {
           {/* 안내 */}
           <div className="bg-gray-50 rounded-lg p-4 mb-5 text-xs text-gray-600 space-y-1.5">
             <p>· 템플릿을 받아 <b>UTF-8 CSV</b>로 저장한 뒤 올려주세요. 컬럼 순서는 바뀌어도 됩니다.</p>
+            <p>· <b>mainCategory · genre</b> 는 카테고리 관리에 등록된 <b>코드</b>로 적어야 합니다. 템플릿 둘째 줄에 사용 가능한 코드가 들어 있습니다(업로드 전 삭제).</p>
             <p>· 한 행이라도 오류가 있으면 <b>아무것도 저장되지 않습니다.</b> 오류를 모두 고쳐 다시 올려주세요.</p>
             <p>· 등록된 상품은 <b>임시저장(DRAFT)</b> 상태입니다. 확인 후 게시해야 고객에게 보입니다.</p>
             <p>· 이미 등록된 slug 는 덮어쓰지 않고 오류로 표시됩니다. <b>같은 파일을 두 번 올리면 안 됩니다.</b></p>

@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router';
-import { LayoutDashboard, Package, Users, ShoppingBag, Star, Image as ImageIcon, RotateCcw, Bell, MessageCircle } from 'lucide-react';
+import { LayoutDashboard, Package, Tags, Users, ShoppingBag, Star, Image as ImageIcon, RotateCcw, Bell, MessageCircle } from 'lucide-react';
 
 interface AdminLayoutProps {
   children: React.ReactNode;
@@ -11,6 +11,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
   const navItems = [
     { label: '대시보드', path: '/admin', icon: LayoutDashboard },
     { label: '상품관리', path: '/admin/products', icon: Package },
+    { label: '카테고리', path: '/admin/categories', icon: Tags },
     { label: '아티스트', path: '/admin/artists', icon: Users },
     { label: '주문', path: '/admin/orders', icon: ShoppingBag },
     { label: '반품/교환', path: '/admin/returns', icon: RotateCcw },

@@ -7,3 +7,4 @@ export * from './wishlist';
 export * from './sku';
 export * from './artist';
 export * from './banner';
+export * from './category';

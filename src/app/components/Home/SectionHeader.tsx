@@ -2,9 +2,7 @@ import { Link } from 'react-router';
 import { ArrowRight } from 'lucide-react';
 
 interface SectionHeaderProps {
-  /** 섹션 번호 (예: '001') */
-  num: string;
-  /** 번호 옆 영문 라벨 (예: 'Limited') */
+  /** 작은 영문 라벨 (예: 'Limited') */
   eyebrow: string;
   /** 큰 제목 (한국어) */
   title: string;
@@ -16,7 +14,6 @@ interface SectionHeaderProps {
 }
 
 export default function SectionHeader({
-  num,
   eyebrow,
   title,
   sub,
@@ -27,7 +24,7 @@ export default function SectionHeader({
     <div className="mb-6 md:mb-10 flex flex-wrap items-end justify-between gap-3">
       <div className="flex flex-col gap-1.5 md:gap-2.5">
         <span className="text-[10px] md:text-xs font-bold uppercase tracking-[0.24em] text-koala-purple">
-          + {num} — {eyebrow}
+          + {eyebrow}
         </span>
         <h2 className="text-2xl md:text-4xl lg:text-5xl font-bold tracking-tight text-gray-900">
           {title}

@@ -13,6 +13,7 @@ import {
   type SkuMediaItem,
 } from '@/api/adminApi';
 import adminInstance from '@/api/adminInstance';
+import { getCategories, type CategoryGroups } from '@/api/category';
 
 const inputCls = 'w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black/10';
 
@@ -95,24 +96,8 @@ export default function AdminProductDetail() {
   );
 }
 
-// ────────────────────────────────────────────────────────────
-// 상품 유형·장르 옵션 정의
-// ────────────────────────────────────────────────────────────
-const SKU_TYPES = [
-  { value: 'ARTWORK', label: '작품 (Artwork)' },
-  { value: 'GOODS',   label: '굿즈 (Goods)' },
-];
-
-const GENRES = [
-  { value: 'ART_TOY',      label: '아트 토이' },
-  { value: 'SCULPTURE',    label: '조각' },
-  { value: 'PAINTING',     label: '페인팅' },
-  { value: 'PRINT',        label: '판화 / 프린트' },
-  { value: 'PHOTOGRAPH',   label: '사진' },
-  { value: 'INSTALLATION', label: '설치 미술' },
-  { value: 'TEXTILE',      label: '섬유 / 직물' },
-  { value: 'OTHER',        label: '기타' },
-];
+/** 대분류가 이 코드일 때만 에디션 정보를 받는다 */
+const LIMITED = 'LIMITED';
 
 interface BadgeItem { text: string; type: string; }
 
@@ -143,15 +128,14 @@ function InfoTab({ sku, onSaved }: { sku: any; onSaved: () => void }) {
     name: sku.name ?? '',
     slug: sku.slug ?? '',
     description: sku.description ?? '',
-    skuType: sku.skuType ?? 'ARTWORK',
-    genre: sku.genre ?? 'ART_TOY',
+    mainCategory: sku.mainCategory ?? '',
+    genre: sku.genre ?? '',
     material: sku.material ?? '',
     materialDescription: sku.materialDescription ?? '',
     packagingTitle: sku.packagingTitle ?? '',
     packagingDescription: sku.packagingDescription ?? '',
     listPrice: String(sku.listPrice ?? ''),
     salePrice: sku.salePrice ? String(sku.salePrice) : '',
-    isLimitedEdition: sku.isLimitedEdition ?? false,
     editionSize: sku.editionSize ? String(sku.editionSize) : '',
     editionNumber: sku.editionNumber ? String(sku.editionNumber) : '',
     badges: parsedBadges as BadgeItem[],
@@ -161,8 +145,18 @@ function InfoTab({ sku, onSaved }: { sku: any; onSaved: () => void }) {
   const [success, setSuccess] = useState(false);
   const setF = (patch: Partial<typeof form>) => setForm((f) => ({ ...f, ...patch }));
 
+  // 카테고리 목록은 어드민이 추가할 수 있어 서버에서 받는다
+  const [categories, setCategories] = useState<CategoryGroups>({ main: [], sub: [] });
+  useEffect(() => {
+    getCategories().then(setCategories).catch(() => setCategories({ main: [], sub: [] }));
+  }, []);
+
+  const isLimited = form.mainCategory === LIMITED;
+
   const handleSave = async () => {
     if (!form.name.trim() || !form.slug.trim()) { setError('이름과 슬러그는 필수입니다.'); return; }
+    if (!form.mainCategory) { setError('대분류를 선택해 주세요.'); return; }
+    if (!form.genre) { setError('소분류를 선택해 주세요.'); return; }
     if (!form.listPrice || isNaN(Number(form.listPrice))) { setError('정가를 올바르게 입력해 주세요.'); return; }
     if (form.salePrice && Number(form.salePrice) > Number(form.listPrice)) {
       setError('판매가는 정가보다 클 수 없습니다.'); return;
@@ -174,7 +168,7 @@ function InfoTab({ sku, onSaved }: { sku: any; onSaved: () => void }) {
         name: form.name.trim(),
         slug: form.slug.trim(),
         description: form.description.trim() || undefined,
-        skuType: form.skuType,
+        mainCategory: form.mainCategory,
         genre: form.genre,
         material: form.material.trim() || undefined,
         materialDescription: form.materialDescription.trim() || undefined,
@@ -183,9 +177,9 @@ function InfoTab({ sku, onSaved }: { sku: any; onSaved: () => void }) {
         listPrice: Number(form.listPrice),
         salePrice: form.salePrice ? Number(form.salePrice) : undefined,
         primaryImageUrl: sku.primaryImageUrl,
-        isLimitedEdition: form.isLimitedEdition,
-        editionSize: form.editionSize ? Number(form.editionSize) : undefined,
-        editionNumber: form.editionNumber ? Number(form.editionNumber) : undefined,
+        // 한정판이 아니면 edition 값을 무조건 undefined (DB 제약)
+        editionSize: isLimited && form.editionSize ? Number(form.editionSize) : undefined,
+        editionNumber: isLimited && form.editionNumber ? Number(form.editionNumber) : undefined,
         badges: form.badges.length > 0 ? JSON.stringify(form.badges) : undefined,
       });
       setSuccess(true);
@@ -214,21 +208,27 @@ function InfoTab({ sku, onSaved }: { sku: any; onSaved: () => void }) {
           </div>
         </div>
 
-        {/* 상품 유형 + 장르 */}
+        {/* 대분류 + 소분류 — 목록은 카테고리 관리에서 추가한다 */}
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className="block text-xs text-gray-500 mb-1.5">상품 유형</label>
-            <select value={form.skuType} onChange={(e) => setF({ skuType: e.target.value })} className={selectCls}>
-              {SKU_TYPES.map((t) => (
-                <option key={t.value} value={t.value}>{t.label}</option>
+            <label className="block text-xs text-gray-500 mb-1.5">
+              대분류 * <span className="text-gray-300">판매 형태</span>
+            </label>
+            <select value={form.mainCategory} onChange={(e) => setF({ mainCategory: e.target.value })} className={selectCls}>
+              <option value="">-- 선택 --</option>
+              {categories.main.map((c) => (
+                <option key={c.id} value={c.code}>{c.name}</option>
               ))}
             </select>
           </div>
           <div>
-            <label className="block text-xs text-gray-500 mb-1.5">장르 / 종류</label>
+            <label className="block text-xs text-gray-500 mb-1.5">
+              소분류 * <span className="text-gray-300">장르 — 메인 노출 기준</span>
+            </label>
             <select value={form.genre} onChange={(e) => setF({ genre: e.target.value })} className={selectCls}>
-              {GENRES.map((g) => (
-                <option key={g.value} value={g.value}>{g.label}</option>
+              <option value="">-- 선택 --</option>
+              {categories.sub.map((c) => (
+                <option key={c.id} value={c.code}>{c.name}</option>
               ))}
             </select>
           </div>
@@ -297,16 +297,13 @@ function InfoTab({ sku, onSaved }: { sku: any; onSaved: () => void }) {
             rows={5} className={`${inputCls} resize-none`} />
         </div>
 
-        {/* 한정 에디션 */}
-        <div className="border border-gray-100 rounded-lg p-4 space-y-3">
-          <p className="text-xs font-semibold text-gray-500">한정 에디션</p>
-          <label className="flex items-center gap-2 cursor-pointer">
-            <input type="checkbox" checked={form.isLimitedEdition}
-              onChange={(e) => setF({ isLimitedEdition: e.target.checked })} className="w-4 h-4" />
-            <span className="text-sm">한정 에디션 (LIMITED EDITION)</span>
-          </label>
-          {form.isLimitedEdition && (
-            <div className="grid grid-cols-2 gap-3 ml-6">
+        {/* 에디션 — 대분류가 한정판일 때만 나타난다 */}
+        {isLimited && (
+          <div className="border border-gray-100 rounded-lg p-4 space-y-3">
+            <p className="text-xs font-semibold text-gray-500">
+              에디션 <span className="font-normal text-gray-400">(선택 — 정해지지 않았으면 비워두세요)</span>
+            </p>
+            <div className="grid grid-cols-2 gap-3">
               <div>
                 <label className="block text-xs text-gray-500 mb-1">에디션 번호</label>
                 <input type="number" value={form.editionNumber}
@@ -320,8 +317,8 @@ function InfoTab({ sku, onSaved }: { sku: any; onSaved: () => void }) {
                   className={inputCls} placeholder="예: 500" min="1" />
               </div>
             </div>
-          )}
-        </div>
+          </div>
+        )}
 
         {/* 뱃지 */}
         <div className="border border-gray-100 rounded-lg p-4">

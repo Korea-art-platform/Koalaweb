@@ -200,3 +200,35 @@
     line-height: 1.5;
   }
 }
+/* ── 로그인·회원가입 폼 입력 필드 순차 등장 ────────────────────────────────
+ * 탭을 바꾸면 폼이 통째로 나타나는 대신 위에서부터 한 줄씩 올라온다.
+ * 자식 요소를 건드리지 않고 부모에 클래스 하나만 붙여 쓰기 위해
+ * nth-child 로 지연만 나눠 준다.
+ *
+ * 폼 안의 실제 입력 줄은 <form> 의 자식이므로 한 단계 더 들어가 잡는다.
+ * <form> 자체에 애니메이션을 걸면 자식까지 두 번 움직여 어색해진다.
+ * 모션을 줄이도록 설정한 사용자에게는 애니메이션을 끈다. */
+@keyframes koala-field-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.auth-stagger > form > *,
+.auth-stagger > *:not(form) {
+  animation: koala-field-in 0.45s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+}
+
+.auth-stagger > form > *:nth-child(1) { animation-delay: 0.10s; }
+.auth-stagger > form > *:nth-child(2) { animation-delay: 0.16s; }
+.auth-stagger > form > *:nth-child(3) { animation-delay: 0.22s; }
+.auth-stagger > form > *:nth-child(4) { animation-delay: 0.28s; }
+.auth-stagger > form > *:nth-child(5) { animation-delay: 0.34s; }
+.auth-stagger > form > *:nth-child(n+6) { animation-delay: 0.40s; }
+
+/* 소셜 로그인 블록 — 폼 뒤에 붙는 마지막 순서 */
+.auth-stagger > *:not(form) { animation-delay: 0.44s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .auth-stagger > form > *,
+  .auth-stagger > *:not(form) { animation: none; }
+}

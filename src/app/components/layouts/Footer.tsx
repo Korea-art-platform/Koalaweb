@@ -5,9 +5,14 @@ export default function Footer() {
   const { t } = useTranslation();
 
   return (
-    <footer className="bg-koala-navy border-t border-white/10">
-      <div className="max-w-[1600px] mx-auto px-6 md:px-8 py-12 md:py-16">
-        
+    /*
+     * 끝까지 내리면 화면이 푸터로 가득 찬다.
+     * 높이만 늘리면 아래가 텅 비므로 flex 로 위아래를 벌리고,
+     * 남는 자리에 브랜드 워드마크를 크게 깐다.
+     */
+    <footer className="bg-koala-navy border-t border-white/10 min-h-screen min-h-[100dvh] flex flex-col overflow-hidden">
+      <div className="flex-1 max-w-[1600px] w-full mx-auto px-6 md:px-8 py-12 md:py-16 flex flex-col">
+
         {/* 상단 섹션: 그리드 레이아웃 */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-10 md:gap-12 mb-12">
           
@@ -68,6 +73,16 @@ export default function Footer() {
 
             {/* 회사 소개 칼럼 제거 — /about 페이지를 내렸다. 페이지 복구 시 함께 되살릴 것 */}
           </div>
+        </div>
+
+        {/* 브랜드 워드마크 — 남는 세로 공간을 채운다.
+            정보가 아니라 여백이므로 스크린리더에서 숨긴다. */}
+        <div className="flex-1 min-h-[80px] flex items-center justify-center py-8" aria-hidden="true">
+          <img
+            src="/logo-white.svg"
+            alt=""
+            className="w-full max-w-[900px] opacity-[0.06] select-none pointer-events-none"
+          />
         </div>
 
         {/* 사업자 정보 */}

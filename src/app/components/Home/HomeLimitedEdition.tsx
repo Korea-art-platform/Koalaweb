@@ -18,7 +18,6 @@ export default function HomeLimitedEdition({ skus, loading }: Props) {
     <section className="px-4 md:px-12 pt-12 md:pt-24">
       <div className="max-w-[1800px] mx-auto">
         <SectionHeader
-          num="001"
           eyebrow="Limited"
           title="한정판 에디션"
           sub="한정 수량으로 제작된 소장 가치 높은 작품"

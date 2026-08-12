@@ -1,0 +1,287 @@
+import { useState, useEffect, useCallback } from 'react';
+import { Tags, ChevronUp, ChevronDown } from 'lucide-react';
+import {
+  getAdminCategories, createCategory, updateCategory, deactivateCategory,
+} from '@/api/adminApi';
+import type { Category, CategoryGroups } from '@/api/category';
+
+type CategoryType = 'MAIN' | 'SUB';
+
+const SECTIONS: { type: CategoryType; title: string; hint: string }[] = [
+  {
+    type: 'MAIN',
+    title: '대분류 — 판매 형태',
+    hint: '한정판 / 일반처럼 "어떻게 파는가". 자주 늘어나지 않습니다.',
+  },
+  {
+    type: 'SUB',
+    title: '소분류 — 장르',
+    hint: '조각 / 아트 토이처럼 "무엇인가". 메인 페이지가 이 단위로 나뉩니다.',
+  },
+];
+
+const EMPTY: CategoryGroups = { main: [], sub: [] };
+
+export default function AdminCategoryList() {
+  const [groups, setGroups] = useState<CategoryGroups>(EMPTY);
+  const [loading, setLoading] = useState(true);
+
+  // 추가 폼 — 섹션마다 따로 연다
+  const [addingType, setAddingType] = useState<CategoryType | null>(null);
+  const [newCode, setNewCode] = useState('');
+  const [newName, setNewName] = useState('');
+  const [formError, setFormError] = useState('');
+  const [submitting, setSubmitting] = useState(false);
+
+  // 이름 수정 — 행 안에서 바로 고친다
+  const [editingId, setEditingId] = useState<number | null>(null);
+  const [editName, setEditName] = useState('');
+
+  const load = useCallback(() => {
+    setLoading(true);
+    getAdminCategories().then(setGroups).finally(() => setLoading(false));
+  }, []);
+
+  useEffect(() => { load(); }, [load]);
+
+  const openAdd = (type: CategoryType) => {
+    setAddingType(type);
+    setNewCode('');
+    setNewName('');
+    setFormError('');
+  };
+
+  const handleCreate = async () => {
+    if (!addingType) return;
+
+    const code = newCode.trim().toUpperCase();
+    const name = newName.trim();
+
+    if (!name) return setFormError('표시 이름을 입력해 주세요.');
+    if (!code) return setFormError('코드를 입력해 주세요.');
+    if (!/^[A-Z0-9_]+$/.test(code)) {
+      return setFormError('코드는 영문 대문자·숫자·언더바만 쓸 수 있습니다. (예: ART_TOY)');
+    }
+
+    setFormError('');
+    setSubmitting(true);
+    try {
+      await createCategory({ type: addingType, code, name });
+      setAddingType(null);
+      load();
+    } catch (e) {
+      const message = (e as { response?: { data?: { message?: string } } })
+        .response?.data?.message;
+      setFormError(message ?? '카테고리 추가에 실패했습니다.');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleRename = async (c: Category) => {
+    const name = editName.trim();
+    if (!name || name === c.name) {
+      setEditingId(null);
+      return;
+    }
+    await updateCategory(c.id, { name });
+    setEditingId(null);
+    load();
+  };
+
+  /** 순서 바꾸기 — 위/아래 항목과 sortOrder 를 맞바꾼다 */
+  const handleMove = async (list: Category[], index: number, direction: -1 | 1) => {
+    const target = list[index];
+    const swap = list[index + direction];
+    if (!swap) return;
+
+    await Promise.all([
+      updateCategory(target.id, { sortOrder: swap.sortOrder }),
+      updateCategory(swap.id, { sortOrder: target.sortOrder }),
+    ]);
+    load();
+  };
+
+  const handleToggleActive = async (c: Category) => {
+    if (c.isActive) {
+      const used = c.usedCount ?? 0;
+      const warning = used > 0
+        ? `이 카테고리를 쓰는 상품이 ${used}건 있습니다.\n숨기면 상품 등록 화면과 메인 페이지에서 사라집니다.\n(상품 데이터는 그대로 남습니다)\n\n숨길까요?`
+        : '이 카테고리를 숨길까요?';
+      if (!confirm(warning)) return;
+
+      await deactivateCategory(c.id);
+    } else {
+      await updateCategory(c.id, { isActive: true });
+    }
+    load();
+  };
+
+  const listOf = (type: CategoryType) => (type === 'MAIN' ? groups.main : groups.sub);
+
+  return (
+    <div className="p-8">
+      <div className="flex items-center gap-2 text-gray-400 text-xs mb-1">
+        <Tags className="w-3.5 h-3.5" />
+        <span>카테고리 관리</span>
+      </div>
+      <h1 className="text-xl font-bold text-gray-900 mb-2">상품 카테고리</h1>
+      <p className="text-xs text-gray-400 mb-6">
+        대분류와 소분류는 서로 종속되지 않습니다. 상품 하나가 대분류 한 개, 소분류 한 개를 각각 갖습니다.
+      </p>
+
+      {loading ? (
+        <div className="py-20 text-center text-sm text-gray-400">불러오는 중...</div>
+      ) : (
+        <div className="space-y-8">
+          {SECTIONS.map((section) => {
+            const list = listOf(section.type);
+            return (
+              <section key={section.type}>
+                <div className="flex items-end justify-between mb-3">
+                  <div>
+                    <h2 className="text-sm font-bold text-gray-900">{section.title}</h2>
+                    <p className="text-xs text-gray-400 mt-0.5">{section.hint}</p>
+                  </div>
+                  <button
+                    onClick={() => openAdd(section.type)}
+                    className="px-3 py-2 text-xs bg-koala-navy text-white rounded-lg hover:bg-koala-navy-hover transition-colors"
+                  >
+                    + 추가
+                  </button>
+                </div>
+
+                {/* 추가 폼 */}
+                {addingType === section.type && (
+                  <div className="bg-white rounded-xl border border-gray-200 p-4 mb-3">
+                    <div className="flex gap-3">
+                      <div className="flex-1">
+                        <label className="block text-xs text-gray-500 mb-1">표시 이름</label>
+                        <input
+                          value={newName}
+                          onChange={(e) => setNewName(e.target.value)}
+                          placeholder={section.type === 'MAIN' ? '예: 기획전' : '예: 도자'}
+                          className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:border-koala-navy"
+                          autoFocus
+                        />
+                      </div>
+                      <div className="flex-1">
+                        <label className="block text-xs text-gray-500 mb-1">
+                          코드 <span className="text-gray-300">— 등록 후 변경 불가</span>
+                        </label>
+                        <input
+                          value={newCode}
+                          onChange={(e) => setNewCode(e.target.value.toUpperCase())}
+                          placeholder={section.type === 'MAIN' ? 'SPECIAL' : 'CERAMIC'}
+                          className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg font-mono focus:outline-none focus:border-koala-navy"
+                        />
+                      </div>
+                    </div>
+
+                    <p className="text-xs text-gray-400 mt-2">
+                      코드는 상품에 그대로 저장되는 값이라 나중에 바꿀 수 없습니다. 이름은 언제든 바꿀 수 있습니다.
+                    </p>
+                    {formError && <p className="text-xs text-red-500 mt-2">{formError}</p>}
+
+                    <div className="flex gap-2 mt-3">
+                      <button
+                        onClick={handleCreate}
+                        disabled={submitting}
+                        className="px-3 py-2 text-xs bg-koala-navy text-white rounded-lg hover:bg-koala-navy-hover disabled:opacity-50 transition-colors"
+                      >
+                        {submitting ? '추가하는 중...' : '추가'}
+                      </button>
+                      <button
+                        onClick={() => setAddingType(null)}
+                        className="px-3 py-2 text-xs bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200 transition-colors"
+                      >
+                        취소
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {list.length === 0 ? (
+                  <div className="bg-white rounded-xl border border-gray-200 py-12 text-center text-sm text-gray-400">
+                    등록된 카테고리가 없습니다.
+                  </div>
+                ) : (
+                  <div className="bg-white rounded-xl border border-gray-200 divide-y divide-gray-100">
+                    {list.map((c, i) => (
+                      <div
+                        key={c.id}
+                        className={`flex items-center gap-3 px-4 py-3 ${c.isActive ? '' : 'bg-gray-50'}`}
+                      >
+                        {/* 순서 */}
+                        <div className="flex flex-col">
+                          <button
+                            onClick={() => handleMove(list, i, -1)}
+                            disabled={i === 0}
+                            className="text-gray-300 hover:text-gray-600 disabled:opacity-30 disabled:hover:text-gray-300"
+                            title="위로"
+                          >
+                            <ChevronUp className="w-3.5 h-3.5" />
+                          </button>
+                          <button
+                            onClick={() => handleMove(list, i, 1)}
+                            disabled={i === list.length - 1}
+                            className="text-gray-300 hover:text-gray-600 disabled:opacity-30 disabled:hover:text-gray-300"
+                            title="아래로"
+                          >
+                            <ChevronDown className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+
+                        {/* 이름 — 클릭하면 바로 고친다 */}
+                        <div className="flex-1 min-w-0">
+                          {editingId === c.id ? (
+                            <input
+                              value={editName}
+                              onChange={(e) => setEditName(e.target.value)}
+                              onBlur={() => handleRename(c)}
+                              onKeyDown={(e) => {
+                                if (e.key === 'Enter') handleRename(c);
+                                if (e.key === 'Escape') setEditingId(null);
+                              }}
+                              className="px-2 py-1 text-sm border border-koala-navy rounded focus:outline-none"
+                              autoFocus
+                            />
+                          ) : (
+                            <button
+                              onClick={() => { setEditingId(c.id); setEditName(c.name); }}
+                              className={`text-sm font-medium hover:underline ${c.isActive ? 'text-gray-900' : 'text-gray-400'}`}
+                              title="클릭해서 이름 변경"
+                            >
+                              {c.name}
+                            </button>
+                          )}
+                          <span className="ml-2 text-xs font-mono text-gray-400 bg-gray-100 px-1.5 py-0.5 rounded">
+                            {c.code}
+                          </span>
+                        </div>
+
+                        <span className="text-xs text-gray-400 flex-shrink-0">
+                          상품 {c.usedCount ?? 0}건
+                        </span>
+
+                        <button
+                          onClick={() => handleToggleActive(c)}
+                          className={`px-3 py-1.5 text-xs rounded-lg transition-colors font-medium flex-shrink-0
+                            ${c.isActive
+                              ? 'bg-green-50 text-green-700 hover:bg-green-100'
+                              : 'bg-gray-100 text-gray-500 hover:bg-gray-200'}`}
+                        >
+                          {c.isActive ? '사용중' : '숨김'}
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </section>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}

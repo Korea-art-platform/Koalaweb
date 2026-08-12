@@ -7,9 +7,8 @@ import StoreProductGrid from '@/app/components/store/StoreProductGrid';
 import TrendingArtists from '@/app/components/Artist/TrendingArtists';
 import { getSkus, getGenreCounts } from '@/api/sku';
 import { useWishlistToggle } from '@/app/hooks/useWishlistToggle';
+import { useCategories } from '@/app/hooks/useCategories';
 import type { Sku, PageResponse } from '@/api/types';
-
-const ALL_CATEGORIES = ['All', 'ART_TOY', 'SCULPTURE', 'CERAMIC', 'PAINTING', 'GOODS'];
 
 export default function SmartStore() {
   const [selectedCategory, setSelectedCategory] = useState('All');
@@ -24,7 +23,12 @@ export default function SmartStore() {
       return (res.data.data ?? {}) as Record<string, number>;
     },
   });
-  const categories = ALL_CATEGORIES.filter((c) => c === 'All' || (genreCounts[c] ?? 0) > 0);
+  // 카테고리 목록은 서버가 관리한다 — 관리자가 추가한 소분류가 바로 필터에 나타난다
+  const { sub: subCategories } = useCategories();
+  const categories = [
+    'All',
+    ...subCategories.filter((c) => (genreCounts[c.code] ?? 0) > 0).map((c) => c.code),
+  ];
 
   // SKU 목록
   const { data: skuPage, isLoading: loading } = useQuery({

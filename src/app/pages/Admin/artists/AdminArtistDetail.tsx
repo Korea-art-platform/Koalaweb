@@ -23,6 +23,7 @@ import {
   type ArtistSkuItem,
   type FeaturedSkuInfo,
 } from '@/api/adminApi';
+import { useCategories } from '@/app/hooks/useCategories';
 
 type Tab = 'info' | 'media' | 'career' | 'featured';
 
@@ -778,7 +779,11 @@ function FeaturedTab({
 
   // 새 작품 등록 폼
   const [addOpen, setAddOpen] = useState(false);
-  const [addForm, setAddForm] = useState({ name: '', listPrice: '', salePrice: '', description: '' });
+  const [addForm, setAddForm] = useState({
+    name: '', listPrice: '', salePrice: '', description: '',
+    mainCategory: '', genre: '',
+  });
+  const { main: mainCategories, sub: subCategories } = useCategories();
   const [addImage, setAddImage] = useState<File | null>(null);
   const [addPreview, setAddPreview] = useState<string | null>(null);
   const [addError, setAddError] = useState('');
@@ -821,6 +826,8 @@ function FeaturedTab({
   const handleAddSku = async () => {
     if (!addForm.name.trim()) { setAddError('작품명을 입력해 주세요.'); return; }
     if (!addForm.listPrice || isNaN(Number(addForm.listPrice))) { setAddError('정가를 입력해 주세요.'); return; }
+    if (!addForm.mainCategory) { setAddError('대분류를 선택해 주세요.'); return; }
+    if (!addForm.genre) { setAddError('소분류를 선택해 주세요.'); return; }
     if (addForm.salePrice && Number(addForm.salePrice) > Number(addForm.listPrice)) {
       setAddError('할인가는 정가보다 클 수 없습니다.'); return;
     }
@@ -835,8 +842,8 @@ function FeaturedTab({
         listPrice: Number(addForm.listPrice),
         salePrice: addForm.salePrice ? Number(addForm.salePrice) : undefined,
         description: addForm.description.trim() || undefined,
-        skuType: 'ARTWORK',
-        genre: 'ART_TOY',
+        mainCategory: addForm.mainCategory,
+        genre: addForm.genre,
         currency: 'KRW',
       });
       // 2. 이미지 업로드 (있을 경우)
@@ -856,7 +863,7 @@ function FeaturedTab({
       }
       // 초기화
       setAddOpen(false);
-      setAddForm({ name: '', listPrice: '', salePrice: '', description: '' });
+      setAddForm({ name: '', listPrice: '', salePrice: '', description: '', mainCategory: '', genre: '' });
       setAddImage(null);
       setAddPreview(null);
       reloadSkus();
@@ -958,6 +965,32 @@ function FeaturedTab({
                 className={inputCls}
                 placeholder="예: 말머리 No.1"
               />
+            </div>
+
+            {/* 카테고리 — 목록은 카테고리 관리에서 추가한다 */}
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="block text-xs text-gray-500 mb-1.5">대분류 *</label>
+                <select
+                  value={addForm.mainCategory}
+                  onChange={(e) => setAddForm((f) => ({ ...f, mainCategory: e.target.value }))}
+                  className={inputCls}
+                >
+                  <option value="">-- 선택 --</option>
+                  {mainCategories.map((c) => <option key={c.id} value={c.code}>{c.name}</option>)}
+                </select>
+              </div>
+              <div>
+                <label className="block text-xs text-gray-500 mb-1.5">소분류 *</label>
+                <select
+                  value={addForm.genre}
+                  onChange={(e) => setAddForm((f) => ({ ...f, genre: e.target.value }))}
+                  className={inputCls}
+                >
+                  <option value="">-- 선택 --</option>
+                  {subCategories.map((c) => <option key={c.id} value={c.code}>{c.name}</option>)}
+                </select>
+              </div>
             </div>
 
             {/* 가격 */}

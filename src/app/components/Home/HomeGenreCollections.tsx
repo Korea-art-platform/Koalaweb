@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { Link } from 'react-router';
 import { motion } from 'framer-motion';
-import { useTranslation } from 'react-i18next';
 import SectionHeader from './SectionHeader';
+import { useCategories } from '@/app/hooks/useCategories';
 import type { Sku } from '@/api/types';
 
 interface Props {
@@ -18,7 +18,7 @@ interface Props {
  * 행에 호버(모바일은 탭)하면 펼쳐지며 그 장르 대표 작품이 배경으로 드러난다.
  */
 export default function HomeGenreCollections({ genreCounts, skus }: Props) {
-  const { t } = useTranslation();
+  const { subLabel } = useCategories();
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
 
   // 상품이 있는 장르만 (ALL 제외)
@@ -32,7 +32,6 @@ export default function HomeGenreCollections({ genreCounts, skus }: Props) {
     <section className="px-4 md:px-12 pt-12 md:pt-24">
       <div className="max-w-[1800px] mx-auto">
         <SectionHeader
-          num="002"
           eyebrow="Collections"
           title="장르별 컬렉션"
           sub="장르마다 다른 작가의 시선을 만나보세요"
@@ -40,7 +39,7 @@ export default function HomeGenreCollections({ genreCounts, skus }: Props) {
 
         <div className="flex flex-col border-t border-gray-200">
           {genres.map(([genre, count], i) => {
-            const label = t(`store.categories.${genre}`, { defaultValue: genre }) as string;
+            const label = subLabel(genre);
             const cover = skus.find((s) => s.genre === genre)?.primaryImageUrl;
             const isActive = activeIndex === i;
 
