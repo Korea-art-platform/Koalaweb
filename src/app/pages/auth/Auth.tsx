@@ -166,7 +166,6 @@ export default function Auth() {
               </button>
             </div>
 
-            {/* 헤더 */}
             <div className="text-center mb-8">
               <h1 className="text-3xl font-bold tracking-tight mb-3 transition-all duration-300">
                 {isSignup ? t('auth.signup.title') : t('auth.login.title')}
@@ -176,7 +175,6 @@ export default function Auth() {
               </p>
             </div>
 
-            {/* 카드 */}
             <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100 overflow-hidden">
               {/*
                 key 를 바꿔 폼을 새로 마운트시킨다 — 그래야 auth-stagger 의
@@ -193,7 +191,6 @@ export default function Auth() {
               </div>
             </div>
 
-            {/* 하단 링크 */}
             <div className="text-center mt-6">
               <p className="text-sm text-gray-400">
                 {isSignup ? (

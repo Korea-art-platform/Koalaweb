@@ -75,7 +75,6 @@ export default function AdminProductDetail() {
         </span>
       </div>
 
-      {/* 탭 */}
       <div className="flex gap-1 border-b border-gray-200 mb-6">
         {(['info', 'images', 'stock'] as Tab[]).map((t) => (
           <button
@@ -244,7 +243,6 @@ function InfoTab({ sku, onSaved }: { sku: any; onSaved: () => void }) {
           </div>
         </div>
 
-        {/* 재질/소재 */}
         <div>
           <label className="block text-xs text-gray-500 mb-1.5">재질 / 소재</label>
           <input
@@ -255,7 +253,6 @@ function InfoTab({ sku, onSaved }: { sku: any; onSaved: () => void }) {
           />
         </div>
 
-        {/* 재질 상세 설명 */}
         <div>
           <label className="block text-xs text-gray-500 mb-1.5">재질 상세 설명</label>
           <textarea
@@ -267,7 +264,6 @@ function InfoTab({ sku, onSaved }: { sku: any; onSaved: () => void }) {
           />
         </div>
 
-        {/* 포장 섹션 제목 + 설명 */}
         <div className="grid grid-cols-2 gap-3">
           <div>
             <label className="block text-xs text-gray-500 mb-1.5">포장 섹션 제목</label>
@@ -330,7 +326,6 @@ function InfoTab({ sku, onSaved }: { sku: any; onSaved: () => void }) {
           </div>
         )}
 
-        {/* 뱃지 */}
         <div className="border border-gray-100 rounded-lg p-4">
           <BadgeEditor
             badges={form.badges}
@@ -695,17 +690,14 @@ function VisualSlot({
         </span>
       )}
 
-      {/* 순번 배지 */}
       {index !== undefined && (
         <span className="absolute top-2 left-2 bg-black/60 text-white text-[10px] font-mono px-1.5 py-0.5 rounded">
           {index}
         </span>
       )}
 
-      {/* hover 오버레이 */}
       <div className="absolute inset-0 bg-black/0 group-hover:bg-black/25 transition-colors pointer-events-none" />
 
-      {/* 액션 버튼 */}
       <div className="absolute inset-x-0 bottom-0 flex gap-1.5 p-2 opacity-0 group-hover:opacity-100 transition-opacity">
         {onReplace && (
           <button

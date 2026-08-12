@@ -140,11 +140,9 @@ export function Header() {
 
   return (
     <>
-      {/* 상단 네비게이션 바 */}
       <nav className={`fixed top-0 left-0 right-0 transition-all duration-300 ${isMenuOpen ? 'z-[400] bg-white' : 'z-50 ' + navBgClass}`}>
         <div className="max-w-[1600px] mx-auto px-6 md:px-12 py-4">
           <div className="flex items-center justify-between">
-            {/* 로고 */}
             <Link
               to="/"
               onClick={() => setIsMenuOpen(false)}
@@ -169,12 +167,10 @@ export function Header() {
                 );
               })}
 
-              {/* 구분선 */}
               {artists.length > 0 && (
                 <span className={`text-xs ${onDark ? 'text-white/20' : 'text-gray-200'}`}>|</span>
               )}
 
-              {/* 작가 링크 */}
               {artists.map((artist) => {
                 const active = location.pathname === `/artist/${artist.artistCode}`;
                 return (
@@ -190,7 +186,6 @@ export function Header() {
               })}
             </div>
 
-            {/* 오른쪽 아이콘 섹션 */}
             <div className="flex items-center gap-4 md:gap-6">
               <button
                 onClick={() => { setIsMenuOpen(false); navigate('/search'); }}
@@ -254,7 +249,6 @@ export function Header() {
               </Link>
             ))}
 
-            {/* 작가 목록 */}
             {artists.length > 0 && (
               <div className={`border-t border-gray-100 pt-6 flex flex-col gap-4 transition-all duration-500 ${isMenuOpen ? 'opacity-100' : 'opacity-0'}`}
                 style={{ transitionDelay: `${menus.length * 50 + 50}ms` }}
@@ -312,28 +306,19 @@ export function Header() {
             )}
           </div>
 
-          <div className="mt-8">
+          <Link
+            to="/account/orders"
+            className="mt-8 flex items-center justify-between bg-zinc-900 text-white p-5 rounded-2xl active:scale-95 transition-all shadow-xl shadow-zinc-200"
+            onClick={() => setIsMenuOpen(false)}
+          >
             <div className="flex items-center gap-3">
-              <Link
-                to="/account/orders"
-                className="flex-1 flex items-center justify-between bg-zinc-900 text-white p-5 rounded-2xl active:scale-95 transition-all shadow-xl shadow-zinc-200"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center">
-                    <User className="w-4 h-4 text-white" />
-                  </div>
-                  <span className="font-bold text-lg">{t('header.myPage')}</span>
-                </div>
-                <ChevronRight className="w-5 h-5 text-white/40" />
-              </Link>
-
-              {/* 언어 전환 버튼 — 한국어 단일 운영 중, 다국어 지원 시 복구 */}
-              {/* <button className="w-16 h-16 flex items-center justify-center bg-gray-100 rounded-2xl active:scale-95 transition-all">
-                <Globe className="w-6 h-6 text-black" />
-              </button> */}
+              <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center">
+                <User className="w-4 h-4 text-white" />
+              </div>
+              <span className="font-bold text-lg">{t('header.myPage')}</span>
             </div>
-          </div>
+            <ChevronRight className="w-5 h-5 text-white/40" />
+          </Link>
         </div>
       </div>
     </>

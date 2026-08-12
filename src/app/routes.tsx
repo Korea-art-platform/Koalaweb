@@ -1,201 +1,200 @@
+import { lazy, Suspense } from "react";
 import { Outlet, Route, Routes } from "react-router";
 
 import ProtectedRoute from "@/app/components/routers/ProtectedRoute";
 import AccountLayout from "@/app/components/layouts/AccountLayout";
 
-// 약관 · 법적 고지
-import Terms from "@/app/pages/legal/Terms";
-import Privacy from "@/app/pages/legal/Privacy";
-import Cookies from "@/app/pages/legal/Cookies";
-import YouthProtection from "@/app/pages/legal/YouthProtection";
-import AccountDeletion from "@/app/pages/legal/AccountDeletion";
+/*
+ * 첫 화면에 필요한 것만 같이 내려받고, 나머지는 그 경로에 들어갈 때 받는다.
+ *
+ * 예전에는 어드민 17개 화면까지 한 덩어리에 들어 있어, 작품만 구경하러 온
+ * 방문자도 상품 등록 폼과 CSV 업로드 코드를 전부 내려받았다.
+ *
+ * 즉시 로딩(eager)에 두는 기준은 "첫 방문에서 바로 갈 수 있는 곳"이다.
+ * 지연 로딩으로 옮기면 그 경로로 이동할 때 잠깐 로딩 표시가 뜬다.
+ */
 
-// 고객 지원
-import FAQ from "@/app/pages/support/FAQ";
-import Shipping from "@/app/pages/support/Shipping";
-import Contact from "@/app/pages/support/Contact";
-import Help from "@/app/pages/support/Help";
-import Returns from "@/app/pages/support/Returns";
-
-// 공지사항
-import Notice from "@/app/pages/Notice";
-import NoticeDetail from "@/app/pages/NoticeDetail";
-
-// 404
-import NotFound from "@/app/pages/NotFound";
-
-// 루트 페이지
+// ── 즉시 로딩 — 둘러보기 흐름 ──────────────────────────────
 import Home from "@/app/pages/Home";
-import Search from "@/app/pages/Search";
 import SmartStore from "@/app/pages/product/SmartStore";
-import { lazy, Suspense } from 'react';
-import ARView from "@/app/pages/later/ARView";
-import ResellMarket from "@/app/pages/later/ResellMarket";
-
-// 아티스트
+import ArtDetail from "@/app/pages/product/ArtDetail";
+import ProductDetail from "@/app/pages/product/Detail";
 import ArtistLab from "@/app/pages/Artist/ArtistLab";
 import ArtistDetail from "@/app/pages/Artist/ArtistDetail";
-import ArtistWorks from "@/app/pages/Artist/ArtistWorks";
-
-// 상품
-import ProductDetail from "@/app/pages/product/Detail";
-import ArtDetail from "@/app/pages/product/ArtDetail";
-import Product360View from "@/app/pages/product/View360";
-
-// 인증
 import Auth from "@/app/pages/auth/Auth";
-import ForgotPassword from "@/app/pages/auth/ForgotPassword";
-import Onboarding from "@/app/pages/auth/Onboarding";
-import OAuth2Callback from "@/app/pages/auth/OAuth2Callback";
+import NotFound from "@/app/pages/NotFound";
 
-// 주문
-import Cart from "@/app/pages/order/Cart";
-import Checkout from "@/app/pages/order/Checkout";
-import OrderConfirmation from "@/app/pages/order/Confirmation";
-import CheckoutSuccess from "@/app/pages/order/Success";
+// ── 지연 로딩 ─────────────────────────────────────────────
+const Search = lazy(() => import("@/app/pages/Search"));
+const ArtistWorks = lazy(() => import("@/app/pages/Artist/ArtistWorks"));
+const Product360View = lazy(() => import("@/app/pages/product/View360"));
+const ARView = lazy(() => import("@/app/pages/later/ARView"));
+const ResellMarket = lazy(() => import("@/app/pages/later/ResellMarket"));
 
-// 결제
-import PaymentPage from "@/app/pages/payment/PaymentPage";
-import PaymentSuccess from "@/app/pages/payment/Success";
-import PaymentFail from "@/app/pages/payment/Fail";
+const ForgotPassword = lazy(() => import("@/app/pages/auth/ForgotPassword"));
+const Onboarding = lazy(() => import("@/app/pages/auth/Onboarding"));
+const OAuth2Callback = lazy(() => import("@/app/pages/auth/OAuth2Callback"));
 
-// 마이페이지
-import Account from "@/app/pages/account/index";
-import AccountOrders from "@/app/pages/account/AccountOrders";
-import AccountAddresses from "@/app/pages/account/AccountAddresses";
-import AccountPaymentMethods from "@/app/pages/account/PaymentMethods";
-import AccountWishlist from "@/app/pages/account/AccountWishlist";
-import AccountSettings from "@/app/pages/account/AccountSettings";
-import OrderDetail from "@/app/pages/account/OrderDetail";
+const Terms = lazy(() => import("@/app/pages/legal/Terms"));
+const Privacy = lazy(() => import("@/app/pages/legal/Privacy"));
+const Cookies = lazy(() => import("@/app/pages/legal/Cookies"));
+const YouthProtection = lazy(() => import("@/app/pages/legal/YouthProtection"));
+const AccountDeletion = lazy(() => import("@/app/pages/legal/AccountDeletion"));
 
-//관리자
-import { AdminAuthProvider } from '@/app/context/AdminAuthContext';
-import AdminRoute from '@/app/components/routers/AdminRoute';
-import AdminLogin from '@/app/pages/Admin/AdminLogin';
-import AdminDashboard from '@/app/pages/Admin/AdminDashboard';
-import AdminOrderList from '@/app/pages/Admin/orders/AdminOrderList';
-import AdminOrderDetail from '@/app/pages/Admin/orders/AdminOrderDetail';
-import AdminProductList from '@/app/pages/Admin/products/AdminProductList';
-import AdminProductDetail from '@/app/pages/Admin/products/AdminProductDetail';
-import AdminArtistList from '@/app/pages/Admin/artists/AdminArtistList';
-import AdminArtistDetail from '@/app/pages/Admin/artists/AdminArtistDetail';
-import AdminReviewList from '@/app/pages/Admin/reviews/AdminReviewList';
-import AdminBannerList from '@/app/pages/Admin/banners/AdminBannerList';
-import AdminCategoryList from '@/app/pages/Admin/categories/AdminCategoryList';
-import AdminUserList from '@/app/pages/Admin/users/AdminUserList';
-import AdminReturnList from '@/app/pages/Admin/returns/AdminReturnList';
-import AdminReturnDetail from '@/app/pages/Admin/returns/AdminReturnDetail';
-import AdminNoticeList from '@/app/pages/Admin/notices/AdminNoticeList';
-import AdminInquiryList from '@/app/pages/Admin/inquiries/AdminInquiryList';
-import AdminInquiryDetail from '@/app/pages/Admin/inquiries/AdminInquiryDetail';
-import AccountInquiry from '@/app/pages/account/AccountInquiry';
-import AdminUserDetail from '@/app/pages/Admin/users/AdminUserDetail';
+const Notice = lazy(() => import("@/app/pages/Notice"));
+const NoticeDetail = lazy(() => import("@/app/pages/NoticeDetail"));
+
+const FAQ = lazy(() => import("@/app/pages/support/FAQ"));
+const Shipping = lazy(() => import("@/app/pages/support/Shipping"));
+const Contact = lazy(() => import("@/app/pages/support/Contact"));
+const Help = lazy(() => import("@/app/pages/support/Help"));
+const Returns = lazy(() => import("@/app/pages/support/Returns"));
+
+const Cart = lazy(() => import("@/app/pages/order/Cart"));
+const Checkout = lazy(() => import("@/app/pages/order/Checkout"));
+const OrderConfirmation = lazy(() => import("@/app/pages/order/Confirmation"));
+const CheckoutSuccess = lazy(() => import("@/app/pages/order/Success"));
+
+const PaymentPage = lazy(() => import("@/app/pages/payment/PaymentPage"));
+const PaymentSuccess = lazy(() => import("@/app/pages/payment/Success"));
+const PaymentFail = lazy(() => import("@/app/pages/payment/Fail"));
+
+const Account = lazy(() => import("@/app/pages/account/index"));
+const AccountOrders = lazy(() => import("@/app/pages/account/AccountOrders"));
+const AccountAddresses = lazy(() => import("@/app/pages/account/AccountAddresses"));
+const AccountPaymentMethods = lazy(() => import("@/app/pages/account/PaymentMethods"));
+const AccountWishlist = lazy(() => import("@/app/pages/account/AccountWishlist"));
+const AccountInquiry = lazy(() => import("@/app/pages/account/AccountInquiry"));
+const AccountSettings = lazy(() => import("@/app/pages/account/AccountSettings"));
+const OrderDetail = lazy(() => import("@/app/pages/account/OrderDetail"));
+
+// 어드민 — 방문자에게는 한 줄도 내려가지 않는다
+const AdminAuthProvider = lazy(() =>
+  import("@/app/context/AdminAuthContext").then((m) => ({ default: m.AdminAuthProvider }))
+);
+const AdminRoute = lazy(() => import("@/app/components/routers/AdminRoute"));
+const AdminLogin = lazy(() => import("@/app/pages/Admin/AdminLogin"));
+const AdminDashboard = lazy(() => import("@/app/pages/Admin/AdminDashboard"));
+const AdminOrderList = lazy(() => import("@/app/pages/Admin/orders/AdminOrderList"));
+const AdminOrderDetail = lazy(() => import("@/app/pages/Admin/orders/AdminOrderDetail"));
+const AdminProductList = lazy(() => import("@/app/pages/Admin/products/AdminProductList"));
+const AdminProductDetail = lazy(() => import("@/app/pages/Admin/products/AdminProductDetail"));
+const AdminCategoryList = lazy(() => import("@/app/pages/Admin/categories/AdminCategoryList"));
+const AdminArtistList = lazy(() => import("@/app/pages/Admin/artists/AdminArtistList"));
+const AdminArtistDetail = lazy(() => import("@/app/pages/Admin/artists/AdminArtistDetail"));
+const AdminReviewList = lazy(() => import("@/app/pages/Admin/reviews/AdminReviewList"));
+const AdminBannerList = lazy(() => import("@/app/pages/Admin/banners/AdminBannerList"));
+const AdminUserList = lazy(() => import("@/app/pages/Admin/users/AdminUserList"));
+const AdminUserDetail = lazy(() => import("@/app/pages/Admin/users/AdminUserDetail"));
+const AdminReturnList = lazy(() => import("@/app/pages/Admin/returns/AdminReturnList"));
+const AdminReturnDetail = lazy(() => import("@/app/pages/Admin/returns/AdminReturnDetail"));
+const AdminNoticeList = lazy(() => import("@/app/pages/Admin/notices/AdminNoticeList"));
+const AdminInquiryList = lazy(() => import("@/app/pages/Admin/inquiries/AdminInquiryList"));
+const AdminInquiryDetail = lazy(() => import("@/app/pages/Admin/inquiries/AdminInquiryDetail"));
+
+/** 화면이 도착하기를 기다리는 동안 — 스피너 대신 빈 공간을 둔다 */
+function RouteFallback() {
+  return <div className="min-h-screen" />;
+}
 
 export function AppRoutes() {
   return (
-    <Routes>
-      {/* ── 🟢 누구나 접근 가능한 영역 ──────────────────────────────────────── */}
-      
-      {/* 메인 */}
-      <Route path="/" element={<Home />} />
-      <Route path="/search" element={<Search />} />
+    <Suspense fallback={<RouteFallback />}>
+      <Routes>
+        {/* ── 누구나 접근 가능 ────────────────────────────── */}
+        <Route path="/" element={<Home />} />
+        <Route path="/search" element={<Search />} />
 
-      {/* 스토어 */}
-      <Route path="/smart-store" element={<SmartStore />} />
-      <Route path="/store" element={<SmartStore />} />
-      <Route path="/product/:id" element={<ProductDetail />} />
-      <Route path="/art/:id" element={<ArtDetail />} />
-      <Route path="/product/:id/360" element={<Product360View />} />
-      <Route path="/ar-view" element={<ARView />} />
-      <Route path="/resell" element={<ResellMarket />} />
+        {/* 스토어 */}
+        <Route path="/smart-store" element={<SmartStore />} />
+        <Route path="/store" element={<SmartStore />} />
+        <Route path="/product/:id" element={<ProductDetail />} />
+        <Route path="/art/:id" element={<ArtDetail />} />
+        <Route path="/product/:id/360" element={<Product360View />} />
+        <Route path="/ar-view" element={<ARView />} />
+        <Route path="/resell" element={<ResellMarket />} />
 
-      {/* 아티스트 */}
-      <Route path="/artist-lab" element={<ArtistLab />} />
-      <Route path="/artist/:id" element={<ArtistDetail />} />
-      <Route path="/artist/:id/works" element={<ArtistWorks />} />
+        {/* 아티스트 */}
+        <Route path="/artist-lab" element={<ArtistLab />} />
+        <Route path="/artist/:id" element={<ArtistDetail />} />
+        <Route path="/artist/:id/works" element={<ArtistWorks />} />
 
-      {/* 인증 */}
-      <Route path="/login" element={<Auth />} />
-      <Route path="/signup" element={<Auth />} />
-      <Route path="/forgot-password" element={<ForgotPassword />} />
-      <Route path="/oauth2/callback" element={<OAuth2Callback />} />
+        {/* 인증 */}
+        <Route path="/login" element={<Auth />} />
+        <Route path="/signup" element={<Auth />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/oauth2/callback" element={<OAuth2Callback />} />
 
-      {/* 약관 · 법적 고지 */}
-      <Route path="/terms" element={<Terms />} />
-      <Route path="/privacy" element={<Privacy />} />
-      <Route path="/cookies" element={<Cookies />} />
-      <Route path="/youth-protection" element={<YouthProtection />} />
-      <Route path="/account-deletion" element={<AccountDeletion />} />
+        {/* 약관 · 법적 고지 */}
+        <Route path="/terms" element={<Terms />} />
+        <Route path="/privacy" element={<Privacy />} />
+        <Route path="/cookies" element={<Cookies />} />
+        <Route path="/youth-protection" element={<YouthProtection />} />
+        <Route path="/account-deletion" element={<AccountDeletion />} />
 
-      {/* 공지사항 */}
-      <Route path="/notice" element={<Notice />} />
-      <Route path="/notice/:noticeCode" element={<NoticeDetail />} />
+        {/* 공지사항 */}
+        <Route path="/notice" element={<Notice />} />
+        <Route path="/notice/:noticeCode" element={<NoticeDetail />} />
 
-      {/* 고객 지원 */}
-      <Route path="/faq" element={<FAQ />} />
-      <Route path="/shipping" element={<Shipping />} />
-      <Route path="/contact" element={<Contact />} />
-      <Route path="/help" element={<Help />} />
-      <Route path="/returns" element={<Returns />} />
+        {/* 고객 지원 */}
+        <Route path="/faq" element={<FAQ />} />
+        <Route path="/shipping" element={<Shipping />} />
+        <Route path="/contact" element={<Contact />} />
+        <Route path="/help" element={<Help />} />
+        <Route path="/returns" element={<Returns />} />
 
-      {/* ── 🔴 로그인 필수 구역 (ProtectedRoute로 보호됨) ───────────────────────── */}
-      <Route element={<ProtectedRoute />}>
-        
-        {/* 가입 후 온보딩 */}
-        <Route path="/onboarding" element={<Onboarding />} />
+        {/* ── 로그인 필수 ─────────────────────────────────── */}
+        <Route element={<ProtectedRoute />}>
+          <Route path="/onboarding" element={<Onboarding />} />
 
-        {/* 장바구니 / 주문 */}
-        <Route path="/cart" element={<Cart />} />
-        <Route path="/checkout" element={<Checkout />} />
-        <Route path="/checkout/confirm" element={<OrderConfirmation />} />
-        <Route path="/checkout/success" element={<CheckoutSuccess />} />
+          <Route path="/cart" element={<Cart />} />
+          <Route path="/checkout" element={<Checkout />} />
+          <Route path="/checkout/confirm" element={<OrderConfirmation />} />
+          <Route path="/checkout/success" element={<CheckoutSuccess />} />
 
-        {/* 결제 */}
-        <Route path="/payment" element={<PaymentPage />} />
-        <Route path="/payment/success" element={<PaymentSuccess />} />
-        <Route path="/payment/fail" element={<PaymentFail />} />
+          <Route path="/payment" element={<PaymentPage />} />
+          <Route path="/payment/success" element={<PaymentSuccess />} />
+          <Route path="/payment/fail" element={<PaymentFail />} />
 
-        {/* 📦 마이페이지 그룹 (AccountLayout 안에서 렌더링됨) */}
-        <Route element={<AccountLayout />}>
-          <Route path="/account" element={<Account />} />
-          <Route path="/account/orders" element={<AccountOrders />} />
-          <Route path="/account/orders/:orderNo" element={<OrderDetail />} />
-          <Route path="/account/addresses" element={<AccountAddresses />} />
-          <Route path="/account/payment-methods" element={<AccountPaymentMethods />} />
-          <Route path="/account/wishlist" element={<AccountWishlist />} />
-          <Route path="/account/inquiry" element={<AccountInquiry />} />
-          <Route path="/account/settings" element={<AccountSettings />} />
+          {/* 마이페이지 — AccountLayout 안에서 렌더링 */}
+          <Route element={<AccountLayout />}>
+            <Route path="/account" element={<Account />} />
+            <Route path="/account/orders" element={<AccountOrders />} />
+            <Route path="/account/orders/:orderNo" element={<OrderDetail />} />
+            <Route path="/account/addresses" element={<AccountAddresses />} />
+            <Route path="/account/payment-methods" element={<AccountPaymentMethods />} />
+            <Route path="/account/wishlist" element={<AccountWishlist />} />
+            <Route path="/account/inquiry" element={<AccountInquiry />} />
+            <Route path="/account/settings" element={<AccountSettings />} />
+          </Route>
         </Route>
 
-      </Route>
-      {/* ───────────────────────────────────────────────────────────────── */}
-
-      {/* ── 🔑 어드민 구역 ───────────────────────────────────────────── */}
-      <Route element={<AdminAuthProvider><Outlet /></AdminAuthProvider>}>
-        <Route path="/admin/login" element={<AdminLogin />} />
-        <Route element={<AdminRoute />}>
-          <Route path="/admin" element={<AdminDashboard />} />
-          <Route path="/admin/orders" element={<AdminOrderList />} />
-          <Route path="/admin/orders/:orderNo" element={<AdminOrderDetail />} />
-          <Route path="/admin/products" element={<AdminProductList />} />
-          <Route path="/admin/products/:skuCode" element={<AdminProductDetail />} />
-          <Route path="/admin/categories" element={<AdminCategoryList />} />
-          <Route path="/admin/artists" element={<AdminArtistList />} />
-          <Route path="/admin/artists/:artistCode" element={<AdminArtistDetail />} />
-          <Route path="/admin/reviews" element={<AdminReviewList />} />
-          <Route path="/admin/banners" element={<AdminBannerList />} />
-          <Route path="/admin/users" element={<AdminUserList />} />
-          <Route path="/admin/returns" element={<AdminReturnList />} />
-          <Route path="/admin/returns/:returnNo" element={<AdminReturnDetail />} />
-          <Route path="/admin/notices" element={<AdminNoticeList />} />
-          <Route path="/admin/inquiries" element={<AdminInquiryList />} />
-          <Route path="/admin/inquiries/:inquiryCode" element={<AdminInquiryDetail />} />
-          <Route path="/admin/users/:userId" element={<AdminUserDetail />} />
+        {/* ── 어드민 ──────────────────────────────────────── */}
+        <Route element={<AdminAuthProvider><Outlet /></AdminAuthProvider>}>
+          <Route path="/admin/login" element={<AdminLogin />} />
+          <Route element={<AdminRoute />}>
+            <Route path="/admin" element={<AdminDashboard />} />
+            <Route path="/admin/orders" element={<AdminOrderList />} />
+            <Route path="/admin/orders/:orderNo" element={<AdminOrderDetail />} />
+            <Route path="/admin/products" element={<AdminProductList />} />
+            <Route path="/admin/products/:skuCode" element={<AdminProductDetail />} />
+            <Route path="/admin/categories" element={<AdminCategoryList />} />
+            <Route path="/admin/artists" element={<AdminArtistList />} />
+            <Route path="/admin/artists/:artistCode" element={<AdminArtistDetail />} />
+            <Route path="/admin/reviews" element={<AdminReviewList />} />
+            <Route path="/admin/banners" element={<AdminBannerList />} />
+            <Route path="/admin/users" element={<AdminUserList />} />
+            <Route path="/admin/users/:userId" element={<AdminUserDetail />} />
+            <Route path="/admin/returns" element={<AdminReturnList />} />
+            <Route path="/admin/returns/:returnNo" element={<AdminReturnDetail />} />
+            <Route path="/admin/notices" element={<AdminNoticeList />} />
+            <Route path="/admin/inquiries" element={<AdminInquiryList />} />
+            <Route path="/admin/inquiries/:inquiryCode" element={<AdminInquiryDetail />} />
+          </Route>
         </Route>
-      </Route>
 
-      {/* 404 */}
-      <Route path="*" element={<NotFound />} />
-    </Routes>
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </Suspense>
   );
 }

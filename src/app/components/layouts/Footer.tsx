@@ -13,10 +13,8 @@ export default function Footer() {
     <footer className="bg-koala-navy border-t border-white/10 min-h-screen min-h-[100dvh] flex flex-col overflow-hidden">
       <div className="flex-1 max-w-[1600px] w-full mx-auto px-6 md:px-8 py-12 md:py-16 flex flex-col">
 
-        {/* 상단 섹션: 그리드 레이아웃 */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-10 md:gap-12 mb-12">
           
-          {/* Brand Section */}
           <div className="lg:col-span-2">
             <div className="mb-6">
               <img
@@ -33,7 +31,6 @@ export default function Footer() {
                 도메인 루트(https://instagram.com)로 걸려 있어 미완성으로 보였다. */}
           </div>
 
-          {/* Links Sections */}
           <div className="grid grid-cols-2 col-span-1 sm:col-span-2 lg:col-span-3 gap-8 md:gap-12">
             <div>
               <h3 className="text-xs font-bold tracking-widest mb-5 text-white uppercase">{t('footer.explore.title')}</h3>

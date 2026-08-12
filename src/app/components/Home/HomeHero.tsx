@@ -90,6 +90,11 @@ export default function HomeHero({ banners }: HomeHeroProps) {
             src={b.imageUrl}
             alt={b.title ?? 'Banner'}
             className="w-full h-full object-cover object-center"
+            /* 첫 배너는 첫 화면을 통째로 채우므로 지연 로딩하면 안 된다.
+               나머지는 넘길 때 필요하니 미리 받아 둔다 */
+            loading={i === 0 ? 'eager' : 'lazy'}
+            fetchPriority={i === 0 ? 'high' : 'auto'}
+            decoding="async"
           />
         </div>
       ))}

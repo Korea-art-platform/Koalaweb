@@ -467,7 +467,6 @@ export default function AdminProductList() {
                 </div>
               </div>
 
-              {/* 가격 */}
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="block text-xs text-gray-500 mb-1.5">
@@ -538,7 +537,6 @@ export default function AdminProductList() {
                 </div>
               )}
 
-              {/* 뱃지 */}
               <BadgeEditor badges={form.badges} onChange={(badges) => setF({ badges })} />
 
               {/* 사이즈/무게 — 깊이만 선택, 나머지는 필수 */}

@@ -20,6 +20,8 @@ export function OrderItemsList({ order }: { order: any }) {
                   src={item.primaryImageUrl}
                   alt={item.skuName}
                   className="w-full h-full object-cover"
+                  loading="lazy"
+                  decoding="async"
                 />
               ) : (
                 <Package className="w-8 h-8 text-gray-300" />

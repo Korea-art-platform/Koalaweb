@@ -19,6 +19,8 @@ export function CartItem({ item, onUpdateQuantity, onRemoveItem }: CartItemProps
             src={item.primaryImageUrl ?? '/placeholder.svg'}
             alt={item.skuName}
             className="w-full h-full object-cover"
+            loading="lazy"
+            decoding="async"
           />
         </div>
 
