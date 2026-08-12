@@ -5,13 +5,8 @@ export default function Footer() {
   const { t } = useTranslation();
 
   return (
-    /*
-     * 끝까지 내리면 화면이 푸터로 가득 찬다.
-     * 높이만 늘리면 아래가 텅 비므로 flex 로 위아래를 벌리고,
-     * 남는 자리에 브랜드 워드마크를 크게 깐다.
-     */
-    <footer className="bg-koala-navy border-t border-white/10 min-h-screen min-h-[100dvh] flex flex-col overflow-hidden">
-      <div className="flex-1 max-w-[1600px] w-full mx-auto px-6 md:px-8 py-12 md:py-16 flex flex-col">
+    <footer className="bg-koala-navy border-t border-white/10">
+      <div className="max-w-[1600px] mx-auto px-6 md:px-8 py-12 md:py-16">
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-10 md:gap-12 mb-12">
           
@@ -72,19 +67,10 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* 브랜드 워드마크 — 남는 세로 공간을 채운다.
-            정보가 아니라 여백이므로 스크린리더에서 숨긴다. */}
-        <div className="flex-1 min-h-[80px] flex items-center justify-center py-8" aria-hidden="true">
-          <img
-            src="/logo-white.svg"
-            alt=""
-            className="w-full max-w-[900px] opacity-[0.06] select-none pointer-events-none"
-          />
-        </div>
-
         {/* 사업자 정보 */}
         <div className="pt-8 border-t border-white/10 space-y-4">
-          <p className="text-[10px] text-gray-600 leading-relaxed break-keep">
+          {/* 전자상거래법 필수 표시사항 — 작아서 안 읽히면 표시한 의미가 없다 */}
+          <p className="text-xs md:text-sm text-gray-400 leading-relaxed break-keep">
             상호명: 헤론 &nbsp;|&nbsp; 서비스명: KOALA-ART &nbsp;|&nbsp; 대표이사: 정동훈 &nbsp;|&nbsp; 사업자등록번호: 203-87-01972
             &nbsp;|&nbsp; 통신판매업 신고번호: 제2024-서울서초-3956호
             <br className="hidden sm:block" />
@@ -94,7 +80,7 @@ export default function Footer() {
           </p>
 
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-[10px] text-gray-500 order-2 md:order-1">
+            <p className="text-xs text-gray-500 order-2 md:order-1">
               {t('footer.bottom.copyright')}
             </p>
 
