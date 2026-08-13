@@ -57,6 +57,19 @@ export async function markDelivered(orderNo: string) {
   await adminInstance.patch(`${BASE}/orders/${orderNo}/delivered`);
 }
 
+export type Carrier = { code: string; name: string };
+
+/**
+ * 택배사 목록.
+ *
+ * 화면에 박아 두지 않고 서버에서 받는다 — 이 코드가 운송장 조회 API 가 쓰는 값이라,
+ * 양쪽에 따로 적어 두면 한쪽만 바뀌었을 때 자동 추적이 조용히 멈춘다.
+ */
+export async function getCarriers(): Promise<Carrier[]> {
+  const res = await adminInstance.get(`${BASE}/orders/carriers`);
+  return res.data.data ?? [];
+}
+
 // ── SKUs ──────────────────────────────────────────────────────────────────────
 export async function getAdminSkus(page = 0, size = 20) {
   const res = await adminInstance.get(`${BASE}/skus`, { params: { page, size } });
@@ -688,3 +701,52 @@ export async function closeInquiry(inquiryCode: string) {
   await adminInstance.patch(`${BASE}/inquiries/${inquiryCode}/close`);
 }
 
+
+// ── 작가 정산 ─────────────────────────────────────────────────────────────────
+
+export type ArtistSettlement = {
+  settlementId: number | null;
+  artistId: number;
+  artistName: string;
+  periodYm: string;
+  grossAmount: string;
+  refundAmount: string;
+  netAmount: string;
+  commissionRate: string;
+  commissionAmount: string;
+  payoutAmount: string;
+  confirmed: boolean;
+  status: string | null;
+  paidAt: string | null;
+  memo: string | null;
+};
+
+export type SettlementPeriod = {
+  periodYm: string;
+  confirmed: boolean;
+  artistCount: number;
+  totalGross: string;
+  totalRefund: string;
+  totalCommission: string;
+  totalPayout: string;
+  items: ArtistSettlement[];
+};
+
+export async function getSettlementPeriod(periodYm: string) {
+  const res = await adminInstance.get(`${BASE}/settlements/${periodYm}`);
+  return res.data.data as SettlementPeriod;
+}
+
+/** 확정 — 이 시점의 금액이 굳는다. 되돌릴 수 없다 */
+export async function confirmSettlement(periodYm: string) {
+  const res = await adminInstance.post(`${BASE}/settlements/${periodYm}/confirm`);
+  return res.data.data as SettlementPeriod;
+}
+
+export async function markSettlementPaid(settlementId: number, memo?: string) {
+  await adminInstance.patch(`${BASE}/settlements/${settlementId}/paid`, { memo: memo ?? null });
+}
+
+export async function changeCommissionRate(artistId: number, commissionRate: number) {
+  await adminInstance.patch(`${BASE}/settlements/artists/${artistId}/commission-rate`, { commissionRate });
+}

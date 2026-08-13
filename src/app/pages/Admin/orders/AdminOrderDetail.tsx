@@ -1,7 +1,12 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router';
-import { getAdminOrder, registerTracking, markDelivered, adminCancelOrder } from '@/api/adminApi';
+import { getAdminOrder, registerTracking, markDelivered, adminCancelOrder, getCarriers, type Carrier } from '@/api/adminApi';
 import { ArrowLeft, Truck, XCircle } from 'lucide-react';
+
+/** 저장된 값이 코드면 이름으로 바꾸고, 옛 자유 입력 값이면 그대로 보여준다 */
+function carrierName(code: string, carriers: Carrier[]) {
+  return carriers.find((c) => c.code === code)?.name ?? code;
+}
 
 const ORDER_STATUS_LABEL: Record<string, string> = {
   PENDING_PAYMENT: '결제대기', PAID: '결제완료', PREPARING: '준비중',
@@ -26,6 +31,7 @@ export default function AdminOrderDetail() {
   const [carrierCode, setCarrierCode] = useState('');
   const [trackingNo, setTrackingNo] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const [carriers, setCarriers] = useState<Carrier[]>([]);
 
   // 취소 모달
   const [cancelOpen, setCancelOpen] = useState(false);
@@ -42,6 +48,9 @@ export default function AdminOrderDetail() {
   }, [orderNo]);
 
   useEffect(() => { reload(); }, [reload]);
+
+  // 목록을 못 받아도 화면은 뜬다 — 운송장 등록만 막힌다
+  useEffect(() => { getCarriers().then(setCarriers).catch(() => setCarriers([])); }, []);
 
   const handleRegisterTracking = async () => {
     if (!orderNo || !carrierCode.trim() || !trackingNo.trim()) return;
@@ -152,7 +161,8 @@ export default function AdminOrderDetail() {
             {order.shipment.deliveryRequest && <Row label="배송 요청사항" value={order.shipment.deliveryRequest} />}
             {order.shipment.carrierCode && (
               <>
-                <Row label="택배사" value={order.shipment.carrierCode} />
+                {/* 예전에 자유 입력으로 저장된 건은 코드가 아니라 이름이라 그대로 보여준다 */}
+                <Row label="택배사" value={carrierName(order.shipment.carrierCode, carriers)} />
                 <Row label="운송장번호" value={order.shipment.trackingNo} />
               </>
             )}
@@ -195,7 +205,13 @@ export default function AdminOrderDetail() {
             <div className="space-y-3">
               <div>
                 <label className="block text-xs text-gray-500 mb-1.5">택배사</label>
-                <input value={carrierCode} onChange={(e) => setCarrierCode(e.target.value)} className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-black/10" placeholder="예: CJ대한통운" />
+                <select value={carrierCode} onChange={(e) => setCarrierCode(e.target.value)} className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-black/10">
+                  <option value="">선택하세요</option>
+                  {carriers.map((c) => (
+                    <option key={c.code} value={c.code}>{c.name}</option>
+                  ))}
+                </select>
+                <p className="text-[11px] text-gray-400 mt-1.5">목록에서 고르면 배송완료가 자동으로 처리됩니다.</p>
               </div>
               <div>
                 <label className="block text-xs text-gray-500 mb-1.5">운송장 번호</label>
