@@ -61,4 +61,11 @@ export default defineConfig(({ command }) => ({
       },
     },
   },
+
+  // 테스트 — 브라우저 없이 도는 순수 로직 위주.
+  // jsdom 은 canvas·Image 를 쓰는 이미지 축소 테스트에 필요하다.
+  test: {
+    environment: 'jsdom',
+    include: ['src/**/*.test.{ts,tsx}'],
+  },
 }))

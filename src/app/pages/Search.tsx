@@ -4,7 +4,7 @@ import { Search as SearchIcon, X, TrendingUp, Clock, ArrowLeft } from 'lucide-re
 import Navigation from '@/app/components/layouts/Header';
 import { useViewMode } from '@/app/context/ViewModeContext';
 import { useTranslation } from 'react-i18next';
-import { getSkus } from '@/api/sku';
+import { fetchAllSkus } from '@/api/fetchAllSkus';
 import { getArtists } from '@/api/artist';
 import { ImageWithFallback } from '@/app/components/fallback/ImageWithFallback';
 
@@ -22,8 +22,8 @@ export default function Search() {
   const [artists, setArtists] = useState<any[]>([]);
 
   useEffect(() => {
-    getSkus(0, 100)
-      .then((res) => setSkus(res.data.data?.content ?? res.data.data ?? []))
+    fetchAllSkus()
+      .then(setSkus)
       .catch(() => {});
     getArtists(0, 100)
       .then((res) => setArtists(res.data.data?.content ?? res.data.data ?? []))

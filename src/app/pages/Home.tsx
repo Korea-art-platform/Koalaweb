@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { getSkus, getGenreCounts } from '@/api/sku';
+import { getGenreCounts } from '@/api/sku';
+import { fetchAllSkus } from '@/api/fetchAllSkus';
 import { getBanners } from '@/api/banner';
 import { getNotices, type NoticeItem } from '@/api/notice';
 import { useCategories } from '@/app/hooks/useCategories';
@@ -38,14 +39,14 @@ export default function Home() {
       try {
         setLoading(true);
         const [skuRes, bannerRes, mainSubRes, genreRes, noticeRes] = await Promise.allSettled([
-          getSkus(0, 100),
+          fetchAllSkus(),
           getBanners('MAIN'),
           getBanners('MAIN_SUB'),
           getGenreCounts(),
           getNotices(),
         ]);
 
-        if (skuRes.status === 'fulfilled') setSkus(skuRes.value.data.data.content ?? []);
+        if (skuRes.status === 'fulfilled') setSkus(skuRes.value);
         if (bannerRes.status === 'fulfilled') setBanners(bannerRes.value.data.data ?? []);
         if (mainSubRes.status === 'fulfilled') {
           const subs: Banner[] = mainSubRes.value.data.data ?? [];
