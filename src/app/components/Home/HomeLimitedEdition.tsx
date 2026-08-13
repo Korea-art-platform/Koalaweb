@@ -1,4 +1,5 @@
 import ProductCard from '@/app/components/products/ProductCard';
+import CarouselArrows from '@/app/components/common/CarouselArrows';
 import { useWishlistToggle } from '@/app/hooks/useWishlistToggle';
 import SectionHeader from './SectionHeader';
 import type { Sku } from '@/api/types';
@@ -33,7 +34,7 @@ export default function HomeLimitedEdition({ skus, loading }: Props) {
             ))}
           </div>
         ) : (
-          <div className="flex gap-4 md:gap-6 overflow-x-auto no-scrollbar snap-x pb-2 -mx-4 px-4 md:mx-0 md:px-0">
+          <CarouselArrows label="한정판">
             {skus.map((sku) => (
               <div key={sku.skuCode} className="w-[260px] md:w-[300px] shrink-0 snap-start">
                 <ProductCard
@@ -45,7 +46,7 @@ export default function HomeLimitedEdition({ skus, loading }: Props) {
                 />
               </div>
             ))}
-          </div>
+          </CarouselArrows>
         )}
       </div>
     </section>
