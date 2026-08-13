@@ -91,6 +91,7 @@ const AdminReturnDetail = lazy(() => import("@/app/pages/Admin/returns/AdminRetu
 const AdminNoticeList = lazy(() => import("@/app/pages/Admin/notices/AdminNoticeList"));
 const AdminInquiryList = lazy(() => import("@/app/pages/Admin/inquiries/AdminInquiryList"));
 const AdminInquiryDetail = lazy(() => import("@/app/pages/Admin/inquiries/AdminInquiryDetail"));
+const AdminSettlementList = lazy(() => import("@/app/pages/Admin/settlements/AdminSettlementList"));
 
 /** 화면이 도착하기를 기다리는 동안 — 스피너 대신 빈 공간을 둔다 */
 function RouteFallback() {
@@ -190,6 +191,7 @@ export function AppRoutes() {
             <Route path="/admin/notices" element={<AdminNoticeList />} />
             <Route path="/admin/inquiries" element={<AdminInquiryList />} />
             <Route path="/admin/inquiries/:inquiryCode" element={<AdminInquiryDetail />} />
+            <Route path="/admin/settlements" element={<AdminSettlementList />} />
           </Route>
         </Route>
 
