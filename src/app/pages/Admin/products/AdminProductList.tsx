@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router';
 import { getAdminSkus, createSku, addSkuMedia, publishSku, discontinueSku, deleteSku, adjustStock, getAdminArtists } from '@/api/adminApi';
 import { getCategories, type CategoryGroups } from '@/api/category';
 import { downscaleImage } from '@/utils/downscaleImage';
+import { slugify, slugifyInput } from '@/utils/slugify';
 import { Package, ImagePlus, X, FileSpreadsheet } from 'lucide-react';
 import AdminCsvImportModal from './AdminCsvImportModal';
 
@@ -19,7 +20,6 @@ const SKU_STATUS_LABEL: Record<string, string> = {
   DISCONTINUED: '판매중단',
 };
 
-/** 대분류가 이 코드일 때만 에디션 정보를 받는다 */
 const LIMITED = 'LIMITED';
 
 const inputCls = 'w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black/10';
@@ -31,9 +31,9 @@ interface CreateForm {
   name: string;
   slug: string;
   description: string;
-  /** 대분류 코드 — 한정판 여부가 여기서 정해진다 */
+
   mainCategory: string;
-  /** 소분류 코드 (서버 필드명은 genre) */
+
   genre: string;
   listPrice: string;
   salePrice: string;
@@ -55,7 +55,6 @@ const EMPTY_FORM: CreateForm = {
   widthCm: '', heightCm: '', depthCm: '', weightKg: '',
 };
 
-// ── 뱃지 색상 정의 ──────────────────────────────────────────
 const BADGE_COLORS: Record<string, string> = {
   green:   'bg-green-50 text-green-700 border-green-200',
   amber:   'bg-amber-50 text-amber-600 border-amber-200',
@@ -76,13 +75,11 @@ export default function AdminProductList() {
   const [page, setPage] = useState(0);
   const [loading, setLoading] = useState(true);
 
-  // 재고 조정 모달
   const [stockModal, setStockModal] = useState<{ skuCode: string; current: number } | null>(null);
   const [targetQty, setTargetQty] = useState('');
   const [memo, setMemo] = useState('');
   const [adjusting, setAdjusting] = useState(false);
 
-  // 상품 생성 모달
   const [createOpen, setCreateOpen] = useState(false);
   const [form, setForm] = useState<CreateForm>(EMPTY_FORM);
   const [artists, setArtists] = useState<any[]>([]);
@@ -93,7 +90,6 @@ export default function AdminProductList() {
   const primaryInputRef = useRef<HTMLInputElement>(null);
   const [csvOpen, setCsvOpen] = useState(false);
 
-  // 카테고리는 어드민이 추가할 수 있으므로 상수가 아니라 서버에서 받는다
   const [categories, setCategories] = useState<CategoryGroups>({ main: [], sub: [] });
 
   const load = useCallback(() => {
@@ -103,7 +99,6 @@ export default function AdminProductList() {
 
   useEffect(() => { load(); }, [load]);
 
-  // 생성 모달 열릴 때 아티스트 목록 로드
   const openCreate = async () => {
     setForm(EMPTY_FORM);
     setFormError('');
@@ -119,7 +114,7 @@ export default function AdminProductList() {
     try {
       const groups = await getCategories();
       setCategories(groups);
-      // 대분류는 반드시 하나 골라야 하므로 첫 항목을 미리 넣어둔다
+
       setF({ mainCategory: groups.main[0]?.code ?? '' });
     } catch {
       setCategories({ main: [], sub: [] });
@@ -140,22 +135,18 @@ export default function AdminProductList() {
 
   const isLimited = form.mainCategory === LIMITED;
 
-  const handleSlugAutoFill = (name: string) => {
-    const slug = name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
-    setF({ slug });
-  };
+  const handleSlugAutoFill = (name: string) => setF({ slug: slugify(name) });
 
   const handleCreate = async () => {
     if (!form.artistCode) { setFormError('아티스트를 선택해 주세요.'); return; }
     if (!form.name.trim()) { setFormError('상품명을 입력해 주세요.'); return; }
     if (!form.slug.trim()) { setFormError('슬러그를 입력해 주세요.'); return; }
     if (!form.mainCategory) { setFormError('대분류를 선택해 주세요.'); return; }
-    // 소분류가 비면 메인 페이지 어느 섹션에도 걸리지 않는다
+
     if (!form.genre) { setFormError('소분류를 선택해 주세요. (메인 페이지가 소분류 단위로 나뉩니다)'); return; }
     if (!form.listPrice || isNaN(Number(form.listPrice))) { setFormError('정가를 올바르게 입력해 주세요.'); return; }
     if (Number(form.listPrice) < 0) { setFormError('정가는 0원 이상이어야 합니다.'); return; }
-    // ── 신규 등록 필수: 작품 설명 · 규격(가로·세로·무게) ──
-    // 상세 페이지와 상품 카드에 노출되는 정보라 등록 시점에 반드시 받는다.
+
     if (!form.description.trim()) { setFormError('작품 설명을 입력해 주세요. (상세 페이지에 노출됩니다)'); return; }
     for (const [key, label] of [['widthCm', '가로'], ['heightCm', '세로'], ['weightKg', '무게']] as const) {
       const v = form[key];
@@ -179,7 +170,6 @@ export default function AdminProductList() {
     let createdSkuCode: string | null = null;
 
     try {
-      // ── 1단계: 상품 생성 ──────────────────────────────
       const created: any = await createSku({
         artistCode: form.artistCode,
         name: form.name.trim(),
@@ -189,7 +179,7 @@ export default function AdminProductList() {
         genre: form.genre,
         listPrice: Number(form.listPrice),
         salePrice: form.salePrice ? Number(form.salePrice) : undefined,
-        // 한정판이 아니면 edition 값을 무조건 undefined (DB 제약)
+
         editionSize: isLimited && form.editionSize ? Number(form.editionSize) : undefined,
         editionNumber: isLimited && form.editionNumber ? Number(form.editionNumber) : undefined,
         badges: form.badges.length > 0 ? JSON.stringify(form.badges) : undefined,
@@ -203,15 +193,13 @@ export default function AdminProductList() {
       const serverMsg = err?.response?.data?.message;
       setFormError(serverMsg || '상품 등록에 실패했습니다. 슬러그가 중복되었을 수 있습니다.');
       setSubmitting(false);
-      return; // 생성 자체 실패 → 여기서 중단
+      return;
     }
 
-    // ── 2단계: 모달 닫기 + 목록 갱신 (생성 성공 확정) ──
     setCreateOpen(false);
     load();
     setSubmitting(false);
 
-    // ── 3단계: 이미지 업로드 (실패해도 생성은 유지) ─────
     if (primaryFile && createdSkuCode) {
       try {
         await addSkuMedia(createdSkuCode, await downscaleImage(primaryFile), {
@@ -219,10 +207,8 @@ export default function AdminProductList() {
           mediaRole: 'MAIN',
           isPrimary: true,
         });
-        load(); // 이미지 업로드 후 한 번 더 갱신
+        load();
       } catch {
-        // 이미지 업로드 실패는 경고만 — 상품은 이미 등록됨
-        // 편집 페이지에서 다시 올릴 수 있도록 안내
         alert(`상품은 등록됐습니다.\n대표 이미지 업로드에 실패했습니다.\n편집 페이지 > 이미지 탭에서 다시 업로드해 주세요.`);
       }
     }
@@ -277,7 +263,6 @@ export default function AdminProductList() {
           </button>
         </div>
       </div>
-
       <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
         {loading ? (
           <div className="py-20 text-center text-sm text-gray-400">불러오는 중...</div>
@@ -357,7 +342,6 @@ export default function AdminProductList() {
         </div>
       )}
 
-      {/* ── 재고 조정 모달 ── */}
       {csvOpen && (
         <AdminCsvImportModal
           onClose={() => setCsvOpen(false)}
@@ -412,14 +396,11 @@ export default function AdminProductList() {
         );
       })()}
 
-      {/* ── 상품 생성 모달 ── */}
       {createOpen && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 overflow-y-auto">
           <div className="bg-white rounded-xl p-6 w-full max-w-lg shadow-xl my-8">
             <h2 className="font-semibold text-gray-900 mb-5">상품 추가</h2>
-
             <div className="space-y-4">
-              {/* 아티스트 */}
               <div>
                 <label className="block text-xs text-gray-500 mb-1.5">아티스트 *</label>
                 <select value={form.artistCode} onChange={(e) => setF({ artistCode: e.target.value })} className={inputCls}>
@@ -429,8 +410,6 @@ export default function AdminProductList() {
                   ))}
                 </select>
               </div>
-
-              {/* 상품명 + 슬러그 */}
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="block text-xs text-gray-500 mb-1.5">상품명 *</label>
@@ -440,12 +419,13 @@ export default function AdminProductList() {
                 </div>
                 <div>
                   <label className="block text-xs text-gray-500 mb-1.5">슬러그 *</label>
-                  <input value={form.slug} onChange={(e) => setF({ slug: e.target.value })}
+                  <input value={form.slug} onChange={(e) => setF({ slug: slugifyInput(e.target.value) })}
                     className={inputCls} placeholder="artwork-title" />
+                  <p className="text-[11px] text-gray-400 mt-1.5">
+                    상품명에서 자동으로 채워집니다. 상품마다 달라야 합니다.
+                  </p>
                 </div>
               </div>
-
-              {/* 대분류 + 소분류 — 목록은 카테고리 관리에서 추가한다 */}
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="block text-xs text-gray-500 mb-1.5">
@@ -466,7 +446,6 @@ export default function AdminProductList() {
                   </select>
                 </div>
               </div>
-
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="block text-xs text-gray-500 mb-1.5">
@@ -483,8 +462,6 @@ export default function AdminProductList() {
                     className={inputCls} placeholder="1200000" min="0" />
                 </div>
               </div>
-
-              {/* 대표 이미지 업로드 */}
               <div>
                 <label className="block text-xs text-gray-500 mb-1.5">대표 이미지 (선택)</label>
                 <input
@@ -516,7 +493,6 @@ export default function AdminProductList() {
                 )}
               </div>
 
-              {/* 에디션 — 대분류가 한정판일 때만 나타난다 */}
               {isLimited && (
                 <div>
                   <p className="text-xs text-gray-500 mb-2">
@@ -538,8 +514,6 @@ export default function AdminProductList() {
               )}
 
               <BadgeEditor badges={form.badges} onChange={(badges) => setF({ badges })} />
-
-              {/* 사이즈/무게 — 깊이만 선택, 나머지는 필수 */}
               <div>
                 <p className="text-xs text-gray-500 mb-2">
                   작품 크기 / 무게 <span className="text-red-500">*</span>
@@ -561,8 +535,6 @@ export default function AdminProductList() {
                   })}
                 </div>
               </div>
-
-              {/* 설명 — 필수 */}
               <div>
                 <label className="block text-xs text-gray-500 mb-1.5">
                   작품 설명 <span className="text-red-500">*</span>
@@ -589,9 +561,6 @@ export default function AdminProductList() {
   );
 }
 
-// ────────────────────────────────────────────────────────────
-// 뱃지 에디터 (공통)
-// ────────────────────────────────────────────────────────────
 function BadgeEditor({
   badges,
   onChange,
@@ -623,8 +592,6 @@ function BadgeEditor({
   return (
     <div className="space-y-2">
       <p className="text-xs font-semibold text-gray-500">뱃지</p>
-
-      {/* 미리 정의된 뱃지 */}
       <div className="flex flex-wrap gap-2">
         {PREDEFINED_BADGES.map((badge) => {
           const active = badges.some((b) => b.text === badge.text && b.type === badge.type);
@@ -644,8 +611,6 @@ function BadgeEditor({
           );
         })}
       </div>
-
-      {/* 커스텀 뱃지 입력 */}
       <div className="flex gap-2">
         <input
           value={customText}
@@ -663,7 +628,6 @@ function BadgeEditor({
         </button>
       </div>
 
-      {/* 현재 선택된 뱃지들 */}
       {badges.length > 0 && (
         <div className="flex flex-wrap gap-1.5 pt-1">
           {badges.map((badge, idx) => (
