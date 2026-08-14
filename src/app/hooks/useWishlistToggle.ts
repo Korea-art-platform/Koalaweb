@@ -4,10 +4,6 @@ import { getWishlist, addWishlist, removeWishlist } from '@/api/wishlist';
 import { useAuth } from '@/app/context/AuthContext';
 import type { WishlistItem } from '@/api/types';
 
-/**
- * 상품 카드의 찜(위시리스트) 토글 로직.
- * 스토어·홈 등 ProductCard를 쓰는 화면에서 공유한다.
- */
 export function useWishlistToggle() {
   const queryClient = useQueryClient();
   const { isAuthenticated } = useAuth();
@@ -21,7 +17,7 @@ export function useWishlistToggle() {
       return new Set(items.map((item) => item.skuCode));
     },
     retry: false,
-    // 찜 목록은 로그인해야 있는 것이다. 비로그인 상태에서 부르면 401 만 쌓인다
+
     enabled: isAuthenticated === true,
   });
 

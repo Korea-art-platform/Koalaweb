@@ -7,7 +7,6 @@ export function OrderInfoCards({ order }: { order: any }) {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-      {/* 배송지 정보 */}
       <div className="bg-white rounded-2xl md:rounded-3xl shadow-sm border border-gray-100 p-6 md:p-8">
         <div className="flex items-center gap-3 mb-5">
           <MapPin className="w-5 h-5 text-gray-400" />
@@ -35,8 +34,6 @@ export function OrderInfoCards({ order }: { order: any }) {
           <p className="text-sm text-gray-400">{t('order.detail.noShippingInfo')}</p>
         )}
       </div>
-
-      {/* 결제 수단 */}
       <div className="bg-white rounded-2xl md:rounded-3xl shadow-sm border border-gray-100 p-6 md:p-8">
         <div className="flex items-center gap-3 mb-5">
           <CreditCard className="w-5 h-5 text-gray-400" />

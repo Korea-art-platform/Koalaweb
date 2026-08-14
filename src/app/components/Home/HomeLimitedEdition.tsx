@@ -9,7 +9,6 @@ interface Props {
   loading: boolean;
 }
 
-/** 001 — 한정판 에디션 (가로 스크롤) */
 export default function HomeLimitedEdition({ skus, loading }: Props) {
   const { wishlistedCodes, wishlistLoading, handleWishlist } = useWishlistToggle();
 

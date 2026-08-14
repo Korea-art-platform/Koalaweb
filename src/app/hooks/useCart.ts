@@ -20,8 +20,7 @@ export function useCart() {
     queryKey: CART_QUERY_KEY,
     queryFn: fetchCart,
     retry: false,
-    // 비로그인 상태에서 부르면 401 이 돌아온다. react-query 는 창에 포커스가 갈 때마다
-    // 다시 부르므로, 막지 않으면 실패가 확정된 요청이 계속 쌓인다.
+
     enabled: isAuthenticated === true,
   });
 

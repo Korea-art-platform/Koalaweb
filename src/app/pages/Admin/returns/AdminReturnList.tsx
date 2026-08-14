@@ -73,8 +73,6 @@ export default function AdminReturnList() {
         <h1 className="text-xl font-bold text-gray-900">반품 / 교환 목록</h1>
         <span className="text-xs text-gray-400">총 <span className="font-semibold text-gray-700">{totalElements}</span>건</span>
       </div>
-
-      {/* 상태 필터 탭 */}
       <div className="flex gap-1.5 mb-4 flex-wrap">
         {STATUS_FILTERS.map((f) => (
           <button
@@ -90,7 +88,6 @@ export default function AdminReturnList() {
           </button>
         ))}
       </div>
-
       <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
         {loading ? (
           <div className="py-20 text-center text-sm text-gray-400">불러오는 중...</div>

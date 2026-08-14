@@ -1,4 +1,4 @@
-﻿import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { getPendingReviews, moderateReview, setFeaturedReview } from '@/api/adminApi';
 import { Star } from 'lucide-react';
 

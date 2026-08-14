@@ -6,7 +6,6 @@ export default function Terms() {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* 헤더 */}
       <div className="sticky top-0 z-10 bg-white border-b border-gray-100">
         <div className="max-w-3xl mx-auto flex items-center gap-4 px-6 py-4">
           <button onClick={() => navigate(-1)} className="text-gray-700 hover:text-black transition-colors">
@@ -15,18 +14,12 @@ export default function Terms() {
           <h1 className="text-base font-semibold tracking-tight text-gray-900">이용약관</h1>
         </div>
       </div>
-
-      {/* 본문 */}
       <div className="max-w-3xl mx-auto px-6 py-8 space-y-8 text-sm text-gray-700 leading-relaxed">
-
         <p className="text-xs text-gray-400">최종 업데이트: 2026년 5월 13일</p>
-
         <p>
           KOALA(이하 "서비스")를 이용해 주셔서 감사합니다. 본 이용약관은 KOALA가 제공하는
           모든 서비스의 이용 조건 및 절차, 회원과 회사 간의 권리·의무 및 책임사항을 규정합니다.
         </p>
-
-        {/* 사업자 정보 — 전자상거래법 제10조 필수 고지 */}
         <div className="bg-gray-50 rounded-xl p-4 text-xs text-gray-600 space-y-1 leading-relaxed">
           <p className="font-semibold text-gray-800 mb-2">사업자 정보</p>
           <p><span className="font-medium text-gray-700 w-28 inline-block">상호명</span>헤론</p>
@@ -39,7 +32,6 @@ export default function Terms() {
           <p><span className="font-medium text-gray-700 w-28 inline-block">이메일</span>koala-art@heron.kr</p>
           <p><span className="font-medium text-gray-700 w-28 inline-block">웹사이트</span>https://koala-art.co.kr</p>
         </div>
-
         <section className="space-y-2">
           <h2 className="font-semibold text-gray-900">제1조 (목적)</h2>
           <p>
@@ -47,7 +39,6 @@ export default function Terms() {
             이용과 관련하여 회사와 이용자 간의 권리·의무 및 책임사항을 규정함을 목적으로 합니다.
           </p>
         </section>
-
         <section className="space-y-2">
           <h2 className="font-semibold text-gray-900">제2조 (정의)</h2>
           <ul className="space-y-1 list-disc list-inside text-gray-600">
@@ -59,7 +50,6 @@ export default function Terms() {
             <li>"SKU"란 아티스트가 등록한 개별 판매 상품 단위를 말합니다.</li>
           </ul>
         </section>
-
         <section className="space-y-2">
           <h2 className="font-semibold text-gray-900">제3조 (약관의 효력 및 변경)</h2>
           <p>
@@ -68,7 +58,6 @@ export default function Terms() {
             통해 사전 고지합니다.
           </p>
         </section>
-
         <section className="space-y-2">
           <h2 className="font-semibold text-gray-900">제4조 (회원가입)</h2>
           <p>
@@ -76,7 +65,6 @@ export default function Terms() {
             체결됩니다. 만 14세 미만의 아동은 회원가입이 제한됩니다.
           </p>
         </section>
-
         <section className="space-y-2">
           <h2 className="font-semibold text-gray-900">제5조 (서비스 이용)</h2>
           <ul className="space-y-1 list-disc list-inside text-gray-600">
@@ -86,7 +74,6 @@ export default function Terms() {
             <li>불법적인 콘텐츠 게시, 저작권 침해 행위는 금지됩니다.</li>
           </ul>
         </section>
-
         <section className="space-y-2">
           <h2 className="font-semibold text-gray-900">제6조 (구매 및 결제)</h2>
           <p>
@@ -100,7 +87,6 @@ export default function Terms() {
             <li>배송비는 주문 시 별도 표기됩니다.</li>
           </ul>
         </section>
-
         <section className="space-y-2">
           <h2 className="font-semibold text-gray-900">제7조 (청약 철회 및 환불)</h2>
           <ul className="space-y-1 list-disc list-inside text-gray-600">
@@ -112,7 +98,6 @@ export default function Terms() {
             <li>디지털 콘텐츠(다운로드 파일 등)는 제공 즉시 청약 철회가 불가합니다.</li>
           </ul>
         </section>
-
         <section className="space-y-2">
           <h2 className="font-semibold text-gray-900">제8조 (지식재산권)</h2>
           <p>
@@ -120,7 +105,6 @@ export default function Terms() {
             회원은 서비스를 통해 제공된 콘텐츠를 상업적 목적으로 무단 복제·배포할 수 없습니다.
           </p>
         </section>
-
         <section className="space-y-2">
           <h2 className="font-semibold text-gray-900">제9조 (책임의 한계)</h2>
           <p>
@@ -129,7 +113,6 @@ export default function Terms() {
             않습니다. 단, 회사의 고의 또는 중과실로 인한 손해는 예외로 합니다.
           </p>
         </section>
-
         <section className="space-y-2">
           <h2 className="font-semibold text-gray-900">제10조 (개인정보 보호)</h2>
           <p>
@@ -137,7 +120,6 @@ export default function Terms() {
             개인정보의 수집, 이용, 처리에 관한 사항은 개인정보처리방침에서 별도로 정합니다.
           </p>
         </section>
-
         <section className="space-y-2">
           <h2 className="font-semibold text-gray-900">제11조 (분쟁 해결)</h2>
           <p>
@@ -147,7 +129,6 @@ export default function Terms() {
             분쟁 조정을 신청할 수 있습니다.
           </p>
         </section>
-
         <p className="pt-4 pb-8 text-xs text-gray-400 text-center border-t border-gray-100">
           본 약관은 2026년 5월 13일부터 시행됩니다.
         </p>

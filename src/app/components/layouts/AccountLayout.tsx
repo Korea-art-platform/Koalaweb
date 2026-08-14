@@ -61,7 +61,6 @@ export default function AccountLayout() {
               <AccountSidebar currentPath={location.pathname} user={user} />
             </div>
             <div className="lg:col-span-3">
-              {/* 🌟 자식 컴포넌트들에게 공통 user 데이터를 넘겨줍니다 */}
               <Outlet context={{ user, setUser }} />
             </div>
           </div>

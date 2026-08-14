@@ -22,7 +22,6 @@ export default function ForgotPassword() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  // Step 1 — 이메일 입력 후 인증코드 발송
   const handleSendCode = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
@@ -38,7 +37,6 @@ export default function ForgotPassword() {
     }
   };
 
-  // Step 2 — 인증코드 확인
   const handleVerifyCode = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
@@ -54,7 +52,6 @@ export default function ForgotPassword() {
     }
   };
 
-  // Step 3 — 새 비밀번호 설정
   const handleResetPassword = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
@@ -93,24 +90,20 @@ export default function ForgotPassword() {
   return (
     <div className="min-h-screen bg-[#FAFAFA]">
       <Navigation />
-
       <div className="pt-24 pb-16 px-8">
         <div className="max-w-md mx-auto">
           <div className="text-center mb-12">
             <h1 className="text-3xl tracking-tight mb-3">{stepTitle[step]}</h1>
             <p className="text-sm text-gray-400">{stepDesc[step]}</p>
           </div>
-
           <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100">
 
-            {/* 에러 메시지 */}
             {error && (
               <div className="mb-6 p-3 bg-red-50 border border-red-100 rounded-xl text-sm text-red-500">
                 {error}
               </div>
             )}
 
-            {/* Step 1 — 이메일 */}
             {step === 'email' && (
               <form className="space-y-6" onSubmit={handleSendCode}>
                 <div>
@@ -141,7 +134,6 @@ export default function ForgotPassword() {
               </form>
             )}
 
-            {/* Step 2 — 인증코드 */}
             {step === 'verify' && (
               <form className="space-y-6" onSubmit={handleVerifyCode}>
                 <div>
@@ -183,7 +175,6 @@ export default function ForgotPassword() {
               </form>
             )}
 
-            {/* Step 3 — 새 비밀번호 */}
             {step === 'reset' && (
               <form className="space-y-6" onSubmit={handleResetPassword}>
                 <div>
@@ -230,7 +221,6 @@ export default function ForgotPassword() {
               </form>
             )}
           </div>
-
           <div className="text-center mt-6">
             <Link to="/login" className="text-sm text-gray-400 hover:text-black transition-colors">
               {t('auth.forgotPassword.backToLogin')}

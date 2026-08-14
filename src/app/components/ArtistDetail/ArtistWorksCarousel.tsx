@@ -16,7 +16,6 @@ interface ArtistWorksCarouselProps {
 }
 
 export function ArtistWorksCarousel({ works, artistId }: ArtistWorksCarouselProps) {
-  // 등록된 작품이 없으면 섹션 자체를 숨김
   if (!works || works.length === 0) return null;
   const scrollRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
@@ -58,9 +57,8 @@ export function ArtistWorksCarousel({ works, artistId }: ArtistWorksCarouselProp
           <span className="text-xs">전체보기</span>
         </Link>
       </div>
-
       <div className="relative">
-        {/* 왼쪽 버튼 — 데스크탑만 표시 */}
+
         {canScrollLeft && (
           <button
             onClick={() => scroll('left')}
@@ -70,7 +68,6 @@ export function ArtistWorksCarousel({ works, artistId }: ArtistWorksCarouselProp
           </button>
         )}
 
-        {/* 오른쪽 버튼 — 데스크탑만 표시 */}
         {canScrollRight && (
           <button
             onClick={() => scroll('right')}

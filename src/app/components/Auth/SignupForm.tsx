@@ -69,7 +69,6 @@ export default function SignupForm({ onSuccess }: SignupFormProps) {
           />
         </div>
       </div>
-
       <div>
         <label htmlFor="signup-email" className="block text-sm mb-2 text-gray-700">
           {t('auth.common.emailLabel')}
@@ -85,7 +84,6 @@ export default function SignupForm({ onSuccess }: SignupFormProps) {
           />
         </div>
       </div>
-
       <div>
         <label htmlFor="signup-phone" className="block text-sm mb-2 text-gray-700">
           {t('auth.signup.phoneLabel')}
@@ -98,7 +96,6 @@ export default function SignupForm({ onSuccess }: SignupFormProps) {
           className="w-full px-4 py-3 bg-[#F4F4F4] border border-transparent rounded-xl focus:outline-none focus:border-gray-300 transition-colors"
         />
       </div>
-
       <div>
         <label htmlFor="signup-password" className="block text-sm mb-2 text-gray-700">
           {t('auth.common.passwordLabel')}
@@ -117,7 +114,6 @@ export default function SignupForm({ onSuccess }: SignupFormProps) {
           <p className="mt-1 text-xs text-red-500">{t('auth.validation.passwordTooShort')}</p>
         )}
       </div>
-
       <div>
         <label htmlFor="signup-confirm" className="block text-sm mb-2 text-gray-700">
           {t('auth.signup.confirmPasswordLabel')}
@@ -139,7 +135,6 @@ export default function SignupForm({ onSuccess }: SignupFormProps) {
           <p className="mt-1 text-xs text-red-500">{errors.confirm.message}</p>
         )}
       </div>
-
       <div className="flex items-start gap-3">
         <input
           id="agree-terms"

@@ -28,11 +28,8 @@ export function ArtPackaging({
     <>
       <section className="mb-16">
         <h2 className="text-xl font-bold text-gray-400 mb-5">포장 사진</h2>
-
         <div className="grid grid-cols-2 gap-3">
-          {/* 왼쪽: 이미지 그리드 (상단 2장 + 하단 1장) */}
           <div className="flex flex-col gap-2">
-            {/* 상단 이미지 2장 */}
             <div className="grid grid-cols-2 gap-2">
               {first && (
                 <div
@@ -52,7 +49,6 @@ export function ArtPackaging({
               )}
             </div>
 
-            {/* 하단 와이드 이미지 */}
             {third && (
               <div
                 className="w-full aspect-[2/1] bg-gray-100 overflow-hidden cursor-zoom-in"
@@ -62,8 +58,6 @@ export function ArtPackaging({
               </div>
             )}
           </div>
-
-          {/* 오른쪽: 제목 + 설명 */}
           <div className="flex flex-col justify-start gap-2 pl-1">
             {packagingTitle && (
               <h3 className="text-base font-semibold text-gray-900">{packagingTitle}</h3>
@@ -76,7 +70,6 @@ export function ArtPackaging({
           </div>
         </div>
 
-        {/* 4장 이상 추가 이미지 */}
         {rest.map((src, idx) => (
           <div
             key={idx}

@@ -42,7 +42,6 @@ export function ProductInfo({ sku, selectedColor, onColorSelect }: Props) {
 
   return (
     <div className="flex flex-col">
-      {/* Genre + Limited badge */}
       <div className="flex items-start justify-between mb-3">
         <span className="text-[10px] font-bold text-gray-400 tracking-[0.2em] uppercase">
           {sku.genre}
@@ -53,21 +52,15 @@ export function ProductInfo({ sku, selectedColor, onColorSelect }: Props) {
           </span>
         )}
       </div>
-
-      {/* Title */}
       <h1 className="text-xl font-bold tracking-tight leading-snug mb-1.5 text-gray-900">
         {sku.name}
       </h1>
-
-      {/* Artist */}
       <Link
         to={`/artist/${sku.artistCode}`}
         className="text-sm text-gray-500 hover:text-black transition-colors mb-5 w-fit"
       >
         {sku.artistName}
       </Link>
-
-      {/* Price */}
       <div className="mb-5">
         <div className="flex items-baseline gap-2 flex-wrap">
           <span className={`text-2xl font-bold tracking-tight ${hasDiscount ? 'text-koala-red' : 'text-gray-900'}`}>
@@ -81,7 +74,6 @@ export function ProductInfo({ sku, selectedColor, onColorSelect }: Props) {
           )}
         </div>
 
-        {/* Edition / stock info */}
         {sku.isLimitedEdition && sku.editionNumber && sku.editionSize && (
           <p className="text-xs text-gray-400 mt-1.5">
             {t('product.detail.info.edition', {
@@ -91,7 +83,6 @@ export function ProductInfo({ sku, selectedColor, onColorSelect }: Props) {
           </p>
         )}
 
-        {/* 뱃지 */}
         {badges.length > 0 && (
           <div className="flex flex-wrap gap-2 mt-3 bg-gray-50 rounded-xl px-4 py-3">
             {badges.map((badge, idx) => (
@@ -106,7 +97,6 @@ export function ProductInfo({ sku, selectedColor, onColorSelect }: Props) {
         )}
       </div>
 
-      {/* Color swatches */}
       {colorOptions.length > 0 && (
         <div className="mb-5">
           <div className="flex items-center gap-2.5">
@@ -127,15 +117,12 @@ export function ProductInfo({ sku, selectedColor, onColorSelect }: Props) {
         </div>
       )}
 
-      {/* Divider */}
       <div className="border-t border-gray-100 mb-5" />
 
-      {/* Description */}
       {sku.description && (
         <p className="text-sm text-gray-600 leading-relaxed mb-5">{sku.description}</p>
       )}
 
-      {/* Specs */}
       {(sku.widthCm || sku.weightKg) && (
         <div className="grid grid-cols-[auto_1fr] gap-x-6 gap-y-2.5 text-sm">
           {sku.widthCm && (

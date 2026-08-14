@@ -22,7 +22,6 @@ export function ArtImages({ images, title = '작품' }: ArtImagesProps) {
       <section className="mb-16">
         <h2 className="text-xl font-bold text-gray-400 mb-5">작품 - 상세</h2>
 
-        {/* 1장: 전체 너비 정사각 */}
         {images.length === 1 && (
           <div
             className="w-full aspect-square bg-gray-100 overflow-hidden"
@@ -32,7 +31,6 @@ export function ArtImages({ images, title = '작품' }: ArtImagesProps) {
           </div>
         )}
 
-        {/* 2장 이상: 왼쪽 세로 큰 이미지 + 오른쪽 최대 2장 */}
         {images.length >= 2 && (
           <>
             <div className="grid grid-cols-2 gap-2">
@@ -42,7 +40,6 @@ export function ArtImages({ images, title = '작품' }: ArtImagesProps) {
               >
                 <ImageWithFallback src={first} alt={`${title} 1`} className={imgClass} />
               </div>
-
               <div className="flex flex-col gap-2">
                 <div
                   className="flex-1 min-h-0 bg-gray-100 overflow-hidden"
@@ -61,7 +58,6 @@ export function ArtImages({ images, title = '작품' }: ArtImagesProps) {
               </div>
             </div>
 
-            {/* 4장 이상: 나머지 이미지 전체 너비 */}
             {rest.map((src, idx) => (
               <div
                 key={idx}
@@ -74,7 +70,6 @@ export function ArtImages({ images, title = '작품' }: ArtImagesProps) {
           </>
         )}
       </section>
-
       <AnimatePresence>
         {lightboxIndex !== null && (
           <ImageLightbox

@@ -87,7 +87,6 @@ export default function AccountInquiry() {
 
   return (
     <div>
-      {/* 헤더 */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-2">
           <MessageCircle className="w-5 h-5 text-gray-700" />
@@ -102,7 +101,6 @@ export default function AccountInquiry() {
         </button>
       </div>
 
-      {/* 문의 등록 폼 */}
       {showForm && (
         <div className="bg-white rounded-2xl border border-gray-200 p-6 mb-6 shadow-sm">
           <div className="flex items-center justify-between mb-5">
@@ -111,9 +109,7 @@ export default function AccountInquiry() {
               <X className="w-5 h-5 text-gray-400 hover:text-gray-700" />
             </button>
           </div>
-
           <div className="space-y-4">
-            {/* 분류 */}
             <div>
               <label className="block text-xs text-gray-500 mb-1.5">문의 유형 *</label>
               <select
@@ -126,8 +122,6 @@ export default function AccountInquiry() {
                 ))}
               </select>
             </div>
-
-            {/* 제목 */}
             <div>
               <label className="block text-xs text-gray-500 mb-1.5">제목 *</label>
               <input
@@ -138,8 +132,6 @@ export default function AccountInquiry() {
                 className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-black/10"
               />
             </div>
-
-            {/* 내용 */}
             <div>
               <label className="block text-xs text-gray-500 mb-1.5">문의 내용 *</label>
               <textarea
@@ -150,8 +142,6 @@ export default function AccountInquiry() {
                 className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-black/10 resize-y"
               />
             </div>
-
-            {/* 주문번호 (선택) */}
             <div>
               <label className="block text-xs text-gray-500 mb-1.5">
                 주문번호 <span className="text-gray-400">(선택 · 주문 관련 문의 시 입력)</span>
@@ -163,8 +153,6 @@ export default function AccountInquiry() {
                 className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-black/10 font-mono"
               />
             </div>
-
-            {/* 비밀글 */}
             <label className="flex items-center gap-2 cursor-pointer select-none">
               <input
                 type="checkbox"
@@ -196,7 +184,6 @@ export default function AccountInquiry() {
         </div>
       )}
 
-      {/* 문의 목록 */}
       {loading ? (
         <div className="py-16 text-center text-sm text-gray-400">불러오는 중...</div>
       ) : inquiries.length === 0 ? (
@@ -209,7 +196,6 @@ export default function AccountInquiry() {
         <div className="space-y-3">
           {inquiries.map((q) => (
             <div key={q.inquiryCode} className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
-              {/* 문의 헤더 */}
               <button
                 onClick={() => setExpanded(expanded === q.inquiryCode ? null : q.inquiryCode)}
                 className="w-full p-4 text-left flex items-start gap-3 hover:bg-gray-50 transition-colors"
@@ -246,10 +232,8 @@ export default function AccountInquiry() {
                 </div>
               </button>
 
-              {/* 펼쳐진 상세 */}
               {expanded === q.inquiryCode && (
                 <div className="border-t border-gray-100">
-                  {/* 문의 내용 */}
                   <div className="p-4 bg-gray-50">
                     <p className="text-xs text-gray-400 mb-2">문의 내용</p>
                     <p className="text-sm text-gray-700 whitespace-pre-wrap leading-relaxed">{q.content}</p>
@@ -258,7 +242,6 @@ export default function AccountInquiry() {
                     )}
                   </div>
 
-                  {/* 답변 */}
                   {q.answerContent && (
                     <div className="p-4 bg-blue-50 border-t border-blue-100">
                       <div className="flex items-center gap-1.5 mb-2">
@@ -288,7 +271,6 @@ export default function AccountInquiry() {
         </div>
       )}
 
-      {/* 페이지네이션 */}
       {totalPages > 1 && (
         <div className="flex justify-center gap-1 mt-6">
           {Array.from({ length: totalPages }, (_, i) => (

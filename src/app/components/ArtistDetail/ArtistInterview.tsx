@@ -3,7 +3,6 @@ interface ArtistInterviewProps {
   thumbnailUrl?: string;
 }
 
-/** YouTube / Vimeo 임베드 URL 여부 판별 */
 function isEmbedUrl(url: string) {
   return /youtube\.com|youtu\.be|vimeo\.com/i.test(url);
 }
@@ -17,7 +16,6 @@ export function ArtistInterview({ videoUrl, thumbnailUrl }: ArtistInterviewProps
       <div className="w-full aspect-video bg-[#D6C9A8] overflow-hidden">
         {videoUrl ? (
           isEmbedUrl(videoUrl) ? (
-            /* YouTube / Vimeo → iframe */
             <iframe
               src={videoUrl}
               title="Artist Interview"
@@ -26,7 +24,6 @@ export function ArtistInterview({ videoUrl, thumbnailUrl }: ArtistInterviewProps
               allowFullScreen
             />
           ) : (
-            /* 직접 업로드한 MP4 등 → video 태그 */
             <video
               src={videoUrl}
               controls

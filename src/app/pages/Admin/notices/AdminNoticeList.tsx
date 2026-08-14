@@ -139,7 +139,6 @@ export default function AdminNoticeList() {
         </div>
       )}
 
-      {/* ── 등록/수정 모달 ── */}
       {createOpen && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-xl p-6 w-full max-w-lg shadow-xl max-h-[90vh] overflow-y-auto">
@@ -151,9 +150,7 @@ export default function AdminNoticeList() {
                 <X className="w-5 h-5 text-gray-400 hover:text-gray-700" />
               </button>
             </div>
-
             <div className="space-y-4">
-              {/* 제목 */}
               <div>
                 <label className="block text-xs text-gray-500 mb-1.5">제목 *</label>
                 <input
@@ -163,8 +160,6 @@ export default function AdminNoticeList() {
                   placeholder="공지사항 제목"
                 />
               </div>
-
-              {/* 내용 */}
               <div>
                 <label className="block text-xs text-gray-500 mb-1.5">내용 *</label>
                 <textarea
@@ -175,8 +170,6 @@ export default function AdminNoticeList() {
                   placeholder="공지사항 내용을 입력하세요..."
                 />
               </div>
-
-              {/* 상단 고정 */}
               <label className="flex items-center gap-2 cursor-pointer">
                 <input
                   type="checkbox"

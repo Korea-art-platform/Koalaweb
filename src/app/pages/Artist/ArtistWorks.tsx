@@ -18,7 +18,6 @@ export default function ArtistWorks() {
   return (
     <div className="min-h-screen bg-white flex flex-col">
       <Navigation />
-
       <main className="flex-1 pt-24 pb-24 px-5 md:px-8 max-w-2xl mx-auto w-full">
         <button
           onClick={() => navigate(`/artist/${id}`)}
@@ -27,8 +26,6 @@ export default function ArtistWorks() {
           <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
           작가 페이지로
         </button>
-
-        {/* 작가 요약 */}
         <div className="flex items-center gap-4 mb-10 pb-6 border-b border-gray-100">
           <div className="w-14 h-14 rounded-full bg-gray-100 overflow-hidden flex-shrink-0">
             <ImageWithFallback
@@ -42,7 +39,6 @@ export default function ArtistWorks() {
             <h1 className="text-lg font-bold">{artist.name}</h1>
           </div>
         </div>
-
         <h2 className="text-xl font-bold mb-6">
           작가의 작품 - Works
           {!skusLoading && (

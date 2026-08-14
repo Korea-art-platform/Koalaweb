@@ -6,23 +6,16 @@ export function ProductSkeleton() {
       <Navigation />
       <div className="pt-28 pb-20 px-8">
         <div className="max-w-5xl mx-auto">
-          {/* Back button skeleton */}
           <div className="h-4 w-24 bg-gray-100 rounded mb-10 animate-pulse" />
-
           <div className="grid grid-cols-1 lg:grid-cols-[3fr_2fr] gap-10 animate-pulse">
-            {/* Image area */}
             <div className="flex gap-3">
-              {/* Thumbnails */}
               <div className="flex flex-col gap-2 w-[68px]">
                 {[...Array(3)].map((_, i) => (
                   <div key={i} className="w-[68px] h-[68px] rounded-xl bg-gray-100" />
                 ))}
               </div>
-              {/* Main image */}
               <div className="flex-1 aspect-square rounded-2xl bg-gray-100" />
             </div>
-
-            {/* Info area */}
             <div className="space-y-4 pt-2">
               <div className="flex justify-between">
                 <div className="h-3 w-16 bg-gray-100 rounded" />

@@ -25,11 +25,8 @@ export default function NoticeDetail() {
       <Helmet>
         <title>{notice ? `${notice.title} — KOALA` : '공지사항 — KOALA'}</title>
       </Helmet>
-
       <Navigation />
-
       <div className="pt-32 pb-20 px-6 max-w-2xl mx-auto">
-        {/* 뒤로가기 */}
         <button
           onClick={() => navigate('/notice')}
           className="flex items-center gap-1.5 text-sm text-gray-400 hover:text-gray-700 transition-colors mb-8"
@@ -52,7 +49,6 @@ export default function NoticeDetail() {
           </div>
         ) : (
           <article>
-            {/* 헤더 */}
             <div className="mb-8 pb-6 border-b border-gray-100">
               <div className="flex items-center gap-2 mb-3">
                 {notice.isPinned && (
@@ -73,8 +69,6 @@ export default function NoticeDetail() {
                 })}
               </p>
             </div>
-
-            {/* 본문 */}
             <div className="text-sm text-gray-700 leading-relaxed whitespace-pre-wrap">
               {notice.content}
             </div>

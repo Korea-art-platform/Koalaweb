@@ -11,10 +11,8 @@ export default function HomeCategories({ categories }: HomeCategoriesProps) {
   const { t } = useTranslation();
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  // 상품이 있는 카테고리만 노출 ('전체'는 항상 표시)
   const visibleCategories = categories.filter((c) => c.id === 'all' || c.count > 0);
 
-  // 표시할 카테고리가 '전체' 하나뿐이면 (= 상품 자체가 없으면) 섹션 숨김
   if (visibleCategories.length <= 1) return null;
 
   const scroll = (direction: 'left' | 'right') => {

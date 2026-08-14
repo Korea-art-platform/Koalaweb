@@ -101,7 +101,6 @@ export default function AccountWishlist() {
                                         )}
                                     </div>
                                 </Link>
-
                                 <div className="p-4">
                                     <div className="text-[10px] text-gray-400 font-bold tracking-widest uppercase mb-1">
                                         {item.genre}
@@ -114,7 +113,6 @@ export default function AccountWishlist() {
                                     <p className="text-sm font-black tracking-tight mb-4">
                                         ₩{(item.effectivePrice ?? 0).toLocaleString()}
                                     </p>
-
                                     <div className="flex gap-2">
                                         <button
                                             onClick={() => handleAddToCart(item.skuCode)}

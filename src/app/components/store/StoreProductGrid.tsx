@@ -65,7 +65,6 @@ export default function StoreProductGrid({
               ))}
             </div>
 
-            {/* Pagination */}
             {totalPages > 1 && (
               <div className="flex justify-center gap-2 mt-16">
                 <button

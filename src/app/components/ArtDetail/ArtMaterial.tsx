@@ -22,9 +22,7 @@ export function ArtMaterial({ images, description, title = '작품' }: ArtMateri
     <>
       <section className="mb-16">
         <h2 className="text-xl font-bold text-gray-400 mb-5">재질 / 소재</h2>
-
         <div className="grid grid-cols-2 gap-3">
-          {/* 왼쪽: 위 2장(정사각) + 아래 넓은 이미지 */}
           <div className="flex flex-col gap-2">
             <div className="grid grid-cols-2 gap-2">
               {first && (
@@ -53,8 +51,6 @@ export function ArtMaterial({ images, description, title = '작품' }: ArtMateri
               </div>
             )}
           </div>
-
-          {/* 오른쪽: 설명 텍스트 */}
           <div className="flex flex-col justify-start gap-2 pl-1">
             {description && (
               <>
@@ -67,7 +63,6 @@ export function ArtMaterial({ images, description, title = '작품' }: ArtMateri
           </div>
         </div>
 
-        {/* 4장 이상 추가 이미지 */}
         {rest.map((src, idx) => (
           <div
             key={idx}

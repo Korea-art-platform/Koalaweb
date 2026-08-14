@@ -50,7 +50,6 @@ export default function Account() {
     <>
       <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100">
         <h2 className="text-2xl mb-8">{t('account.profile.title')}</h2>
-
         <form className="space-y-6" onSubmit={handleSubmit}>
           <div>
             <label className="block text-sm mb-2 text-gray-700">{t('account.profile.nameLabel')}</label>
@@ -61,7 +60,6 @@ export default function Account() {
               className="w-full px-4 py-3 bg-[#F4F4F4] border border-transparent rounded-xl focus:outline-none focus:border-gray-300 transition-colors"
             />
           </div>
-
           <div>
             <label className="block text-sm mb-2 text-gray-700">{t('account.profile.emailLabel')}</label>
             <input
@@ -72,7 +70,6 @@ export default function Account() {
             />
             <p className="text-xs text-gray-400 mt-1">{t('account.profile.emailReadOnly')}</p>
           </div>
-
           <div>
             <label className="block text-sm mb-2 text-gray-700">{t('account.profile.phoneLabel')}</label>
             <input
@@ -83,7 +80,6 @@ export default function Account() {
               className="w-full px-4 py-3 bg-[#F4F4F4] border border-transparent rounded-xl focus:outline-none focus:border-gray-300 transition-colors"
             />
           </div>
-
           <div className="flex gap-4 pt-4">
             <button
               type="submit"
@@ -102,7 +98,6 @@ export default function Account() {
           </div>
         </form>
       </div>
-
       <div className="grid grid-cols-2 gap-6 mt-8">
         <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 text-center">
           <p className="text-3xl font-light mb-2">{statsLoading ? '–' : stats.orders}</p>

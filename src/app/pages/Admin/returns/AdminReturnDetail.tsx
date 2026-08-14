@@ -31,7 +31,6 @@ export default function AdminReturnDetail() {
   const [ret, setRet] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
-  // 처리 모달
   const [processOpen, setProcessOpen] = useState(false);
   const [action, setAction] = useState<'APPROVE' | 'REJECT'>('APPROVE');
   const [refundAmount, setRefundAmount] = useState('');
@@ -93,7 +92,6 @@ export default function AdminReturnDetail() {
       >
         <ArrowLeft className="w-3.5 h-3.5" /> 목록으로
       </button>
-
       <div className="flex items-start justify-between mb-6 gap-4">
         <div>
           <p className="text-xs text-gray-400 font-mono mb-1">{ret.returnNo}</p>
@@ -128,9 +126,7 @@ export default function AdminReturnDetail() {
           )}
         </div>
       </div>
-
       <div className="space-y-4">
-        {/* 상태 */}
         <Section title="처리 상태">
           <Row label="현재 상태" value={
             <span className={`inline-flex px-2 py-0.5 rounded-full text-xs font-medium border ${STATUS_COLOR[ret.status] ?? ''}`}>
@@ -142,15 +138,11 @@ export default function AdminReturnDetail() {
             <Row label="처리일" value={new Date(ret.processedAt).toLocaleString('ko-KR')} />
           )}
         </Section>
-
-        {/* 신청 정보 */}
         <Section title="신청 정보">
           <Row label="유형" value={TYPE_LABEL[ret.returnType] ?? ret.returnType} />
           <Row label="사유" value={REASON_LABEL[ret.reason] ?? ret.reason} />
           {ret.reasonDetail && <Row label="상세 내용" value={ret.reasonDetail} />}
         </Section>
-
-        {/* 주문 정보 */}
         <Section title="주문 정보">
           <Row label="주문번호" value={ret.orderNo} mono />
           <Row label="회원 ID" value={String(ret.userId ?? '-')} />
@@ -158,7 +150,6 @@ export default function AdminReturnDetail() {
           <Row label="연락처" value={ret.ordererPhone ?? '-'} />
         </Section>
 
-        {/* 처리 결과 */}
         {(ret.refundAmount != null || ret.adminMemo) && (
           <Section title="처리 결과">
             {ret.refundAmount != null && (
@@ -169,7 +160,6 @@ export default function AdminReturnDetail() {
         )}
       </div>
 
-      {/* 처리 모달 */}
       {processOpen && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-xl p-6 w-full max-w-sm shadow-xl">
@@ -181,7 +171,6 @@ export default function AdminReturnDetail() {
                 ? '승인 시 결제 완료 건은 자동 환불이 시도됩니다.'
                 : '거절 사유를 메모에 남겨주세요.'}
             </p>
-
             <div className="space-y-4">
               {action === 'APPROVE' && (
                 <div>
@@ -213,7 +202,6 @@ export default function AdminReturnDetail() {
                 <p className="text-xs text-red-500 bg-red-50 px-3 py-2 rounded-lg">{processError}</p>
               )}
             </div>
-
             <div className="flex gap-2 mt-5">
               <button
                 onClick={() => { setProcessOpen(false); setAdminMemo(''); setRefundAmount(''); }}

@@ -31,11 +31,6 @@ export default function HomePlatformIntro({ banner }: HomePlatformIntroProps) {
             <Link to={primaryLink} className="px-8 py-4 bg-koala-navy text-white rounded-full font-bold hover:bg-koala-navy-hover text-center">
               {t('home.intro.exploreArtist')}
             </Link>
-            {/* AR 뷰어 준비 중
-            <Link to="/ar-view" className="px-8 py-4 border-2 border-black rounded-full font-bold hover:bg-koala-navy hover:text-white text-center">
-              {t('home.intro.tryAR')}
-            </Link>
-            */}
           </div>
         </div>
         <div className="order-1 lg:order-2">

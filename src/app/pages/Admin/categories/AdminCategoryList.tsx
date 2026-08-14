@@ -26,14 +26,12 @@ export default function AdminCategoryList() {
   const [groups, setGroups] = useState<CategoryGroups>(EMPTY);
   const [loading, setLoading] = useState(true);
 
-  // 추가 폼 — 섹션마다 따로 연다
   const [addingType, setAddingType] = useState<CategoryType | null>(null);
   const [newCode, setNewCode] = useState('');
   const [newName, setNewName] = useState('');
   const [formError, setFormError] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
-  // 이름 수정 — 행 안에서 바로 고친다
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editName, setEditName] = useState('');
 
@@ -89,7 +87,6 @@ export default function AdminCategoryList() {
     load();
   };
 
-  /** 순서 바꾸기 — 위/아래 항목과 sortOrder 를 맞바꾼다 */
   const handleMove = async (list: Category[], index: number, direction: -1 | 1) => {
     const target = list[index];
     const swap = list[index + direction];
@@ -151,7 +148,6 @@ export default function AdminCategoryList() {
                   </button>
                 </div>
 
-                {/* 추가 폼 */}
                 {addingType === section.type && (
                   <div className="bg-white rounded-xl border border-gray-200 p-4 mb-3">
                     <div className="flex gap-3">
@@ -177,7 +173,6 @@ export default function AdminCategoryList() {
                         />
                       </div>
                     </div>
-
                     <p className="text-xs text-gray-400 mt-2">
                       코드는 상품에 그대로 저장되는 값이라 나중에 바꿀 수 없습니다. 이름은 언제든 바꿀 수 있습니다.
                     </p>
@@ -212,7 +207,6 @@ export default function AdminCategoryList() {
                         key={c.id}
                         className={`flex items-center gap-3 px-4 py-3 ${c.isActive ? '' : 'bg-gray-50'}`}
                       >
-                        {/* 순서 */}
                         <div className="flex flex-col">
                           <button
                             onClick={() => handleMove(list, i, -1)}
@@ -231,8 +225,6 @@ export default function AdminCategoryList() {
                             <ChevronDown className="w-3.5 h-3.5" />
                           </button>
                         </div>
-
-                        {/* 이름 — 클릭하면 바로 고친다 */}
                         <div className="flex-1 min-w-0">
                           {editingId === c.id ? (
                             <input
@@ -259,11 +251,9 @@ export default function AdminCategoryList() {
                             {c.code}
                           </span>
                         </div>
-
                         <span className="text-xs text-gray-400 flex-shrink-0">
                           상품 {c.usedCount ?? 0}건
                         </span>
-
                         <button
                           onClick={() => handleToggleActive(c)}
                           className={`px-3 py-1.5 text-xs rounded-lg transition-colors font-medium flex-shrink-0

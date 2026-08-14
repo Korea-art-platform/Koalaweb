@@ -23,14 +23,11 @@ export default function FAQ() {
           <h1 className="text-base font-semibold tracking-tight text-gray-900">자주 묻는 질문</h1>
         </div>
       </div>
-
       <div className="max-w-3xl mx-auto px-6 py-8">
         <p className="text-sm text-gray-500 mb-8">
           궁금한 점을 빠르게 해결해 드립니다. 원하는 답변을 찾지 못하셨다면{' '}
           <a href="/contact" className="text-black underline underline-offset-2">고객센터</a>로 문의해 주세요.
         </p>
-
-        {/* 카테고리 탭 */}
         <div className="flex gap-2 flex-wrap mb-8">
           {FAQS.map((cat, i) => (
             <button
@@ -46,8 +43,6 @@ export default function FAQ() {
             </button>
           ))}
         </div>
-
-        {/* 아코디언 */}
         <div className="divide-y divide-gray-100">
           {FAQS[activeCategory].items.map((item, i) => (
             <div key={i}>
@@ -70,7 +65,6 @@ export default function FAQ() {
             </div>
           ))}
         </div>
-
         <div className="mt-12 p-6 bg-gray-50 rounded-2xl text-center">
           <p className="text-sm font-semibold text-gray-900 mb-1">원하는 답변을 찾지 못하셨나요?</p>
           <p className="text-xs text-gray-500 mb-4">평일 10:00 - 18:00, 고객센터에서 도움드립니다.</p>

@@ -4,17 +4,15 @@ import { Link } from 'react-router';
 import { useState } from 'react';
 import { ImageWithFallback } from '@/app/components/fallback/ImageWithFallback';
 
-// 필터 카테고리 한글화
 const filters = ['전체', '아트 토이', '조각', '세라믹', '리미티드 에디션'];
 
-// 리셀 아이템 데이터 한글화
 const resellItems = [
   {
     id: '1',
     name: '하모니 스피릿',
     artist: '박지영',
     category: '프리미엄 아트 토이',
-    originalPrice: 450000, // 원화 기준으로 예시 변경 (단위 유지 가능)
+    originalPrice: 450000,
     currentPrice: 680000,
     priceChange: 51,
     image: 'https://images.unsplash.com/photo-1771515221699-dd1b7a2f86f2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxkZXNpZ25lciUyMGFydCUyMHRveSUyMGZpZ3VyZXxlbnwxfHx8fDE3NzIzNjM0OTN8MA&ixlib=rb-4.1.0&q=80&w=1080',
@@ -84,8 +82,6 @@ export default function ResellMarket() {
   return (
     <div className="min-h-screen bg-white">
       <Navigation />
-
-      {/* 히어로 섹션 */}
       <section className="pt-32 pb-12 px-8">
         <div className="max-w-[1600px] mx-auto">
           <div className="max-w-2xl">
@@ -101,8 +97,6 @@ export default function ResellMarket() {
           </div>
         </div>
       </section>
-
-      {/* 필터 섹션 */}
       <section className="px-8 pb-12">
         <div className="max-w-[1600px] mx-auto">
           <div className="flex items-center gap-3 pb-8 border-b border-gray-100">
@@ -123,8 +117,6 @@ export default function ResellMarket() {
           </div>
         </div>
       </section>
-
-      {/* 리셀 아이템 그리드 */}
       <section className="px-8 pb-32">
         <div className="max-w-[1600px] mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -136,15 +128,12 @@ export default function ResellMarket() {
               >
                 <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-gray-50 to-white p-8 border border-gray-50 hover:border-gray-200 transition-all">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    {/* 이미지 영역 */}
                     <div className="relative overflow-hidden rounded-2xl bg-gray-50 aspect-square">
                       <ImageWithFallback
                         src={item.image}
                         alt={item.name}
                         className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                       />
-
-                      {/* 배지 아이콘 */}
                       <div className="absolute top-4 left-4 flex flex-col gap-2">
                         {item.hasBlockchain && (
                           <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/90 backdrop-blur-sm shadow-sm">
@@ -157,8 +146,6 @@ export default function ResellMarket() {
                         </div>
                       </div>
                     </div>
-
-                    {/* 정보 영역 */}
                     <div className="flex flex-col justify-between space-y-6">
                       <div>
                         <div className="text-xs text-gray-400 tracking-wide uppercase mb-2">
@@ -168,8 +155,6 @@ export default function ResellMarket() {
                           {item.name}
                         </h3>
                         <p className="text-sm text-gray-500 mb-4">작가: {item.artist}</p>
-
-                        {/* 가격 정보 */}
                         <div className="space-y-2">
                           <div className="flex items-baseline gap-3">
                             <div className="text-2xl font-semibold">
@@ -185,8 +170,6 @@ export default function ResellMarket() {
                           </div>
                         </div>
                       </div>
-
-                      {/* 에디션 및 배송 정보 */}
                       <div className="space-y-3">
                         <div className="flex items-center justify-between text-sm pb-3 border-b border-gray-200">
                           <span className="text-gray-500">에디션 넘버</span>
@@ -197,8 +180,6 @@ export default function ResellMarket() {
                           전 세계 배송 가능
                         </div>
                       </div>
-
-                      {/* 소유권 이력 */}
                       <div className="pt-4 border-t border-gray-200">
                         <div className="text-xs text-gray-400 uppercase tracking-wide mb-3">
                           소유권 이력 (History)
@@ -220,8 +201,6 @@ export default function ResellMarket() {
           </div>
         </div>
       </section>
-
-      {/* 신뢰 섹션 */}
       <section className="px-8 pb-32">
         <div className="max-w-[1600px] mx-auto">
           <div className="bg-gradient-to-br from-gray-50 to-white rounded-3xl p-16 border border-gray-100">
@@ -230,11 +209,10 @@ export default function ResellMarket() {
                 안심하고 거래하세요
               </h2>
               <p className="text-lg text-gray-500 leading-relaxed mb-12">
-                리셀 마켓의 모든 아이템은 전문가의 감정과 블록체인 검증을 거치며, 
-                전체 소유권 이력이 투명하게 공개됩니다. 전 세계 배송, 전액 보험 
+                리셀 마켓의 모든 아이템은 전문가의 감정과 블록체인 검증을 거치며,
+                전체 소유권 이력이 투명하게 공개됩니다. 전 세계 배송, 전액 보험
                 및 구매자 보호 프로그램이 기본으로 포함되어 있습니다.
               </p>
-
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                 <div className="p-6">
                   <Shield className="w-8 h-8 mx-auto mb-4 text-green-500" />

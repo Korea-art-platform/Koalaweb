@@ -11,7 +11,6 @@ import {
   type DashboardStats, type DailyRevenue, type PaymentNeedingAttention,
 } from '@/api/adminApi';
 
-/** 확인 필요 결제 상태 라벨 — 백엔드 payments.status 값 기준 */
 const ATTENTION_STATUS_LABEL: Record<string, string> = {
   IN_DOUBT: '승인 여부 미확정',
   IN_PROGRESS: '승인 처리 중',
@@ -92,7 +91,6 @@ export default function AdminDashboard() {
 
   return (
     <div className="p-8">
-      {/* 헤더 */}
       <div className="flex items-start justify-between mb-8">
         <div>
           <p className="text-xs text-gray-400 mb-1">대시보드</p>
@@ -110,8 +108,6 @@ export default function AdminDashboard() {
         </button>
       </div>
 
-      {/* 확인 필요 결제 — PG 응답을 못 받아 승인/취소가 확정되지 않은 건.
-          방치하면 "돈은 빠져나갔는데 주문은 미결제" 로 남으므로 최상단에 노출한다. */}
       {attention.length > 0 && (
         <div className="bg-red-50 border border-red-200 rounded-xl p-5 mb-6">
           <div className="flex items-center gap-2 mb-3">
@@ -152,7 +148,6 @@ export default function AdminDashboard() {
         </div>
       )}
 
-      {/* 통계 카드 */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <StatCard
           label="오늘 주문"
@@ -184,7 +179,6 @@ export default function AdminDashboard() {
         />
       </div>
 
-      {/* 매출 차트 */}
       {daily.length > 0 && (
         <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
           <div className="flex items-center justify-between mb-4">
@@ -199,7 +193,6 @@ export default function AdminDashboard() {
         </div>
       )}
 
-      {/* 메뉴 카드 */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {NAV_CARDS.map((card) => {
           const Icon = card.icon;

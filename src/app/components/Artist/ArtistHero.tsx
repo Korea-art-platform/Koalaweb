@@ -9,7 +9,7 @@ interface ArtistHeroProps {
 
 export function ArtistHero({ artist }: ArtistHeroProps) {
   const navigate = useNavigate();
-  const { t } = useTranslation('artistLab'); // 🌟 네임스페이스 지정
+  const { t } = useTranslation('artistLab');
 
   return (
     <>
@@ -25,7 +25,6 @@ export function ArtistHero({ artist }: ArtistHeroProps) {
           <Share2 className="w-5 h-5" />
         </button>
       </div>
-
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 md:gap-16 lg:gap-24 mb-20 md:mb-32">
         <div className="relative overflow-hidden rounded-[2rem] md:rounded-[3rem] bg-gray-50 aspect-[3/4] shadow-xl">
           <ImageWithFallback
@@ -34,7 +33,6 @@ export function ArtistHero({ artist }: ArtistHeroProps) {
             className="w-full h-full object-cover transition-transform duration-1000 hover:scale-105"
           />
         </div>
-
         <div className="flex flex-col justify-center">
           <div className="mb-8 md:mb-10">
             <div className="text-[10px] md:text-xs text-gray-400 tracking-[0.3em] uppercase mb-4 font-bold">
@@ -47,7 +45,6 @@ export function ArtistHero({ artist }: ArtistHeroProps) {
               {artist.description ?? t('detail.emptyDescription')}
             </p>
           </div>
-
           <div className="flex flex-col sm:flex-row gap-3">
             <Link
               to="/smart-store"

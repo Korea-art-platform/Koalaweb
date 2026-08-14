@@ -6,21 +6,12 @@ import type { Category } from '@/api/category';
 import type { Sku } from '@/api/types';
 
 interface Props {
-  /** 활성 소분류 — 이미 sortOrder 순으로 내려온다 */
   categories: Category[];
   skus: Sku[];
 }
 
-// 가로 스크롤이라 세로로 길어지지 않는다. 나머지는 '전체보기'로
 const MAX_PER_SECTION = 12;
 
-/**
- * 소분류 카테고리별 상품 섹션.
- *
- * 카테고리는 관리자가 계속 추가하므로 섹션도 고정하지 않는다.
- * <b>상품이 하나도 없는 카테고리는 건너뛴다</b> — 빈 섹션이 늘어서면
- * 상품이 없는 것처럼 보인다.
- */
 export default function HomeCategorySections({ categories, skus }: Props) {
   const { wishlistedCodes, wishlistLoading, handleWishlist } = useWishlistToggle();
 

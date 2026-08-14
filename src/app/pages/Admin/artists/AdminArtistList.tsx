@@ -1,4 +1,4 @@
-﻿import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router';
 import { Users } from 'lucide-react';
 import { getAdminArtists, createArtist, deleteArtist, activateArtist, deactivateArtist } from '@/api/adminApi';
@@ -88,7 +88,6 @@ export default function AdminArtistList() {
           + 아티스트 추가
         </button>
       </div>
-
       <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
         {loading ? (
           <div className="py-20 text-center text-sm text-gray-400">불러오는 중...</div>

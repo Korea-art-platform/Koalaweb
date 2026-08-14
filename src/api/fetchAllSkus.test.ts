@@ -5,17 +5,9 @@ vi.mock('./sku', () => ({ getSkus: vi.fn() }));
 import { getSkus } from './sku';
 import { fetchAllSkus } from './fetchAllSkus';
 
-/**
- * 홈·검색은 전체 목록이 필요하다.
- *
- * 예전에는 100개만 받아 왔다. 상품이 100개를 넘는 순간 앞 100개만 보이는데
- * **오류도 경고도 나지 않아** 빠졌다는 사실을 알 수 없었다.
- * 상품이 50개에서 100개로 늘어나는 건 금방이라, 이 경계를 테스트로 잡아 둔다.
- */
 describe('fetchAllSkus', () => {
   const mocked = vi.mocked(getSkus);
 
-  /** page 번호에 맞춰 SKU-<page>-<i> 를 돌려주는 가짜 서버 */
   function server({ total, size = 100 }: { total: number; size?: number }) {
     const totalPages = Math.max(1, Math.ceil(total / size));
     mocked.mockImplementation((page = 0, s = size) => {
@@ -73,7 +65,6 @@ describe('fetchAllSkus', () => {
 
     await fetchAllSkus();
 
-    // 첫 페이지 + 나머지 9페이지 = 10회 (MAX_PAGES)
     expect(mocked).toHaveBeenCalledTimes(10);
   });
 });

@@ -16,7 +16,6 @@ export default function AdminLogin() {
     setError('');
     setLoading(true);
     try {
-      // 서버가 HttpOnly 쿠키(admin_token)를 설정 — 토큰을 JS에서 직접 보관하지 않음
       await adminLogin(loginId, password);
       await login();
       navigate('/admin', { replace: true });
@@ -35,7 +34,6 @@ export default function AdminLogin() {
             <img src="/logo.svg" alt="KOALA" className="h-10 w-auto mb-2" />
             <div className="text-xs text-gray-400 tracking-[0.2em] uppercase">Admin</div>
           </div>
-
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="block text-xs font-medium text-gray-600 mb-1.5">아이디</label>

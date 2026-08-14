@@ -10,7 +10,6 @@ const EMPTY: SettlementPeriod = {
   totalGross: '0', totalRefund: '0', totalCommission: '0', totalPayout: '0', items: [],
 };
 
-/** 지난달 — 확정할 수 있는 가장 최근 달 */
 function lastMonth() {
   const d = new Date();
   d.setDate(1);
@@ -106,7 +105,6 @@ export default function AdminSettlementList() {
         해당 월에 <b>배송완료된</b> 주문이 대상입니다. 그 달에 승인된 반품은 차감됩니다.
         송금은 직접 하시고, 여기에는 보냈다는 기록만 남깁니다.
       </p>
-
       <div className="flex items-center gap-3 mb-6">
         <input
           type="month"
@@ -150,7 +148,6 @@ export default function AdminSettlementList() {
             <SummaryCard label="수수료" value={won(data.totalCommission)} />
             <SummaryCard label="지급 합계" value={won(data.totalPayout)} strong />
           </div>
-
           <div className="border border-gray-100 rounded-xl overflow-x-auto">
             <table className="w-full text-sm min-w-[720px]">
               <thead>

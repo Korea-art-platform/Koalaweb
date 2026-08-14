@@ -16,7 +16,6 @@ export function ProductImageGallery({ sku, images, selectedImage, setSelectedIma
   return (
     <>
       <div className="flex gap-3 h-full">
-        {/* 세로 썸네일 */}
         <div className="flex flex-col gap-2 w-[68px] flex-shrink-0">
           {images.map((image, index) => (
             <button
@@ -36,8 +35,6 @@ export function ProductImageGallery({ sku, images, selectedImage, setSelectedIma
             </button>
           ))}
         </div>
-
-        {/* 메인 이미지 — 클릭 시 라이트박스 */}
         <div
           className="flex-1 relative overflow-hidden rounded-2xl bg-gray-50 aspect-square cursor-zoom-in group"
           onClick={() => setLightboxIndex(selectedImage)}

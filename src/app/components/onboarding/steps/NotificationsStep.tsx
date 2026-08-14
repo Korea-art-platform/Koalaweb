@@ -20,7 +20,6 @@ export default function NotificationsStep({ notifications, onChange, onNext }: P
       </div>
       <h2 className="text-3xl font-medium tracking-tight mb-3">{t('onboarding.notifications.title')}</h2>
       <p className="text-gray-400 mb-8">{t('onboarding.notifications.desc')}</p>
-
       <div className="space-y-4 mb-8">
         {NOTIFICATION_KEYS.map((key) => (
           <div key={key} className="flex items-center justify-between p-5 rounded-xl bg-[#F4F4F4]">
@@ -41,7 +40,6 @@ export default function NotificationsStep({ notifications, onChange, onNext }: P
           </div>
         ))}
       </div>
-
       <button onClick={onNext} className="w-full py-4 bg-koala-navy text-white rounded-xl hover:bg-koala-navy-hover transition-all font-semibold shadow-lg shadow-black/10">
         {t('onboarding.notifications.start')}
       </button>

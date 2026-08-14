@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router';
 import { ArrowLeft, Upload, Trash2, Plus, Pencil, X, Check, ImagePlus } from 'lucide-react';
-// Upload은 SectionCard에서 사용
+
 import {
   getAdminArtist,
   updateArtist,
@@ -28,7 +28,6 @@ import { downscaleImage } from '@/utils/downscaleImage';
 
 type Tab = 'info' | 'media' | 'career' | 'featured';
 
-// 상세페이지 섹션별 미디어 역할 정의
 const PAGE_SECTIONS = [
   {
     role: 'PROFILE',
@@ -36,7 +35,7 @@ const PAGE_SECTIONS = [
     title: '프로필 사진',
     desc: '작가 소개 섹션 메인 이미지',
     accept: 'image/*',
-    single: true,   // 1장만 (교체형)
+    single: true,
   },
   {
     role: 'INTERVIEW_VIDEO',
@@ -45,7 +44,7 @@ const PAGE_SECTIONS = [
     desc: 'YouTube URL을 입력하면 INTERVIEW 섹션에 임베드됩니다',
     accept: 'video/*',
     single: true,
-    urlOnly: true,   // 파일 업로드 대신 URL 입력
+    urlOnly: true,
   },
   {
     role: 'INTERVIEW_IMAGE',
@@ -75,7 +74,6 @@ const PAGE_SECTIONS = [
 
 const CAREER_CATEGORIES = ['학력', '개인전', '그룹전', '수상', '소장', '방송', '그 외'] as const;
 
-// ────────────────────────────────────────────────────────────
 export default function AdminArtistDetail() {
   const { artistCode } = useParams<{ artistCode: string }>();
   const navigate = useNavigate();
@@ -101,7 +99,6 @@ export default function AdminArtistDetail() {
 
   return (
     <div className="p-8 max-w-4xl">
-      {/* 헤더 */}
       <button
         onClick={() => navigate('/admin/artists')}
         className="flex items-center gap-1.5 text-xs text-gray-400 hover:text-gray-700 mb-4"
@@ -110,8 +107,6 @@ export default function AdminArtistDetail() {
       </button>
       <h1 className="text-xl font-bold text-gray-900 mb-1">{artist.name}</h1>
       <p className="text-xs text-gray-400 font-mono mb-6">{artist.artistCode}</p>
-
-      {/* 탭 */}
       <div className="flex gap-1 border-b border-gray-200 mb-6">
         {(['info', 'media', 'career', 'featured'] as Tab[]).map((t) => (
           <button
@@ -136,9 +131,6 @@ export default function AdminArtistDetail() {
   );
 }
 
-// ────────────────────────────────────────────────────────────
-// 기본정보 탭
-// ────────────────────────────────────────────────────────────
 function InfoTab({
   artist,
   onSaved,
@@ -241,9 +233,6 @@ function InfoTab({
   );
 }
 
-// ────────────────────────────────────────────────────────────
-// 미디어 탭 — 상세페이지 섹션별 카드
-// ────────────────────────────────────────────────────────────
 function MediaTab({
   artistCode,
   mediaList,
@@ -271,9 +260,6 @@ function MediaTab({
   );
 }
 
-// ────────────────────────────────────────────────────────────
-// 섹션별 카드
-// ────────────────────────────────────────────────────────────
 function SectionCard({
   artistCode,
   section,
@@ -292,25 +278,23 @@ function SectionCard({
   const [deleting, setDeleting] = useState<number | null>(null);
   const [error, setError] = useState('');
 
-  // YouTube URL 입력 상태 (INTERVIEW_VIDEO 전용)
   const [urlInput, setUrlInput] = useState('');
   const [urlSaving, setUrlSaving] = useState(false);
 
   const mediaType = section.role === 'INTERVIEW_VIDEO' ? 'VIDEO' : 'IMAGE';
 
-  /** YouTube watch/short URL → embed URL 변환 */
   const toEmbedUrl = (url: string): string | null => {
     try {
       const u = new URL(url.trim());
-      // https://www.youtube.com/watch?v=VIDEO_ID
+
       if (u.hostname.includes('youtube.com') && u.searchParams.get('v')) {
         return `https://www.youtube.com/embed/${u.searchParams.get('v')}`;
       }
-      // https://youtu.be/VIDEO_ID
+
       if (u.hostname === 'youtu.be') {
         return `https://www.youtube.com/embed${u.pathname}`;
       }
-      // 이미 embed URL이면 그대로
+
       if (u.hostname.includes('youtube.com') && u.pathname.startsWith('/embed/')) {
         return url.trim();
       }
@@ -349,7 +333,6 @@ function SectionCard({
     setUploading(true);
     try {
       for (const original of Array.from(files)) {
-        // 올리기 전에 브라우저에서 줄인다 — 서버도 어차피 1600px 로 맞춘다
         const file = await downscaleImage(original);
         await addArtistMedia(artistCode, file, {
           mediaType,
@@ -387,7 +370,6 @@ function SectionCard({
 
   return (
     <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
-      {/* 헤더 */}
       <div className="flex items-center gap-3 px-5 py-3.5 border-b border-gray-100 bg-gray-50">
         <span className="text-lg">{section.icon}</span>
         <div>
@@ -395,13 +377,10 @@ function SectionCard({
           <p className="text-xs text-gray-400">{section.desc}</p>
         </div>
       </div>
-
-      {/* 바디 */}
       <div className="px-5 py-4">
         {'urlOnly' in section && section.urlOnly ? (
-          /* ── YouTube URL 입력 전용 슬롯 ── */
           <div className="space-y-3">
-            {/* 현재 등록된 영상 */}
+
             {current ? (
               <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg border border-gray-200">
                 <div className="flex-1 min-w-0">
@@ -429,7 +408,6 @@ function SectionCard({
               <p className="text-xs text-gray-400">아직 등록된 영상이 없습니다.</p>
             )}
 
-            {/* URL 입력 */}
             <div className="flex gap-2">
               <input
                 value={urlInput}
@@ -449,9 +427,7 @@ function SectionCard({
             {error && <p className="text-xs text-red-500 whitespace-pre-line">{error}</p>}
           </div>
         ) : section.single ? (
-          /* ── 단일 슬롯 (파일 업로드) ── */
           <div className="flex items-center gap-4">
-            {/* 미리보기 */}
             <div className="w-32 h-20 rounded-lg overflow-hidden bg-gray-100 border border-gray-200 flex-shrink-0">
               {current ? (
                 <img src={current.fileUrl} alt="" className="w-full h-full object-cover" />
@@ -461,8 +437,6 @@ function SectionCard({
                 </div>
               )}
             </div>
-
-            {/* 액션 */}
             <div className="flex flex-col gap-2">
               <input ref={fileInputRef} type="file" accept={section.accept} className="hidden"
                 onChange={(e) => upload(e.target.files)} />
@@ -487,7 +461,6 @@ function SectionCard({
             </div>
           </div>
         ) : (
-          /* ── 다중 슬롯 (STUDIO / HANDS) ── */
           <div>
             {items.length > 0 && (
               <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 mb-3">
@@ -496,11 +469,9 @@ function SectionCard({
                     <div className="aspect-square rounded-lg overflow-hidden bg-gray-100 border border-gray-200">
                       <img src={m.fileUrl} alt="" className="w-full h-full object-cover" />
                     </div>
-                    {/* 순번 */}
                     <span className="absolute top-1 left-1 bg-black/60 text-white text-[10px] px-1.5 py-0.5 rounded font-mono">
                       {idx + 1}
                     </span>
-                    {/* hover 액션 */}
                     <div className="absolute inset-x-0 bottom-0 flex gap-1 p-1 opacity-0 group-hover:opacity-100 transition-opacity">
                       <button
                         onClick={() => triggerReplace(m.id)}
@@ -518,7 +489,6 @@ function SectionCard({
               </div>
             )}
 
-            {/* 추가 버튼 */}
             <input ref={fileInputRef} type="file" accept={section.accept} multiple className="hidden"
               onChange={(e) => upload(e.target.files)} />
             <button
@@ -534,17 +504,12 @@ function SectionCard({
 
         {error && <p className="text-xs text-red-500 mt-2">{error}</p>}
       </div>
-
-      {/* 교체용 히든 인풋 */}
       <input ref={replaceRef} type="file" accept={section.accept} className="hidden"
         onChange={(e) => replaceId !== null && upload(e.target.files, replaceId)} />
     </div>
   );
 }
 
-// ────────────────────────────────────────────────────────────
-// 약력 탭
-// ────────────────────────────────────────────────────────────
 function CareerTab({
   artistCode,
   careerList,
@@ -618,7 +583,7 @@ function CareerTab({
 
   return (
     <div>
-      {/* 추가 버튼 */}
+
       {!adding && (
         <button
           onClick={() => setAdding(true)}
@@ -628,7 +593,6 @@ function CareerTab({
         </button>
       )}
 
-      {/* 추가 폼 */}
       {adding && (
         <div className="bg-gray-50 rounded-xl p-4 mb-6 border border-gray-200">
           <p className="text-xs font-semibold text-gray-600 mb-3">새 약력</p>
@@ -690,7 +654,6 @@ function CareerTab({
         </div>
       )}
 
-      {/* 카테고리별 목록 */}
       {grouped.map(({ cat, items }) => (
         <div key={cat} className="mb-6">
           <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">
@@ -702,7 +665,6 @@ function CareerTab({
             <div className="space-y-2">
               {items.map((c) =>
                 editId === c.id ? (
-                  /* 인라인 편집 */
                   <div key={c.id} className="flex flex-wrap gap-2 items-center bg-yellow-50 rounded-lg px-3 py-2 border border-yellow-200">
                     <select
                       value={editForm.category}
@@ -736,7 +698,6 @@ function CareerTab({
                     </button>
                   </div>
                 ) : (
-                  /* 읽기 모드 */
                   <div key={c.id} className="flex items-center gap-3 bg-white rounded-lg px-3 py-2.5 border border-gray-100 hover:border-gray-200 group">
                     <span className="text-xs font-mono text-gray-400 w-10 shrink-0">{c.year ?? '–'}</span>
                     <span className="flex-1 text-sm text-gray-700">{c.content}</span>
@@ -764,9 +725,6 @@ function CareerTab({
   );
 }
 
-// ────────────────────────────────────────────────────────────
-// 대표 작품 탭
-// ────────────────────────────────────────────────────────────
 function FeaturedTab({
   artistCode,
   current,
@@ -780,7 +738,6 @@ function FeaturedTab({
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
 
-  // 새 작품 등록 폼
   const [addOpen, setAddOpen] = useState(false);
   const [addForm, setAddForm] = useState({
     name: '', listPrice: '', salePrice: '', description: '',
@@ -837,7 +794,6 @@ function FeaturedTab({
     setAddError('');
     setAddBusy(true);
     try {
-      // 1. SKU 생성
       const created: any = await createSku({
         artistCode,
         name: addForm.name.trim(),
@@ -849,7 +805,7 @@ function FeaturedTab({
         genre: addForm.genre,
         currency: 'KRW',
       });
-      // 2. 이미지 업로드 (있을 경우)
+
       if (addImage && created?.skuCode) {
         try {
           await addSkuMedia(created.skuCode, addImage, {
@@ -858,13 +814,13 @@ function FeaturedTab({
             isPrimary: true,
             sortOrder: 0,
           });
-        } catch { /* 이미지 실패해도 작품은 생성됨 */ }
+        } catch {  }
       }
-      // 3. 대표 작품으로 설정
+
       if (created?.skuCode) {
         await setArtistFeaturedSku(artistCode, created.skuCode);
       }
-      // 초기화
+
       setAddOpen(false);
       setAddForm({ name: '', listPrice: '', salePrice: '', description: '', mainCategory: '', genre: '' });
       setAddImage(null);
@@ -883,7 +839,6 @@ function FeaturedTab({
 
   return (
     <div className="space-y-6 max-w-xl">
-      {/* 현재 설정된 대표 작품 */}
       <div>
         <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">현재 대표 작품</p>
         {current ? (
@@ -922,8 +877,6 @@ function FeaturedTab({
           </div>
         )}
       </div>
-
-      {/* 새 작품 등록 */}
       <div>
         <div className="flex items-center justify-between mb-3">
           <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">새 작품 직접 등록</p>
@@ -938,7 +891,6 @@ function FeaturedTab({
 
         {addOpen && (
           <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 space-y-3">
-            {/* 이미지 업로드 */}
             <div>
               <label className="block text-xs text-gray-500 mb-1.5">대표 이미지</label>
               <div className="flex items-center gap-3">
@@ -958,8 +910,6 @@ function FeaturedTab({
                 <input ref={imageInputRef} type="file" accept="image/*" className="hidden" onChange={handleImagePick} />
               </div>
             </div>
-
-            {/* 작품명 */}
             <div>
               <label className="block text-xs text-gray-500 mb-1.5">작품명 *</label>
               <input
@@ -969,8 +919,6 @@ function FeaturedTab({
                 placeholder="예: 말머리 No.1"
               />
             </div>
-
-            {/* 카테고리 — 목록은 카테고리 관리에서 추가한다 */}
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <label className="block text-xs text-gray-500 mb-1.5">대분류 *</label>
@@ -995,8 +943,6 @@ function FeaturedTab({
                 </select>
               </div>
             </div>
-
-            {/* 가격 */}
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <label className="block text-xs text-gray-500 mb-1.5">정가 (원) *</label>
@@ -1021,8 +967,6 @@ function FeaturedTab({
                 />
               </div>
             </div>
-
-            {/* 설명 */}
             <div>
               <label className="block text-xs text-gray-500 mb-1.5">작품 설명</label>
               <textarea
@@ -1054,8 +998,6 @@ function FeaturedTab({
           </div>
         )}
       </div>
-
-      {/* 기존 작품 목록에서 선택 */}
       <div>
         <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">
           기존 작품에서 선택 <span className="font-normal text-gray-400">({skus.length})</span>
@@ -1118,9 +1060,6 @@ function FeaturedTab({
   );
 }
 
-// ────────────────────────────────────────────────────────────
-// 공통 헬퍼
-// ────────────────────────────────────────────────────────────
 const inputCls =
   'w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black/10';
 

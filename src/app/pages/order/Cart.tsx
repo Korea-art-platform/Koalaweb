@@ -10,7 +10,7 @@ import { OrderSummary } from '@/app/components/Cart';
 
 export default function Cart() {
   const { t } = useTranslation();
-  
+
   const {
     loading,
     cartItems,
@@ -27,10 +27,8 @@ export default function Cart() {
   return (
     <div className="min-h-screen bg-[#FAFAFA]">
       <Navigation />
-
       <div className="pt-24 pb-16 px-8">
         <div className="max-w-[1200px] mx-auto">
-          {/* 헤더 */}
           <div className="mb-12">
             <h1 className="text-3xl font-medium tracking-tight mb-2">{t('cart.title')}</h1>
             <p className="text-sm text-gray-400">
@@ -44,7 +42,6 @@ export default function Cart() {
             <EmptyCart />
           ) : (
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-              {/* 장바구니 리스트 구역 */}
               <div className="lg:col-span-2 space-y-6">
                 {cartItems.map((item) => (
                   <CartItem
@@ -55,14 +52,13 @@ export default function Cart() {
                   />
                 ))}
 
-                {/* 하단 버튼들 */}
                 <div className="flex items-center justify-between pt-4">
                   <Link
                     to="/store"
                     className="inline-flex items-center gap-2 text-sm text-gray-400 hover:text-black transition-colors"
                   >
                     <ArrowLeft className="w-4 h-4" />
-                    {/* 🌟 수정 3: 'emptyState.continueShopping' ➔ 'cart.emptyState.continueShopping' */}
+
                     {t('cart.emptyState.continueShopping')}
                   </Link>
                   <button
@@ -72,8 +68,6 @@ export default function Cart() {
                   </button>
                 </div>
               </div>
-
-              {/* 오른쪽 결제 요약 구역 */}
               <div className="lg:col-span-1">
                 <OrderSummary
                   cartItems={cartItems}

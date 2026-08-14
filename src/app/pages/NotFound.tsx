@@ -13,8 +13,6 @@ export default function NotFound() {
 
   return (
     <div className="min-h-screen bg-koala-navy flex flex-col overflow-hidden relative">
-
-      {/* 배경 — 추상적인 원형 오브제 */}
       <div
         className="absolute top-[-120px] right-[-80px] w-[340px] h-[340px] rounded-full border border-white/5"
         style={{ transition: 'opacity 1.2s ease', opacity: visible ? 1 : 0 }}
@@ -31,8 +29,6 @@ export default function NotFound() {
         className="absolute bottom-[200px] left-[-40px] w-[140px] h-[140px] rounded-full bg-white/[0.02]"
         style={{ transition: 'opacity 1.8s ease', opacity: visible ? 1 : 0 }}
       />
-
-      {/* 상단 로고 */}
       <div
         className="px-8 pt-12"
         style={{
@@ -45,11 +41,7 @@ export default function NotFound() {
           KOALA
         </span>
       </div>
-
-      {/* 메인 콘텐츠 */}
       <div className="flex-1 flex flex-col justify-center px-8 pb-8 max-w-2xl mx-auto w-full">
-
-        {/* 404 대형 텍스트 */}
         <div
           style={{
             transition: 'opacity 0.9s ease, transform 0.9s ease',
@@ -64,8 +56,6 @@ export default function NotFound() {
             404
           </p>
         </div>
-
-        {/* 메시지 */}
         <div
           className="mt-[-16px] space-y-3"
           style={{
@@ -82,14 +72,10 @@ export default function NotFound() {
             아직 큐레이션 중일 수 있어요.
           </p>
         </div>
-
-        {/* 구분선 */}
         <div
           className="my-8 h-px bg-white/10"
           style={{ transition: 'opacity 1.1s ease', opacity: visible ? 1 : 0 }}
         />
-
-        {/* 버튼 그룹 */}
         <div
           className="flex gap-3"
           style={{
@@ -114,8 +100,6 @@ export default function NotFound() {
           </button>
         </div>
       </div>
-
-      {/* 하단 갤러리 태그 */}
       <div
         className="px-8 pb-10 flex items-center gap-2"
         style={{ transition: 'opacity 1.4s ease', opacity: visible ? 0.3 : 0 }}
@@ -125,7 +109,6 @@ export default function NotFound() {
           Gallery not found
         </span>
       </div>
-
     </div>
   );
 }

@@ -38,7 +38,7 @@ export default function ArtDetail() {
           try {
             const artistRes = await getArtist((skuData as any).artistCode);
             setArtist(artistRes.data.data);
-          } catch { /* artist 없으면 이름만 표시 */ }
+          } catch {  }
         }
       } catch (e) {
         console.error('SKU 로딩 실패:', e);
@@ -52,20 +52,16 @@ export default function ArtDetail() {
   if (loading) return <ProductSkeleton />;
   if (!sku) return <ProductNotFound />;
 
-  // 대표 이미지(MAIN) — 썸네일·공유 등에 사용
   const mainImage = sku.mediaList?.find((m) => m.mediaRole === 'MAIN')?.fileUrl ?? sku.primaryImageUrl;
 
-  // 작품 상세 이미지(DETAIL)
   const detailImgs = sku.mediaList
     ?.filter((m) => m.mediaRole === 'DETAIL')
     .map((m) => m.fileUrl) ?? [];
 
-  // 재질 이미지(MATERIAL)
   const materialImgs = sku.mediaList
     ?.filter((m) => m.mediaRole === 'MATERIAL')
     .map((m) => m.fileUrl) ?? [];
 
-  // 포장 이미지(PACKAGING)
   const packagingImgs = sku.mediaList
     ?.filter((m) => m.mediaRole === 'PACKAGING')
     .map((m) => m.fileUrl) ?? [];
@@ -81,9 +77,7 @@ export default function ArtDetail() {
   return (
     <div className="min-h-screen bg-white">
       <Navigation />
-
       <main className="pt-24 pb-24 px-5 md:px-8 max-w-2xl mx-auto w-full">
-        {/* 뒤로가기 + 공유 버튼 */}
         <div className="flex items-center justify-between mb-8">
           <button
             onClick={() => navigate(-1)}
@@ -98,44 +92,30 @@ export default function ArtDetail() {
             imageUrl={mainImage ?? undefined}
           />
         </div>
-
-        {/* 1. 작품 헤더 */}
         <ArtDetailHeader
           breadcrumb="작품 소개"
           worldViewTitle={sku.name}
           worldViewDesc={sku.description ?? ''}
         />
-
-        {/* 2. 작품 상세 이미지 */}
         <ArtImages images={detailImgs} title={sku.name} />
-
-        {/* 3. 재질 / 소재 사진 + 설명 */}
         <ArtMaterial
           images={materialImgs}
           description={sku.materialDescription}
           title={sku.name}
         />
-
-        {/* 4. 포장 사진 */}
         <ArtPackaging
           images={packagingImgs}
           packagingTitle={sku.packagingTitle}
           packagingDescription={sku.packagingDescription}
           title={sku.name}
         />
-
-        {/* 5. 아티스트 */}
         <ArtArtist
           artistCode={(sku as any).artistCode}
           artistName={sku.artistName}
           artistDescription={artist?.description}
           artistImageUrl={artist?.profileImageUrl}
         />
-
-        {/* 6. 작품 스펙 테이블 */}
         <ArtInfo items={artInfoItems} />
-
-        {/* 7. Q&A */}
         <ArtQnA />
       </main>
     </div>

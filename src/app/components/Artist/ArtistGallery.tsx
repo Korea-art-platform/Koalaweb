@@ -7,7 +7,7 @@ interface ArtistGalleryProps {
 }
 
 export function ArtistGallery({ images, artistName }: ArtistGalleryProps) {
-  const { t } = useTranslation('artistLab'); // 🌟 네임스페이스 지정
+  const { t } = useTranslation('artistLab');
 
   if (!images || images.length === 0) return null;
 

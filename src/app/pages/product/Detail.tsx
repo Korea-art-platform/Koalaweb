@@ -70,10 +70,8 @@ export default function ProductDetail() {
           try {
             const artistRes = await getArtist((skuData as any).artistCode);
             setArtist(artistRes.data.data);
-          } catch { /* artist 없으면 이름만 표시 */ }
+          } catch {  }
         }
-
-        // 위시리스트 여부는 isAuthenticated + sku 둘 다 준비된 뒤 별도 useEffect에서 처리
       } catch (e) {
         console.error('SKU 로딩 실패:', e);
       } finally {
@@ -109,7 +107,6 @@ export default function ProductDetail() {
   const handleWishlist = async () => {
     if (!sku) return;
 
-    // 비로그인 사용자 → 로그인 페이지로
     if (!isAuthenticated) {
       navigate('/login');
       return;
@@ -127,7 +124,7 @@ export default function ProductDetail() {
       }
     } catch (e: unknown) {
       const status = (e as { response?: { status?: number } })?.response?.status;
-      // 401 → 세션 만료, 로그인 페이지로
+
       if (status === 401) {
         navigate('/login');
         return;
@@ -137,7 +134,6 @@ export default function ProductDetail() {
     }
   };
 
-  // 로그인 상태 변경 시 위시리스트 여부 재확인
   useEffect(() => {
     if (isAuthenticated === true && sku) {
       checkWishlist(sku.skuCode)
@@ -148,7 +144,6 @@ export default function ProductDetail() {
     }
   }, [isAuthenticated, sku?.skuCode]);
 
-  // 갤러리: 전체 미디어 최대 5장 (MAIN + DETAIL 합산)
   const images = useMemo(
     () => {
       if (!sku) return [];
@@ -159,7 +154,6 @@ export default function ProductDetail() {
     [sku],
   );
 
-  // '작품 - 상세' 섹션: DETAIL 롤 이미지만 (제한 없음)
   const detailImgs = useMemo(
     () =>
       (sku?.mediaList ?? [])
@@ -168,7 +162,6 @@ export default function ProductDetail() {
     [sku?.mediaList],
   );
 
-  // 재질/소재 이미지(MATERIAL)
   const materialImgs = useMemo(
     () =>
       (sku?.mediaList ?? [])
@@ -177,7 +170,6 @@ export default function ProductDetail() {
     [sku?.mediaList],
   );
 
-  // 포장 이미지(PACKAGING)
   const packagingImgs = useMemo(
     () =>
       (sku?.mediaList ?? [])
@@ -201,8 +193,6 @@ export default function ProductDetail() {
         <title>{sku.name} — KOALA</title>
         <meta name="description" content={pageDescription} />
         <link rel="canonical" href={pageUrl} />
-
-        {/* Open Graph — 카카오톡·SNS 공유 시 상품 이미지+이름 노출 */}
         <meta property="og:type" content="product" />
         <meta property="og:title" content={`${sku.name} — KOALA`} />
         <meta property="og:description" content={pageDescription} />
@@ -210,27 +200,20 @@ export default function ProductDetail() {
         <meta property="og:image:width" content="800" />
         <meta property="og:image:height" content="800" />
         <meta property="og:url" content={pageUrl} />
-
-        {/* Twitter Card */}
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={`${sku.name} — KOALA`} />
         <meta name="twitter:description" content={pageDescription} />
         <meta name="twitter:image" content={pageImage} />
       </Helmet>
-
       <Navigation />
-
       <ProductToast
         show={showToast}
         message={toastMessage}
         showCartLink={showCartLink}
         onClose={() => setShowToast(false)}
       />
-
       <div className="pt-28 pb-20 px-6 md:px-8">
         <div className="max-w-5xl mx-auto">
-
-          {/* 뒤로가기 */}
           <button
             onClick={() => navigate(-1)}
             className="inline-flex items-center gap-2 text-sm text-gray-400 hover:text-black transition-colors mb-10 group"
@@ -238,8 +221,6 @@ export default function ProductDetail() {
             <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
             {t('product.detail.back')}
           </button>
-
-          {/* 상품 기본 정보 */}
           <div className="grid grid-cols-1 lg:grid-cols-[3fr_2fr] gap-10 lg:gap-14">
             <ProductImageGallery
               sku={sku}
@@ -262,13 +243,9 @@ export default function ProductDetail() {
               />
             </div>
           </div>
-
-          {/* 상품 상세 이미지 */}
           <div className="mt-20 border-t border-gray-100 pt-16">
             <ProductDetailPage skuCode={sku.skuCode} />
           </div>
-
-          {/* 작품 상세 이미지 그리드 + 작가 / 작품 소개 / QnA */}
           <div className="mt-20 border-t border-gray-100 pt-16 max-w-2xl mx-auto">
             <ArtImages
               images={detailImgs}
@@ -301,10 +278,7 @@ export default function ProductDetail() {
             />
             <ArtQnA />
           </div>
-
-          {/* Trending Artists */}
           <TrendingArtists excludeArtistCode={(sku as any).artistCode} />
-
         </div>
       </div>
     </div>

@@ -3,20 +3,6 @@ import { useSearchParams, useNavigate } from 'react-router';
 import { confirmPayment } from '@/api/payment';
 import { getOrder } from '@/api/order';
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Toss 결제 성공 콜백 페이지
-//
-// Toss 리다이렉트 URL 예시:
-//   /payment/success?paymentKey=pay_xxx&orderId=KOA-001&amount=50000
-//
-// 승인 흐름:
-//   프론트(여기) → 우리 백엔드 /api/v1/payments/confirm
-//               → 백엔드가 시크릿 키를 들고 Toss API 호출
-//
-//   시크릿 키는 서버 환경변수(TOSS_SECRET_KEY)에만 존재,
-//   클라이언트 번들에는 절대 포함되지 않습니다.
-// ─────────────────────────────────────────────────────────────────────────────
-
 type Status = 'pending' | 'success' | 'error';
 
 export default function PaymentSuccess() {
@@ -25,7 +11,7 @@ export default function PaymentSuccess() {
 
   const [status, setStatus]   = useState<Status>('pending');
   const [errorMsg, setErrorMsg] = useState('');
-  const calledRef = useRef(false); // Strict Mode 이중 호출 방지
+  const calledRef = useRef(false);
 
   useEffect(() => {
     if (calledRef.current) return;
@@ -35,7 +21,6 @@ export default function PaymentSuccess() {
     const orderId    = searchParams.get('orderId');
     const amount     = searchParams.get('amount');
 
-    // 필수 파라미터 누락 시 홈으로
     if (!paymentKey || !orderId || !amount) {
       navigate('/', { replace: true });
       return;
@@ -43,19 +28,15 @@ export default function PaymentSuccess() {
 
     const confirm = async () => {
       try {
-        // 우리 백엔드로 승인 요청 → 백엔드가 시크릿 키로 Toss API 호출
         await confirmPayment(paymentKey, orderId, Number(amount));
 
-        // 장바구니 갱신 이벤트 (Header 카운트 뱃지 동기화)
         window.dispatchEvent(new Event('cart-updated'));
 
-        // 주문 상세 조회 — 완료 화면에 금액/상품 표시용
         let orderDetail: any = null;
         try {
           const orderRes = await getOrder(orderId);
           orderDetail = orderRes.data.data;
         } catch {
-          // 조회 실패해도 완료 화면은 표시 (orderId만으로 fallback)
         }
 
         setStatus('success');
@@ -88,11 +69,8 @@ export default function PaymentSuccess() {
     };
 
     confirm();
-  // calledRef 패턴으로 이중 호출 방지 — searchParams/navigate는 ref가 막아주므로 deps 명시
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams, navigate]);
 
-  // ── 에러 화면 ──────────────────────────────────────────────────────────────
   if (status === 'error') {
     return (
       <div className="min-h-screen bg-[#FAFAFA] flex items-center justify-center">
@@ -121,7 +99,6 @@ export default function PaymentSuccess() {
     );
   }
 
-  // ── 승인 중 로딩 화면 ──────────────────────────────────────────────────────
   return (
     <div className="min-h-screen bg-[#FAFAFA] flex items-center justify-center">
       <div className="text-center">

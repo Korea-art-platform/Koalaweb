@@ -28,7 +28,7 @@ export default function OrderDetail() {
       .then((res) => {
         const o = res.data.data;
         setOrder(o);
-        // 배송완료 상태면 반품 상태 조회
+
         if (o.orderStatus === 'DELIVERED') {
           getReturnByOrder(orderNo)
             .then((r) => setReturnStatus(r.data.data.status))
@@ -85,7 +85,6 @@ export default function OrderDetail() {
               <OrderStatusStepper status={order!.orderStatus} />
             </div>
           </div>
-
           <OrderItemsList order={order!} />
           <OrderInfoCards order={order!} />
           <OrderActions

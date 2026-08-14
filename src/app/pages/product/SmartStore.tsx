@@ -15,7 +15,6 @@ export default function SmartStore() {
   const [viewMode, setViewMode] = useState<'grid' | 'large'>('grid');
   const [page, setPage] = useState(0);
 
-  // 장르별 상품 수 → 상품 있는 카테고리만 노출 ('전체'는 항상 표시)
   const { data: genreCounts = {} } = useQuery<Record<string, number>>({
     queryKey: ['genre-counts'],
     queryFn: async () => {
@@ -23,14 +22,13 @@ export default function SmartStore() {
       return (res.data.data ?? {}) as Record<string, number>;
     },
   });
-  // 카테고리 목록은 서버가 관리한다 — 관리자가 추가한 소분류가 바로 필터에 나타난다
+
   const { sub: subCategories } = useCategories();
   const categories = [
     'All',
     ...subCategories.filter((c) => (genreCounts[c.code] ?? 0) > 0).map((c) => c.code),
   ];
 
-  // SKU 목록
   const { data: skuPage, isLoading: loading } = useQuery({
     queryKey: ['skus', page],
     queryFn: async () => {
@@ -41,7 +39,6 @@ export default function SmartStore() {
   const skus: Sku[] = skuPage?.content ?? [];
   const totalPages: number = skuPage?.totalPages ?? 0;
 
-  // 위시리스트 토글 (홈과 공유하는 훅)
   const { wishlistedCodes, wishlistLoading, handleWishlist } = useWishlistToggle();
 
   const filteredSkus = selectedCategory === 'All'
@@ -70,8 +67,6 @@ export default function SmartStore() {
         wishlistLoading={wishlistLoading}
         onWishlistClick={handleWishlist}
       />
-
-      {/* 작가 섹션 */}
       <div className="px-6 md:px-8 max-w-[1600px] mx-auto pb-20">
         <TrendingArtists />
       </div>

@@ -23,7 +23,7 @@ export default function PaymentFail() {
 
   const errorCode = searchParams.get('code');
   const rawMessage = searchParams.get('message');
-  // Toss가 failUrl에 붙여주는 orderId — 결제 재시도 시 Checkout으로 돌아가는 데 사용
+
   const orderId = searchParams.get('orderId');
   const errorMessage =
     (errorCode && TOSS_ERROR_MESSAGES[errorCode]) ||

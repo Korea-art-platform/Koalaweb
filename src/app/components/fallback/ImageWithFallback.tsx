@@ -13,7 +13,6 @@ export function ImageWithFallback(props: React.ImgHTMLAttributes<HTMLImageElemen
 
   const { src, alt, style, className, loading, decoding, ...rest } = props
 
-  // S3 직접 서빙 → CDN 치환 (VITE_IMAGE_CDN_BASE 미설정이면 원본 그대로)
   const resolvedSrc = toCdnUrl(typeof src === 'string' ? src : undefined) ?? src
 
   return didError ? (
@@ -31,8 +30,7 @@ export function ImageWithFallback(props: React.ImgHTMLAttributes<HTMLImageElemen
       alt={alt}
       className={className}
       style={style}
-      // 목록에서 화면 밖 이미지를 미리 받지 않도록 기본을 lazy 로 둔다.
-      // 히어로처럼 첫 화면에 바로 보여야 하는 곳은 loading="eager" 로 덮어쓰면 된다.
+
       loading={loading ?? 'lazy'}
       decoding={decoding ?? 'async'}
       {...rest}

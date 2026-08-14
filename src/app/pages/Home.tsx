@@ -13,17 +13,8 @@ import HomeCategorySections from '@/app/components/Home/HomeCategorySections';
 import HomeStudio from '@/app/components/Home/HomeStudio';
 import HomeNotices from '@/app/components/Home/HomeNotices';
 
-/** 대분류가 이 코드인 상품만 한정판 섹션에 올린다 */
 const LIMITED = 'LIMITED';
 
-/**
- * 홈 구성
- *  Hero → 한정판 → 장르별 컬렉션 → 소분류별 상품 → 작가의 공방 → 공지사항
- *
- * 소분류 섹션은 고정이 아니다. 관리자가 카테고리를 추가하면 섹션이 늘고,
- * 상품이 없는 카테고리는 나타나지 않는다.
- * 상품은 한 번만 받아 프론트에서 분류한다(현재 상품 수가 적어 별도 API 불필요).
- */
 export default function Home() {
   const [skus, setSkus] = useState<Sku[]>([]);
   const [banners, setBanners] = useState<Banner[]>([]);
@@ -64,7 +55,6 @@ export default function Home() {
     fetchHomeData();
   }, []);
 
-  // 옛 상품은 mainCategory 가 비어 있을 수 있어 isLimitedEdition 으로도 받는다
   const limitedSkus = skus.filter((s) => s.mainCategory === LIMITED || s.isLimitedEdition);
 
   return (

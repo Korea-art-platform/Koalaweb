@@ -25,7 +25,6 @@ export function ConfirmPaymentInfo({ paymentIcon, paymentMethodName }: ConfirmPa
           {t('order.confirmation.payment.change')}
         </button>
       </div>
-
       <div className="p-4 bg-gray-50 rounded-xl">
         <div className="flex items-center gap-3">
           <div className="text-2xl">{paymentIcon}</div>

@@ -20,7 +20,6 @@ export default function SocialLogin({ isSignup: _isSignup }: SocialLoginProps) {
           <span className="px-4 bg-white text-gray-400">{t('auth.common.orContinueWith')}</span>
         </div>
       </div>
-
       <div className="space-y-3">
         <button
           type="button"

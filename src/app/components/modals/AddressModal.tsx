@@ -36,7 +36,6 @@ export default function AddressModal({ isOpen, mode, address, onClose, onSuccess
     formState: { isSubmitting, errors },
   } = useForm<AddressFormData>();
 
-  // 모드별 폼 초기화
   useEffect(() => {
     if (!isOpen) return;
     setServerError('');
@@ -136,7 +135,7 @@ export default function AddressModal({ isOpen, mode, address, onClose, onSuccess
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      {/* 우편번호 검색 오버레이 */}
+
       {showPostcode && (
         <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/60">
           <div className="bg-white rounded-2xl overflow-hidden shadow-2xl w-full max-w-md mx-4">
@@ -152,15 +151,12 @@ export default function AddressModal({ isOpen, mode, address, onClose, onSuccess
         </div>
       )}
       <div className="bg-white rounded-3xl max-w-md w-full max-h-[90vh] overflow-y-auto shadow-2xl">
-        {/* 헤더 */}
         <div className="sticky top-0 bg-white border-b border-gray-100 p-6 flex items-center justify-between">
           <h2 className="text-2xl font-medium">{isEditMode ? '배송지 수정' : '배송지 추가'}</h2>
           <button onClick={handleClose} className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
             <X className="w-5 h-5 text-gray-400" />
           </button>
         </div>
-
-        {/* 콘텐츠 */}
         <form onSubmit={handleSubmit(onSubmit)} className="p-6 space-y-5">
           {serverError && (
             <div className="p-3 bg-red-50 border border-red-100 rounded-xl text-sm text-red-600">{serverError}</div>
@@ -184,7 +180,6 @@ export default function AddressModal({ isOpen, mode, address, onClose, onSuccess
             />
             {errors.label && <p className="mt-1 text-xs text-red-500">{errors.label.message}</p>}
           </div>
-
           <div>
             <label htmlFor="addr-name" className="block text-sm font-medium text-gray-700 mb-2">
               수령인 <span className="text-red-500">*</span>
@@ -198,7 +193,6 @@ export default function AddressModal({ isOpen, mode, address, onClose, onSuccess
             />
             {errors.recipientName && <p className="mt-1 text-xs text-red-500">{errors.recipientName.message}</p>}
           </div>
-
           <div>
             <label htmlFor="addr-phone" className="block text-sm font-medium text-gray-700 mb-2">
               전화번호 <span className="text-red-500">*</span>
@@ -212,7 +206,6 @@ export default function AddressModal({ isOpen, mode, address, onClose, onSuccess
             />
             {errors.recipientPhone && <p className="mt-1 text-xs text-red-500">{errors.recipientPhone.message}</p>}
           </div>
-
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               우편번호 <span className="text-red-500">*</span>
@@ -234,7 +227,6 @@ export default function AddressModal({ isOpen, mode, address, onClose, onSuccess
               </button>
             </div>
           </div>
-
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               주소 <span className="text-red-500">*</span>
@@ -247,7 +239,6 @@ export default function AddressModal({ isOpen, mode, address, onClose, onSuccess
               className="w-full px-4 py-3 bg-gray-50 rounded-xl border border-transparent text-gray-500 cursor-not-allowed"
             />
           </div>
-
           <div>
             <label htmlFor="addr-detail" className="block text-sm font-medium text-gray-700 mb-2">상세 주소</label>
             <input
@@ -258,7 +249,6 @@ export default function AddressModal({ isOpen, mode, address, onClose, onSuccess
               className="w-full px-4 py-3 bg-gray-50 rounded-xl border border-transparent focus:outline-none focus:border-gray-300 transition-colors"
             />
           </div>
-
           <div className="flex items-center gap-3 pt-2">
             <input
               id="addr-default"
@@ -270,7 +260,6 @@ export default function AddressModal({ isOpen, mode, address, onClose, onSuccess
               기본 배송지로 설정
             </label>
           </div>
-
           <div className="flex gap-3 pt-6 border-t border-gray-100">
             <button
               type="button"
@@ -300,7 +289,6 @@ export default function AddressModal({ isOpen, mode, address, onClose, onSuccess
   );
 }
 
-// 다음 우편번호 API 응답 타입
 interface DaumPostcodeResult {
   address: string;
   addressType: 'R' | 'J';

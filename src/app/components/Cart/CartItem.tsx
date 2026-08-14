@@ -23,9 +23,7 @@ export function CartItem({ item, onUpdateQuantity, onRemoveItem }: CartItemProps
             decoding="async"
           />
         </div>
-
         <div className="flex-1 min-w-0 flex flex-col justify-between">
-          {/* 상단: 상품명 + 삭제 */}
           <div className="flex items-start justify-between gap-2">
             <div className="min-w-0">
               <h3 className="font-medium text-base md:text-lg mb-1 truncate">{item.skuName}</h3>
@@ -41,8 +39,6 @@ export function CartItem({ item, onUpdateQuantity, onRemoveItem }: CartItemProps
               <Trash2 className="w-5 h-5" />
             </button>
           </div>
-
-          {/* 하단: 수량 조절 + 금액 */}
           <div className="flex items-center justify-between mt-3 gap-2">
             <div className="flex items-center gap-2 bg-gray-50 p-1 rounded-xl">
               <button
@@ -61,7 +57,6 @@ export function CartItem({ item, onUpdateQuantity, onRemoveItem }: CartItemProps
                 <Plus className="w-3.5 h-3.5" />
               </button>
             </div>
-
             <p className="font-semibold text-base md:text-lg whitespace-nowrap">
               ₩{item.lineAmount.toLocaleString()}
             </p>

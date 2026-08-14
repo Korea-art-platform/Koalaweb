@@ -64,7 +64,6 @@ export default function AdminProductDetail() {
       >
         <ArrowLeft className="w-3.5 h-3.5" /> 목록으로
       </button>
-
       <div className="flex items-start justify-between mb-6">
         <div>
           <h1 className="text-xl font-bold text-gray-900 mb-0.5">{sku.name}</h1>
@@ -74,7 +73,6 @@ export default function AdminProductDetail() {
           {SKU_STATUS_LABEL[sku.status] ?? sku.status}
         </span>
       </div>
-
       <div className="flex gap-1 border-b border-gray-200 mb-6">
         {(['info', 'images', 'stock'] as Tab[]).map((t) => (
           <button
@@ -96,16 +94,8 @@ export default function AdminProductDetail() {
   );
 }
 
-/** 대분류가 이 코드일 때만 에디션 정보를 받는다 */
 const LIMITED = 'LIMITED';
 
-/**
- * 업로드 허용 형식.
- *
- * 서버는 확장자가 아니라 파일 앞머리의 매직바이트로 형식을 확인한다.
- * 여기 목록은 파일 선택창을 좁혀 주는 안내일 뿐이다.
- * 이미지 10MB / 동영상 500MB 상한도 서버에서 잡는다.
- */
 const MEDIA_ACCEPT = 'image/*,video/mp4,video/quicktime,video/webm';
 
 interface BadgeItem { text: string; type: string; }
@@ -124,9 +114,6 @@ const PREDEFINED_BADGES: BadgeItem[] = [
   { text: '케어 포함',     type: 'green' },
 ];
 
-// ────────────────────────────────────────────────────────────
-// 기본 정보 탭
-// ────────────────────────────────────────────────────────────
 function InfoTab({ sku, onSaved }: { sku: any; onSaved: () => void }) {
   const parsedBadges: BadgeItem[] = (() => {
     try { return sku.badges ? JSON.parse(sku.badges) : []; }
@@ -154,7 +141,6 @@ function InfoTab({ sku, onSaved }: { sku: any; onSaved: () => void }) {
   const [success, setSuccess] = useState(false);
   const setF = (patch: Partial<typeof form>) => setForm((f) => ({ ...f, ...patch }));
 
-  // 카테고리 목록은 어드민이 추가할 수 있어 서버에서 받는다
   const [categories, setCategories] = useState<CategoryGroups>({ main: [], sub: [] });
   useEffect(() => {
     getCategories().then(setCategories).catch(() => setCategories({ main: [], sub: [] }));
@@ -186,7 +172,7 @@ function InfoTab({ sku, onSaved }: { sku: any; onSaved: () => void }) {
         listPrice: Number(form.listPrice),
         salePrice: form.salePrice ? Number(form.salePrice) : undefined,
         primaryImageUrl: sku.primaryImageUrl,
-        // 한정판이 아니면 edition 값을 무조건 undefined (DB 제약)
+
         editionSize: isLimited && form.editionSize ? Number(form.editionSize) : undefined,
         editionNumber: isLimited && form.editionNumber ? Number(form.editionNumber) : undefined,
         badges: form.badges.length > 0 ? JSON.stringify(form.badges) : undefined,
@@ -216,8 +202,6 @@ function InfoTab({ sku, onSaved }: { sku: any; onSaved: () => void }) {
             <input value={form.slug} onChange={(e) => setF({ slug: e.target.value })} className={inputCls} />
           </div>
         </div>
-
-        {/* 대분류 + 소분류 — 목록은 카테고리 관리에서 추가한다 */}
         <div className="grid grid-cols-2 gap-3">
           <div>
             <label className="block text-xs text-gray-500 mb-1.5">
@@ -242,7 +226,6 @@ function InfoTab({ sku, onSaved }: { sku: any; onSaved: () => void }) {
             </select>
           </div>
         </div>
-
         <div>
           <label className="block text-xs text-gray-500 mb-1.5">재질 / 소재</label>
           <input
@@ -252,7 +235,6 @@ function InfoTab({ sku, onSaved }: { sku: any; onSaved: () => void }) {
             placeholder="예: 레진, 아크릴 / 캔버스에 유화 / 브론즈"
           />
         </div>
-
         <div>
           <label className="block text-xs text-gray-500 mb-1.5">재질 상세 설명</label>
           <textarea
@@ -263,7 +245,6 @@ function InfoTab({ sku, onSaved }: { sku: any; onSaved: () => void }) {
             placeholder="재질/소재 섹션에 표시될 상세 설명을 입력하세요"
           />
         </div>
-
         <div className="grid grid-cols-2 gap-3">
           <div>
             <label className="block text-xs text-gray-500 mb-1.5">포장 섹션 제목</label>
@@ -284,7 +265,6 @@ function InfoTab({ sku, onSaved }: { sku: any; onSaved: () => void }) {
             />
           </div>
         </div>
-
         <div className="grid grid-cols-2 gap-3">
           <div>
             <label className="block text-xs text-gray-500 mb-1.5">정가 (원) *</label>
@@ -303,7 +283,6 @@ function InfoTab({ sku, onSaved }: { sku: any; onSaved: () => void }) {
             rows={5} className={`${inputCls} resize-none`} />
         </div>
 
-        {/* 에디션 — 대분류가 한정판일 때만 나타난다 */}
         {isLimited && (
           <div className="border border-gray-100 rounded-lg p-4 space-y-3">
             <p className="text-xs font-semibold text-gray-500">
@@ -339,8 +318,6 @@ function InfoTab({ sku, onSaved }: { sku: any; onSaved: () => void }) {
           {success ? <><Check className="w-4 h-4" /> 저장됨</> : saving ? '저장 중...' : '저장'}
         </button>
       </div>
-
-      {/* 읽기전용 메타 */}
       <div className="bg-gray-50 rounded-xl border border-gray-100 p-4 text-xs text-gray-500 space-y-1">
         <div>아티스트: <span className="text-gray-700">{sku.artistName}</span></div>
         {sku.isLimitedEdition && <div>에디션: <span className="text-gray-700">{sku.editionNumber} / {sku.editionSize}</span></div>}
@@ -352,9 +329,6 @@ function InfoTab({ sku, onSaved }: { sku: any; onSaved: () => void }) {
   );
 }
 
-// ────────────────────────────────────────────────────────────
-// 이미지 탭 — 실제 상세 페이지 레이아웃 그대로 WYSIWYG 편집
-// ────────────────────────────────────────────────────────────
 function ImagesTab({ skuCode, onChanged }: { skuCode: string; onChanged: () => void }) {
   const [mediaList, setMediaList] = useState<SkuMediaItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -388,19 +362,12 @@ function ImagesTab({ skuCode, onChanged }: { skuCode: string; onChanged: () => v
     }
   };
 
-  /**
-   * 업로드 — 목록을 다시 불러오지 않고 서버가 돌려준 항목을 그 자리에 꽂는다.
-   *
-   * <p>예전에는 한 장 올릴 때마다 전체를 재조회하면서 화면이 통째로
-   * "불러오는 중"으로 돌아가, 올릴 때마다 새로고침되는 것처럼 보였다.
-   * 응답에 만들어진 미디어가 그대로 들어 있으므로 왕복을 한 번 줄일 수 있다.
-   */
   const handleUpload = async (files: FileList | File[], role: string, replaceId?: number) => {
     const list = Array.from(files);
     if (list.length === 0) return;
 
     setUploading(role);
-    // 여러 장을 한 번에 고르면 화면에 나열되는 순서대로 번호를 이어 붙인다
+
     const baseOrder: Record<string, number> = {
       MAIN:      0,
       DETAIL:    detailImages.length,
@@ -410,7 +377,6 @@ function ImagesTab({ skuCode, onChanged }: { skuCode: string; onChanged: () => v
 
     try {
       for (let i = 0; i < list.length; i++) {
-        // 올리기 전에 브라우저에서 줄인다 — 서버가 어차피 1600px 로 맞추므로 결과는 같다
         const file = await downscaleImage(list[i]);
         const created = await addSkuMedia(skuCode, file, {
           mediaType: file.type.startsWith('video/') ? 'VIDEO' : 'IMAGE',
@@ -429,8 +395,8 @@ function ImagesTab({ skuCode, onChanged }: { skuCode: string; onChanged: () => v
     } catch (e) {
       const msg = (e as { response?: { data?: { message?: string } } }).response?.data?.message;
       alert(msg ?? '업로드에 실패했습니다.');
-      // 중간에 실패했을 수 있으니 이때만 서버 상태로 맞춘다
-      try { setMediaList(await getSkuMedia(skuCode)); } catch { /* 그대로 둔다 */ }
+
+      try { setMediaList(await getSkuMedia(skuCode)); } catch {  }
     } finally {
       setUploading(null);
       setReplaceTarget(null);
@@ -466,8 +432,6 @@ function ImagesTab({ skuCode, onChanged }: { skuCode: string; onChanged: () => v
         <span className="font-medium text-gray-500">빈 칸을 클릭</span>해 이미지를 추가하고,
         이미 있는 이미지에 마우스를 올리면 교체·삭제 버튼이 나타납니다.
       </p>
-
-      {/* ── 대표 이미지 (MAIN) ── */}
       <div>
         <SectionLabel badge="★ 대표" desc="상품 목록·썸네일 및 상세 페이지 첫 이미지" />
         <VisualSlot
@@ -481,14 +445,9 @@ function ImagesTab({ skuCode, onChanged }: { skuCode: string; onChanged: () => v
           onDelete={() => mainImage && handleDelete(mainImage.id)}
         />
       </div>
-
-      {/* ── 상세 이미지 (DETAIL) — ArtImages.tsx 와 동일한 레이아웃 ── */}
       <div>
         <SectionLabel badge="상세" desc="상품 상세 페이지 '작품 - 상세' 섹션에 순서대로 표시됩니다" />
-
-        {/* 상단 3슬롯: 왼쪽 세로 큰 이미지(1) + 오른쪽 2장(2·3) */}
         <div className="grid grid-cols-2 gap-2">
-          {/* 슬롯 1 — 왼쪽 세로 */}
           <VisualSlot
             image={detailImages[0] ?? null}
             aspectClass="aspect-[3/4]"
@@ -500,8 +459,6 @@ function ImagesTab({ skuCode, onChanged }: { skuCode: string; onChanged: () => v
             onDelete={detailImages[0] ? () => handleDelete(detailImages[0].id) : undefined}
             index={detailImages[0] ? 1 : undefined}
           />
-
-          {/* 슬롯 2·3 — 오른쪽 세로 배치 */}
           <div className="flex flex-col gap-2">
             <VisualSlot
               image={detailImages[1] ?? null}
@@ -528,7 +485,6 @@ function ImagesTab({ skuCode, onChanged }: { skuCode: string; onChanged: () => v
           </div>
         </div>
 
-        {/* 4번째 이상: 한 장씩 전체 너비 */}
         {detailImages.slice(3).map((img, idx) => (
           <VisualSlot
             key={img.id}
@@ -543,7 +499,6 @@ function ImagesTab({ skuCode, onChanged }: { skuCode: string; onChanged: () => v
           />
         ))}
 
-        {/* 4번째 이상 추가 슬롯 */}
         {detailImages.length >= 3 && (
           <VisualSlot
             image={null}
@@ -555,8 +510,6 @@ function ImagesTab({ skuCode, onChanged }: { skuCode: string; onChanged: () => v
           />
         )}
       </div>
-
-      {/* ── 재질 이미지 (MATERIAL) ── */}
       <div>
         <SectionLabel badge="재질" desc="재질/소재 섹션에 표시되는 사진 (기본정보 탭의 재질 상세 설명과 함께 노출)" />
         <GridImageSlots
@@ -569,8 +522,6 @@ function ImagesTab({ skuCode, onChanged }: { skuCode: string; onChanged: () => v
           onDelete={handleDelete}
         />
       </div>
-
-      {/* ── 포장 이미지 (PACKAGING) ── */}
       <div>
         <SectionLabel badge="포장" desc="포장 섹션에 표시되는 사진 (기본정보 탭의 포장 섹션 제목과 함께 노출)" />
         <GridImageSlots
@@ -583,12 +534,6 @@ function ImagesTab({ skuCode, onChanged }: { skuCode: string; onChanged: () => v
           onDelete={handleDelete}
         />
       </div>
-
-      {/*
-        히든 파일 인풋들.
-        대표 이미지는 한 장뿐이라 multiple 을 주지 않는다.
-        상세·재질·포장은 여러 장을 한 번에 골라 순서대로 올린다.
-      */}
       <input ref={mainInputRef}      type="file" accept={MEDIA_ACCEPT} className="hidden"
         onChange={(e) => e.target.files && handleUpload(e.target.files, 'MAIN')} />
       <input ref={detailInputRef}    type="file" accept={MEDIA_ACCEPT} multiple className="hidden"
@@ -606,9 +551,6 @@ function ImagesTab({ skuCode, onChanged }: { skuCode: string; onChanged: () => v
   );
 }
 
-// ────────────────────────────────────────────────────────────
-// 섹션 레이블
-// ────────────────────────────────────────────────────────────
 function SectionLabel({ badge, desc }: { badge: string; desc: string }) {
   return (
     <div className="flex items-center gap-2 mb-3">
@@ -620,9 +562,6 @@ function SectionLabel({ badge, desc }: { badge: string; desc: string }) {
   );
 }
 
-// ────────────────────────────────────────────────────────────
-// 클릭 가능한 이미지 슬롯
-// ────────────────────────────────────────────────────────────
 function VisualSlot({
   image,
   aspectClass,
@@ -644,7 +583,6 @@ function VisualSlot({
   onDelete?: () => void;
   index?: number;
 }) {
-  // ── 빈 슬롯 ──
   if (!image) {
     return (
       <div
@@ -665,13 +603,11 @@ function VisualSlot({
     );
   }
 
-  // ── 이미지가 있는 슬롯 ──
   const isVideo = image.mediaType === 'VIDEO';
 
   return (
     <div className={`${aspectClass} relative group overflow-hidden rounded-xl border border-gray-200`}>
       {isVideo ? (
-        // muted 가 없으면 브라우저가 자동재생을 막고 첫 프레임도 그려주지 않는다
         <video
           src={image.fileUrl}
           className="w-full h-full object-cover bg-black"
@@ -697,7 +633,6 @@ function VisualSlot({
       )}
 
       <div className="absolute inset-0 bg-black/0 group-hover:bg-black/25 transition-colors pointer-events-none" />
-
       <div className="absolute inset-x-0 bottom-0 flex gap-1.5 p-2 opacity-0 group-hover:opacity-100 transition-opacity">
         {onReplace && (
           <button
@@ -722,9 +657,6 @@ function VisualSlot({
   );
 }
 
-// ────────────────────────────────────────────────────────────
-// 그리드 이미지 슬롯 모음 (MATERIAL / PACKAGING 등 2열 그리드)
-// ────────────────────────────────────────────────────────────
 function GridImageSlots({
   images,
   role,
@@ -757,7 +689,7 @@ function GridImageSlots({
           index={idx + 1}
         />
       ))}
-      {/* 추가 슬롯 */}
+
       <VisualSlot
         image={null}
         aspectClass="aspect-square"
@@ -770,9 +702,6 @@ function GridImageSlots({
   );
 }
 
-// ────────────────────────────────────────────────────────────
-// 재고·상태 탭
-// ────────────────────────────────────────────────────────────
 function StockStatusTab({
   sku,
   onChanged,
@@ -808,7 +737,6 @@ function StockStatusTab({
     finally { setStockBusy(false); }
   };
 
-  // sku가 새로 로드될 때마다 입력값 동기화
   const latestCurrent = sku.stockQuantity ?? 0;
 
   const statusAction = async (fn: () => Promise<void>) => {
@@ -818,7 +746,6 @@ function StockStatusTab({
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-      {/* 재고 */}
       <div className="bg-white rounded-xl border border-gray-200 p-5">
         <h2 className="text-sm font-semibold text-gray-700 mb-1">재고 관리</h2>
         <p className="text-2xl font-bold text-gray-900 mb-4 tabular-nums">
@@ -835,7 +762,7 @@ function StockStatusTab({
               className={inputCls}
               placeholder="변경 후 재고 수량 입력"
             />
-            {/* 변경 예정 미리보기 */}
+
             {delta !== null && delta !== 0 && !isNaN(targetNum) && targetNum >= 0 && (
               <p className={`text-xs mt-1.5 font-medium ${delta > 0 ? 'text-blue-500' : 'text-red-500'}`}>
                 {latestCurrent}개 → {targetNum}개 ({delta > 0 ? `+${delta}` : delta})
@@ -857,8 +784,6 @@ function StockStatusTab({
           </button>
         </div>
       </div>
-
-      {/* 상태 */}
       <div className="bg-white rounded-xl border border-gray-200 p-5">
         <h2 className="text-sm font-semibold text-gray-700 mb-4">판매 상태</h2>
         <div className="space-y-2">
@@ -896,9 +821,6 @@ function StockStatusTab({
   );
 }
 
-// ────────────────────────────────────────────────────────────
-// 뱃지 에디터
-// ────────────────────────────────────────────────────────────
 function BadgeEditor({
   badges,
   onChange,
@@ -930,8 +852,6 @@ function BadgeEditor({
   return (
     <div className="space-y-2">
       <p className="text-xs font-semibold text-gray-500">뱃지</p>
-
-      {/* 미리 정의된 뱃지 */}
       <div className="flex flex-wrap gap-2">
         {PREDEFINED_BADGES.map((badge) => {
           const active = badges.some((b) => b.text === badge.text && b.type === badge.type);
@@ -951,8 +871,6 @@ function BadgeEditor({
           );
         })}
       </div>
-
-      {/* 커스텀 뱃지 입력 */}
       <div className="flex gap-2">
         <input
           value={customText}
@@ -972,7 +890,6 @@ function BadgeEditor({
         </button>
       </div>
 
-      {/* 현재 선택된 뱃지들 */}
       {badges.length > 0 && (
         <div className="flex flex-wrap gap-1.5 pt-1">
           {badges.map((badge, idx) => (

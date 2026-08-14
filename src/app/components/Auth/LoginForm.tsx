@@ -16,7 +16,7 @@ export default function LoginForm() {
   const navigate = useNavigate();
   const location = useLocation();
   const { setAuthenticated } = useAuth();
-  // 보호된 페이지(장바구니/결제 등)에서 넘어온 경우, 로그인 후 그곳으로 복귀
+
   const from = (location.state as { from?: string } | null)?.from;
   const [serverError, setServerError] = useState('');
   const [success, setSuccess] = useState('');
@@ -69,7 +69,6 @@ export default function LoginForm() {
           />
         </div>
       </div>
-
       <div>
         <label htmlFor="login-password" className="block text-sm mb-2 text-gray-700">
           {t('auth.common.passwordLabel')}
@@ -85,13 +84,11 @@ export default function LoginForm() {
           />
         </div>
       </div>
-
       <div className="flex items-center justify-end text-sm">
         <Link to="/forgot-password" className="text-gray-400 hover:text-black transition-colors">
           {t('auth.common.forgotPassword')}
         </Link>
       </div>
-
       <button
         type="submit"
         disabled={isSubmitting}

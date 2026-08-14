@@ -38,11 +38,8 @@ export default function ArtworkCard({
             alt={title}
             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
           />
-          
-          {/* Overlay on hover */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
-          {/* AI Badge */}
           {isAICurated && (
             <div className="absolute top-4 left-4 flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/90 backdrop-blur-sm">
               <Sparkles className="w-3.5 h-3.5 text-purple-500" />
@@ -50,14 +47,11 @@ export default function ArtworkCard({
             </div>
           )}
 
-          {/* Collecting Icon */}
           <button className="absolute top-4 right-4 p-2.5 rounded-full bg-white/90 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:bg-white">
             <Heart className="w-4 h-4 text-gray-600" />
           </button>
         </div>
       </div>
-
-      {/* Info */}
       <div className="mt-4 px-1">
         {category && (
           <div className="text-xs text-gray-400 tracking-wide uppercase mb-1">

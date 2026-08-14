@@ -36,5 +36,4 @@ export default function ProductDetailPage({ skuCode }: Props) {
              className="w-full object-contain" />
         </div>
     )
-
 }

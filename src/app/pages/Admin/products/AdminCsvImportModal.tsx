@@ -5,12 +5,11 @@ import {
   type SkuImportResult,
 } from '@/api/adminApi';
 
-/** 오류가 수천 건일 수 있어 화면에는 일부만 — 나머지는 개수로 알린다 */
 const MAX_VISIBLE_ERRORS = 100;
 
 type Props = {
   onClose: () => void;
-  /** 한 건이라도 등록됐을 때 목록을 새로고침 */
+
   onImported: () => void;
 };
 
@@ -41,7 +40,6 @@ export default function AdminCsvImportModal({ onClose, onImported }: Props) {
       setResult(res);
       if (res.succeeded > 0) onImported();
     } catch (e: any) {
-      // 파일 자체를 못 읽는 경우는 4xx 로 오고 본문에 사유가 담긴다
       setMessage(e?.response?.data?.message
         ?? e?.response?.data?.error?.message
         ?? '업로드에 실패했습니다. 파일 형식을 확인해 주세요.');
@@ -63,18 +61,13 @@ export default function AdminCsvImportModal({ onClose, onImported }: Props) {
   return (
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-xl w-full max-w-3xl max-h-[85vh] flex flex-col">
-
-        {/* 헤더 */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
           <h2 className="text-base font-bold text-gray-900">상품 CSV 일괄 등록</h2>
           <button onClick={onClose} className="text-gray-400 hover:text-gray-700">
             <X className="w-4 h-4" />
           </button>
         </div>
-
         <div className="px-6 py-5 overflow-y-auto">
-
-          {/* 안내 */}
           <div className="bg-gray-50 rounded-lg p-4 mb-5 text-xs text-gray-600 space-y-1.5">
             <p>· 템플릿을 받아 <b>UTF-8 CSV</b>로 저장한 뒤 올려주세요. 컬럼 순서는 바뀌어도 됩니다.</p>
             <p>· <b>mainCategory · genre</b> 는 카테고리 관리에 등록된 <b>코드</b>로 적어야 합니다. 템플릿 둘째 줄에 사용 가능한 코드가 들어 있습니다(업로드 전 삭제).</p>
@@ -82,8 +75,6 @@ export default function AdminCsvImportModal({ onClose, onImported }: Props) {
             <p>· 등록된 상품은 <b>임시저장(DRAFT)</b> 상태입니다. 확인 후 게시해야 고객에게 보입니다.</p>
             <p>· 이미 등록된 slug 는 덮어쓰지 않고 오류로 표시됩니다. <b>같은 파일을 두 번 올리면 안 됩니다.</b></p>
           </div>
-
-          {/* 1단계 — 템플릿 */}
           <button
             onClick={handleTemplate}
             className="flex items-center gap-1.5 px-3 py-2 text-xs border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors mb-4"
@@ -91,8 +82,6 @@ export default function AdminCsvImportModal({ onClose, onImported }: Props) {
             <Download className="w-3.5 h-3.5" />
             템플릿 내려받기
           </button>
-
-          {/* 2단계 — 파일 선택 */}
           <input
             ref={fileRef}
             type="file"
@@ -111,7 +100,6 @@ export default function AdminCsvImportModal({ onClose, onImported }: Props) {
             </div>
           )}
 
-          {/* 결과 */}
           {result && (
             <div className="mb-2">
               {result.succeeded > 0 && result.errors.length === 0 ? (
@@ -132,7 +120,6 @@ export default function AdminCsvImportModal({ onClose, onImported }: Props) {
                         : ` ${result.succeeded}건까지만 저장됐습니다.`}
                     </p>
                   </div>
-
                   <div className="border border-gray-200 rounded-lg overflow-hidden">
                     <table className="w-full text-xs">
                       <thead>
@@ -168,8 +155,6 @@ export default function AdminCsvImportModal({ onClose, onImported }: Props) {
             </div>
           )}
         </div>
-
-        {/* 하단 버튼 */}
         <div className="flex justify-end gap-2 px-6 py-4 border-t border-gray-100">
           {result && (
             <button

@@ -17,8 +17,6 @@ export function useArtistDetail(id: string | undefined) {
     staleTime: 0,
   });
 
-  // 로그인 상태일 때만 팔로우 상태를 별도 인증 엔드포인트로 조회
-  // → 토큰 만료 시 401 반환 → Axios 인터셉터가 자동으로 토큰 갱신
   const { data: isFollowing } = useQuery<boolean>({
     queryKey: ['artist-following', id],
     queryFn: async () => {
@@ -36,7 +34,6 @@ export function useArtistDetail(id: string | undefined) {
   const studioImages    = media.filter((m: ArtistMedia) => m.mediaRole === 'STUDIO');
   const handsImages     = media.filter((m: ArtistMedia) => m.mediaRole === 'HANDS');
 
-  // isAuthenticated면 별도 쿼리 결과를 사용, 비로그인이면 항상 false
   const followStatus = isAuthenticated ? (isFollowing ?? false) : false;
 
   return { loading, artist, interviewVideo, interviewImage, studioImages, handsImages, isFollowing: followStatus };

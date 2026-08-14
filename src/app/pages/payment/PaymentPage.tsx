@@ -3,13 +3,6 @@ import { useNavigate, useLocation } from 'react-router';
 import { loadTossPayments, ANONYMOUS } from '@tosspayments/tosspayments-sdk';
 import { Check, ChevronRight } from 'lucide-react';
 
-// ─────────────────────────────────────────────────────────────────────────────
-// 토스페이먼츠 PG 결제 (개별 결제창 연동, test_ck_... 키)
-// 표준 결제수단 전체 지원: 카드(+간편결제) / 계좌이체 / 휴대폰결제
-// 흐름: loadTossPayments → payment() → requestPayment(method) → success/fail redirect
-//       → /payment/success 에서 백엔드 confirm 으로 최종 승인
-// ─────────────────────────────────────────────────────────────────────────────
-
 const CLIENT_KEY = import.meta.env.VITE_TOSS_CLIENT_KEY as string;
 
 export interface PaymentPageState {
@@ -24,7 +17,6 @@ export interface PaymentPageState {
 
 type PaymentMethod = 'CARD' | 'TRANSFER' | 'MOBILE_PHONE';
 
-// ── 아이콘 ─────────────────────────────────────────────────────────────────────
 function CardIcon({ size = 40 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -103,7 +95,6 @@ export default function PaymentPage() {
       } else if (selected === 'MOBILE_PHONE') {
         await payment.requestPayment({ method: 'MOBILE_PHONE', ...commonParams });
       } else {
-        // CARD — 표준 카드 결제창(간편결제 탭 포함)
         await payment.requestPayment({
           method: 'CARD',
           ...commonParams,
@@ -129,8 +120,6 @@ export default function PaymentPage() {
   return (
     <div className="min-h-screen bg-[#FAFAFA]">
       <div className="max-w-[560px] mx-auto pt-16 pb-24 px-4">
-
-        {/* 헤더 */}
         <div className="mb-8">
           <button
             onClick={() => navigate(-1)}
@@ -141,11 +130,8 @@ export default function PaymentPage() {
           <h1 className="text-2xl font-bold tracking-tight">결제</h1>
           <p className="text-sm text-gray-500 mt-1 truncate">{state.orderName}</p>
         </div>
-
-        {/* 결제 수단 선택 */}
         <div className="bg-white rounded-[24px] border border-gray-100 p-6 mb-4">
           <h2 className="text-sm font-bold text-gray-500 mb-4">결제 수단</h2>
-
           <div className="grid grid-cols-3 gap-3">
             {METHODS.map((m) => (
               <button
@@ -171,8 +157,6 @@ export default function PaymentPage() {
             {METHODS.find((m) => m.id === selected)?.desc}
           </p>
         </div>
-
-        {/* 금액 요약 */}
         <div className="bg-white rounded-[24px] border border-gray-100 px-6 py-5 mb-5">
           <div className="flex items-center justify-between">
             <span className="text-sm text-gray-500">최종 결제 금액</span>
@@ -181,8 +165,6 @@ export default function PaymentPage() {
             </span>
           </div>
         </div>
-
-        {/* 결제하기 버튼 */}
         <button
           onClick={handlePayment}
           disabled={isProcessing}
@@ -206,7 +188,6 @@ export default function PaymentPage() {
             </>
           )}
         </button>
-
         <p className="text-center text-[11px] text-gray-400 mt-4">
           보안 결제 시스템으로 고객님의 정보는 암호화되어 안전하게 보호됩니다.
         </p>

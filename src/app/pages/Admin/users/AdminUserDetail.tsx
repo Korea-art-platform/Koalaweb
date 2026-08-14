@@ -83,15 +83,12 @@ export default function AdminUserDetail() {
 
   return (
     <div className="p-8 max-w-4xl">
-      {/* 브레드크럼 */}
       <div className="flex items-center gap-2 text-gray-400 text-xs mb-1">
         <UserCog className="w-3.5 h-3.5" />
         <button onClick={() => navigate('/admin/users')} className="hover:text-gray-600">회원 관리</button>
         <ChevronRight className="w-3 h-3" />
         <span className="text-gray-600">{user.name ?? user.email}</span>
       </div>
-
-      {/* 헤더 */}
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-xl font-bold text-gray-900">회원 상세</h1>
         <div className="flex gap-2">
@@ -113,8 +110,6 @@ export default function AdminUserDetail() {
           )}
         </div>
       </div>
-
-      {/* 회원 정보 카드 */}
       <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
         <h2 className="text-sm font-semibold text-gray-700 mb-4">기본 정보</h2>
         <div className="grid grid-cols-2 gap-x-8 gap-y-3 text-sm">
@@ -148,8 +143,6 @@ export default function AdminUserDetail() {
           </div>
         </div>
       </div>
-
-      {/* 구매 이력 */}
       <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
         <div className="flex items-center gap-2 px-6 py-4 border-b border-gray-100">
           <ShoppingBag className="w-4 h-4 text-gray-400" />

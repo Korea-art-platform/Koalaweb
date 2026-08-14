@@ -14,7 +14,6 @@ export function ConfirmOrderItems({ items }: ConfirmOrderItemsProps) {
         <Package className="w-5 h-5 text-gray-400" />
         <h2 className="text-lg">{t('order.confirmation.items.title')}</h2>
       </div>
-
       <div className="space-y-4">
         {items.map((item, index) => (
           <div key={index} className="flex gap-4 p-4 bg-gray-50 rounded-xl">

@@ -21,7 +21,6 @@ export default function PreferencesStep({ preferences, onChange, onNext, onSkip 
       </div>
       <h2 className="text-3xl font-medium tracking-tight mb-3">{t('onboarding.preferences.title')}</h2>
       <p className="text-gray-400 mb-8">{t('onboarding.preferences.desc')}</p>
-
       <div className="space-y-3 mb-8">
         {PREFERENCE_KEYS.map((key) => (
           <button
@@ -41,7 +40,6 @@ export default function PreferencesStep({ preferences, onChange, onNext, onSkip 
           </button>
         ))}
       </div>
-
       <div className="flex gap-3">
         <button onClick={onSkip} className="flex-1 py-4 border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors">
           {t('onboarding.preferences.skip')}

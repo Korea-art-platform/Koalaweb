@@ -29,7 +29,6 @@ export function Header() {
   }, [isMenuOpen]);
   const [isPop, setIsPop] = useState(false);
 
-  // 1. 작가 목록 (헤더 노출용)
   const { data: artists = [] } = useQuery<Artist[]>({
     queryKey: ['artists', 'header'],
     queryFn: async () => {
@@ -37,10 +36,9 @@ export function Header() {
       const page: PageResponse<Artist> = res.data.data;
       return page.content ?? [];
     },
-    staleTime: 1000 * 60 * 10, // 10분 캐시
+    staleTime: 1000 * 60 * 10,
   });
 
-  // 2. 장바구니 수량 — react-query 캐시에서 읽기
   const { data: cart } = useQuery<Cart | null>({
     queryKey: CART_QUERY_KEY,
     queryFn: async () => {
@@ -48,28 +46,24 @@ export function Header() {
       return res.data.data ?? null;
     },
     retry: false,
-    // 헤더는 모든 화면에 있다. 비로그인 상태에서 켜 두면 창에 포커스가 갈 때마다 401 이 쌓인다
+
     enabled: isAuthenticated === true,
   });
   const cartCount = cart?.items?.reduce((sum, item) => sum + item.quantity, 0) ?? 0;
 
-  // 2. 스크롤 및 투명 헤더 로직 (Home 전용)
   useEffect(() => {
     const updateHeaderState = () => {
-      // 투명 헤더를 허용할 경로 정의
       const allowedPaths = ['/'];
       const isAllowed = allowedPaths.includes(location.pathname);
 
-      // 허용된 페이지가 아니거나 [data-hero] 요소가 없으면 일반 헤더로 강제 고정
       const hero = document.querySelector('[data-hero]');
-      
+
       if (!isAllowed || !hero) {
         setIsHeroActive(false);
         setIsHeroDark(false);
         return;
       }
 
-      // 허용된 페이지일 때만 스크롤 위치 계산
       const heroRect = hero.getBoundingClientRect();
       setIsHeroActive(heroRect.bottom > 72);
       setIsHeroDark(hero.getAttribute('data-hero') === 'dark');
@@ -78,14 +72,13 @@ export function Header() {
     updateHeaderState();
     window.addEventListener('scroll', updateHeaderState, { passive: true });
     window.addEventListener('resize', updateHeaderState);
-    
+
     return () => {
       window.removeEventListener('scroll', updateHeaderState);
       window.removeEventListener('resize', updateHeaderState);
     };
   }, [location.pathname]);
 
-  // 3. 카트 수량 변동 시 팝 애니메이션
   useEffect(() => {
     if (cartCount > 0) {
       setIsPop(true);
@@ -94,28 +87,19 @@ export function Header() {
     }
   }, [cartCount]);
 
-  // 스타일 제어 변수
   const isTransparent = isHeroActive;
   const navBgClass = isTransparent
     ? 'bg-transparent border-transparent'
     : 'bg-white/95 border-b border-gray-100 backdrop-blur-sm shadow-sm';
 
-  // 히어로 위에 흰 글씨로 얹혀 있는 상태인지 — 호버 색을 여기에 맞춘다
   const onDark = isTransparent && isHeroDark;
 
   const iconClass = onDark ? 'text-white/80 hover:text-white' : 'text-gray-400 hover:text-black';
 
-  /**
-   * 아이콘 버튼 — 원형 배경이 깔리고 살짝 커진다.
-   *
-   * <p>색만 바꾸면 어두운 히어로 위에서는 변화가 거의 안 보인다.
-   * {@code -m-2} 로 늘어난 여백을 상쇄해 아이콘 간격은 그대로 둔다.
-   */
   const iconButtonClass = `relative p-2 -m-2 rounded-full transition-all duration-200
     hover:scale-110 active:scale-95
     ${onDark ? 'hover:bg-white/15' : 'hover:bg-gray-100'}`;
 
-  /** 메뉴 링크 — 밑줄이 왼쪽에서 차오른다. 현재 페이지는 밑줄이 켜진 채 고정 */
   const navLinkClass = (active: boolean) =>
     `group relative py-1 text-sm font-medium transition-colors duration-200 ${
       active
@@ -156,8 +140,6 @@ export function Header() {
                 className="h-12 w-auto transition-opacity duration-200 group-hover:opacity-75"
               />
             </Link>
-
-            {/* [WEB] 중앙 메뉴 */}
             <div className="hidden lg:flex items-center gap-8">
               {menus.map((menu) => {
                 const active = location.pathname === menu.path;
@@ -187,7 +169,6 @@ export function Header() {
                 );
               })}
             </div>
-
             <div className="flex items-center gap-4 md:gap-6">
               <button
                 onClick={() => { setIsMenuOpen(false); navigate('/search'); }}
@@ -196,7 +177,6 @@ export function Header() {
               >
                 <Search className="w-5 h-5" />
               </button>
-
               <Link
                 to="/cart"
                 onClick={() => setIsMenuOpen(false)}
@@ -204,7 +184,7 @@ export function Header() {
                 className={`z-[120] ${iconButtonClass} ${isMenuOpen ? 'text-black' : iconClass} ${isPop ? 'scale-110' : ''}`}
               >
                 <ShoppingCart className="w-5 h-5" />
-                {/* 아이콘에 p-2 가 붙어 배지도 그만큼 안쪽으로 들어온다 */}
+
                 {cartCount > 0 && (
                   <span className={`absolute top-0 right-0 w-4 h-4 rounded-full flex items-center justify-center text-[9px] font-bold ${
                     isMenuOpen ? 'bg-koala-navy text-white' : (onDark ? 'bg-white text-black' : 'bg-koala-navy text-white')
@@ -213,8 +193,6 @@ export function Header() {
                   </span>
                 )}
               </Link>
-
-              {/* [MOBILE] 햄버거 버튼 */}
               <button
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
                 aria-label="메뉴"
@@ -222,7 +200,6 @@ export function Header() {
               >
                 {isMenuOpen ? <X className="w-7 h-7" /> : <Menu className="w-7 h-7" />}
               </button>
-
               <Link
                 to="/account/orders"
                 aria-label="마이페이지"
@@ -234,8 +211,6 @@ export function Header() {
           </div>
         </div>
       </nav>
-
-      {/* [MOBILE] 사이드바(드로어) 메뉴 */}
       <div className={`fixed top-0 left-0 w-full h-[100dvh] z-[300] bg-white lg:hidden overflow-y-auto transition-all duration-400 ease-in-out ${isMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible pointer-events-none'}`}>
         <div className="flex flex-col px-8 pt-28 pb-[max(48px,env(safe-area-inset-bottom))]">
           <div className="flex flex-col gap-6 mb-10">
@@ -270,7 +245,6 @@ export function Header() {
               </div>
             )}
           </div>
-
           <div className={`border-t border-gray-100 pt-6 space-y-1 transition-all duration-700 delay-150 ${isMenuOpen ? 'opacity-100' : 'opacity-0'}`}>
             {subMenus.map((item) => (
               <Link
@@ -292,7 +266,7 @@ export function Header() {
                 className="w-full flex items-center justify-between py-4 px-2 -mx-2 active:bg-red-50 rounded-lg transition-colors group"
                 onClick={async () => {
                   setIsMenuOpen(false);
-                  try { await logoutApi(); } catch { /* ignore */ }
+                  try { await logoutApi(); } catch {  }
                   finally {
                     setAuthenticated(false);
                     window.dispatchEvent(new Event('cart-updated'));
@@ -307,7 +281,6 @@ export function Header() {
               </button>
             )}
           </div>
-
           <Link
             to="/account/orders"
             className="mt-8 flex items-center justify-between bg-zinc-900 text-white p-5 rounded-2xl active:scale-95 transition-all shadow-xl shadow-zinc-200"

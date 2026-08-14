@@ -19,7 +19,6 @@ export default function AccountPaymentMethods() {
           {t('account.payment.subtitle')}
         </p>
       </div>
-
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
         {paymentOptions.map((method) => (
           <div
@@ -37,7 +36,6 @@ export default function AccountPaymentMethods() {
           </div>
         ))}
       </div>
-
       <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 mb-6">
         <div className="flex items-center justify-between mb-6">
           <h3 className="text-lg font-bold">{t('account.payment.savedCards.title')}</h3>
@@ -52,7 +50,6 @@ export default function AccountPaymentMethods() {
           <p className="text-xs text-gray-300">{t('account.payment.savedCards.emptyDesc')}</p>
         </div>
       </div>
-
       <div className="bg-blue-50 rounded-2xl p-6 border border-blue-100">
         <div className="flex gap-4">
           <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">

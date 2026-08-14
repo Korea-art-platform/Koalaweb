@@ -40,16 +40,13 @@ export function ReturnRequestModal({ orderNo, onClose, onSuccess }: ReturnReques
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-2xl w-full max-w-md shadow-2xl">
-        {/* Header */}
         <div className="flex items-center justify-between px-6 py-5 border-b border-gray-100">
           <h2 className="text-base font-bold text-gray-900">{t('order.detail.returnModal.title')}</h2>
           <button onClick={onClose} className="text-gray-400 hover:text-gray-700 transition-colors">
             <X className="w-5 h-5" />
           </button>
         </div>
-
         <div className="px-6 py-5 space-y-5">
-          {/* 유형 선택 */}
           <div>
             <label className="block text-xs font-semibold text-gray-500 mb-2">
               {t('order.detail.returnModal.typeLabel')}
@@ -72,8 +69,6 @@ export function ReturnRequestModal({ orderNo, onClose, onSuccess }: ReturnReques
               ))}
             </div>
           </div>
-
-          {/* 사유 선택 */}
           <div>
             <label className="block text-xs font-semibold text-gray-500 mb-2">
               {t('order.detail.returnModal.reasonLabel')} <span className="text-red-500">*</span>
@@ -90,8 +85,6 @@ export function ReturnRequestModal({ orderNo, onClose, onSuccess }: ReturnReques
               ))}
             </select>
           </div>
-
-          {/* 상세 사유 */}
           <div>
             <label className="block text-xs font-semibold text-gray-500 mb-2">
               {t('order.detail.returnModal.detailLabel')}{' '}
@@ -107,7 +100,6 @@ export function ReturnRequestModal({ orderNo, onClose, onSuccess }: ReturnReques
               className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-black/10 resize-none"
             />
           </div>
-
           <p className="text-xs text-gray-400 bg-gray-50 rounded-xl px-3 py-2.5 leading-relaxed">
             {t('order.detail.returnModal.noticeDefault')}
             {returnType === 'RETURN'
@@ -119,8 +111,6 @@ export function ReturnRequestModal({ orderNo, onClose, onSuccess }: ReturnReques
             <p className="text-xs text-red-500 bg-red-50 px-3 py-2 rounded-xl">{error}</p>
           )}
         </div>
-
-        {/* Footer */}
         <div className="flex gap-2 px-6 pb-5">
           <button
             onClick={onClose}

@@ -97,7 +97,6 @@ export default function AccountAddresses() {
                   )}
                 </div>
               </div>
-
               <div className="flex gap-2 pt-4 border-t border-gray-50">
                 <button
                   onClick={() => handleEditAddress(address)}

@@ -9,7 +9,7 @@ const TOTAL_STEPS = 5;
 const STEPS_ARRAY: OnboardingStep[] = ['welcome', 'nickname', 'address', 'preferences', 'notifications'];
 
 export default function ProgressBar({ currentStep, onSkip }: ProgressBarProps) {
-  const { t } = useTranslation('koala'); 
+  const { t } = useTranslation('koala');
   const stepNumber = STEPS_ARRAY.indexOf(currentStep) + 1;
 
   return (

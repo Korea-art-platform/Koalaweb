@@ -24,7 +24,6 @@ export function AdminLayout({ children }: AdminLayoutProps) {
 
   return (
     <div className="min-h-screen bg-[#FAFAFA] flex">
-      {/* Sidebar */}
       <aside className="w-[240px] bg-white border-r border-gray-200 flex-shrink-0 hidden md:flex flex-col fixed h-full">
         <div className="p-6">
           <Link to="/" className="block">
@@ -55,8 +54,6 @@ export function AdminLayout({ children }: AdminLayoutProps) {
           })}
         </nav>
       </aside>
-
-      {/* Main Content */}
       <main className="flex-1 flex flex-col min-w-0 md:ml-[240px]">
         {children}
       </main>

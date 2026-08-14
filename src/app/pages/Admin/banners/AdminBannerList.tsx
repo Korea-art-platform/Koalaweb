@@ -46,22 +46,19 @@ export default function AdminBannerList() {
   const [submitting, setSubmitting] = useState(false);
   const [formError, setFormError] = useState('');
 
-  // 이미지 업로드 상태
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState('');
-  const [imageUrl, setImageUrl] = useState('');       // 직접 URL 입력용
-  const [useUpload, setUseUpload] = useState(true);   // true=파일업로드, false=URL입력
+  const [imageUrl, setImageUrl] = useState('');
+  const [useUpload, setUseUpload] = useState(true);
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // 이미지 교체 모달
   const [replaceTarget, setReplaceTarget] = useState<BannerResponse | null>(null);
   const [replaceFile, setReplaceFile] = useState<File | null>(null);
   const [replacePreview, setReplacePreview] = useState('');
   const [replacing, setReplacing] = useState(false);
   const replaceInputRef = useRef<HTMLInputElement>(null);
 
-  // 정보 수정 모달
   const [editTarget, setEditTarget] = useState<BannerResponse | null>(null);
   const [editForm, setEditForm] = useState({ title: '', subtitle: '', badge: '', description: '', linkUrl: '', sortOrder: '0' });
   const [editSubmitting, setEditSubmitting] = useState(false);
@@ -88,7 +85,7 @@ export default function AdminBannerList() {
       setFormError('제목은 필수 항목입니다.');
       return;
     }
-    // 이미지 체크
+
     if (useUpload && !imageFile) {
       setFormError('이미지 파일을 선택해 주세요.');
       return;
@@ -101,7 +98,6 @@ export default function AdminBannerList() {
     setFormError('');
     setSubmitting(true);
     try {
-      // 파일 업로드 모드: 먼저 이미지 업로드 후 URL 취득
       let finalImageUrl = imageUrl.trim();
       if (useUpload && imageFile) {
         setUploading(true);
@@ -152,7 +148,6 @@ export default function AdminBannerList() {
     load();
   };
 
-  // 배너 정보 수정 (이미지는 별도 교체 모달 사용)
   const openEdit = (b: BannerResponse) => {
     setEditTarget(b);
     setEditForm({
@@ -175,7 +170,6 @@ export default function AdminBannerList() {
     setEditError('');
     setEditSubmitting(true);
     try {
-      // imageUrl은 @NotBlank 필수 — 기존 값을 그대로 보내고, 나머지 미편집 필드도 보존
       await updateBanner(editTarget.bannerCode, {
         title: editForm.title.trim(),
         subtitle: editForm.subtitle.trim() || null,
@@ -200,7 +194,6 @@ export default function AdminBannerList() {
     }
   };
 
-  // 이미지 교체
   const handleReplaceFileChange = (file: File | null) => {
     setReplaceFile(file);
     setReplacePreview(file ? URL.createObjectURL(file) : '');
@@ -248,7 +241,6 @@ export default function AdminBannerList() {
         <div className="space-y-3">
           {banners.map((b) => (
             <div key={b.bannerCode} className="bg-white rounded-xl border border-gray-200 p-4 flex items-center gap-4">
-              {/* 이미지 — 클릭 시 교체 */}
               <button
                 onClick={() => { setReplaceTarget(b); setReplaceFile(null); setReplacePreview(''); }}
                 className="relative w-28 h-16 flex-shrink-0 group"
@@ -265,7 +257,6 @@ export default function AdminBannerList() {
                   <RefreshCw className="w-4 h-4 text-white" />
                 </div>
               </button>
-
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-0.5">
                   <span className="text-xs font-medium text-gray-400 bg-gray-100 px-1.5 py-0.5 rounded">{b.bannerType}</span>
@@ -275,9 +266,7 @@ export default function AdminBannerList() {
                 {b.linkUrl && <p className="text-xs text-gray-300 truncate mt-0.5">{b.linkUrl}</p>}
                 <p className="text-xs text-gray-300 mt-1">순서: {b.sortOrder ?? 0}</p>
               </div>
-
               <div className="flex items-center gap-2 flex-shrink-0">
-                {/* 공개/비공개 토글 */}
                 <button
                   onClick={() => handleToggle(b)}
                   className={`px-3 py-1.5 text-xs rounded-lg transition-colors font-medium
@@ -298,13 +287,11 @@ export default function AdminBannerList() {
         </div>
       )}
 
-      {/* ── 배너 추가 모달 ── */}
       {createOpen && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-xl p-6 w-full max-w-sm shadow-xl max-h-[90vh] overflow-y-auto">
             <h2 className="font-semibold text-gray-900 mb-4">배너 추가</h2>
             <div className="space-y-3">
-              {/* 배너 타입 */}
               <div>
                 <label className="block text-xs text-gray-500 mb-1.5">배너 타입 *</label>
                 <select
@@ -315,8 +302,6 @@ export default function AdminBannerList() {
                   {BANNER_TYPES.map((t) => <option key={t} value={t}>{BANNER_TYPE_LABELS[t] ?? t}</option>)}
                 </select>
               </div>
-
-              {/* 제목 */}
               <div>
                 <label className="block text-xs text-gray-500 mb-1.5">제목 *</label>
                 <input
@@ -326,8 +311,6 @@ export default function AdminBannerList() {
                   placeholder="배너 제목"
                 />
               </div>
-
-              {/* 이미지 — 업로드 / URL 선택 */}
               <div>
                 <div className="flex items-center justify-between mb-1.5">
                   <label className="text-xs text-gray-500">이미지 *</label>
@@ -385,8 +368,6 @@ export default function AdminBannerList() {
                   />
                 )}
               </div>
-
-              {/* 부제목 */}
               <div>
                 <label className="block text-xs text-gray-500 mb-1.5">부제목 (선택)</label>
                 <input
@@ -396,8 +377,6 @@ export default function AdminBannerList() {
                   placeholder="부제목"
                 />
               </div>
-
-              {/* 뱃지 (메인 히어로 상단 작은 라벨) */}
               <div>
                 <label className="block text-xs text-gray-500 mb-1.5">뱃지 (선택)</label>
                 <input
@@ -407,8 +386,6 @@ export default function AdminBannerList() {
                   placeholder="예: 신제품 드랍!"
                 />
               </div>
-
-              {/* 부연 설명 (메인 히어로 제목 아래 문구) */}
               <div>
                 <label className="block text-xs text-gray-500 mb-1.5">부연 설명 (선택)</label>
                 <textarea
@@ -419,8 +396,6 @@ export default function AdminBannerList() {
                   placeholder="메인 화면 제목 아래 설명 문구"
                 />
               </div>
-
-              {/* 링크 URL */}
               <div>
                 <label className="block text-xs text-gray-500 mb-1.5">링크 URL (선택)</label>
                 <input
@@ -430,8 +405,6 @@ export default function AdminBannerList() {
                   placeholder="/store 또는 https://..."
                 />
               </div>
-
-              {/* 표시 순서 */}
               <div>
                 <label className="block text-xs text-gray-500 mb-1.5">표시 순서</label>
                 <input
@@ -465,7 +438,6 @@ export default function AdminBannerList() {
         </div>
       )}
 
-      {/* ── 배너 정보 수정 모달 ── */}
       {editTarget && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-xl p-6 w-full max-w-sm shadow-xl max-h-[90vh] overflow-y-auto">
@@ -474,7 +446,6 @@ export default function AdminBannerList() {
               <span className="font-medium text-gray-500">{editTarget.bannerType}</span> · 이미지는 목록에서 썸네일을 클릭해 교체하세요.
             </p>
             <div className="space-y-3">
-              {/* 제목 */}
               <div>
                 <label className="block text-xs text-gray-500 mb-1.5">제목 *</label>
                 <input
@@ -484,8 +455,6 @@ export default function AdminBannerList() {
                   placeholder="배너 제목"
                 />
               </div>
-
-              {/* 부제목 */}
               <div>
                 <label className="block text-xs text-gray-500 mb-1.5">부제목 (선택)</label>
                 <input
@@ -495,8 +464,6 @@ export default function AdminBannerList() {
                   placeholder="부제목"
                 />
               </div>
-
-              {/* 뱃지 */}
               <div>
                 <label className="block text-xs text-gray-500 mb-1.5">뱃지 (선택)</label>
                 <input
@@ -506,8 +473,6 @@ export default function AdminBannerList() {
                   placeholder="예: 신제품 드랍!"
                 />
               </div>
-
-              {/* 부연 설명 */}
               <div>
                 <label className="block text-xs text-gray-500 mb-1.5">부연 설명 (선택)</label>
                 <textarea
@@ -518,8 +483,6 @@ export default function AdminBannerList() {
                   placeholder="메인 화면 제목 아래 설명 문구"
                 />
               </div>
-
-              {/* 링크 URL */}
               <div>
                 <label className="block text-xs text-gray-500 mb-1.5">링크 URL (선택)</label>
                 <input
@@ -529,8 +492,6 @@ export default function AdminBannerList() {
                   placeholder="/store 또는 https://..."
                 />
               </div>
-
-              {/* 표시 순서 */}
               <div>
                 <label className="block text-xs text-gray-500 mb-1.5">표시 순서</label>
                 <input
@@ -564,13 +525,11 @@ export default function AdminBannerList() {
         </div>
       )}
 
-      {/* ── 이미지 교체 모달 ── */}
       {replaceTarget && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-xl p-6 w-full max-w-sm shadow-xl">
             <h2 className="font-semibold text-gray-900 mb-1">이미지 교체</h2>
             <p className="text-xs text-gray-400 mb-4">"{replaceTarget.title}" 배너의 이미지를 교체합니다.</p>
-
             <input
               ref={replaceInputRef}
               type="file"

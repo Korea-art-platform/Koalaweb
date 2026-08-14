@@ -43,8 +43,6 @@ export default function ArtistDetail() {
         <title>{artist.name} 작가 — KOALA</title>
         <meta name="description" content={artistDescription} />
         <link rel="canonical" href={artistUrl} />
-
-        {/* Open Graph */}
         <meta property="og:type" content="profile" />
         <meta property="og:title" content={`${artist.name} 작가 — KOALA`} />
         <meta property="og:description" content={artistDescription} />
@@ -52,23 +50,18 @@ export default function ArtistDetail() {
         <meta property="og:image:width" content="800" />
         <meta property="og:image:height" content="800" />
         <meta property="og:url" content={artistUrl} />
-
-        {/* Twitter Card */}
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={`${artist.name} 작가 — KOALA`} />
         <meta name="twitter:description" content={artistDescription} />
         <meta name="twitter:image" content={artistImage} />
       </Helmet>
-
       <Navigation />
-
       <main className="pt-24 pb-24 px-5 md:px-8 max-w-2xl mx-auto w-full">
         <ArtistWorldView
           breadcrumb="작가 소개"
           worldViewTitle={`${artist.name}의 세계관`}
           worldViewDesc={artist.description ?? ''}
         />
-
         <ArtistProfileSection
           name={artist.name}
           description={artist.description}
@@ -88,21 +81,16 @@ export default function ArtistDetail() {
         )}
 
         <ArtistCareer items={artist.careerList} />
-
         <ArtistInterview
           videoUrl={interviewVideo?.fileUrl}
           thumbnailUrl={interviewImage?.fileUrl}
         />
-
         <ArtistStudio
           studioImages={studioImages.map((m) => m.fileUrl)}
           artistName={artist.name}
         />
-
         <ArtistHands images={handsImages.map((m) => m.fileUrl)} />
-
         <ArtistWorksCarousel works={works} artistId={id} />
-
         <div className="mt-20 border-t border-gray-100 pt-16">
           <ArtQnA />
         </div>

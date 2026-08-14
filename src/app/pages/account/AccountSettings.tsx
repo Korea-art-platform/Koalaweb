@@ -13,7 +13,6 @@ export default function AccountSettings() {
     try {
       await logoutApi();
     } catch {
-      // 서버 오류여도 클라이언트 상태는 초기화
     } finally {
       setAuthenticated(false);
       window.dispatchEvent(new Event('cart-updated'));
@@ -42,8 +41,6 @@ export default function AccountSettings() {
 
   return (
     <div className="space-y-6">
-
-      {/* 보안 */}
       <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
         <h2 className="text-base font-bold text-gray-900 mb-4">보안</h2>
         <button
@@ -60,8 +57,6 @@ export default function AccountSettings() {
           <ChevronRight className="w-4 h-4 text-gray-300 group-hover:text-gray-500 transition-colors" />
         </button>
       </div>
-
-      {/* 로그아웃 */}
       <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
         <h2 className="text-base font-bold text-gray-900 mb-4">세션</h2>
         <button
@@ -75,8 +70,6 @@ export default function AccountSettings() {
           </div>
         </button>
       </div>
-
-      {/* 위험 구역 */}
       <div className="bg-white rounded-2xl p-6 shadow-sm border border-red-50">
         <h2 className="text-base font-bold text-red-500 mb-4">위험 구역</h2>
         <button
@@ -96,7 +89,6 @@ export default function AccountSettings() {
           <ChevronRight className="w-4 h-4 text-gray-300 group-hover:text-gray-500 transition-colors" />
         </button>
       </div>
-
     </div>
   );
 }

@@ -3,7 +3,6 @@ import type { Category, CategoryGroups } from './category';
 
 const BASE = '/admin/api/v1';
 
-// ── Auth ──────────────────────────────────────────────────────────────────────
 export async function adminLogin(loginId: string, password: string) {
   const res = await adminInstance.post<{ data: { accessToken: string } }>(
     `${BASE}/auth/login`,
@@ -20,7 +19,6 @@ export async function getAdminMe() {
 export const adminLogout = () =>
   adminInstance.post(`${BASE}/auth/logout`)
 
-// ── Orders ────────────────────────────────────────────────────────────────────
 export async function getAdminOrders(
   page = 0,
   size = 20,
@@ -59,18 +57,11 @@ export async function markDelivered(orderNo: string) {
 
 export type Carrier = { code: string; name: string };
 
-/**
- * 택배사 목록.
- *
- * 화면에 박아 두지 않고 서버에서 받는다 — 이 코드가 운송장 조회 API 가 쓰는 값이라,
- * 양쪽에 따로 적어 두면 한쪽만 바뀌었을 때 자동 추적이 조용히 멈춘다.
- */
 export async function getCarriers(): Promise<Carrier[]> {
   const res = await adminInstance.get(`${BASE}/orders/carriers`);
   return res.data.data ?? [];
 }
 
-// ── SKUs ──────────────────────────────────────────────────────────────────────
 export async function getAdminSkus(page = 0, size = 20) {
   const res = await adminInstance.get(`${BASE}/skus`, { params: { page, size } });
   return res.data.data;
@@ -98,8 +89,6 @@ export async function deleteSku(skuCode: string) {
   await adminInstance.delete(`${BASE}/skus/${skuCode}`);
 }
 
-// ── Categories ────────────────────────────────────────────────────────────────
-// 공개 API 와 달리 비활성 카테고리도 내려오고, 각 항목에 usedCount 가 붙는다.
 export async function getAdminCategories() {
   const res = await adminInstance.get(`${BASE}/categories`);
   return res.data.data as CategoryGroups;
@@ -115,7 +104,6 @@ export async function createCategory(body: {
   return res.data.data as Category;
 }
 
-/** code·type 은 상품이 참조 중이라 바꿀 수 없다 */
 export async function updateCategory(
   id: number,
   body: { name?: string; sortOrder?: number; isActive?: boolean }
@@ -124,12 +112,10 @@ export async function updateCategory(
   return res.data.data as Category;
 }
 
-/** 실제 삭제가 아니라 비활성화 */
 export async function deactivateCategory(id: number) {
   await adminInstance.delete(`${BASE}/categories/${id}`);
 }
 
-// ── SKU Media ─────────────────────────────────────────────────────────────────
 export async function getSkuMedia(skuCode: string) {
   const res = await adminInstance.get(`${BASE}/skus/${skuCode}/media`);
   return res.data.data as SkuMediaItem[];
@@ -144,7 +130,7 @@ export async function addSkuMedia(
   formData.append('file', file);
   formData.append('meta', new Blob([JSON.stringify(meta)], { type: 'application/json' }));
   const res = await adminInstance.post(`${BASE}/skus/${skuCode}/media`, formData, {
-    headers: { 'Content-Type': undefined }, // multipart/form-data + boundary 브라우저 자동 설정
+    headers: { 'Content-Type': undefined },
   });
   return res.data.data as SkuMediaItem;
 }
@@ -157,7 +143,6 @@ export async function adjustStock(skuCode: string, delta: number, memo?: string)
   await adminInstance.post(`${BASE}/skus/stock-adjust`, { skuCode, delta, memo });
 }
 
-// ── Artists ───────────────────────────────────────────────────────────────────
 export async function getAdminArtists(page = 0, size = 50) {
   const res = await adminInstance.get(`${BASE}/artists`, { params: { page, size } });
   return res.data.data;
@@ -194,7 +179,6 @@ export async function deleteArtist(artistCode: string) {
   await adminInstance.delete(`${BASE}/artists/${artistCode}`);
 }
 
-// ── Artist Media ──────────────────────────────────────────────────────────────
 export async function getArtistMedia(artistCode: string) {
   const res = await adminInstance.get(`${BASE}/artists/${artistCode}/media`);
   return res.data.data as ArtistMediaResponse[];
@@ -209,7 +193,7 @@ export async function addArtistMedia(
   formData.append('file', file);
   formData.append('meta', new Blob([JSON.stringify(meta)], { type: 'application/json' }));
   const res = await adminInstance.post(`${BASE}/artists/${artistCode}/media`, formData, {
-    headers: { 'Content-Type': undefined }, // multipart/form-data + boundary 브라우저 자동 설정
+    headers: { 'Content-Type': undefined },
   });
   return res.data.data as ArtistMediaResponse;
 }
@@ -226,7 +210,6 @@ export async function deleteArtistMedia(artistCode: string, mediaId: number) {
   await adminInstance.delete(`${BASE}/artists/${artistCode}/media/${mediaId}`);
 }
 
-// ── Artist Careers ────────────────────────────────────────────────────────────
 export async function addArtistCareer(artistCode: string, body: {
   category: string;
   year: number | null;
@@ -251,7 +234,6 @@ export async function deleteArtistCareer(artistCode: string, careerId: number) {
   await adminInstance.delete(`${BASE}/artists/${artistCode}/careers/${careerId}`);
 }
 
-// ── Users ─────────────────────────────────────────────────────────────────────
 export async function getAdminUsers(page = 0, size = 20) {
   const res = await adminInstance.get(`${BASE}/users`, { params: { page, size } });
   return res.data.data;
@@ -275,7 +257,6 @@ export async function activateUser(userId: number) {
   await adminInstance.patch(`${BASE}/users/${userId}/activate`);
 }
 
-// ── Dashboard ─────────────────────────────────────────────────────────────────
 export interface DashboardStats{
   todayOrders: number;
   weekOrders: number;
@@ -302,9 +283,6 @@ export async function getDailyRevenue() {
   return res.data.data;
 }
 
-// ── 상품 CSV 일괄 등록 ─────────────────────────────────────────────────────────
-
-/** 행 단위 오류 — 어느 행 어느 칸이 왜 틀렸는지 */
 export type SkuImportRowError = {
   rowNumber: number;
   field: string;
@@ -319,15 +297,6 @@ export type SkuImportResult = {
   errors: SkuImportRowError[];
 };
 
-/**
- * CSV 업로드.
- *
- * 검증 실패도 200 으로 오고 본문에 오류 목록이 담긴다.
- * 파일 자체를 못 읽는 경우(빈 파일·헤더 누락·행 수 초과)만 4xx 로 온다.
- *
- * 서버가 동기로 처리하므로 행이 많으면 오래 걸린다.
- * 기본 인스턴스의 60초로는 부족해 여기서만 늘린다.
- */
 export async function importSkusCsv(file: File) {
   const form = new FormData();
   form.append('file', file);
@@ -340,12 +309,6 @@ export async function importSkusCsv(file: File) {
   return res.data.data;
 }
 
-/**
- * 빈 템플릿 내려받기.
- *
- * 템플릿을 프론트에서 직접 만들지 않고 서버에서 받는다.
- * 양쪽에 두면 컬럼이 바뀔 때 한쪽만 고쳐져 어긋난다.
- */
 export async function downloadSkuCsvTemplate() {
   const res = await adminInstance.get(`${BASE}/skus/bulk/template`, {
     responseType: 'blob',
@@ -361,7 +324,6 @@ export async function downloadSkuCsvTemplate() {
   URL.revokeObjectURL(url);
 }
 
-/** PG 응답을 못 받아 승인/취소 여부가 확정되지 않은 결제 — 수동 확인 필요 */
 export type PaymentNeedingAttention = {
   paymentNo: string;
   orderNo: string;
@@ -381,8 +343,6 @@ export async function getPaymentsNeedingAttention() {
   return res.data.data;
 }
 
-
-// ── Banners ───────────────────────────────────────────────────────────────────
 export async function getAdminBanners() {
   const res = await adminInstance.get(`${BASE}/banners`);
   return res.data.data as BannerResponse[];
@@ -420,7 +380,6 @@ export async function deleteBanner(bannerCode: string) {
   await adminInstance.delete(`${BASE}/banners/${bannerCode}`);
 }
 
-/** 배너 이미지 사전 업로드 → imageUrl 반환 */
 export async function uploadBannerImage(file: File): Promise<string> {
   const formData = new FormData();
   formData.append('file', file);
@@ -432,7 +391,6 @@ export async function uploadBannerImage(file: File): Promise<string> {
   return res.data.data.imageUrl;
 }
 
-/** 기존 배너 이미지 교체 */
 export async function updateBannerImage(bannerCode: string, file: File): Promise<BannerResponse> {
   const formData = new FormData();
   formData.append('file', file);
@@ -442,7 +400,6 @@ export async function updateBannerImage(bannerCode: string, file: File): Promise
   return res.data.data as BannerResponse;
 }
 
-/** Artist 공개/비공개 토글 */
 export async function activateArtist(artistCode: string) {
   await adminInstance.patch(`${BASE}/artists/${artistCode}/activate`);
 }
@@ -451,7 +408,6 @@ export async function deactivateArtist(artistCode: string) {
   await adminInstance.patch(`${BASE}/artists/${artistCode}/deactivate`);
 }
 
-/** 대표 작품 관리 */
 export async function getArtistSkus(artistCode: string): Promise<ArtistSkuItem[]> {
   const res = await adminInstance.get(`${BASE}/artists/${artistCode}/skus`);
   return res.data.data;
@@ -466,7 +422,6 @@ export async function clearArtistFeaturedSku(artistCode: string) {
   await adminInstance.delete(`${BASE}/artists/${artistCode}/featured-sku`);
 }
 
-// ── Returns ───────────────────────────────────────────────────────────────────
 export async function getAdminReturns(page = 0, size = 20, status?: string) {
   const res = await adminInstance.get(`${BASE}/returns`, {
     params: { page, size, ...(status ? { status } : {}) },
@@ -498,7 +453,6 @@ export async function completeReturn(returnNo: string) {
   return res.data.data;
 }
 
-// ── Reviews ───────────────────────────────────────────────────────────────────
 export async function getPendingReviews(page = 0, size = 20) {
   const res = await adminInstance.get(`${BASE}/reviews/pending`, { params: { page, size } });
   return res.data.data;
@@ -513,13 +467,11 @@ export async function setFeaturedReview(reviewCode: string, featured: boolean) {
   await adminInstance.patch(`${BASE}/reviews/${reviewCode}/featured`, null, { params: { featured } });
 }
 
-// ── Audit Logs ────────────────────────────────────────────────────────────────
 export async function getAuditLogs(page = 0, size = 20) {
   const res = await adminInstance.get(`${BASE}/audit-logs`, { params: { page, size } });
   return res.data.data;
 }
 
-// ── Types ─────────────────────────────────────────────────────────────────────
 export interface SkuMediaItem {
   id: number;
   mediaType: string;
@@ -614,7 +566,6 @@ export interface BannerResponse {
   createdAt: string;
 }
 
-// ── Notices ───────────────────────────────────────────────────────────────────
 export interface NoticeResponse {
   id: number;
   noticeCode: string;
@@ -654,7 +605,6 @@ export async function deleteNotice(noticeCode: string) {
   await adminInstance.delete(`${BASE}/notices/${noticeCode}`);
 }
 
-// ── Inquiries ─────────────────────────────────────────────────────────────────
 export interface AdminInquiryResponse {
   id: number;
   inquiryCode: string;
@@ -701,9 +651,6 @@ export async function closeInquiry(inquiryCode: string) {
   await adminInstance.patch(`${BASE}/inquiries/${inquiryCode}/close`);
 }
 
-
-// ── 작가 정산 ─────────────────────────────────────────────────────────────────
-
 export type ArtistSettlement = {
   settlementId: number | null;
   artistId: number;
@@ -737,7 +684,6 @@ export async function getSettlementPeriod(periodYm: string) {
   return res.data.data as SettlementPeriod;
 }
 
-/** 확정 — 이 시점의 금액이 굳는다. 되돌릴 수 없다 */
 export async function confirmSettlement(periodYm: string) {
   const res = await adminInstance.post(`${BASE}/settlements/${periodYm}/confirm`);
   return res.data.data as SettlementPeriod;

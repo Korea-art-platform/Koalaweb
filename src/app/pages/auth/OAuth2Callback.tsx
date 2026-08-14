@@ -19,7 +19,6 @@ export default function OAuth2Callback() {
       return;
     }
 
-    // 백엔드가 설정한 HttpOnly 쿠키가 실제로 유효한지 검증 후 인증 상태 반영
     getMyProfile()
       .then(() => {
         setAuthenticated(true);

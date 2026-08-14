@@ -64,7 +64,7 @@ interface ArtistVideosProps {
 }
 
 export function ArtistVideos({ videos }: ArtistVideosProps) {
-  const { t } = useTranslation('artistLab'); // 🌟 네임스페이스 지정
+  const { t } = useTranslation('artistLab');
 
   if (!videos || videos.length === 0) return null;
 

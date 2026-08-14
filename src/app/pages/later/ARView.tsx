@@ -11,7 +11,7 @@ import type { Sku } from '@/api/types';
 export default function ARView() {
   const { t } = useTranslation();
   const [searchParams] = useSearchParams();
-  const skuCode = searchParams.get('skuCode'); // /ar-view?skuCode=SKU-001
+  const skuCode = searchParams.get('skuCode');
 
   const [mode, setMode] = useState<'360' | 'ar'>('360');
   const [sku, setSku] = useState<Sku | null>(null);
@@ -136,14 +136,12 @@ export default function ARView() {
               </div>
             )}
           </div>
-
           <div className="absolute top-8 left-1/2 -translate-x-1/2 z-10 w-full max-w-xs px-4">
             <div className="flex items-center gap-2 p-1.5 rounded-full bg-white/90 backdrop-blur-md shadow-xl border border-gray-100">
               <button onClick={() => setMode('360')} className={`flex-1 py-2 rounded-full text-xs font-bold transition-all ${mode === '360' ? 'bg-koala-navy text-white' : 'text-gray-400 hover:text-black'}`}>{t('ar.tab360')}</button>
               <button onClick={handleARMode} className={`flex-1 py-2 rounded-full text-xs font-bold transition-all ${mode === 'ar' ? 'bg-koala-navy text-white' : 'text-gray-400 hover:text-black'}`}>{t('ar.tabAr')}</button>
             </div>
           </div>
-
           <div className="absolute left-6 top-1/2 -translate-y-1/2 z-10 hidden sm:block">
             <div className="flex flex-col gap-4 p-3 rounded-[24px] bg-white/90 backdrop-blur-md shadow-xl border border-gray-100">
               <button onClick={() => setZoom(1)} className="p-3 hover:bg-gray-50 rounded-xl transition-colors text-gray-700" title={t('ar.resetZoom')}><RotateCcw className="w-5 h-5" /></button>
@@ -153,7 +151,6 @@ export default function ARView() {
               <button onClick={() => setZoom((p) => Math.max(p - 0.25, 0.5))} className="p-3 hover:bg-gray-50 rounded-xl transition-colors text-gray-700" title={t('ar.zoomOut')}><ZoomOut className="w-5 h-5" /></button>
             </div>
           </div>
-
           <div className="absolute right-6 top-1/2 -translate-y-1/2 z-10 hidden lg:block">
             <div className="w-80 p-8 rounded-[32px] bg-white/90 backdrop-blur-md shadow-2xl space-y-8 border border-gray-100">
               {sku ? (
@@ -183,9 +180,7 @@ export default function ARView() {
               )}
             </div>
           </div>
-
           <button className="absolute bottom-8 right-8 z-10 p-4 rounded-2xl bg-white/90 backdrop-blur-md shadow-xl hover:bg-white transition-all border border-gray-100"><Maximize2 className="w-5 h-5 text-gray-700" /></button>
-
           <div className="absolute bottom-8 left-8 z-10 max-w-[280px] sm:max-w-sm p-6 rounded-[24px] bg-white/90 backdrop-blur-md shadow-xl border border-gray-100">
             <div className="text-sm space-y-2">
               <div className="font-bold flex items-center gap-2 text-black">

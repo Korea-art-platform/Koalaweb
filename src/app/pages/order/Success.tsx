@@ -14,7 +14,6 @@ export default function CheckoutSuccess() {
     if (location.state) {
       setOrderData(location.state);
     } else {
-      // state 없으면 주문 목록으로
       navigate('/account/orders');
     }
   }, [location, navigate]);
@@ -36,11 +35,8 @@ export default function CheckoutSuccess() {
   return (
     <div className="min-h-screen bg-[#FAFAFA]">
       <Navigation />
-
       <div className="pt-24 pb-20 px-8">
         <div className="max-w-2xl mx-auto">
-
-          {/* 성공 섹션 */}
           <div className="text-center mb-12">
             <div className="inline-flex items-center justify-center w-24 h-24 bg-green-50 rounded-[32px] mb-6">
               <CheckCircle className="w-12 h-12 text-green-500" />
@@ -52,8 +48,6 @@ export default function CheckoutSuccess() {
               KOALA와 함께해주셔서 감사합니다. 소중한 작품을 곧 보내드릴게요.
             </p>
           </div>
-
-          {/* 주문 정보 카드 */}
           <div className="bg-white rounded-[32px] p-8 shadow-sm border border-gray-100 mb-6">
             <div className="grid grid-cols-2 gap-8 pb-8 border-b border-gray-100">
               <div>
@@ -71,9 +65,7 @@ export default function CheckoutSuccess() {
                 </p>
               </div>
             </div>
-
             <div className="py-8 border-b border-gray-100 space-y-6 text-sm">
-              {/* 배송지 */}
               <div className="flex gap-4">
                 <div className="w-10 h-10 rounded-xl bg-gray-50 flex items-center justify-center flex-shrink-0">
                   <MapPin className="w-5 h-5 text-gray-400" />
@@ -88,8 +80,6 @@ export default function CheckoutSuccess() {
                   </p>
                 </div>
               </div>
-
-              {/* 결제 수단 */}
               <div className="flex gap-4">
                 <div className="w-10 h-10 rounded-xl bg-gray-50 flex items-center justify-center flex-shrink-0">
                   <CreditCard className="w-5 h-5 text-gray-400" />
@@ -100,7 +90,6 @@ export default function CheckoutSuccess() {
                 </div>
               </div>
             </div>
-
             <div className="pt-8">
               <div className="flex justify-between items-end">
                 <span className="text-sm font-bold text-gray-400">{t('order.detail.totalAmount')}</span>
@@ -110,8 +99,6 @@ export default function CheckoutSuccess() {
               </div>
             </div>
           </div>
-
-          {/* 주문 상품 목록 */}
           <div className="bg-white rounded-[32px] p-8 shadow-sm border border-gray-100 mb-10">
             <h2 className="text-sm font-bold text-gray-400 uppercase tracking-widest mb-6">
               {t('order.detail.orderItems')}
@@ -138,8 +125,6 @@ export default function CheckoutSuccess() {
                 </div>
               ))}
             </div>
-
-            {/* 금액 요약 */}
             <div className="mt-8 pt-8 border-t border-gray-50 space-y-3">
               <div className="flex justify-between text-sm">
                 <span className="text-gray-500">{t('order.detail.productAmount')}</span>
@@ -157,8 +142,6 @@ export default function CheckoutSuccess() {
               </div>
             </div>
           </div>
-
-          {/* 하단 버튼 */}
           <div className="flex flex-col sm:flex-row gap-4">
             <Link
               to="/account/orders"

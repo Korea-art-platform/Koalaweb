@@ -2,13 +2,12 @@ import { Link } from 'react-router';
 import { ArrowRight } from 'lucide-react';
 
 interface SectionHeaderProps {
-  /** 작은 영문 라벨 (예: 'Limited') */
   eyebrow: string;
-  /** 큰 제목 (한국어) */
+
   title: string;
-  /** 부제 */
+
   sub?: string;
-  /** 우측 '전체보기' 링크 */
+
   viewAllHref?: string;
   viewAllLabel?: string;
 }

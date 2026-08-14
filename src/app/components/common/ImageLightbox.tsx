@@ -9,7 +9,6 @@ interface ImageLightboxProps {
   onClose: () => void;
 }
 
-// 슬라이드(스와이프) 방향 애니메이션
 const slideVariants = {
   enter: (dir: number) => ({ x: dir >= 0 ? 220 : -220, opacity: 0 }),
   center: { x: 0, opacity: 1 },
@@ -36,7 +35,6 @@ export function ImageLightbox({ images, initialIndex = 0, title = '', onClose }:
       document.body.style.overflow = '';
       window.removeEventListener('keydown', handleKey);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [images.length]);
 
   const multi = images.length > 1;
@@ -50,7 +48,6 @@ export function ImageLightbox({ images, initialIndex = 0, title = '', onClose }:
       exit={{ opacity: 0 }}
       transition={{ duration: 0.2 }}
     >
-      {/* 닫기 */}
       <button
         className="absolute top-4 right-4 z-20 bg-white/10 hover:bg-white/20 rounded-full p-2.5 transition-colors"
         onClick={onClose}
@@ -59,14 +56,12 @@ export function ImageLightbox({ images, initialIndex = 0, title = '', onClose }:
         <X className="w-5 h-5 text-white" />
       </button>
 
-      {/* 카운터 */}
       {multi && (
         <div className="absolute top-5 left-1/2 -translate-x-1/2 text-white/60 text-sm font-medium tabular-nums z-20">
           {index + 1} / {images.length}
         </div>
       )}
 
-      {/* 이전 / 다음 (데스크탑) */}
       {multi && (
         <>
           <button
@@ -86,7 +81,6 @@ export function ImageLightbox({ images, initialIndex = 0, title = '', onClose }:
         </>
       )}
 
-      {/* 이미지 스테이지 — 열릴 때 확대 애니메이션 */}
       <motion.div
         className="relative w-full h-full flex items-center justify-center px-4 md:px-16 py-16 overflow-hidden"
         onClick={(e) => e.stopPropagation()}
@@ -119,7 +113,6 @@ export function ImageLightbox({ images, initialIndex = 0, title = '', onClose }:
         </AnimatePresence>
       </motion.div>
 
-      {/* 하단 썸네일 */}
       {multi && (
         <div className="absolute bottom-5 left-1/2 -translate-x-1/2 flex gap-2 z-20" onClick={(e) => e.stopPropagation()}>
           {images.map((img, i) => (

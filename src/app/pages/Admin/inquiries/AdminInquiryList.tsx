@@ -61,7 +61,6 @@ export default function AdminInquiryList() {
 
   return (
     <div className="p-8">
-      {/* 헤더 */}
       <div className="flex items-center gap-2 text-gray-400 text-xs mb-1">
         <MessageCircle className="w-3.5 h-3.5" />
         <span>1:1 문의 관리</span>
@@ -69,8 +68,6 @@ export default function AdminInquiryList() {
       <div className="flex items-center justify-between mb-5">
         <h1 className="text-xl font-bold text-gray-900">1:1 문의 목록</h1>
       </div>
-
-      {/* 상태 필터 */}
       <div className="flex gap-2 mb-5">
         {STATUS_FILTERS.map((f) => (
           <button
@@ -145,7 +142,6 @@ export default function AdminInquiryList() {
             </table>
           </div>
 
-          {/* 페이지네이션 */}
           {totalPages > 1 && (
             <div className="flex justify-center gap-1 mt-5">
               {Array.from({ length: totalPages }, (_, i) => (

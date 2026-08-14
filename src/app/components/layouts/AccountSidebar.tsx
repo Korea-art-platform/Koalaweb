@@ -1,16 +1,15 @@
 import { Link, useNavigate } from 'react-router';
 import { User, MapPin, CreditCard, Package, Heart, LogOut, Settings, MessageCircle } from 'lucide-react';
-// 💡 1. 다국어 훅을 불러옵니다.
+
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/app/context/AuthContext';
 import { logout as logoutApi } from '@/api/auth';
 
-// 💡 2. label(한글) 대신 다국어 JSON의 경로가 될 key를 넣습니다.
 const menuItems = [
   { icon: User, key: 'account.sidebar.profile', path: '/account' },
   { icon: Package, key: 'account.sidebar.orders', path: '/account/orders' },
   { icon: MapPin, key: 'account.sidebar.addresses', path: '/account/addresses' },
-  //{ icon: CreditCard, key: 'account.sidebar.payment', path: '/account/payment-methods' },
+
   { icon: Heart, key: 'account.sidebar.wishlist', path: '/account/wishlist' },
   { icon: MessageCircle, key: 'account.sidebar.inquiry', path: '/account/inquiry' },
   { icon: Settings, key: 'account.sidebar.settings', path: '/account/settings' },
@@ -23,7 +22,7 @@ interface Props {
 
 export default function AccountSidebar({ currentPath, user }: Props) {
   const navigate = useNavigate();
-  // 💡 3. 번역 함수 t를 꺼냅니다.
+
   const { t } = useTranslation();
   const { setAuthenticated } = useAuth();
 
@@ -31,7 +30,6 @@ export default function AccountSidebar({ currentPath, user }: Props) {
     try {
       await logoutApi();
     } catch {
-      // 서버 오류여도 클라이언트 상태는 초기화
     } finally {
       setAuthenticated(false);
       window.dispatchEvent(new Event('cart-updated'));
@@ -43,12 +41,10 @@ export default function AccountSidebar({ currentPath, user }: Props) {
     ? user.name.slice(0, 2).toUpperCase()
     : 'KA';
 
-  // 💡 4. 이름이 없을 때 보여줄 기본값("사용자")도 다국어 처리합니다.
   const displayUserName = user?.name ?? (t('account.sidebar.defaultUser') as string);
 
   return (
     <div className="bg-white rounded-2xl md:rounded-3xl p-4 md:p-6 shadow-sm border border-gray-100 lg:sticky lg:top-28">
-      {/* 유저 프로필 */}
       <div className="flex items-center gap-4 pb-4 md:pb-6 mb-4 md:mb-6 border-b border-gray-100">
         <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-koala-navy flex items-center justify-center text-white font-bold text-sm">
           {initials}
@@ -62,7 +58,6 @@ export default function AccountSidebar({ currentPath, user }: Props) {
           </p>
         </div>
       </div>
-
       <nav className="grid grid-cols-2 lg:flex lg:flex-col gap-1.5 lg:gap-1">
         {menuItems.map((item) => {
           const Icon = item.icon;

@@ -1,20 +1,11 @@
 import { useRef, useState, useEffect, useCallback, type ReactNode } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
-/**
- * 가로 스크롤 목록에 좌우 화살표를 얹는다.
- *
- * 모바일은 손가락으로 밀면 되지만 데스크탑에서는 밀 방법이 마땅치 않다.
- * 마우스 휠은 세로로만 움직이고, 스크롤바는 숨겨 두었다.
- *
- * 반투명 유리 느낌으로 얹어 작품 위에 올라와도 사진을 가리지 않게 한다.
- */
 export default function CarouselArrows({
   label,
   children,
   className = '',
 }: {
-  /** 스크린리더용 — 섹션이 여러 개라 "이전"만으로는 어느 것인지 알 수 없다 */
   label: string;
   children: ReactNode;
   className?: string;
@@ -23,12 +14,11 @@ export default function CarouselArrows({
   const [atStart, setAtStart] = useState(true);
   const [atEnd, setAtEnd] = useState(true);
 
-  /** 양끝에 닿으면 그쪽 화살표를 숨긴다 — 눌러도 안 움직이는 버튼은 고장으로 보인다 */
   const syncEdges = useCallback(() => {
     const el = trackRef.current;
     if (!el) return;
     setAtStart(el.scrollLeft <= 1);
-    // 소수점 오차로 끝에 닿아도 1px 쯤 남는다
+
     setAtEnd(el.scrollLeft + el.clientWidth >= el.scrollWidth - 1);
   }, []);
 
@@ -38,7 +28,6 @@ export default function CarouselArrows({
     return () => window.removeEventListener('resize', syncEdges);
   }, [syncEdges, children]);
 
-  /** 카드 한 장 너비만큼 민다 — 화면 폭이 달라도 자연스럽게 맞는다 */
   const scrollByCard = (direction: -1 | 1) => {
     const el = trackRef.current;
     if (!el) return;
@@ -74,7 +63,6 @@ export default function CarouselArrows({
       >
         <ChevronRight className="w-5 h-5" />
       </button>
-
       <div
         ref={trackRef}
         onScroll={syncEdges}

@@ -17,7 +17,6 @@ export default function Search() {
   const [recentSearches, setRecentSearches] = useState<string[]>([]);
   const [activeFilter, setActiveFilter] = useState<'all' | 'artworks' | 'artists'>('all');
 
-  // 검색 대상 데이터 (한 번 로드 후 클라이언트 필터링)
   const [skus, setSkus] = useState<any[]>([]);
   const [artists, setArtists] = useState<any[]>([]);
 
@@ -65,10 +64,8 @@ export default function Search() {
   return (
     <div className="min-h-screen bg-[#FAFAFA]">
       <Navigation />
-
       <div className="pt-24 pb-16 px-8">
         <div className="max-w-[1400px] mx-auto">
-          {/* Search Header */}
           <div className="mb-8">
             <Link
               to="/"
@@ -77,10 +74,7 @@ export default function Search() {
               <ArrowLeft className="w-4 h-4" />
               {t('search.backToHome')}
             </Link>
-
             <h1 className="text-4xl tracking-tight mb-6">{t('search.title')}</h1>
-
-            {/* Search Input */}
             <div className="relative max-w-2xl">
               <SearchIcon className="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
               <input
@@ -104,7 +98,7 @@ export default function Search() {
 
           {!hasSearched ? (
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-4xl">
-              {/* Recent Searches */}
+
               {recentSearches.length > 0 && (
                 <div>
                   <div className="flex items-center gap-2 mb-4">
@@ -134,7 +128,6 @@ export default function Search() {
                 </div>
               )}
 
-              {/* Trending Searches */}
               <div>
                 <div className="flex items-center gap-2 mb-4">
                   <TrendingUp className="w-4 h-4 text-gray-400" />
@@ -155,7 +148,6 @@ export default function Search() {
             </div>
           ) : (
             <>
-              {/* Filter Tabs */}
               <div className="flex items-center gap-3 mb-8 border-b border-gray-200">
                 {[
                   { key: 'all', label: t('search.filters.all') },
@@ -175,10 +167,8 @@ export default function Search() {
                   </button>
                 ))}
               </div>
-
-              {/* Search Results */}
               <div className="space-y-12">
-                {/* Artists Section */}
+
                 {(activeFilter === 'all' || activeFilter === 'artists') && artistResults.length > 0 && (
                   <div>
                     <h2 className="text-2xl tracking-tight mb-6">{t('search.filters.artists')}</h2>
@@ -204,7 +194,6 @@ export default function Search() {
                   </div>
                 )}
 
-                {/* Artworks/Products Section */}
                 {(activeFilter === 'all' || activeFilter === 'artworks') && skuResults.length > 0 && (
                   <div>
                     <h2 className="text-2xl tracking-tight mb-6">
@@ -233,7 +222,6 @@ export default function Search() {
                   </div>
                 )}
 
-                {/* No Results */}
                 {noResults && (
                   <div className="text-center py-16">
                     <div className="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-4">

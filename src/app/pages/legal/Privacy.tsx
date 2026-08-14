@@ -6,7 +6,6 @@ export default function Privacy() {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* 헤더 */}
       <div className="sticky top-0 z-10 bg-white border-b border-gray-100">
         <div className="max-w-3xl mx-auto flex items-center gap-4 px-6 py-4">
           <button onClick={() => navigate(-1)} className="text-gray-700 hover:text-black transition-colors">
@@ -15,19 +14,14 @@ export default function Privacy() {
           <h1 className="text-base font-semibold tracking-tight text-gray-900">개인정보처리방침</h1>
         </div>
       </div>
-
-      {/* 본문 */}
       <div className="max-w-3xl mx-auto px-6 py-8 space-y-8 text-sm text-gray-700 leading-relaxed">
-
         <p className="text-xs text-gray-400">최종 업데이트: 2026년 5월 13일</p>
-
         <p>
           헤론(이하 "회사")이 운영하는 KOALA 서비스는 「개인정보 보호법」,
           「정보통신망 이용촉진 및 정보보호 등에 관한 법률」 등 관련 법령을 준수하며,
           이용자의 개인정보를 안전하게 보호합니다. 본 방침은 회사가 수집하는 개인정보의 항목,
           수집 목적, 보유 기간 및 처리 방법을 안내합니다.
         </p>
-
         <section className="space-y-3">
           <h2 className="font-semibold text-gray-900">1. 수집하는 개인정보 항목</h2>
           <div className="space-y-2">
@@ -54,7 +48,6 @@ export default function Privacy() {
             </ul>
           </div>
         </section>
-
         <section className="space-y-2">
           <h2 className="font-semibold text-gray-900">2. 개인정보 수집 및 이용 목적</h2>
           <ul className="space-y-1 list-disc list-inside text-gray-600">
@@ -67,7 +60,6 @@ export default function Privacy() {
             <li>법령상 의무 이행</li>
           </ul>
         </section>
-
         <section className="space-y-2">
           <h2 className="font-semibold text-gray-900">3. 개인정보 보유 및 이용 기간</h2>
           <ul className="space-y-1 list-disc list-inside text-gray-600">
@@ -77,7 +69,6 @@ export default function Privacy() {
             <li>접속 로그: 3개월 (통신비밀보호법)</li>
           </ul>
         </section>
-
         <section className="space-y-2">
           <h2 className="font-semibold text-gray-900">4. 개인정보의 제3자 제공</h2>
           <p>
@@ -90,7 +81,6 @@ export default function Privacy() {
             <li>배송을 위한 택배사 정보 제공 (수령인 정보에 한함)</li>
           </ul>
         </section>
-
         <section className="space-y-2">
           <h2 className="font-semibold text-gray-900">5. 개인정보 처리 위탁</h2>
           <div className="overflow-x-auto">
@@ -122,7 +112,6 @@ export default function Privacy() {
             </table>
           </div>
         </section>
-
         <section className="space-y-2">
           <h2 className="font-semibold text-gray-900">6. 이용자의 권리</h2>
           <p>이용자는 언제든지 다음의 권리를 행사할 수 있습니다.</p>
@@ -133,7 +122,6 @@ export default function Privacy() {
             <li>회원 탈퇴 (마이페이지에서 가능)</li>
           </ul>
         </section>
-
         <section className="space-y-2">
           <h2 className="font-semibold text-gray-900">7. 쿠키 사용</h2>
           <p>
@@ -142,7 +130,6 @@ export default function Privacy() {
             서비스 이용이 제한될 수 있습니다.
           </p>
         </section>
-
         <section className="space-y-2">
           <h2 className="font-semibold text-gray-900">8. 개인정보 보호 책임자</h2>
           <p>이용자는 아래 담당자에게 개인정보 관련 문의, 열람, 정정·삭제, 처리 정지 요청을 할 수 있습니다.</p>
@@ -158,7 +145,6 @@ export default function Privacy() {
             • 경찰청 사이버수사국: <a href="https://ecrm.cyber.go.kr" target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:text-black">ecrm.cyber.go.kr</a> / 국번없이 182
           </p>
         </section>
-
         <p className="pt-4 pb-8 text-xs text-gray-400 text-center border-t border-gray-100">
           본 방침은 2026년 5월 13일부터 시행됩니다.
         </p>

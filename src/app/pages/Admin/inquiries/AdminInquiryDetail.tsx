@@ -79,7 +79,6 @@ export default function AdminInquiryDetail() {
 
   return (
     <div className="p-8 max-w-3xl">
-      {/* 뒤로가기 */}
       <button
         onClick={() => navigate('/admin/inquiries')}
         className="flex items-center gap-1.5 text-xs text-gray-400 hover:text-gray-700 mb-5 transition-colors"
@@ -87,8 +86,6 @@ export default function AdminInquiryDetail() {
         <ArrowLeft className="w-3.5 h-3.5" />
         목록으로
       </button>
-
-      {/* 헤더 */}
       <div className="flex items-center gap-2 text-gray-400 text-xs mb-1">
         <MessageCircle className="w-3.5 h-3.5" />
         <span>1:1 문의</span>
@@ -102,8 +99,6 @@ export default function AdminInquiryDetail() {
           {STATUS_LABELS[inquiry.status]}
         </span>
       </div>
-
-      {/* 메타 정보 */}
       <div className="bg-gray-50 rounded-xl p-4 mb-5 grid grid-cols-2 gap-3 text-xs">
         <div>
           <span className="text-gray-400">작성자</span>
@@ -127,14 +122,11 @@ export default function AdminInquiryDetail() {
           </p>
         </div>
       </div>
-
-      {/* 문의 내용 */}
       <div className="bg-white rounded-xl border border-gray-200 p-5 mb-5">
         <h2 className="text-xs font-medium text-gray-400 mb-3">문의 내용</h2>
         <p className="text-sm text-gray-800 whitespace-pre-wrap leading-relaxed">{inquiry.content}</p>
       </div>
 
-      {/* 기존 답변 */}
       {inquiry.status !== 'PENDING' && inquiry.answerContent && (
         <div className="bg-blue-50 rounded-xl border border-blue-100 p-5 mb-5">
           <div className="flex items-center gap-2 mb-3">
@@ -155,7 +147,6 @@ export default function AdminInquiryDetail() {
         </div>
       )}
 
-      {/* 답변 작성/수정 (종결 전까지) */}
       {inquiry.status !== 'CLOSED' && (
         <div className="bg-white rounded-xl border border-gray-200 p-5">
           <h2 className="text-xs font-medium text-gray-500 mb-3">

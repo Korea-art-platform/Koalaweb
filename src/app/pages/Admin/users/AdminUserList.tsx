@@ -1,4 +1,4 @@
-﻿import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { getAdminUsers, suspendUser, activateUser } from '@/api/adminApi';
 import { UserCog } from 'lucide-react';
 import { Link } from 'react-router';
@@ -50,7 +50,6 @@ export default function AdminUserList() {
         <span>회원 관리</span>
       </div>
       <h1 className="text-xl font-bold text-gray-900 mb-6">회원 목록</h1>
-
       <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
         {loading ? (
           <div className="py-20 text-center text-sm text-gray-400">불러오는 중...</div>

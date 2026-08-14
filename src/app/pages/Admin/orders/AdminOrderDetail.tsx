@@ -3,7 +3,6 @@ import { useParams, useNavigate } from 'react-router';
 import { getAdminOrder, registerTracking, markDelivered, adminCancelOrder, getCarriers, type Carrier } from '@/api/adminApi';
 import { ArrowLeft, Truck, XCircle } from 'lucide-react';
 
-/** 저장된 값이 코드면 이름으로 바꾸고, 옛 자유 입력 값이면 그대로 보여준다 */
 function carrierName(code: string, carriers: Carrier[]) {
   return carriers.find((c) => c.code === code)?.name ?? code;
 }
@@ -15,7 +14,7 @@ const ORDER_STATUS_LABEL: Record<string, string> = {
 const PAYMENT_STATUS_LABEL: Record<string, string> = {
   READY: '결제전', PAID: '결제완료', CANCELLED: '취소/환불',
   FAILED: '실패', PARTIAL_REFUNDED: '부분환불', REFUNDED: '환불완료',
-  // payments.status 쪽 값 — PG 응답을 못 받아 확정되지 않은 상태들
+
   CAPTURED: '결제완료', IN_PROGRESS: '승인 처리 중',
   IN_DOUBT: '승인 여부 미확정', CANCEL_IN_PROGRESS: '환불 처리 중',
 };
@@ -26,14 +25,12 @@ export default function AdminOrderDetail() {
   const [order, setOrder] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
-  // 운송장 모달
   const [trackingOpen, setTrackingOpen] = useState(false);
   const [carrierCode, setCarrierCode] = useState('');
   const [trackingNo, setTrackingNo] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [carriers, setCarriers] = useState<Carrier[]>([]);
 
-  // 취소 모달
   const [cancelOpen, setCancelOpen] = useState(false);
   const [cancelReason, setCancelReason] = useState('');
   const [cancelAmount, setCancelAmount] = useState('');
@@ -49,7 +46,6 @@ export default function AdminOrderDetail() {
 
   useEffect(() => { reload(); }, [reload]);
 
-  // 목록을 못 받아도 화면은 뜬다 — 운송장 등록만 막힌다
   useEffect(() => { getCarriers().then(setCarriers).catch(() => setCarriers([])); }, []);
 
   const handleRegisterTracking = async () => {
@@ -110,7 +106,6 @@ export default function AdminOrderDetail() {
       <button onClick={() => navigate('/admin/orders')} className="flex items-center gap-1.5 text-xs text-gray-400 hover:text-gray-700 mb-6 transition-colors">
         <ArrowLeft className="w-3.5 h-3.5" /> 목록으로
       </button>
-
       <div className="flex items-start justify-between mb-6 gap-4">
         <div>
           <p className="text-xs text-gray-400 font-mono mb-1">{order.orderNo}</p>
@@ -137,7 +132,6 @@ export default function AdminOrderDetail() {
           )}
         </div>
       </div>
-
       <div className="space-y-4">
         <Section title="주문 상태">
           <Row label="주문 상태" value={ORDER_STATUS_LABEL[order.orderStatus] ?? order.orderStatus} />
@@ -146,7 +140,6 @@ export default function AdminOrderDetail() {
           {order.cancelledAt && <Row label="취소일" value={new Date(order.cancelledAt).toLocaleString('ko-KR')} />}
           <Row label="주문일" value={new Date(order.createdAt).toLocaleString('ko-KR')} />
         </Section>
-
         <Section title="주문자 정보">
           <Row label="이름" value={order.ordererName} />
           <Row label="이메일" value={order.ordererEmail} />
@@ -161,7 +154,6 @@ export default function AdminOrderDetail() {
             {order.shipment.deliveryRequest && <Row label="배송 요청사항" value={order.shipment.deliveryRequest} />}
             {order.shipment.carrierCode && (
               <>
-                {/* 예전에 자유 입력으로 저장된 건은 코드가 아니라 이름이라 그대로 보여준다 */}
                 <Row label="택배사" value={carrierName(order.shipment.carrierCode, carriers)} />
                 <Row label="운송장번호" value={order.shipment.trackingNo} />
               </>
@@ -185,7 +177,6 @@ export default function AdminOrderDetail() {
             ))}
           </div>
         </Section>
-
         <Section title="결제 금액">
           <Row label="상품금액" value={Number(order.productAmount).toLocaleString() + '원'} />
           {Number(order.discountAmount) > 0 && <Row label="할인" value={'-' + Number(order.discountAmount).toLocaleString() + '원'} />}
@@ -197,7 +188,6 @@ export default function AdminOrderDetail() {
         </Section>
       </div>
 
-      {/* 운송장 등록 모달 */}
       {trackingOpen && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-xl p-6 w-full max-w-sm shadow-xl">
@@ -226,7 +216,6 @@ export default function AdminOrderDetail() {
         </div>
       )}
 
-      {/* 주문 취소 모달 */}
       {cancelOpen && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-xl p-6 w-full max-w-sm shadow-xl">
@@ -234,9 +223,7 @@ export default function AdminOrderDetail() {
             <p className="text-xs text-gray-400 mb-4">
               배송 상태에 관계없이 강제 취소됩니다. 결제 완료 건은 자동 환불이 시도됩니다.
             </p>
-
             <div className="space-y-4">
-              {/* 취소 사유 */}
               <div>
                 <label className="block text-xs text-gray-500 mb-1.5">취소 사유 <span className="text-red-500">*</span></label>
                 <textarea
@@ -247,8 +234,6 @@ export default function AdminOrderDetail() {
                   className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-black/10 resize-none"
                 />
               </div>
-
-              {/* 부분환불 토글 */}
               <div>
                 <label className="flex items-center gap-2 cursor-pointer select-none">
                   <input
@@ -262,7 +247,6 @@ export default function AdminOrderDetail() {
                 </label>
               </div>
 
-              {/* 부분환불 금액 */}
               {isPartial && (
                 <div>
                   <label className="block text-xs text-gray-500 mb-1.5">
@@ -284,7 +268,6 @@ export default function AdminOrderDetail() {
                 <p className="text-xs text-red-500 bg-red-50 px-3 py-2 rounded-lg">{cancelError}</p>
               )}
             </div>
-
             <div className="flex gap-2 mt-5">
               <button
                 onClick={() => { setCancelOpen(false); setCancelReason(''); setCancelAmount(''); setIsPartial(false); setCancelError(''); }}

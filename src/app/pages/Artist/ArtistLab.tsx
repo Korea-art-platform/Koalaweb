@@ -23,9 +23,7 @@ export default function ArtistLab() {
   return (
     <div className="min-h-screen bg-white">
       <Navigation />
-
       <ArtistLabHero />
-
       <section className="px-6 md:px-8 pb-32">
         <div className="max-w-[1600px] mx-auto space-y-20 md:space-y-32">
           {loading ? (

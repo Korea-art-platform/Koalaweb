@@ -27,7 +27,6 @@ export default function ArtistRow({ artist, index }: ArtistRowProps) {
       className={`grid grid-cols-1 lg:grid-cols-2 gap-10 md:gap-16 items-start
         ${isReverse ? 'lg:grid-flow-dense' : ''}`}
     >
-      {/* ── 왼쪽: 프로필 사진 ── */}
       <div className={isReverse ? 'lg:col-start-2' : ''}>
         <Link to={`/artist/${artist.artistCode}`} className="group block">
           <div className="relative overflow-hidden rounded-2xl md:rounded-3xl bg-gray-50 aspect-[4/5] sm:aspect-[3/4]">
@@ -40,11 +39,8 @@ export default function ArtistRow({ artist, index }: ArtistRowProps) {
           </div>
         </Link>
       </div>
-
-      {/* ── 오른쪽: 정보 + 영상 ── */}
       <div className={isReverse ? 'lg:col-start-1 lg:row-start-1' : ''}>
         <div className="space-y-5 md:space-y-6">
-          {/* 작가 소개 */}
           <div>
             <div className="text-[10px] md:text-xs text-gray-400 tracking-widest uppercase mb-2 font-semibold">
               {t('artistLab.row.artistLabel') as string}
@@ -57,7 +53,6 @@ export default function ArtistRow({ artist, index }: ArtistRowProps) {
             )}
           </div>
 
-          {/* 인터뷰 영상 — 등록된 경우에만 표시 */}
           {anyVideo ? (
             <VideoPlayer
               url={anyVideo.fileUrl}
@@ -66,7 +61,6 @@ export default function ArtistRow({ artist, index }: ArtistRowProps) {
             />
           ) : null}
 
-          {/* 팔로워 수 */}
           {followCount > 0 && (
             <p className="text-sm text-gray-500">
               <span className="font-bold text-gray-900">{followCount.toLocaleString()}</span>
@@ -75,7 +69,6 @@ export default function ArtistRow({ artist, index }: ArtistRowProps) {
             </p>
           )}
 
-          {/* CTA 버튼 */}
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-1">
             <Link
               to={`/artist/${artist.artistCode}`}
@@ -92,7 +85,6 @@ export default function ArtistRow({ artist, index }: ArtistRowProps) {
             </Link>
           </div>
 
-          {/* 대표 작품 카드 */}
           {artist.featuredSku && (
             <Link
               to={`/product/${artist.featuredSku.skuCode}`}

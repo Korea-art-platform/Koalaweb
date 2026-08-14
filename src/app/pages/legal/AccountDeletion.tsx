@@ -6,7 +6,6 @@ export default function AccountDeletion() {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* 헤더 */}
       <div className="sticky top-0 z-10 bg-white border-b border-gray-100">
         <div className="max-w-3xl mx-auto flex items-center gap-4 px-6 py-4">
           <button onClick={() => navigate(-1)} className="text-gray-700 hover:text-black transition-colors">
@@ -15,24 +14,18 @@ export default function AccountDeletion() {
           <h1 className="text-base font-semibold tracking-tight text-gray-900">계정 및 데이터 삭제 안내</h1>
         </div>
       </div>
-
-      {/* 본문 */}
       <div className="max-w-3xl mx-auto px-6 py-8 space-y-8 text-sm text-gray-700 leading-relaxed">
-
         <p className="text-xs text-gray-400">최종 업데이트: 2026년 6월 10일</p>
-
         <p>
           KOALA(코알라) 앱·웹 서비스의 계정과 관련 데이터를 삭제(회원 탈퇴)하는 방법을 안내합니다.
           앱 설치 여부와 관계없이 아래 두 가지 방법 중 하나로 삭제를 요청할 수 있습니다.
         </p>
-
         <div className="bg-gray-50 rounded-xl p-4 text-xs text-gray-600 space-y-1 leading-relaxed">
           <p className="font-semibold text-gray-800 mb-2">서비스 정보</p>
           <p><span className="font-medium text-gray-700 w-28 inline-block">앱 이름</span>KOALA</p>
           <p><span className="font-medium text-gray-700 w-28 inline-block">개발자/운영</span>헤론</p>
           <p><span className="font-medium text-gray-700 w-28 inline-block">문의 이메일</span>koala-art@heron.kr</p>
         </div>
-
         <section className="space-y-2">
           <h2 className="font-semibold text-gray-900">방법 1. 앱/웹에서 직접 탈퇴</h2>
           <ol className="space-y-1 list-decimal list-inside text-gray-600">
@@ -41,7 +34,6 @@ export default function AccountDeletion() {
             <li><span className="font-medium text-gray-700">회원 탈퇴</span>를 선택하고 안내에 따라 진행합니다.</li>
           </ol>
         </section>
-
         <section className="space-y-2">
           <h2 className="font-semibold text-gray-900">방법 2. 앱 없이 이메일로 요청</h2>
           <p>
@@ -54,7 +46,6 @@ export default function AccountDeletion() {
             <p><span className="font-medium text-gray-700 w-28 inline-block">포함 내용</span>가입 이메일, 삭제 요청 의사</p>
           </div>
         </section>
-
         <section className="space-y-2">
           <h2 className="font-semibold text-gray-900">삭제되는 데이터</h2>
           <ul className="space-y-1 list-disc list-inside text-gray-600">
@@ -63,7 +54,6 @@ export default function AccountDeletion() {
             <li>프로필 및 서비스 이용을 위해 저장된 개인정보</li>
           </ul>
         </section>
-
         <section className="space-y-2">
           <h2 className="font-semibold text-gray-900">법령에 따라 일정 기간 보관되는 데이터</h2>
           <p>
@@ -76,7 +66,6 @@ export default function AccountDeletion() {
             <li>소비자 불만 또는 분쟁 처리 기록: 3년</li>
           </ul>
         </section>
-
         <section className="space-y-2">
           <h2 className="font-semibold text-gray-900">처리 기간</h2>
           <p>
@@ -84,7 +73,6 @@ export default function AccountDeletion() {
             탈퇴 후 계정은 복구되지 않으며, 동일 정보로 재가입이 필요합니다.
           </p>
         </section>
-
         <p className="pt-4 pb-8 text-xs text-gray-400 text-center border-t border-gray-100">
           문의: koala-art@heron.kr
         </p>

@@ -35,27 +35,24 @@ export default function ProductCard({
   const [adding, setAdding] = useState(false);
   const [added, setAdded] = useState(false);
   const [detail, setDetail] = useState<Sku | null>(null);
-  // 모달 이미지 캐러셀 인덱스 + 터치 스와이프 시작 위치
+
   const [imgIndex, setImgIndex] = useState(0);
   const touchStartX = useRef<number | null>(null);
 
-  // 모달 열릴 때 배경 스크롤 잠금 (닫히면 이미지 인덱스 초기화)
   useEffect(() => {
     document.body.style.overflow = isOpen ? 'hidden' : '';
     if (!isOpen) setImgIndex(0);
     return () => { document.body.style.overflow = ''; };
   }, [isOpen]);
 
-  // 모달 열릴 때 규격 등 상세 정보 로드 (목록엔 크기/소재가 없음)
   useEffect(() => {
     if (isOpen && !detail) {
       getSku(sku.skuCode)
         .then((res) => setDetail(res.data.data as Sku))
-        .catch(() => { /* 실패해도 설명 등 기본 정보는 표시 */ });
+        .catch(() => {  });
     }
   }, [isOpen, detail, sku.skuCode]);
 
-  // 모달용 이미지 목록: 대표 이미지 + 등록된 상세/갤러리 이미지 (360·AR 제외)
   const images = useMemo(() => {
     const extra = (detail?.mediaList ?? [])
       .filter((m) => m.mediaType === 'IMAGE'
@@ -69,7 +66,6 @@ export default function ProductCard({
   const paginate = (dir: number) =>
     setImgIndex((i) => (i + dir + images.length) % images.length);
 
-  // 규격 정보 (상세 로드분 우선, 없으면 목록 데이터)
   const d = detail ?? sku;
   const description = d.description ?? sku.description;
   const specs: { label: string; value: string }[] = [];
@@ -134,7 +130,6 @@ export default function ProductCard({
 
   return (
     <>
-      {/* ── 접힌 카드 (그리드) ── */}
       <motion.div
         layoutId={layoutId}
         onClick={() => setIsOpen(true)}
@@ -152,11 +147,7 @@ export default function ProductCard({
           transition={{ duration: 0.4 }}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent opacity-90 group-hover:opacity-100 transition-opacity" />
-
-        {/* 뱃지 (좌상단) */}
         <div className="absolute top-2.5 left-2.5 md:top-4 md:left-4 pointer-events-none">{Badges}</div>
-
-        {/* 찜 (우상단) */}
         <motion.button
           onClick={(e) => onWishlistClick(e, sku.skuCode)}
           disabled={isWishlistLoading}
@@ -174,8 +165,6 @@ export default function ProductCard({
             </motion.span>
           )}
         </motion.button>
-
-        {/* 하단 오버레이: 작가 · 이름 · 가격 */}
         <div className="absolute bottom-0 left-0 w-full p-4 md:p-5 translate-y-3 group-hover:translate-y-0 transition-transform duration-300">
           <motion.p layoutId={`subtitle-${layoutId}`} className="text-white/70 text-[10px] md:text-xs font-medium tracking-wide uppercase mb-1">
             {sku.artistName}
@@ -186,8 +175,6 @@ export default function ProductCard({
           <p className="text-white font-black tracking-tight mt-1 text-sm md:text-base">₩{price}</p>
         </div>
       </motion.div>
-
-      {/* ── 펼친 모달 ── */}
       <AnimatePresence>
         {isOpen && (
           <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
@@ -207,10 +194,7 @@ export default function ProductCard({
               >
                 <X className="w-4 h-4" />
               </button>
-
-              {/* 이미지 (좌) — 슬라이드 캐러셀, 비율 유지 */}
               <div className="group/img relative h-64 w-full shrink-0 overflow-hidden bg-gray-50 md:h-auto md:w-1/2">
-                {/* 슬라이드 트랙 — 이미지들을 가로로 이어붙여 이동 (터치 스와이프 지원) */}
                 <div
                   className="flex h-full w-full transition-transform duration-500 ease-out"
                   style={{ transform: `translateX(-${imgIndex * 100}%)` }}
@@ -235,7 +219,6 @@ export default function ProductCard({
 
                 {images.length > 1 && (
                   <>
-                    {/* 좌우 버튼 (데스크탑 호버 시) */}
                     <button
                       onClick={(e) => { e.stopPropagation(); paginate(-1); }}
                       aria-label="이전 이미지"
@@ -250,8 +233,6 @@ export default function ProductCard({
                     >
                       <ChevronRight className="w-4 h-4" />
                     </button>
-
-                    {/* 도트 인디케이터 */}
                     <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5">
                       {images.map((_, i) => (
                         <button
@@ -267,8 +248,6 @@ export default function ProductCard({
                   </>
                 )}
               </div>
-
-              {/* 내용 (우) */}
               <div className="p-6 sm:p-8 lg:p-10 w-full md:w-1/2 flex flex-col overflow-y-auto justify-center">
                 <motion.p layoutId={`subtitle-${layoutId}`} className="text-koala-red text-xs font-bold tracking-wide uppercase mb-2">
                   {sku.artistName}
@@ -276,7 +255,6 @@ export default function ProductCard({
                 <motion.h3 layoutId={`title-${layoutId}`} className="text-2xl sm:text-3xl font-bold tracking-tight text-gray-900">
                   {sku.name}
                 </motion.h3>
-
                 <motion.div
                   initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0 }} transition={{ delay: 0.15 }}
                   className="mt-4 grow"
@@ -284,7 +262,6 @@ export default function ProductCard({
                   <p className="text-2xl font-black tracking-tight text-gray-900 mb-4">₩{price}</p>
                   <div className="mb-4">{Badges}</div>
 
-                  {/* 아코디언: 작품 설명 · 규격 정보 (접힘) */}
                   {(description || specs.length > 0) && (
                     <Accordion type="single" collapsible defaultValue="desc" className="mb-6 border-t border-gray-100">
                       {description && (
@@ -313,7 +290,6 @@ export default function ProductCard({
                     </Accordion>
                   )}
 
-                  {/* 액션 버튼 */}
                   <div className="flex flex-wrap gap-2">
                     <motion.button
                       onClick={handleAddToCart}
@@ -339,7 +315,6 @@ export default function ProductCard({
                         )}
                       </AnimatePresence>
                     </motion.button>
-
                     <button
                       onClick={(e) => onWishlistClick(e, sku.skuCode)}
                       disabled={isWishlistLoading}
@@ -350,7 +325,6 @@ export default function ProductCard({
                     >
                       <Heart className="w-4 h-4" fill={isWishlisted ? 'currentColor' : 'none'} /> 찜
                     </button>
-
                     <Link
                       to={detailPath}
                       className="flex items-center justify-center gap-1 px-4 py-3 rounded-xl border border-gray-200 text-sm font-bold text-gray-600 hover:border-gray-900 hover:text-gray-900 transition-colors"

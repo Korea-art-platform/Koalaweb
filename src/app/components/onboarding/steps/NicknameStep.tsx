@@ -25,7 +25,6 @@ export default function NicknameStep({ nickname, onChange, onNext }: Props) {
       </div>
       <h2 className="text-3xl font-medium tracking-tight mb-3">{t('onboarding.nickname.title')}</h2>
       <p className="text-gray-400 mb-8">{t('onboarding.nickname.desc')}</p>
-
       <div className="mb-8">
         <label className="block text-sm font-medium mb-2 text-gray-700">{t('onboarding.nickname.label')}</label>
         <input

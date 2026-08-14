@@ -14,16 +14,12 @@ export default function Cookies() {
           <h1 className="text-base font-semibold tracking-tight text-gray-900">쿠키 정책</h1>
         </div>
       </div>
-
       <div className="max-w-3xl mx-auto px-6 py-8 space-y-8 text-sm text-gray-700 leading-relaxed">
-
         <p className="text-xs text-gray-400">최종 업데이트: 2026년 5월 13일</p>
-
         <p>
           헤론(이하 "회사")이 운영하는 KOALA 서비스는 서비스 제공, 보안 유지 및 사용자 경험 향상을
           위해 쿠키를 사용합니다. 본 정책은 회사가 사용하는 쿠키의 종류와 목적, 관리 방법을 안내합니다.
         </p>
-
         <section className="space-y-3">
           <h2 className="font-semibold text-gray-900">1. 쿠키란?</h2>
           <p>
@@ -32,10 +28,8 @@ export default function Cookies() {
             서비스 이용 통계 분석 등에 사용됩니다.
           </p>
         </section>
-
         <section className="space-y-4">
           <h2 className="font-semibold text-gray-900">2. 사용하는 쿠키 종류</h2>
-
           <div className="overflow-x-auto">
             <table className="w-full text-xs border-collapse border border-gray-200 rounded-lg overflow-hidden">
               <thead>
@@ -64,13 +58,11 @@ export default function Cookies() {
               </tbody>
             </table>
           </div>
-
           <div className="bg-gray-50 rounded-xl p-4 text-xs text-gray-500 leading-relaxed">
             <span className="font-semibold text-gray-700">필수 쿠키</span>란 서비스 운영에 반드시 필요한 쿠키로, 거부 시 로그인 및 결제 기능 이용이 불가합니다.
             분석 쿠키는 개인을 식별하지 않는 익명 통계 데이터만 수집합니다.
           </div>
         </section>
-
         <section className="space-y-3">
           <h2 className="font-semibold text-gray-900">3. 인증 쿠키 보안</h2>
           <p>
@@ -80,7 +72,6 @@ export default function Cookies() {
             HTTPS 연결에서만 전송됩니다.
           </p>
         </section>
-
         <section className="space-y-3">
           <h2 className="font-semibold text-gray-900">4. 쿠키 관리 방법</h2>
           <p>
@@ -97,7 +88,6 @@ export default function Cookies() {
             필수 쿠키를 차단하면 로그인 유지, 장바구니, 결제 등 일부 서비스 기능 이용이 제한될 수 있습니다.
           </p>
         </section>
-
         <section className="space-y-2">
           <h2 className="font-semibold text-gray-900">5. 제3자 쿠키</h2>
           <p>
@@ -105,7 +95,6 @@ export default function Cookies() {
             Google의 데이터 수집 및 처리 정책은 <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:text-black transition-colors">Google 개인정보처리방침</a>을 참고해 주세요.
           </p>
         </section>
-
         <section className="space-y-2">
           <h2 className="font-semibold text-gray-900">6. 문의</h2>
           <div className="bg-gray-50 rounded-xl p-4 text-xs space-y-1">
@@ -113,11 +102,9 @@ export default function Cookies() {
             <p><span className="font-medium text-gray-800">처리 기간:</span> 접수 후 영업일 3일 이내</p>
           </div>
         </section>
-
         <p className="pt-4 pb-8 text-xs text-gray-400 text-center border-t border-gray-100">
           본 쿠키 정책은 2026년 5월 13일부터 시행됩니다.
         </p>
-
       </div>
     </div>
   );

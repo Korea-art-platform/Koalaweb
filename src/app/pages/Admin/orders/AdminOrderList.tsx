@@ -28,7 +28,6 @@ export default function AdminOrderList() {
   const [page, setPage] = useState(0);
   const [loading, setLoading] = useState(true);
 
-  // 검색
   const [searchType, setSearchType] = useState<SearchType>('name');
   const [searchInput, setSearchInput] = useState('');
   const [appliedSearch, setAppliedSearch] = useState<{ userId?: number; name?: string; phone?: string }>({});
@@ -73,8 +72,6 @@ export default function AdminOrderList() {
         <span>주문 관리</span>
       </div>
       <h1 className="text-xl font-bold text-gray-900 mb-6">주문 목록</h1>
-
-      {/* 검색 바 */}
       <div className="flex gap-2 mb-4">
         <select
           value={searchType}
@@ -119,7 +116,6 @@ export default function AdminOrderList() {
           </span>
         )}
       </div>
-
       <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
         {loading ? (
           <div className="py-20 text-center text-sm text-gray-400">불러오는 중...</div>

@@ -46,7 +46,6 @@ export function OrderItemsList({ order }: { order: any }) {
           </div>
         ))}
       </div>
-
       <div className="mt-8 pt-6 border-t border-gray-50 space-y-3">
         <div className="flex justify-between text-sm">
           <span className="text-gray-500">{t('order.detail.productAmount')}</span>

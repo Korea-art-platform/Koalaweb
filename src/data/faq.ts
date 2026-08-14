@@ -1,8 +1,3 @@
-/**
- * 자주 묻는 질문 — FAQ 페이지(/faq)와 홈 005 섹션이 함께 사용한다.
- * 내용을 여기서 한 번만 고치면 두 화면에 동시 반영된다.
- */
-
 export interface FaqItem {
   q: string;
   a: string;
@@ -97,10 +92,6 @@ export const FAQS: FaqCategory[] = [
   },
 ];
 
-/**
- * 홈 005 섹션에 상시 노출할 대표 질문 (배송·교환/반품 중심).
- * FAQS에서 질문 문구로 찾아오므로, 위 내용을 고치면 여기도 자동 반영된다.
- */
 const HOME_FAQ_QUESTIONS = [
   '배송은 얼마나 걸리나요?',
   '배송비는 얼마인가요?',

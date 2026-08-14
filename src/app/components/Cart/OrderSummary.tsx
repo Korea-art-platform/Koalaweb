@@ -15,7 +15,6 @@ export function OrderSummary({ cartItems, subtotal, shipping, total }: OrderSumm
   return (
     <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100 sticky top-28">
       <h2 className="text-xl mb-6 font-semibold">{t('cart.summary.title')}</h2>
-
       <div className="space-y-4 mb-6">
         <div className="flex justify-between text-sm">
           <span className="text-gray-500">{t('cart.summary.subtotal')}</span>
@@ -45,7 +44,6 @@ export function OrderSummary({ cartItems, subtotal, shipping, total }: OrderSumm
           </div>
         </div>
       </div>
-
       <Link
         to="/checkout"
         state={{ cartItems, subtotal, shipping, total }}
@@ -53,7 +51,6 @@ export function OrderSummary({ cartItems, subtotal, shipping, total }: OrderSumm
       >
         {t('cart.summary.checkout')}
       </Link>
-
       <div className="mt-6 flex flex-col items-center gap-2">
         <p className="text-[11px] text-gray-400 text-center">
           {t('cart.summary.securePayment')}

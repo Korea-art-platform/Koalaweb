@@ -26,7 +26,6 @@ export function ProductActions({ sku, cartLoading, isWishlisted, onAddToCart, on
           ? t('product.detail.actions.addingToCart')
           : t('product.detail.actions.addToCart')}
       </button>
-
       <button
         onClick={onWishlist}
         className="w-[52px] h-[52px] flex items-center justify-center border border-gray-200 rounded-xl hover:bg-gray-50 hover:border-gray-300 transition-all active:scale-[0.98] flex-shrink-0"

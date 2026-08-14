@@ -38,7 +38,6 @@ export default function CategoryFilter({
               </button>
             ))}
           </div>
-
           <div className="hidden md:flex items-center gap-2 shrink-0">
             <button
               onClick={() => setViewMode('grid')}

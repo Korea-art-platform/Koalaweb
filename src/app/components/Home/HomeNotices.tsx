@@ -9,10 +9,6 @@ interface Props {
   notices: NoticeItem[];
 }
 
-/**
- * 005 — 공지사항 + 자주 묻는 질문.
- * 좌: 최신 공지 3건(등록된 것만) / 우: 배송·교환반품 등 상시 FAQ.
- */
 export default function HomeNotices({ notices }: Props) {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
   const hasNotices = notices.length > 0;
@@ -25,9 +21,7 @@ export default function HomeNotices({ notices }: Props) {
           title="공지사항 · 자주 묻는 질문"
           sub="새로운 소식과 자주 문의주시는 내용을 모았습니다"
         />
-
         <div className="grid lg:grid-cols-2 gap-10 lg:gap-16">
-          {/* ── 좌: 공지사항 ── */}
           <div>
             <div className="flex items-center justify-between mb-3">
               <h3 className="text-sm md:text-base font-bold text-gray-900">공지사항</h3>
@@ -70,8 +64,6 @@ export default function HomeNotices({ notices }: Props) {
               </div>
             )}
           </div>
-
-          {/* ── 우: 자주 묻는 질문 ── */}
           <div>
             <div className="flex items-center justify-between mb-3">
               <h3 className="text-sm md:text-base font-bold text-gray-900">자주 묻는 질문</h3>
@@ -82,7 +74,6 @@ export default function HomeNotices({ notices }: Props) {
                 전체보기 +
               </Link>
             </div>
-
             <div className="flex flex-col border-t border-gray-200">
               {HOME_FAQS.map((item, i) => {
                 const isOpen = openIndex === i;

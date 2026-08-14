@@ -15,10 +15,10 @@ const maxWidthClasses = {
   full: 'max-w-full',
 };
 
-export default function Container({ 
-  children, 
+export default function Container({
+  children,
   maxWidth = '2xl',
-  className = '' 
+  className = ''
 }: ContainerProps) {
   return (
     <div className={`${maxWidthClasses[maxWidth]} mx-auto px-8 ${className}`}>

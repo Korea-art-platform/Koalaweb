@@ -3,7 +3,7 @@ import Navigation from '@/app/components/layouts/Header';
 import { useTranslation } from 'react-i18next';
 
 export function ArtistNotFound() {
-  const { t } = useTranslation('artistLab'); 
+  const { t } = useTranslation('artistLab');
 
   return (
     <div className="min-h-screen bg-white">

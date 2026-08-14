@@ -27,7 +27,6 @@ export function ArtistProfileSection({
   const [count, setCount] = useState(followCount);
   const [loading, setLoading] = useState(false);
 
-  // API 응답 후 prop 변경 시 로컬 상태 동기화
   useEffect(() => { setIsFollowing(initialFollowing); }, [initialFollowing]);
   useEffect(() => { setCount(followCount); }, [followCount]);
 
@@ -36,7 +35,7 @@ export function ArtistProfileSection({
     setLoading(true);
     try {
       if (isFollowing) {
-        await unfollowArtist(artistCode); 
+        await unfollowArtist(artistCode);
         setIsFollowing(false);
         setCount((c) => Math.max(0, c - 1));
       } else {
@@ -68,7 +67,6 @@ export function ArtistProfileSection({
             {description ?? '작가에 대한 설명'}
           </p>
 
-          {/* 팔로우 + 공유 버튼 */}
           {artistCode && (
             <div className="flex items-center gap-3 mt-2 flex-wrap">
               <button

@@ -41,13 +41,11 @@ export const CATEGORY_LABELS: Record<string, string> = Object.fromEntries(
   INQUIRY_CATEGORIES.map(c => [c.value, c.label])
 );
 
-/** 문의 등록 */
 export async function createInquiry(data: CreateInquiryRequest): Promise<InquiryResponse> {
   const res = await instance.post<{ data: InquiryResponse }>('/api/v1/inquiries', data);
   return res.data.data;
 }
 
-/** 내 문의 목록 */
 export async function getMyInquiries(page = 0, size = 10) {
   const res = await instance.get('/api/v1/inquiries', { params: { page, size } });
   return res.data.data as {
@@ -58,13 +56,11 @@ export async function getMyInquiries(page = 0, size = 10) {
   };
 }
 
-/** 내 문의 상세 */
 export async function getMyInquiry(inquiryCode: string): Promise<InquiryResponse> {
   const res = await instance.get<{ data: InquiryResponse }>(`/api/v1/inquiries/${inquiryCode}`);
   return res.data.data;
 }
 
-/** 문의 삭제 */
 export async function deleteMyInquiry(inquiryCode: string): Promise<void> {
   await instance.delete(`/api/v1/inquiries/${inquiryCode}`);
 }

@@ -14,18 +14,14 @@ export default function Returns() {
           <h1 className="text-base font-semibold tracking-tight text-gray-900">교환 및 반품 정책</h1>
         </div>
       </div>
-
       <div className="max-w-3xl mx-auto px-6 py-8 space-y-8 text-sm text-gray-700 leading-relaxed">
-
         <p className="text-xs text-gray-400">최종 업데이트: 2025년 1월 1일</p>
-
         <div className="bg-gray-50 rounded-2xl p-5 space-y-1 text-xs leading-relaxed text-gray-600">
           <p className="font-semibold text-gray-900 text-sm mb-2">핵심 요약</p>
           <p>· 상품 수령 후 <strong>7일 이내</strong> 교환/반품 신청 가능</p>
           <p>· 환불은 반품 상품 확인 후 <strong>영업일 3~5일</strong> 이내 처리</p>
           <p>· 신청 방법: 마이페이지 주문 내역 또는 koala-art@heron.kr</p>
         </div>
-
         <section className="space-y-3">
           <h2 className="font-semibold text-gray-900">1. 교환/반품 신청 기간</h2>
           <p>
@@ -33,7 +29,6 @@ export default function Returns() {
             단순 변심에 의한 반품의 경우 왕복 배송비(6,000원)는 고객 부담입니다.
           </p>
         </section>
-
         <section className="space-y-3">
           <h2 className="font-semibold text-gray-900">2. 교환/반품 신청 방법</h2>
           <ol className="space-y-2 text-gray-600 list-decimal list-inside">
@@ -43,7 +38,6 @@ export default function Returns() {
             <li>반품 상품 회수 및 검수 완료 후 환불/교환 처리</li>
           </ol>
         </section>
-
         <section className="space-y-3">
           <h2 className="font-semibold text-gray-900">3. 환불 처리 기간</h2>
           <div className="overflow-x-auto">
@@ -71,7 +65,6 @@ export default function Returns() {
             </table>
           </div>
         </section>
-
         <section className="space-y-3">
           <h2 className="font-semibold text-gray-900">4. 교환/반품이 가능한 경우</h2>
           <ul className="space-y-1 list-disc list-inside text-gray-600">
@@ -81,7 +74,6 @@ export default function Returns() {
             <li>오배송된 경우</li>
           </ul>
         </section>
-
         <section className="space-y-3">
           <h2 className="font-semibold text-gray-900">5. 교환/반품이 불가한 경우</h2>
           <ul className="space-y-1 list-disc list-inside text-gray-600">
@@ -92,7 +84,6 @@ export default function Returns() {
             <li>맞춤 제작(커스텀) 상품의 경우</li>
           </ul>
         </section>
-
         <section className="space-y-3">
           <h2 className="font-semibold text-gray-900">6. 배송비 부담 기준</h2>
           <div className="overflow-x-auto">
@@ -116,17 +107,14 @@ export default function Returns() {
             </table>
           </div>
         </section>
-
         <div className="bg-gray-50 rounded-xl p-5 text-xs text-gray-500 leading-relaxed space-y-1">
           <p className="font-semibold text-gray-800">교환/반품 문의</p>
           <p>이메일: koala-art@heron.kr</p>
           <p>운영 시간: 평일 10:00 – 18:00 (주말·공휴일 제외)</p>
         </div>
-
         <p className="pt-4 pb-8 text-xs text-gray-400 text-center border-t border-gray-100">
           본 정책은 소비자기본법 및 전자상거래법 등 관련 법령에 의해 보호되는 소비자 권리를 침해하지 않습니다.
         </p>
-
       </div>
     </div>
   );

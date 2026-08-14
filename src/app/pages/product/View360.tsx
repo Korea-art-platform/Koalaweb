@@ -186,7 +186,6 @@ export default function Product360View() {
       )}
 
       <div ref={containerRef} className="fixed inset-0 pt-20 bg-koala-navy">
-
         <div className="absolute top-20 left-0 right-0 z-20 px-8 py-6 bg-gradient-to-b from-black/80 to-transparent">
           <div className="max-w-[1600px] mx-auto flex items-center justify-between">
             <div className="flex items-center gap-6">
@@ -203,7 +202,6 @@ export default function Product360View() {
                 <p className="text-sm text-white/60">by {sku.artistName}</p>
               </div>
             </div>
-
             <button
               onClick={() => setShowInfo(!showInfo)}
               className="flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg transition-colors"
@@ -213,7 +211,6 @@ export default function Product360View() {
             </button>
           </div>
         </div>
-
         <div className="h-full flex items-center justify-center px-8 py-32">
           <div className="relative max-w-5xl w-full aspect-square">
             <div
@@ -274,7 +271,6 @@ export default function Product360View() {
             )}
           </div>
         </div>
-
         <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20">
           <div className="flex items-center gap-3 px-6 py-4 bg-white/10 backdrop-blur-xl rounded-full border border-white/20">
             <button
@@ -285,18 +281,14 @@ export default function Product360View() {
             >
               <RotateCw className="w-5 h-5" />
             </button>
-
             <div className="w-px h-8 bg-white/20" />
-
             <button onClick={handleZoomOut} className="p-3 hover:bg-white/20 text-white rounded-full transition-colors">
               <ZoomOut className="w-5 h-5" />
             </button>
             <button onClick={handleZoomIn} className="p-3 hover:bg-white/20 text-white rounded-full transition-colors">
               <ZoomIn className="w-5 h-5" />
             </button>
-
             <div className="w-px h-8 bg-white/20" />
-
             <button onClick={toggleFullscreen} className="p-3 hover:bg-white/20 text-white rounded-full transition-colors">
               {isFullscreen ? <X className="w-5 h-5" /> : <Maximize2 className="w-5 h-5" />}
             </button>
@@ -344,7 +336,6 @@ export default function Product360View() {
                 )}
               </div>
             </div>
-
             <div className="flex gap-3 mt-6">
               <Link
                 to={`/product/${id}`}
@@ -381,7 +372,6 @@ export default function Product360View() {
             </button>
           </div>
         </div>
-
       </div>
     </div>
   );

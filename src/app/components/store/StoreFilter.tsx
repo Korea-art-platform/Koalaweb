@@ -20,7 +20,6 @@ export default function StoreFilter({
   const { t } = useTranslation();
   const { subLabel } = useCategories();
 
-  // 'All' 만 번역 리소스를 쓴다. 나머지는 관리자가 붙인 이름이라 서버에서 온다
   const labelOf = (category: string) =>
     category === 'All' ? (t('store.categories.All') as string) : subLabel(category);
 
@@ -28,7 +27,6 @@ export default function StoreFilter({
     <section className="px-5 md:px-8 lg:px-12 pb-8 md:pb-12">
       <div className="max-w-[1600px] mx-auto">
         <div className="flex items-center justify-between gap-6 pb-6 border-b border-gray-100">
-          {/* 카테고리 — 텍스트 필터 (선택 항목에 미끄러지는 하이라이트) */}
           <div className="flex items-center gap-1 overflow-x-auto no-scrollbar py-1">
             {categories.map((category) => {
               const active = selectedCategory === category;
@@ -52,8 +50,6 @@ export default function StoreFilter({
               );
             })}
           </div>
-
-          {/* 보기 방식 (그리드/크게) */}
           <div className="hidden md:flex items-center gap-2 shrink-0">
             <button
               onClick={() => onViewModeChange('grid')}

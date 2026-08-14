@@ -15,9 +15,7 @@ export default function Contact() {
           <h1 className="text-base font-semibold tracking-tight text-gray-900">1:1 문의하기</h1>
         </div>
       </div>
-
       <div className="max-w-3xl mx-auto px-6 py-8 space-y-10">
-
         <div>
           <p className="text-sm text-gray-600 leading-relaxed">
             KOALA 고객센터는 여러분의 소중한 작품 경험을 위해 최선을 다합니다.
@@ -25,8 +23,6 @@ export default function Contact() {
             빠르게 해결책을 찾아보세요.
           </p>
         </div>
-
-        {/* 연락처 카드 */}
         <div className="grid gap-4 md:grid-cols-2">
           <div className="border border-gray-100 rounded-2xl p-6 space-y-3">
             <div className="flex items-center gap-3">
@@ -48,7 +44,6 @@ export default function Contact() {
               이메일 보내기
             </a>
           </div>
-
           <div className="border border-gray-100 rounded-2xl p-6 space-y-3">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center">
@@ -66,8 +61,6 @@ export default function Contact() {
             </div>
           </div>
         </div>
-
-        {/* 빠른 문의 가이드 */}
         <section className="space-y-4">
           <h2 className="text-sm font-semibold text-gray-900">문의 시 참고해 주세요</h2>
           <div className="space-y-3">
@@ -98,8 +91,6 @@ export default function Contact() {
             ))}
           </div>
         </section>
-
-        {/* 바로가기 링크 */}
         <section className="space-y-3">
           <h2 className="text-sm font-semibold text-gray-900">관련 페이지</h2>
           <div className="divide-y divide-gray-100 border border-gray-100 rounded-2xl overflow-hidden">
@@ -119,11 +110,9 @@ export default function Contact() {
             ))}
           </div>
         </section>
-
         <div className="pt-4 pb-8 text-xs text-gray-400 text-center border-t border-gray-100">
           파트너십 및 작가 입점 문의는 <a href="mailto:koala-art@heron.kr" className="underline underline-offset-2 hover:text-black transition-colors">koala-art@heron.kr</a>로 연락해 주세요.
         </div>
-
       </div>
     </div>
   );

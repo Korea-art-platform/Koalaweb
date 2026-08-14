@@ -14,10 +14,7 @@ export default function Shipping() {
           <h1 className="text-base font-semibold tracking-tight text-gray-900">배송 정보</h1>
         </div>
       </div>
-
       <div className="max-w-3xl mx-auto px-6 py-8 space-y-10">
-
-        {/* 요약 카드 */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {[
             { icon: Truck, label: '배송사', value: 'CJ대한통운' },
@@ -32,7 +29,6 @@ export default function Shipping() {
             </div>
           ))}
         </div>
-
         <section className="space-y-4 text-sm text-gray-700 leading-relaxed">
           <h2 className="font-semibold text-gray-900 text-base">배송비 안내</h2>
           <div className="overflow-x-auto">
@@ -64,7 +60,6 @@ export default function Shipping() {
             </table>
           </div>
         </section>
-
         <section className="space-y-3 text-sm text-gray-700 leading-relaxed">
           <h2 className="font-semibold text-gray-900 text-base">배송 기간</h2>
           <ul className="space-y-2 text-gray-600">
@@ -74,7 +69,6 @@ export default function Shipping() {
             <li className="flex gap-2"><span className="w-1.5 h-1.5 rounded-full bg-koala-navy mt-2 flex-shrink-0" />주말·공휴일·연휴에는 출고가 이루어지지 않습니다.</li>
           </ul>
         </section>
-
         <section className="space-y-3 text-sm text-gray-700 leading-relaxed">
           <h2 className="font-semibold text-gray-900 text-base">배송 조회</h2>
           <p className="text-gray-600">
@@ -82,7 +76,6 @@ export default function Shipping() {
             실시간 배송 상태를 확인할 수 있습니다.
           </p>
         </section>
-
         <section className="space-y-3 text-sm text-gray-700 leading-relaxed">
           <h2 className="font-semibold text-gray-900 text-base">작품 포장 안내</h2>
           <p className="text-gray-600">
@@ -94,7 +87,6 @@ export default function Shipping() {
             고객센터(koala-art@heron.kr)로 연락해 주세요.
           </div>
         </section>
-
         <section className="space-y-3 text-sm text-gray-700 leading-relaxed">
           <h2 className="font-semibold text-gray-900 text-base">해외 배송</h2>
           <p className="text-gray-600">
@@ -102,11 +94,9 @@ export default function Shipping() {
             중이며, 오픈 시 공지사항을 통해 안내드리겠습니다.
           </p>
         </section>
-
         <div className="pt-4 pb-8 text-xs text-gray-400 text-center border-t border-gray-100">
           배송 관련 추가 문의는 <a href="/contact" className="underline underline-offset-2 hover:text-black transition-colors">고객센터</a>로 연락해 주세요.
         </div>
-
       </div>
     </div>
   );

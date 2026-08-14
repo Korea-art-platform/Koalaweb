@@ -43,35 +43,35 @@ export default function Onboarding(){
         {currentStep === 'welcome' && (
           <WelcomeStep onNext={handleNext} />
         )}
-        
+
         {currentStep === 'nickname' && (
-          <NicknameStep 
-            nickname={formData.nickname} 
+          <NicknameStep
+            nickname={formData.nickname}
             onChange={(val) => setFormData({ ...formData, nickname: val })}
-            onNext={handleNext} 
+            onNext={handleNext}
           />
         )}
-        
+
         {currentStep === 'address' && (
-          <AddressStep 
+          <AddressStep
             address={formData.address}
             onChange={(address) => setFormData({ ...formData, address })}
             onNext={handleNext}
             onSkip={handleSkip}
           />
         )}
-        
+
         {currentStep === 'preferences' && (
-          <PreferencesStep 
+          <PreferencesStep
             preferences={formData.preferences}
             onChange={(preferences) => setFormData({ ...formData, preferences })}
             onNext={handleNext}
             onSkip={handleSkip}
           />
         )}
-        
+
         {currentStep === 'notifications' && (
-          <NotificationsStep 
+          <NotificationsStep
             notifications={formData.notifications}
             onChange={(notifications) => setFormData({ ...formData, notifications })}
             onNext={handleNext}

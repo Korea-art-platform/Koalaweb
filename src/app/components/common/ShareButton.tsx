@@ -14,7 +14,6 @@ export function ShareButton({ title, description, imageUrl, url }: ShareButtonPr
   const ref = useRef<HTMLDivElement>(null);
   const shareUrl = url ?? window.location.href;
 
-  // 바깥 클릭 시 닫기
   useEffect(() => {
     const handler = (e: MouseEvent) => {
       if (ref.current && !ref.current.contains(e.target as Node)) {
@@ -71,7 +70,6 @@ export function ShareButton({ title, description, imageUrl, url }: ShareButtonPr
 
       {open && (
         <div className="absolute right-0 mt-2 w-44 bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden z-20">
-          {/* 카카오톡 */}
           <button
             onClick={shareKakao}
             className="w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors text-sm"
@@ -81,8 +79,6 @@ export function ShareButton({ title, description, imageUrl, url }: ShareButtonPr
             </div>
             카카오톡
           </button>
-
-          {/* X(Twitter) */}
           <button
             onClick={shareX}
             className="w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors text-sm border-t border-gray-50"
@@ -92,8 +88,6 @@ export function ShareButton({ title, description, imageUrl, url }: ShareButtonPr
             </div>
             X (Twitter)
           </button>
-
-          {/* 링크 복사 */}
           <button
             onClick={copyLink}
             className="w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors text-sm border-t border-gray-50"
@@ -104,7 +98,6 @@ export function ShareButton({ title, description, imageUrl, url }: ShareButtonPr
         </div>
       )}
 
-      {/* 복사 완료 토스트 */}
       {copied && (
         <div className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-koala-navy text-white text-sm px-5 py-2.5 rounded-full z-50 pointer-events-none shadow-lg">
           링크가 복사됐습니다 ✓

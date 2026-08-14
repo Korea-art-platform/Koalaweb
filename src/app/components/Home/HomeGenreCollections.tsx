@@ -6,22 +6,15 @@ import { useCategories } from '@/app/hooks/useCategories';
 import type { Sku } from '@/api/types';
 
 interface Props {
-  /** 장르별 상품 수 (예: { SCULPTURE: 5 }) */
   genreCounts: Record<string, number>;
-  /** 배경 이미지용 상품 목록 */
+
   skus: Sku[];
 }
 
-/**
- * 002 — 장르별 컬렉션.
- * 등록된 장르(상품 1개 이상)만 아코디언 행으로 생성하고,
- * 행에 호버(모바일은 탭)하면 펼쳐지며 그 장르 대표 작품이 배경으로 드러난다.
- */
 export default function HomeGenreCollections({ genreCounts, skus }: Props) {
   const { subLabel } = useCategories();
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
 
-  // 상품이 있는 장르만 (ALL 제외)
   const genres = Object.entries(genreCounts)
     .filter(([key, count]) => key !== 'ALL' && count > 0)
     .sort((a, b) => b[1] - a[1]);
@@ -36,7 +29,6 @@ export default function HomeGenreCollections({ genreCounts, skus }: Props) {
           title="장르별 컬렉션"
           sub="장르마다 다른 작가의 시선을 만나보세요"
         />
-
         <div className="flex flex-col border-t border-gray-200">
           {genres.map(([genre, count], i) => {
             const label = subLabel(genre);
@@ -53,7 +45,6 @@ export default function HomeGenreCollections({ genreCounts, skus }: Props) {
                 onBlur={() => setActiveIndex(null)}
                 className="group relative block border-b border-gray-200 overflow-hidden"
               >
-                {/* 펼쳐지는 배경 (대표 작품) */}
                 <motion.div
                   className="absolute inset-0"
                   initial={false}
@@ -69,8 +60,6 @@ export default function HomeGenreCollections({ genreCounts, skus }: Props) {
                     <div className="h-full w-full bg-koala-purple" />
                   )}
                 </motion.div>
-
-                {/* 행 내용 */}
                 <motion.div
                   className="relative flex items-center justify-between gap-4 px-2 md:px-6"
                   initial={false}
@@ -103,7 +92,6 @@ export default function HomeGenreCollections({ genreCounts, skus }: Props) {
                       {count}점
                     </span>
                   </div>
-
                   <span
                     className={`text-xs md:text-sm font-bold whitespace-nowrap transition-colors ${
                       isActive ? 'text-white' : 'text-gray-400'

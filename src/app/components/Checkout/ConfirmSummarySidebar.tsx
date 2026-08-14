@@ -19,8 +19,6 @@ export function ConfirmSummarySidebar({
   return (
     <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100 sticky top-28">
       <h2 className="text-lg mb-6">{t('order.confirmation.summary.title')}</h2>
-
-      {/* Pricing */}
       <div className="space-y-3 mb-6">
         <div className="flex justify-between text-sm">
           <span className="text-gray-600">{t('order.confirmation.summary.subtotal')}</span>
@@ -44,8 +42,6 @@ export function ConfirmSummarySidebar({
           </p>
         </div>
       </div>
-
-      {/* Confirm Button */}
       <button
         onClick={onConfirm}
         disabled={isProcessing}
@@ -64,7 +60,6 @@ export function ConfirmSummarySidebar({
           t('order.confirmation.summary.confirmButton')
         )}
       </button>
-
       <p className="text-xs text-gray-400 text-center leading-relaxed">
         {t('order.confirmation.summary.termsPrefix')}
         <Link to="/terms" className="text-black hover:underline mx-1">

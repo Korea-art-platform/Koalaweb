@@ -13,7 +13,6 @@ const TOSS_CLIENT_KEY = import.meta.env.VITE_TOSS_CLIENT_KEY as string;
 
 type PaymentMethodType = 'TOSS' | 'TRANSFER';
 
-// ── 토스페이 공식 로고 ─────────────────────────────────────────────────────────
 function TossPayIcon({ size = 48 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -27,18 +26,14 @@ function TossPayIcon({ size = 48 }: { size?: number }) {
   );
 }
 
-// ── 계좌이체 아이콘 ────────────────────────────────────────────────────────────
 function BankTransferIcon({ size = 48 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
       <rect width="48" height="48" rx="12" fill="#F2F4F6" />
-      {/* 지붕 삼각형 */}
       <path d="M24 10L38 19H10L24 10Z" fill="#4E5968" />
-      {/* 기둥들 */}
       <rect x="13" y="21" width="4" height="12" rx="1" fill="#4E5968" />
       <rect x="22" y="21" width="4" height="12" rx="1" fill="#4E5968" />
       <rect x="31" y="21" width="4" height="12" rx="1" fill="#4E5968" />
-      {/* 바닥 */}
       <rect x="10" y="34" width="28" height="3" rx="1.5" fill="#4E5968" />
     </svg>
   );
@@ -74,7 +69,6 @@ export default function Checkout() {
   const [showAddressSearch, setShowAddressSearch] = useState(false);
   const postcodeContainerRef = useRef<HTMLDivElement>(null);
 
-  // 배송지 폼
   const [form, setForm] = useState({
     ordererName: '',
     ordererEmail: '',
@@ -90,7 +84,6 @@ export default function Checkout() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // 사용자 프로필 로드
         const profileRes = await getMyProfile();
         const profile = profileRes?.data?.data;
         setProfile(profile);
@@ -101,12 +94,10 @@ export default function Checkout() {
           return;
         }
 
-        // 사용자 주소 목록 로드
         const addressRes = await getMyAddresses();
         const userAddresses = addressRes?.data?.data || [];
         setAddresses(userAddresses);
 
-        // 프로필 정보로 주문자 정보 초기화
         setForm((prev) => ({
           ...prev,
           ordererName: profile?.name || '',
@@ -114,7 +105,6 @@ export default function Checkout() {
           ordererPhone: profile?.phone || '',
         }));
 
-        // 기본 배송지가 있으면 배송지 정보 초기화
         const defaultAddress = userAddresses.find((addr) => addr?.isDefault);
         if (defaultAddress) {
           setForm((prev) => ({
@@ -126,7 +116,6 @@ export default function Checkout() {
             address2: defaultAddress?.address2 || '',
           }));
         } else {
-          // 기본 배송지가 없으면 수령인 이름을 사용자 이름으로 설정
           setForm((prev) => ({
             ...prev,
             recipientName: profile?.name || '',
@@ -134,7 +123,6 @@ export default function Checkout() {
           }));
         }
 
-        // 장바구니 로드
         const cartRes = await getCart();
         setCart(cartRes?.data?.data);
       } catch (e) {
@@ -159,7 +147,6 @@ export default function Checkout() {
     setShowAddressSearch(true);
   };
 
-  // 우편번호 오버레이가 열릴 때 embed 초기화
   useEffect(() => {
     if (!showAddressSearch) return;
 
@@ -206,7 +193,7 @@ export default function Checkout() {
       alert('배송지 정보를 입력해 주세요.');
       return;
     }
-    // +821012345678 → 01012345678 (국제형식 → 국내형식)
+
     let mobilePhone = form.ordererPhone.replace(/\D/g, '');
     if (mobilePhone.startsWith('82')) mobilePhone = '0' + mobilePhone.slice(2);
     if (mobilePhone.length < 10 || mobilePhone.length > 11) {
@@ -216,7 +203,6 @@ export default function Checkout() {
 
     setIsProcessing(true);
     try {
-      // 1단계: 주문 생성
       const orderRes = await createOrder({
         ordererName: form.ordererName,
         ordererEmail: form.ordererEmail,
@@ -233,12 +219,8 @@ export default function Checkout() {
       });
       const order = orderRes.data.data;
 
-      // 2단계: 결제 준비 (백엔드에 결제 레코드 생성)
-      // provider는 항상 'TOSS' — 카카오/네이버페이 모두 Toss SDK의 easyPay로 처리됨
-      // method 필드에 실제 선택 수단(KAKAOPAY, NAVERPAY 등)이 기록되어 추적 가능
       await preparePayment(order.orderNo, 'TOSS', selectedMethod);
 
-      // 3단계: Toss SDK 초기화 후 즉시 결제창 실행
       const orderName = cartItems.length > 0
         ? `${cartItems[0].skuName}${cartItems.length > 1 ? ` 외 ${cartItems.length - 1}건` : ''}`
         : '주문';
@@ -265,7 +247,6 @@ export default function Checkout() {
           transfer: { cashReceiptType: 'PERSONAL', customerIdentityNumber: mobilePhone },
         });
       } else {
-        // TOSS: 토스페이 간편결제
         await payment.requestPayment({
           method: 'CARD',
           ...commonParams,
@@ -274,7 +255,7 @@ export default function Checkout() {
       }
     } catch (e: unknown) {
       const code = (e as { code?: string })?.code;
-      if (code === 'USER_CANCEL') return;  // 사용자가 결제창을 직접 닫은 경우
+      if (code === 'USER_CANCEL') return;
 
       const msg = (e as { message?: string })?.message;
       const apiMsg = (e as { response?: { data?: { message?: string } } })?.response?.data?.message;
@@ -305,7 +286,6 @@ export default function Checkout() {
   return (
     <div className="min-h-screen bg-[#FAFAFA]">
       <Navigation />
-
       <div className="pt-24 pb-20 px-8">
         <div className="max-w-[1300px] mx-auto">
           <button
@@ -315,12 +295,9 @@ export default function Checkout() {
             <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
             장바구니로 돌아가기
           </button>
-
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
             <div className="lg:col-span-2 space-y-8">
               <h1 className="text-3xl font-medium tracking-tight">주문 및 결제</h1>
-
-              {/* 주문자 정보 */}
               <section className="bg-white rounded-[32px] p-8 shadow-sm border border-gray-100">
                 <h2 className="text-xl font-medium flex items-center gap-2 mb-6">
                   <MapPin className="w-5 h-5 text-gray-400" /> 주문자 정보
@@ -344,8 +321,6 @@ export default function Checkout() {
                   ))}
                 </div>
               </section>
-
-              {/* 배송지 정보 */}
               <section className="bg-white rounded-[32px] p-8 shadow-sm border border-gray-100">
                 <div className="flex items-center justify-between mb-6">
                   <h2 className="text-xl font-medium flex items-center gap-2">
@@ -394,7 +369,6 @@ export default function Checkout() {
                     </div>
                   ))}
 
-                  {/* 우편번호 + 주소 검색 */}
                   <div className="md:col-span-2">
                     <label className="block text-sm text-gray-500 mb-2">우편번호</label>
                     <div className="flex gap-3">
@@ -415,8 +389,6 @@ export default function Checkout() {
                       </button>
                     </div>
                   </div>
-
-                  {/* 주소 */}
                   <div className="md:col-span-2">
                     <label className="block text-sm text-gray-500 mb-2">주소</label>
                     <input
@@ -428,8 +400,6 @@ export default function Checkout() {
                       className="w-full px-4 py-3 bg-gray-50 rounded-xl border border-transparent text-sm text-gray-500"
                     />
                   </div>
-
-                  {/* 상세 주소 */}
                   <div className="md:col-span-2">
                     <label className="block text-sm text-gray-500 mb-2">상세 주소</label>
                     <input
@@ -440,8 +410,6 @@ export default function Checkout() {
                       className="w-full px-4 py-3 bg-gray-50 rounded-xl border border-transparent focus:outline-none focus:border-gray-300 transition-colors text-sm"
                     />
                   </div>
-
-                  {/* 배송 요청사항 */}
                   <div className="md:col-span-2">
                     <label className="block text-sm text-gray-500 mb-2">배송 요청사항</label>
                     <input
@@ -454,8 +422,6 @@ export default function Checkout() {
                   </div>
                 </div>
               </section>
-
-              {/* 주문 상품 */}
               <section className="bg-white rounded-[32px] p-8 shadow-sm border border-gray-100">
                 <h2 className="text-xl font-medium flex items-center gap-2 mb-6">
                   <Package className="w-5 h-5 text-gray-400" /> 주문 상품 ({cartItems.length})
@@ -479,8 +445,6 @@ export default function Checkout() {
                   ))}
                 </div>
               </section>
-
-              {/* 결제 수단 */}
               <section className="bg-white rounded-[32px] p-8 shadow-sm border border-gray-100">
                 <h2 className="text-xl font-medium flex items-center gap-2 mb-6">
                   <CreditCard className="w-5 h-5 text-gray-400" /> 결제 수단
@@ -512,8 +476,6 @@ export default function Checkout() {
                 </div>
               </section>
             </div>
-
-            {/* 주문 요약 사이드바 */}
             <div className="lg:col-span-1">
               <div className="bg-white rounded-[32px] p-8 shadow-sm border border-gray-100 sticky top-28">
                 <h2 className="text-xl font-medium mb-8">최종 주문 합계</h2>
@@ -540,10 +502,7 @@ export default function Checkout() {
                     </p>
                   </div>
                 </div>
-
-                {/* 구매자 동의 */}
                 <div className="mb-5 border border-gray-100 rounded-2xl overflow-hidden">
-                  {/* 전체 동의 */}
                   <button
                     type="button"
                     onClick={toggleAll}
@@ -554,7 +513,6 @@ export default function Checkout() {
                     </span>
                     <span className="text-sm font-bold text-gray-900">아래 약관에 모두 동의합니다</span>
                   </button>
-
                   <div className="divide-y divide-gray-100">
                     {[
                       { key: 'purchase' as const, label: '구매조건 확인 및 결제진행에 동의합니다', href: '/returns' },
@@ -579,7 +537,6 @@ export default function Checkout() {
                     ))}
                   </div>
                 </div>
-
                 <button
                   onClick={handleOrder}
                   disabled={cartItems.length === 0 || !selectedMethod || !allAgreed || isProcessing}
@@ -597,7 +554,6 @@ export default function Checkout() {
                     <>결제하기 <ChevronRight className="w-4 h-4" /></>
                   )}
                 </button>
-
                 <div className="mt-6 p-4 bg-gray-50 rounded-2xl">
                   <p className="text-[10px] text-gray-400 leading-relaxed text-center">
                     보안 결제 시스템으로 고객님의 정보는 암호화되어 안전하게 보호됩니다.
@@ -608,7 +564,7 @@ export default function Checkout() {
           </div>
         </div>
       </div>
-      {/* 우편번호 검색 오버레이 */}
+
       {showAddressSearch && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
           <div className="bg-white rounded-2xl overflow-hidden shadow-2xl w-full max-w-md mx-4">

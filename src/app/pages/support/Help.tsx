@@ -46,16 +46,13 @@ export default function Help() {
           <h1 className="text-base font-semibold tracking-tight text-gray-900">고객센터</h1>
         </div>
       </div>
-
       <div className="max-w-3xl mx-auto px-6 py-8 space-y-8">
-
         <div className="space-y-1">
           <p className="text-xl font-bold text-gray-900">무엇을 도와드릴까요?</p>
           <p className="text-sm text-gray-500">
             평일 10:00 – 18:00 운영 · 점심 13:00–14:00 제외
           </p>
         </div>
-
         <div className="grid gap-4 md:grid-cols-2">
           {HELP_SECTIONS.map(({ icon: Icon, title, desc, path, cta }) => (
             <Link
@@ -77,7 +74,6 @@ export default function Help() {
             </Link>
           ))}
         </div>
-
         <div className="bg-gray-50 rounded-2xl p-6 flex flex-col sm:flex-row items-start sm:items-center gap-4 justify-between">
           <div>
             <p className="text-sm font-bold text-gray-900 mb-0.5">전화로 문의</p>
@@ -90,7 +86,6 @@ export default function Help() {
             1833-2817
           </a>
         </div>
-
         <div className="bg-gray-50 rounded-2xl p-6 flex flex-col sm:flex-row items-start sm:items-center gap-4 justify-between">
           <div>
             <p className="text-sm font-bold text-gray-900 mb-0.5">이메일로 직접 문의</p>
@@ -103,7 +98,6 @@ export default function Help() {
             koala-art@heron.kr
           </a>
         </div>
-
       </div>
     </div>
   );
