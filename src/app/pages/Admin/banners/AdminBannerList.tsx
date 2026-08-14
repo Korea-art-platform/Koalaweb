@@ -51,7 +51,13 @@ export default function AdminBannerList() {
   const [imageUrl, setImageUrl] = useState('');
   const [useUpload, setUseUpload] = useState(true);
   const [uploading, setUploading] = useState(false);
+
+  const [videoFile, setVideoFile] = useState<File | null>(null);
+  const [videoPreview, setVideoPreview] = useState('');
+  const [videoUrl, setVideoUrl] = useState('');
+  const [useVideoUpload, setUseVideoUpload] = useState(true);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const videoInputRef = useRef<HTMLInputElement>(null);
 
   const [replaceTarget, setReplaceTarget] = useState<BannerResponse | null>(null);
   const [replaceFile, setReplaceFile] = useState<File | null>(null);
@@ -80,6 +86,11 @@ export default function AdminBannerList() {
     }
   };
 
+  const handleVideoChange = (file: File | null) => {
+    setVideoFile(file);
+    setVideoPreview(file ? URL.createObjectURL(file) : '');
+  };
+
   const handleCreate = async () => {
     if (!form.title.trim()) {
       setFormError('제목은 필수 항목입니다.');
@@ -105,10 +116,18 @@ export default function AdminBannerList() {
         setUploading(false);
       }
 
+      let finalVideoUrl = useVideoUpload ? '' : videoUrl.trim();
+      if (useVideoUpload && videoFile) {
+        setUploading(true);
+        finalVideoUrl = await uploadBannerImage(videoFile);
+        setUploading(false);
+      }
+
       await createBanner({
         bannerType: form.bannerType,
         title: form.title.trim(),
         imageUrl: finalImageUrl,
+        videoUrl: finalVideoUrl || undefined,
         subtitle: form.subtitle.trim() || undefined,
         badge: form.badge.trim() || undefined,
         description: form.description.trim() || undefined,
@@ -133,6 +152,10 @@ export default function AdminBannerList() {
     setImagePreview('');
     setImageUrl('');
     setUseUpload(true);
+    setVideoFile(null);
+    setVideoPreview('');
+    setVideoUrl('');
+    setUseVideoUpload(true);
     if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
@@ -368,6 +391,69 @@ export default function AdminBannerList() {
                   />
                 )}
               </div>
+
+              <div className="border-t border-gray-100 pt-4">
+                <div className="flex items-center justify-between mb-1.5">
+                  <label className="text-xs text-gray-500">영상 (선택)</label>
+                  <div className="flex bg-gray-100 rounded-lg p-0.5 text-[11px]">
+                    <button
+                      onClick={() => setUseVideoUpload(true)}
+                      className={`px-2.5 py-1 rounded-md transition-colors ${useVideoUpload ? 'bg-white text-gray-900 shadow-sm font-medium' : 'text-gray-400'}`}
+                    >
+                      파일 업로드
+                    </button>
+                    <button
+                      onClick={() => setUseVideoUpload(false)}
+                      className={`px-2.5 py-1 rounded-md transition-colors ${!useVideoUpload ? 'bg-white text-gray-900 shadow-sm font-medium' : 'text-gray-400'}`}
+                    >
+                      URL 입력
+                    </button>
+                  </div>
+                </div>
+                <p className="text-[11px] text-gray-400 mb-2.5">
+                  넣으면 영상이 자동 재생되고, 위 이미지는 <b>로딩 중·재생 불가 시 배경</b>으로 쓰입니다.
+                  자동 재생은 브라우저 규칙상 <b>항상 무음</b>입니다. 20MB 이하 · 10~15초 · 720p mp4 를 권장합니다.
+                </p>
+
+                {useVideoUpload ? (
+                  <div>
+                    <input
+                      ref={videoInputRef}
+                      type="file"
+                      accept="video/mp4,video/webm,video/quicktime"
+                      className="hidden"
+                      onChange={(e) => handleVideoChange(e.target.files?.[0] ?? null)}
+                    />
+                    {videoPreview ? (
+                      <div className="relative inline-block">
+                        <video src={videoPreview} className="h-20 rounded-lg object-cover border" muted autoPlay loop playsInline />
+                        <button
+                          onClick={() => { handleVideoChange(null); if (videoInputRef.current) videoInputRef.current.value = ''; }}
+                          className="absolute -top-1.5 -right-1.5 bg-koala-navy text-white rounded-full p-0.5 hover:bg-red-600"
+                        >
+                          <X className="w-3 h-3" />
+                        </button>
+                      </div>
+                    ) : (
+                      <button
+                        onClick={() => videoInputRef.current?.click()}
+                        className="flex items-center gap-2 w-full justify-center py-4 text-xs border-2 border-dashed border-gray-200 rounded-lg text-gray-400 hover:border-gray-400 hover:text-gray-600 transition-colors"
+                      >
+                        <Upload className="w-4 h-4" />
+                        영상 파일 선택 (MP4, WEBM)
+                      </button>
+                    )}
+                  </div>
+                ) : (
+                  <input
+                    value={videoUrl}
+                    onChange={(e) => setVideoUrl(e.target.value)}
+                    className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-black/10"
+                    placeholder="https://.../hero.mp4"
+                  />
+                )}
+              </div>
+
               <div>
                 <label className="block text-xs text-gray-500 mb-1.5">부제목 (선택)</label>
                 <input

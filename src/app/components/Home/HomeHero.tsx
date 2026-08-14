@@ -3,6 +3,7 @@ import { Link } from 'react-router';
 import { ArrowRight, ChevronLeft, ChevronRight, Sparkles, Palette, Layers } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import type { Banner } from '@/api/types';
+import BannerMedia from '@/app/components/common/BannerMedia';
 
 interface HomeHeroProps {
   banners: Banner[];
@@ -79,14 +80,11 @@ export default function HomeHero({ banners }: HomeHeroProps) {
           className="absolute inset-0 transition-opacity duration-700 ease-in-out"
           style={{ opacity: i === current ? 1 : 0 }}
         >
-          <img
-            src={b.imageUrl}
+          <BannerMedia
+            imageUrl={b.imageUrl}
+            videoUrl={b.videoUrl}
             alt={b.title ?? 'Banner'}
-            className="w-full h-full object-cover object-center"
-
-            loading={i === 0 ? 'eager' : 'lazy'}
-            fetchPriority={i === 0 ? 'high' : 'auto'}
-            decoding="async"
+            eager={i === 0}
           />
         </div>
       ))}

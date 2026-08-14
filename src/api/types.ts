@@ -199,6 +199,7 @@ export type BannerType = 'MAIN' | 'MAIN_SUB' | string;
 export interface Banner {
   id: number;
   imageUrl: string;
+  videoUrl?: string;
   linkUrl?: string;
   title?: string;
   subtitle?: string;

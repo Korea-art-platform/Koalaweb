@@ -1,6 +1,7 @@
 import { Link } from 'react-router';
 import { ArrowRight } from 'lucide-react';
 import type { Banner } from '@/api/types';
+import BannerMedia from '@/app/components/common/BannerMedia';
 
 interface Props {
   banner: Banner | null;
@@ -12,6 +13,7 @@ export default function HomeStudio({ banner }: Props) {
     '흙을 빚고 색을 입히는 손끝에서 작품이 태어납니다. 작가가 머무는 공간과 그 과정을 소개합니다.';
   const linkUrl = '/artist-lab';
   const imageUrl = banner?.imageUrl ?? null;
+  const videoUrl = banner?.videoUrl ?? null;
 
   return (
     <section className="px-4 md:px-12 pt-12 md:pt-24">
@@ -22,9 +24,10 @@ export default function HomeStudio({ banner }: Props) {
         >
           <div className="grid lg:grid-cols-2">
             <div className="relative min-h-[260px] md:min-h-[420px] bg-koala-purple overflow-hidden">
-              {imageUrl ? (
-                <img
-                  src={imageUrl}
+              {imageUrl || videoUrl ? (
+                <BannerMedia
+                  imageUrl={imageUrl}
+                  videoUrl={videoUrl}
                   alt={title}
                   className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
                 />

@@ -352,6 +352,7 @@ export async function createBanner(body: {
   bannerType: string;
   title: string;
   imageUrl: string;
+  videoUrl?: string;
   subtitle?: string;
   badge?: string;
   description?: string;
@@ -554,6 +555,7 @@ export interface BannerResponse {
   badge?: string;
   description?: string;
   imageUrl: string;
+  videoUrl?: string;
   mobileImageUrl?: string;
   linkUrl?: string;
   linkTarget?: string;
