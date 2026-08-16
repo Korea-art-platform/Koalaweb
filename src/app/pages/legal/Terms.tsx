@@ -27,7 +27,7 @@ export default function Terms() {
           <p><span className="font-medium text-gray-700 w-28 inline-block">사업자등록번호</span>203-87-01972</p>
           <p><span className="font-medium text-gray-700 w-28 inline-block">통신판매업 신고</span>제2024-서울서초-3956호</p>
           <p><span className="font-medium text-gray-700 w-28 inline-block">대표자</span>정동훈</p>
-          <p><span className="font-medium text-gray-700 w-28 inline-block">소재지</span>경기도 파주시 파주읍 통일로 1552번길 54</p>
+          <p><span className="font-medium text-gray-700 w-28 inline-block">소재지</span>서울 강서구 마곡중앙6로21 이너매스마곡1차 제619호</p>
           <p><span className="font-medium text-gray-700 w-28 inline-block">고객센터</span>1833-2817</p>
           <p><span className="font-medium text-gray-700 w-28 inline-block">이메일</span>koala-art@heron.kr</p>
           <p><span className="font-medium text-gray-700 w-28 inline-block">웹사이트</span>https://koala-art.co.kr</p>

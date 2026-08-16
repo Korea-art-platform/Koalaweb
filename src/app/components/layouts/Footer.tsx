@@ -62,7 +62,7 @@ export default function Footer() {
             상호명: 헤론 &nbsp;|&nbsp; 서비스명: KOALA-ART &nbsp;|&nbsp; 대표이사: 정동훈 &nbsp;|&nbsp; 사업자등록번호: 203-87-01972
             &nbsp;|&nbsp; 통신판매업 신고번호: 제2024-서울서초-3956호
             <br className="hidden sm:block" />
-            &nbsp;|&nbsp; 주소: 경기도 파주시 파주읍 통일로 1552번길 54
+            &nbsp;|&nbsp; 주소: 서울 강서구 마곡중앙6로21 이너매스마곡1차 제619호
             &nbsp;|&nbsp; 고객센터: <a href="tel:18332817" className="hover:text-gray-400 transition-colors">1833-2817</a>
             &nbsp;|&nbsp; 이메일: koala-art@heron.kr
           </p>
