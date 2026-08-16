@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { addCartItem } from '@/api/cart';
 import { getSku } from '@/api/sku';
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from '@/app/components/ui/accordion';
+import { toCdnUrl } from '@/app/lib/imageUrl';
 import type { Sku } from '@/api/types';
 
 interface ProductCardProps {
@@ -27,7 +28,7 @@ export default function ProductCard({
   const navigate = useNavigate();
   const detailPath = `/product/${sku.skuCode}`;
   const layoutId = `product-card-${sku.skuCode}`;
-  const imageUrl = sku.primaryImageUrl ?? '/placeholder.svg';
+  const imageUrl = toCdnUrl(sku.primaryImageUrl) ?? '/placeholder.svg';
   const price = (sku.salePrice ?? sku.listPrice).toLocaleString();
   const categoryLabel = t(`store.categories.${sku.genre}`, { defaultValue: sku.genre }) as string;
 
@@ -59,7 +60,7 @@ export default function ProductCard({
         && m.mediaRole !== 'SPINE_360'
         && m.mediaRole !== 'AR_PREVIEW'
         && m.mediaRole !== 'AR_MODEL')
-      .map((m) => m.fileUrl);
+      .map((m) => toCdnUrl(m.fileUrl));
     return [imageUrl, ...extra.filter((u) => u && u !== imageUrl)].slice(0, 8);
   }, [detail, imageUrl]);
 
