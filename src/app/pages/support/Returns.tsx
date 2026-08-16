@@ -37,6 +37,14 @@ export default function Returns() {
             <li>담당자 확인 후 영업일 기준 1~2일 이내 회수 방법 안내</li>
             <li>반품 상품 회수 및 검수 완료 후 환불/교환 처리</li>
           </ol>
+          <div className="bg-gray-50 rounded-xl p-5 space-y-1 text-xs leading-relaxed">
+            <p className="font-semibold text-gray-800">반송지 주소</p>
+            <p className="text-gray-700">경기도 파주시 파주읍 통일로 1552번길 54</p>
+            <p className="text-gray-500">
+              반송 전 반드시 교환/반품 신청을 먼저 해주세요. 사전 신청 없이 보내신 상품은
+              확인이 지연되거나 처리되지 않을 수 있습니다.
+            </p>
+          </div>
         </section>
         <section className="space-y-3">
           <h2 className="font-semibold text-gray-900">3. 환불 처리 기간</h2>
