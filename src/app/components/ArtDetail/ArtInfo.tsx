@@ -4,17 +4,13 @@ export interface ArtInfoItem {
 }
 
 interface ArtInfoProps {
-  items?: ArtInfoItem[];
+  items: ArtInfoItem[];
 }
 
-const DEFAULT_ITEMS: ArtInfoItem[] = [
-  { label: '소재', value: '철, 알루미늄' },
-  { label: '크기', value: '25cm × 5 × 25cm' },
-  { label: '무게', value: '100g' },
-  { label: '배달비용', value: '300원' },
-];
+// 배송 정보 페이지와 같은 기준. 문구가 갈리지 않게 한 곳에서만 관리
+export const SHIPPING_FEE_TEXT = '3,000원 (3만원 이상 무료 · 제주/도서산간 추가)';
 
-export function ArtInfo({ items = DEFAULT_ITEMS }: ArtInfoProps) {
+export function ArtInfo({ items }: ArtInfoProps) {
   return (
     <section className="mb-16">
       <h3 className="text-lg font-semibold mb-4">작품 소개</h3>

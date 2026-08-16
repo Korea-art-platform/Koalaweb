@@ -23,7 +23,7 @@ import {
 } from '@/app/components/products';
 
 import ProductDetailPage from '@/app/components/products/ProductDetailPage';
-import { ArtImages, ArtMaterial, ArtPackaging, ArtArtist, ArtInfo, ArtQnA } from '@/app/components/ArtDetail';
+import { ArtImages, ArtMaterial, ArtPackaging, ArtArtist, ArtInfo, ArtQnA, SHIPPING_FEE_TEXT } from '@/app/components/ArtDetail';
 import TrendingArtists from '@/app/components/Artist/TrendingArtists';
 
 export default function ProductDetail() {
@@ -273,7 +273,7 @@ export default function ProductDetail() {
                 { label: '소재', value: sku.material ?? '-' },
                 { label: '크기', value: (sku as any).widthCm ? `${(sku as any).widthCm}cm × ${(sku as any).heightCm}cm` : '-' },
                 { label: '무게', value: (sku as any).weightKg ? `${(sku as any).weightKg}kg` : '-' },
-                { label: '배달비용', value: '-' },
+                { label: '배달비용', value: SHIPPING_FEE_TEXT },
               ]}
             />
             <ArtQnA />

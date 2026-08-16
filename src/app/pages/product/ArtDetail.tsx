@@ -14,6 +14,7 @@ import {
   ArtArtist,
   ArtInfo,
   ArtQnA,
+  SHIPPING_FEE_TEXT,
 } from '@/app/components/ArtDetail';
 import { ShareButton } from '@/app/components/common/ShareButton';
 import { useCategories } from '@/app/hooks/useCategories';
@@ -71,7 +72,7 @@ export default function ArtDetail() {
     { label: '소재',     value: sku.material || '-' },
     { label: '크기',     value: sku.widthCm ? `${sku.widthCm}cm × ${sku.heightCm}cm` : '-' },
     { label: '무게',     value: sku.weightKg ? `${sku.weightKg}kg` : '-' },
-    { label: '배달비용', value: '-' },
+    { label: '배달비용', value: SHIPPING_FEE_TEXT },
   ];
 
   return (
