@@ -6,6 +6,7 @@ import Navigation from '@/app/components/layouts/Header';
 import { getSku } from '@/api/sku';
 import { addCartItem } from '@/api/cart';
 import type { Sku } from '@/api/types';
+import { notifyCartUpdated } from '@/app/hooks/useCart';
 
 export default function Product360View() {
   const { t } = useTranslation();
@@ -131,7 +132,7 @@ export default function Product360View() {
     setCartLoading(true);
     try {
       await addCartItem(sku!.skuCode, 1);
-      window.dispatchEvent(new Event('cart-updated'));
+      notifyCartUpdated();
       setShowToast(true);
       setTimeout(() => setShowToast(false), 3000);
     } catch (e: unknown) {

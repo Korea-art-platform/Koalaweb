@@ -7,6 +7,7 @@ import { Link, useSearchParams } from 'react-router';
 import { getSku } from '@/api/sku';
 import { addCartItem } from '@/api/cart';
 import type { Sku } from '@/api/types';
+import { notifyCartUpdated } from '@/app/hooks/useCart';
 
 export default function ARView() {
   const { t } = useTranslation();
@@ -58,7 +59,7 @@ export default function ARView() {
     setCartLoading(true);
     try {
       await addCartItem(sku.skuCode, 1);
-      window.dispatchEvent(new Event('cart-updated'));
+      notifyCartUpdated();
       showToastMessage(t('product.detail.toast.cartAdded'), true);
     } catch (e: unknown) {
       const msg = (e as { response?: { data?: { message?: string } } })?.response?.data?.message;

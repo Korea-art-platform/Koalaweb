@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { getWishlist, removeWishlist } from '@/api/wishlist';
 import { addCartItem } from '@/api/cart';
+import { notifyCartUpdated } from '@/app/hooks/useCart';
 
 export default function AccountWishlist() {
     const { t } = useTranslation();
@@ -39,7 +40,7 @@ export default function AccountWishlist() {
     const handleAddToCart = async (skuCode: string) => {
         try {
             await addCartItem(skuCode, 1);
-            window.dispatchEvent(new Event('cart-updated'));
+            notifyCartUpdated();
             alert(t('product.detail.toast.cartAdded'));
         } catch (e: unknown) {
             const msg = (e as { response?: { data?: { message?: string } } })?.response?.data?.message;

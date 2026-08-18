@@ -1,10 +1,23 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import type { QueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { getCart, updateCartItem, removeCartItem, clearCart } from '@/api/cart';
 import { useAuth } from '@/app/context/AuthContext';
 import type { Cart } from '@/api/types';
 
 export const CART_QUERY_KEY = ['cart'] as const;
+
+export const CART_UPDATED_EVENT = 'cart-updated';
+
+export function notifyCartUpdated() {
+  window.dispatchEvent(new Event(CART_UPDATED_EVENT));
+}
+
+export function attachCartSync(client: QueryClient): () => void {
+  const refetch = () => client.invalidateQueries({ queryKey: CART_QUERY_KEY });
+  window.addEventListener(CART_UPDATED_EVENT, refetch);
+  return () => window.removeEventListener(CART_UPDATED_EVENT, refetch);
+}
 
 async function fetchCart(): Promise<Cart | null> {
   const res = await getCart();

@@ -1,6 +1,7 @@
 import '../locales/i18n';
 import { BrowserRouter, useLocation } from 'react-router';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { attachCartSync } from '@/app/hooks/useCart';
 import { HelmetProvider } from 'react-helmet-async';
 import { AppRoutes } from './routes.tsx';
 import { ViewModeProvider } from './context/ViewModeContext';
@@ -19,6 +20,8 @@ const queryClient = new QueryClient({
     },
   },
 });
+
+attachCartSync(queryClient);
 
 function Layout() {
   const location = useLocation();

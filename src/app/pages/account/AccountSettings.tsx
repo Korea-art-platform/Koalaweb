@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router';
 import { useAuth } from '@/app/context/AuthContext';
 import { logout as logoutApi, withdraw as withdrawApi } from '@/api/auth';
 import { KeyRound, LogOut, Trash2, ChevronRight } from 'lucide-react';
+import { notifyCartUpdated } from '@/app/hooks/useCart';
 
 export default function AccountSettings() {
   const navigate = useNavigate();
@@ -15,7 +16,7 @@ export default function AccountSettings() {
     } catch {
     } finally {
       setAuthenticated(false);
-      window.dispatchEvent(new Event('cart-updated'));
+      notifyCartUpdated();
       navigate('/login');
     }
   };
@@ -31,7 +32,7 @@ export default function AccountSettings() {
       await withdrawApi();
       window.alert('회원 탈퇴가 완료되었습니다.');
       setAuthenticated(false);
-      window.dispatchEvent(new Event('cart-updated'));
+      notifyCartUpdated();
       navigate('/login');
     } catch {
       window.alert('탈퇴 처리 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');

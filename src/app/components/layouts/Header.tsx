@@ -6,7 +6,7 @@ import {
 import { ViewModeProvider } from '@/app/context/ViewModeContext';
 import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { CART_QUERY_KEY } from '@/app/hooks/useCart';
+import { CART_QUERY_KEY, notifyCartUpdated } from '@/app/hooks/useCart';
 import { getCart } from '@/api/cart';
 import { getArtists } from '@/api/artist';
 import type { Cart, Artist, PageResponse } from '@/api/types';
@@ -269,7 +269,7 @@ export function Header() {
                   try { await logoutApi(); } catch {  }
                   finally {
                     setAuthenticated(false);
-                    window.dispatchEvent(new Event('cart-updated'));
+                    notifyCartUpdated();
                     navigate('/login');
                   }
                 }}

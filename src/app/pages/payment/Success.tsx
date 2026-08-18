@@ -3,6 +3,7 @@ import { useSearchParams, useNavigate } from 'react-router';
 import { confirmPayment } from '@/api/payment';
 import { getOrder } from '@/api/order';
 import { PG_DISPLAY_NAME } from '@/app/lib/pg';
+import { notifyCartUpdated } from '@/app/hooks/useCart';
 
 type Status = 'pending' | 'success' | 'error';
 
@@ -24,7 +25,7 @@ export default function PaymentSuccess() {
     const orderNo    = searchParams.get('orderNo');
 
     const goToCompletion = async (no: string) => {
-      window.dispatchEvent(new Event('cart-updated'));
+      notifyCartUpdated();
 
       let orderDetail: any = null;
       try {

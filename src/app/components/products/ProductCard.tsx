@@ -8,6 +8,7 @@ import { getSku } from '@/api/sku';
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from '@/app/components/ui/accordion';
 import { toCdnUrl } from '@/app/lib/imageUrl';
 import type { Sku } from '@/api/types';
+import { notifyCartUpdated } from '@/app/hooks/useCart';
 
 interface ProductCardProps {
   sku: Sku;
@@ -97,7 +98,7 @@ export default function ProductCard({
         addCartItem(sku.skuCode, 1),
         new Promise((r) => setTimeout(r, 500)),
       ]);
-      window.dispatchEvent(new Event('cart-updated'));
+      notifyCartUpdated();
       setAdded(true);
       setTimeout(() => setAdded(false), 1600);
     } catch (err) {

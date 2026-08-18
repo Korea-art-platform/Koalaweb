@@ -4,6 +4,7 @@ import { User, MapPin, CreditCard, Package, Heart, LogOut, Settings, MessageCirc
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/app/context/AuthContext';
 import { logout as logoutApi } from '@/api/auth';
+import { notifyCartUpdated } from '@/app/hooks/useCart';
 
 const menuItems = [
   { icon: User, key: 'account.sidebar.profile', path: '/account' },
@@ -32,7 +33,7 @@ export default function AccountSidebar({ currentPath, user }: Props) {
     } catch {
     } finally {
       setAuthenticated(false);
-      window.dispatchEvent(new Event('cart-updated'));
+      notifyCartUpdated();
       navigate('/login');
     }
   };
