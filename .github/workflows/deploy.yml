@@ -36,6 +36,13 @@ jobs:
           # 상품 이미지 CDN — DB에 저장된 S3 직접 주소를 렌더 시점에 이 도메인으로 치환한다.
           # (src/app/lib/imageUrl.ts) 값이 없으면 치환하지 않고 원본 S3 주소를 그대로 쓴다.
           VITE_IMAGE_CDN_BASE: https://d21ujaa1y1qwaz.cloudfront.net
+          # 어느 PG 로 결제창을 띄울지. 값이 없거나 TOSS 면 토스가 뜬다.
+          # 전환할 때 이 값만 NICEPAY 또는 PAYPLE 로 바꾸면 된다.
+          VITE_PG: ${{ vars.VITE_PG }}
+          # 아래 둘은 브라우저에 노출되는 공개 키다(시크릿 키가 아니다).
+          # 해당 PG 를 쓸 때만 값이 있으면 된다.
+          VITE_NICEPAY_CLIENT_ID: ${{ vars.VITE_NICEPAY_CLIENT_ID }}
+          VITE_PAYPLE_CLIENT_KEY: ${{ vars.VITE_PAYPLE_CLIENT_KEY }}
         run: npm run build
 
       # ── 5. AWS 인증 ─────────────────────────────────────────────────────────
