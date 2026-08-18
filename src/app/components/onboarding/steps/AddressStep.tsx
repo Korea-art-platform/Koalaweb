@@ -18,7 +18,7 @@ interface DaumPostcodeResult {
 }
 
 export default function AddressStep({ address, onChange, onNext, onSkip }: Props) {
-  const { t } = useTranslation('koala');
+  const { t } = useTranslation();
   const [showPostcode, setShowPostcode] = useState(false);
   const postcodeContainerRef = useRef<HTMLDivElement>(null);
 
@@ -80,16 +80,16 @@ export default function AddressStep({ address, onChange, onNext, onSkip }: Props
       <div className="w-16 h-16 bg-[#F4F4F4] rounded-2xl flex items-center justify-center mb-6">
         <MapPin className="w-8 h-8 text-gray-400" />
       </div>
-      <h2 className="text-3xl font-medium tracking-tight mb-3">{t('onboarding.address.title')}</h2>
-      <p className="text-gray-400 mb-8">{t('onboarding.address.desc')}</p>
+      <h2 className="text-3xl font-medium tracking-tight mb-3">{t('auth.onboarding.address.title')}</h2>
+      <p className="text-gray-400 mb-8">{t('auth.onboarding.address.desc')}</p>
       <div className="space-y-4 mb-8">
         <div className="grid grid-cols-2 gap-4">
           <input
-            type="text" placeholder={t('onboarding.address.fullName')}
+            type="text" placeholder={t('auth.onboarding.address.fullName')}
             value={address.fullName} onChange={(e) => onChange({ ...address, fullName: e.target.value })}
             className="w-full px-4 py-3 bg-[#F4F4F4] border border-transparent rounded-xl focus:outline-none focus:border-gray-300"/>
           <input
-            type="tel" placeholder={t('onboarding.address.phone')}
+            type="tel" placeholder={t('auth.onboarding.address.phone')}
             value={address.phone} onChange={(e) => onChange({ ...address, phone: e.target.value })}
             className="w-full px-4 py-3 bg-[#F4F4F4] border border-transparent rounded-xl focus:outline-none focus:border-gray-300"/>
         </div>
@@ -97,7 +97,7 @@ export default function AddressStep({ address, onChange, onNext, onSkip }: Props
           <input
             type="text"
             readOnly
-            placeholder={t('onboarding.address.zipCode')}
+            placeholder={t('auth.onboarding.address.zipCode')}
             value={address.zipCode}
             className="flex-1 px-4 py-3 bg-[#F4F4F4] border border-transparent rounded-xl text-gray-500 cursor-not-allowed"/>
           <button
@@ -111,20 +111,20 @@ export default function AddressStep({ address, onChange, onNext, onSkip }: Props
         <input
           type="text"
           readOnly
-          placeholder={t('onboarding.address.address1')}
+          placeholder={t('auth.onboarding.address.address1')}
           value={address.address1}
           className="w-full px-4 py-3 bg-[#F4F4F4] border border-transparent rounded-xl text-gray-500 cursor-not-allowed"/>
         <input
-          type="text" placeholder={t('onboarding.address.address2')}
+          type="text" placeholder={t('auth.onboarding.address.address2')}
           value={address.address2} onChange={(e) => onChange({ ...address, address2: e.target.value })}
           className="w-full px-4 py-3 bg-[#F4F4F4] border border-transparent rounded-xl focus:outline-none focus:border-gray-300"/>
       </div>
       <div className="flex gap-3">
         <button onClick={onSkip} className="flex-1 py-4 border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors">
-          {t('onboarding.address.later')}
+          {t('auth.onboarding.address.later')}
         </button>
         <button onClick={onNext} className="flex-1 py-4 bg-koala-navy text-white rounded-xl hover:bg-koala-navy-hover transition-colors">
-          {t('onboarding.address.save')}
+          {t('auth.onboarding.address.save')}
         </button>
       </div>
     </div>

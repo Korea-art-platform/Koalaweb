@@ -25,7 +25,7 @@ async function fetchCart(): Promise<Cart | null> {
 }
 
 export function useCart() {
-  const { t } = useTranslation('cart');
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
   const { isAuthenticated } = useAuth();
 
@@ -72,12 +72,12 @@ export function useCart() {
   };
 
   const handleRemoveItem = (itemId: number) => {
-    if (!window.confirm(t('alerts.removeConfirm'))) return;
+    if (!window.confirm(t('cart.alerts.removeConfirm'))) return;
     removeMutation.mutate(itemId);
   };
 
   const handleClearCart = () => {
-    if (!window.confirm(t('alerts.clearConfirm'))) return;
+    if (!window.confirm(t('cart.alerts.clearConfirm'))) return;
     clearMutation.mutate();
   };
 

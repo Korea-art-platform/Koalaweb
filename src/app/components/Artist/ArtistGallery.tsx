@@ -7,7 +7,7 @@ interface ArtistGalleryProps {
 }
 
 export function ArtistGallery({ images, artistName }: ArtistGalleryProps) {
-  const { t } = useTranslation('artistLab');
+  const { t } = useTranslation();
 
   if (!images || images.length === 0) return null;
 
@@ -15,10 +15,10 @@ export function ArtistGallery({ images, artistName }: ArtistGalleryProps) {
     <div className="mb-20 md:mb-32">
       <div className="flex items-end justify-between mb-6 md:mb-8 px-1">
         <h2 className="text-2xl md:text-4xl font-bold tracking-tight">
-          {t('detail.titles.gallery')}
+          {t('artistLab.detail.titles.gallery')}
         </h2>
         <span className="text-[10px] text-gray-400 uppercase tracking-widest font-bold">
-          {t('detail.labels.works')}
+          {t('artistLab.detail.labels.works')}
         </span>
       </div>
       <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">

@@ -104,7 +104,8 @@
       "defaultTitle": "예술작품이",
       "defaultSubtitle": "지금 당신의 손에",
       "description": "한국의 아름다운 예술작품들을 디지털과 물리적 형태로 만나보세요. 전통과 현대가 어우러진 독특한 컬렉션을 선사합니다.",
-      "shopNow": "쇼핑하기"
+      "shopNow": "쇼핑하기",
+      "learnMore": "작가 둘러보기"
     },
     "categories": {
       "title": "카테고리",
@@ -496,10 +497,22 @@
         "title": "어떤 작품을 좋아하시나요?",
         "desc": "관심사를 선택해주시면 취향에 맞는 작품을 추천해드려요.",
         "items": {
-          "artworks": { "label": "원화 및 조형물", "desc": "회화, 판화 등 고유한 예술 작품" },
-          "designToys": { "label": "디자이너 토이", "desc": "한정판 아트 피규어 및 컬렉터블" },
-          "limitedEditions": { "label": "리미티드 에디션", "desc": "넘버링이 포함된 독점 출시작" },
-          "collaborations": { "label": "아티스트 콜라보", "desc": "브랜드와 작가의 특별 협업 제품" }
+          "artworks": {
+            "label": "원화 및 조형물",
+            "desc": "회화, 판화 등 고유한 예술 작품"
+          },
+          "designToys": {
+            "label": "디자이너 토이",
+            "desc": "한정판 아트 피규어 및 컬렉터블"
+          },
+          "limitedEditions": {
+            "label": "리미티드 에디션",
+            "desc": "넘버링이 포함된 독점 출시작"
+          },
+          "collaborations": {
+            "label": "아티스트 콜라보",
+            "desc": "브랜드와 작가의 특별 협업 제품"
+          }
         },
         "skip": "건너뛰기",
         "next": "계속하기"
@@ -508,9 +521,18 @@
         "title": "소식을 받아보시겠어요?",
         "desc": "놓치면 아쉬운 작품 소식들을 가장 먼저 보내드려요.",
         "items": {
-          "newReleases": { "label": "신규 출시 소식", "desc": "새로운 작품과 한정판 드랍 소식" },
-          "priceDrops": { "label": "가격 변동 알림", "desc": "찜한 아이템의 할인 정보" },
-          "newsletter": { "label": "뉴스레터", "desc": "매주 발행되는 작가 인터뷰 및 큐레이션" }
+          "newReleases": {
+            "label": "신규 출시 소식",
+            "desc": "새로운 작품과 한정판 드랍 소식"
+          },
+          "priceDrops": {
+            "label": "가격 변동 알림",
+            "desc": "찜한 아이템의 할인 정보"
+          },
+          "newsletter": {
+            "label": "뉴스레터",
+            "desc": "매주 발행되는 작가 인터뷰 및 큐레이션"
+          }
         },
         "start": "시작하기",
         "changeAnytime": "계정 설정에서 언제든지 변경할 수 있습니다."

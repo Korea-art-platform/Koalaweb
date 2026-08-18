@@ -12,15 +12,15 @@ interface Props {
 }
 
 export default function PreferencesStep({ preferences, onChange, onNext, onSkip }: Props) {
-  const { t } = useTranslation('koala');
+  const { t } = useTranslation();
 
   return (
     <div className="bg-white rounded-3xl p-12 shadow-sm border border-gray-100 animate-in slide-in-from-right-4 duration-500">
       <div className="w-16 h-16 bg-[#F4F4F4] rounded-2xl flex items-center justify-center mb-6">
         <Heart className="w-8 h-8 text-gray-400" />
       </div>
-      <h2 className="text-3xl font-medium tracking-tight mb-3">{t('onboarding.preferences.title')}</h2>
-      <p className="text-gray-400 mb-8">{t('onboarding.preferences.desc')}</p>
+      <h2 className="text-3xl font-medium tracking-tight mb-3">{t('auth.onboarding.preferences.title')}</h2>
+      <p className="text-gray-400 mb-8">{t('auth.onboarding.preferences.desc')}</p>
       <div className="space-y-3 mb-8">
         {PREFERENCE_KEYS.map((key) => (
           <button
@@ -42,10 +42,10 @@ export default function PreferencesStep({ preferences, onChange, onNext, onSkip 
       </div>
       <div className="flex gap-3">
         <button onClick={onSkip} className="flex-1 py-4 border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors">
-          {t('onboarding.preferences.skip')}
+          {t('auth.onboarding.preferences.skip')}
         </button>
         <button onClick={onNext} className="flex-1 py-4 bg-koala-navy text-white rounded-xl hover:bg-koala-navy-hover transition-colors font-medium">
-          {t('onboarding.preferences.next')}
+          {t('auth.onboarding.preferences.next')}
         </button>
       </div>
     </div>

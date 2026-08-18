@@ -10,7 +10,7 @@ import PreferencesStep from '@/app/components/onboarding/steps/PreferencesStep';
 import NotificationsStep from '@/app/components/onboarding/steps/NotificationsStep';
 
 export default function Onboarding(){
-  const {t} = useTranslation('koala');
+  const {t} = useTranslation();
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState<OnboardingStep>('welcome');
   const [formData, setFormData] = useState({

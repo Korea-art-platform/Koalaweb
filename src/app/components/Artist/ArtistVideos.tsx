@@ -64,7 +64,7 @@ interface ArtistVideosProps {
 }
 
 export function ArtistVideos({ videos }: ArtistVideosProps) {
-  const { t } = useTranslation('artistLab');
+  const { t } = useTranslation();
 
   if (!videos || videos.length === 0) return null;
 
@@ -72,10 +72,10 @@ export function ArtistVideos({ videos }: ArtistVideosProps) {
     <div className="mb-20 md:mb-32">
       <div className="flex items-end justify-between mb-6 md:mb-8 px-1">
         <h2 className="text-2xl md:text-4xl font-bold tracking-tight italic">
-          {t('detail.titles.insideStudio')}
+          {t('artistLab.detail.titles.insideStudio')}
         </h2>
         <span className="text-[10px] text-gray-400 uppercase tracking-widest font-bold">
-          {t('detail.labels.interview')}
+          {t('artistLab.detail.labels.interview')}
         </span>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
