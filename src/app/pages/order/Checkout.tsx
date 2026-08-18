@@ -6,12 +6,8 @@ import { createOrder } from '@/api/order';
 import { getCart } from '@/api/cart';
 import { preparePayment } from '@/api/payment';
 import { getMyProfile, getMyAddresses } from '@/api/user';
-import { loadTossPayments, ANONYMOUS } from '@tosspayments/tosspayments-sdk';
+import { startPayment, isUserCancel, PAY_METHODS, PG_PROVIDER_CODE, type PayMethod } from '@/app/lib/pg';
 import type { Cart, UserAddress } from '@/api/types';
-
-const TOSS_CLIENT_KEY = import.meta.env.VITE_TOSS_CLIENT_KEY as string;
-
-type PaymentMethodType = 'TOSS' | 'TRANSFER';
 
 function TossPayIcon({ size = 48 }: { size?: number }) {
   return (
@@ -39,23 +35,45 @@ function BankTransferIcon({ size = 48 }: { size?: number }) {
   );
 }
 
-interface PaymentMethod {
-  id: PaymentMethodType;
-  nameKo: string;
-  description: string;
+// 결제수단 목록은 PG 마다 다르다 — @/app/lib/pg 가 지금 쓰는 PG 에 맞는 것만 준다
+function CardIcon({ size = 48 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect width="48" height="48" rx="12" fill="#3E2259" />
+      <rect x="10" y="15" width="28" height="18" rx="3" fill="white" />
+      <rect x="10" y="19" width="28" height="4" fill="#3E2259" />
+      <rect x="14" y="28" width="8" height="2.5" rx="1.25" fill="#3E2259" />
+    </svg>
+  );
 }
 
-const paymentMethods: PaymentMethod[] = [
-  { id: 'TOSS',     nameKo: '토스페이', description: '토스 앱 간편 결제' },
-  { id: 'TRANSFER', nameKo: '계좌이체', description: '실시간 계좌이체' },
-];
+function MobileIcon({ size = 48 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect width="48" height="48" rx="12" fill="#F2F4F6" />
+      <rect x="16" y="10" width="16" height="28" rx="3" fill="#4E5968" />
+      <rect x="19" y="13" width="10" height="18" rx="1" fill="#F2F4F6" />
+      <circle cx="24" cy="34.5" r="1.5" fill="#F2F4F6" />
+    </svg>
+  );
+}
+
+function iconFor(id: PayMethod) {
+  if (id === 'TOSSPAY') return <TossPayIcon size={48} />;
+  if (id === 'TRANSFER') return <BankTransferIcon size={48} />;
+  if (id === 'MOBILE_PHONE') return <MobileIcon size={48} />;
+  return <CardIcon size={48} />;
+}
+
+// 결제수단 목록은 PG 마다 다르다 — @/app/lib/pg 가 지금 쓰는 PG 에 맞는 것만 준다
+const paymentMethods = PAY_METHODS;
 
 export default function Checkout() {
   const navigate = useNavigate();
 
   const [cart, setCart] = useState<Cart | null>(null);
   const [loading, setLoading] = useState(true);
-  const [selectedMethod, setSelectedMethod] = useState<PaymentMethodType | null>(null);
+  const [selectedMethod, setSelectedMethod] = useState<PayMethod | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [profile, setProfile] = useState<any>(null);
   const [addresses, setAddresses] = useState<UserAddress[]>([]);
@@ -219,43 +237,28 @@ export default function Checkout() {
       });
       const order = orderRes.data.data;
 
-      await preparePayment(order.orderNo, 'TOSS', selectedMethod);
+      await preparePayment(order.orderNo, PG_PROVIDER_CODE, selectedMethod);
 
       const orderName = cartItems.length > 0
         ? `${cartItems[0].skuName}${cartItems.length > 1 ? ` 외 ${cartItems.length - 1}건` : ''}`
         : '주문';
 
-      const tossPayments = await loadTossPayments(TOSS_CLIENT_KEY);
-      const customerKey = profile?.id ? `user_${profile.id}` : ANONYMOUS;
-      const payment = tossPayments.payment({ customerKey });
-
-      const commonParams = {
-        amount: { currency: 'KRW' as const, value: total },
-        orderId: order.orderNo,
+      await startPayment({
+        method: selectedMethod,
+        orderNo: order.orderNo,
+        amount: total,
         orderName,
-        successUrl: `${window.location.origin}/payment/success`,
-        failUrl: `${window.location.origin}/payment/fail`,
-        customerEmail: form.ordererEmail || undefined,
+        customerKey: profile?.id ? `user_${profile.id}` : undefined,
         customerName: form.ordererName || undefined,
+        customerEmail: form.ordererEmail || undefined,
         customerMobilePhone: mobilePhone,
-      };
-
-      if (selectedMethod === 'TRANSFER') {
-        await payment.requestPayment({
-          method: 'TRANSFER',
-          ...commonParams,
-          transfer: { cashReceiptType: 'PERSONAL', customerIdentityNumber: mobilePhone },
-        });
-      } else {
-        await payment.requestPayment({
-          method: 'CARD',
-          ...commonParams,
-          card: { flowMode: 'DIRECT', easyPay: 'TOSSPAY' },
-        });
-      }
+        onError: (message) => {
+          setIsProcessing(false);
+          alert(message);
+        },
+      });
     } catch (e: unknown) {
-      const code = (e as { code?: string })?.code;
-      if (code === 'USER_CANCEL') return;
+      if (isUserCancel(e)) return;
 
       const msg = (e as { message?: string })?.message;
       const apiMsg = (e as { response?: { data?: { message?: string } } })?.response?.data?.message;
@@ -460,11 +463,11 @@ export default function Checkout() {
                         }`}
                     >
                       <div className="transition-transform group-hover:scale-110">
-                        {method.id === 'TOSS' ? <TossPayIcon size={48} /> : <BankTransferIcon size={48} />}
+                        {iconFor(method.id)}
                       </div>
                       <div className="flex flex-col items-center">
-                        <span className="text-sm font-bold text-gray-900">{method.nameKo}</span>
-                        <span className="text-[10px] text-gray-400">{method.description}</span>
+                        <span className="text-sm font-bold text-gray-900">{method.label}</span>
+                        <span className="text-[10px] text-gray-400">{method.desc}</span>
                       </div>
                       {selectedMethod === method.id && (
                         <div className="w-5 h-5 bg-koala-navy rounded-full flex items-center justify-center">

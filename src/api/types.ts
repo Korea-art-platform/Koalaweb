@@ -191,8 +191,9 @@ export interface Order {
   ordererPhone?: string;
 }
 
-export type PaymentProvider = 'TOSS' | 'KAKAOPAY' | 'NAVERPAY';
-export type PaymentMethodType = 'CARD' | 'VBANK';
+// 백엔드 PaymentProvider.getProviderCode() 가 돌려주는 값과 같아야 한다
+export type PaymentProvider = 'TOSS' | 'NICEPAY' | 'PAYPLE';
+export type PaymentMethodType = 'CARD' | 'TRANSFER' | 'MOBILE_PHONE' | 'TOSSPAY' | 'VBANK';
 
 export type BannerType = 'MAIN' | 'MAIN_SUB' | string;
 

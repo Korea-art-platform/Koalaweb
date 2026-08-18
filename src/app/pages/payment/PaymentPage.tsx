@@ -1,25 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router';
-import { loadTossPayments, ANONYMOUS } from '@tosspayments/tosspayments-sdk';
 import { Check, ChevronRight } from 'lucide-react';
-import { loadNicePay, requestNicePay, type NicePayMethod } from '@/app/lib/nicepay';
-import { loadPayple, requestPayple } from '@/app/lib/payple';
-
-const CLIENT_KEY = import.meta.env.VITE_TOSS_CLIENT_KEY as string;
-const NICE_CLIENT_ID = import.meta.env.VITE_NICEPAY_CLIENT_ID as string | undefined;
-const API_BASE = import.meta.env.VITE_API_BASE_URL as string;
-
-// 어느 PG 를 쓸지는 빌드 시점 설정으로 고른다. 키가 없으면 토스 그대로 돈다.
-const PG = (import.meta.env.VITE_PG as string | undefined) ?? 'TOSS';
-const USE_NICEPAY = PG === 'NICEPAY';
-const USE_PAYPLE = PG === 'PAYPLE';
-const PAYPLE_CLIENT_KEY = import.meta.env.VITE_PAYPLE_CLIENT_KEY as string | undefined;
-
-const NICE_METHOD: Record<PaymentMethod, NicePayMethod> = {
-  CARD: 'card',
-  TRANSFER: 'bank',
-  MOBILE_PHONE: 'cellphone',
-};
+import { startPayment, isUserCancel, PAY_METHODS, type PayMethod } from '@/app/lib/pg';
 
 export interface PaymentPageState {
   orderId: string;
@@ -31,7 +13,6 @@ export interface PaymentPageState {
   customerMobilePhone?: string;
 }
 
-type PaymentMethod = 'CARD' | 'TRANSFER' | 'MOBILE_PHONE';
 
 function CardIcon({ size = 40 }: { size?: number }) {
   return (
@@ -68,18 +49,17 @@ function MobileIcon({ size = 40 }: { size?: number }) {
   );
 }
 
-const METHODS: { id: PaymentMethod; label: string; desc: string }[] = [
-  { id: 'CARD',         label: '카드·간편결제', desc: '카드 / 토스·카카오·네이버페이' },
-  { id: 'TRANSFER',     label: '계좌이체',      desc: '실시간 계좌이체' },
-  { id: 'MOBILE_PHONE', label: '휴대폰결제',    desc: '휴대폰 소액결제' },
-];
+// 결제수단은 PG 마다 다르다 — @/app/lib/pg 가 지금 쓰는 PG 에 맞는 것만 준다
+const METHODS = PAY_METHODS;
 
 export default function PaymentPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const state = location.state as PaymentPageState | null;
 
-  const [selected, setSelected]         = useState<PaymentMethod>('CARD');
+  // PG 마다 목록이 다르므로 첫 번째를 고른다. 'CARD' 로 못박으면 토스에서는
+  // 목록에 없는 값이 선택된 채로 시작한다
+  const [selected, setSelected]         = useState<PayMethod>(METHODS[0].id);
   const [isProcessing, setIsProcessing] = useState(false);
 
   if (!state?.orderId || !state?.amount) {
@@ -90,117 +70,30 @@ export default function PaymentPage() {
   const handlePayment = async () => {
     setIsProcessing(true);
     try {
-      if (USE_PAYPLE) {
-        await payWithPayple();
-        return;
-      }
-      if (USE_NICEPAY) {
-        await payWithNicePay();
-        return;
-      }
-      const tossPayments = await loadTossPayments(CLIENT_KEY);
-      const payment = tossPayments.payment({
-        customerKey: state.customerKey ?? ANONYMOUS,
-      });
-
-      const commonParams = {
-        amount: { currency: 'KRW' as const, value: state.amount },
-        orderId: state.orderId,
+      await startPayment({
+        method: selected,
+        orderNo: state.orderId,
+        amount: state.amount,
         orderName: state.orderName,
-        successUrl: `${window.location.origin}/payment/success`,
-        failUrl: `${window.location.origin}/payment/fail`,
-        customerEmail: state.customerEmail,
+        customerKey: state.customerKey,
         customerName: state.customerName,
+        customerEmail: state.customerEmail,
         customerMobilePhone: state.customerMobilePhone,
-      };
-
-      if (selected === 'TRANSFER') {
-        await payment.requestPayment({ method: 'TRANSFER', ...commonParams });
-      } else if (selected === 'MOBILE_PHONE') {
-        await payment.requestPayment({ method: 'MOBILE_PHONE', ...commonParams });
-      } else {
-        await payment.requestPayment({
-          method: 'CARD',
-          ...commonParams,
-          card: { useEscrow: false, flowMode: 'DEFAULT', useCardPoint: false, useAppCardOnly: false },
-        });
-      }
+        onError: (message) => {
+          setIsProcessing(false);
+          alert(message);
+        },
+      });
     } catch (e: unknown) {
-      const code = (e as { code?: string })?.code;
-      const msg = (e as { message?: string })?.message;
-      if (code !== 'USER_CANCEL') {
-        alert(msg ?? '결제 요청에 실패했습니다. 다시 시도해 주세요.');
+      if (!isUserCancel(e)) {
+        alert((e as { message?: string })?.message ?? '결제 요청에 실패했습니다. 다시 시도해 주세요.');
       }
     } finally {
       setIsProcessing(false);
     }
   };
 
-  /**
-   * 나이스 결제창.
-   *
-   * 토스와 달리 결과가 여기로 돌아오지 않는다. 인증이 끝나면 나이스가 서버의
-   * returnUrl 로 POST 하고, 서버가 승인한 뒤 브라우저를 결과 화면으로 보낸다.
-   * 그래서 성공 처리를 여기서 하지 않고 실패만 받는다.
-   */
-  const payWithNicePay = async () => {
-    if (!NICE_CLIENT_ID) {
-      alert('결제 설정이 완료되지 않았습니다. 잠시 후 다시 시도해 주세요.');
-      return;
-    }
-    await loadNicePay();
-
-    requestNicePay(
-      {
-        clientId: NICE_CLIENT_ID,
-        method: NICE_METHOD[selected],
-        orderId: state.orderId,
-        amount: state.amount,
-        goodsName: state.orderName,
-        returnUrl: `${API_BASE}/api/v1/payments/nice/return`,
-        buyerName: state.customerName,
-        buyerEmail: state.customerEmail,
-        buyerTel: state.customerMobilePhone,
-      },
-      (message) => {
-        setIsProcessing(false);
-        alert(message);
-      },
-    );
-  };
-
-  /**
-   * 페이플 결제창.
-   *
-   * 나이스와 같이 결과가 여기로 돌아오지 않는다. 인증이 끝나면 페이플이 서버로 POST 하고
-   * 서버가 승인한다. 그래서 성공 처리를 여기서 하지 않고 실패만 받는다.
-   */
-  const payWithPayple = async () => {
-    if (!PAYPLE_CLIENT_KEY) {
-      alert('결제 설정이 완료되지 않았습니다. 잠시 후 다시 시도해 주세요.');
-      return;
-    }
-    await loadPayple(import.meta.env.MODE === 'production');
-
-    requestPayple(
-      {
-        clientKey: PAYPLE_CLIENT_KEY,
-        orderId: state.orderId,
-        amount: state.amount,
-        goodsName: state.orderName,
-        returnUrl: `${API_BASE}/api/v1/payments/payple/return`,
-        payerName: state.customerName,
-        payerEmail: state.customerEmail,
-        payerHp: state.customerMobilePhone,
-      },
-      (message) => {
-        setIsProcessing(false);
-        alert(message);
-      },
-    );
-  };
-
-  const iconFor = (id: PaymentMethod, size: number) =>
+  const iconFor = (id: PayMethod, size: number) =>
     id === 'CARD' ? <CardIcon size={size} />
       : id === 'TRANSFER' ? <BankTransferIcon size={size} />
       : <MobileIcon size={size} />;
