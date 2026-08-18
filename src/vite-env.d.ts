@@ -7,6 +7,9 @@ interface ImportMetaEnv {
   readonly VITE_PAYMENT_BASE_URL?: string;
   readonly VITE_GTM_ID?: string;
   readonly VITE_SENTRY_DSN?: string;
+  // 배포 워크플로우가 빌드 시점에 주입한다. 로컬에서는 비어 있어 S3 주소를 그대로 쓴다.
+  readonly VITE_IMAGE_CDN_BASE?: string;
+  readonly MODE: string;
 }
 
 interface ImportMeta {

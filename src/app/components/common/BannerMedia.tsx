@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { toCdnUrl } from '@/app/lib/imageUrl';
 
 type Props = {
   imageUrl?: string | null;
@@ -23,6 +24,12 @@ export default function BannerMedia({
   const videoRef = useRef<HTMLVideoElement>(null);
   const [loadFailed, setLoadFailed] = useState(false);
   const [reduceMotion, setReduceMotion] = useState(prefersReducedMotion);
+
+  // 서버는 S3 주소를 그대로 내려준다. CDN 으로 바꾸지 않으면 시드니 버킷에서
+  // 직접 받게 되고, 히어로는 첫 화면이라 그 지연이 그대로 체감된다.
+  // 영상은 이미지보다 훨씬 커서 더 중요하다.
+  const posterSrc = toCdnUrl(imageUrl);
+  const videoSrc = toCdnUrl(videoUrl);
 
   useEffect(() => {
     if (!window.matchMedia) return;
@@ -51,14 +58,14 @@ export default function BannerMedia({
     return () => document.removeEventListener('visibilitychange', onVisible);
   }, [videoUrl, reduceMotion, loadFailed]);
 
-  const showVideo = Boolean(videoUrl) && !loadFailed && !reduceMotion;
+  const showVideo = Boolean(videoSrc) && !loadFailed && !reduceMotion;
 
   if (showVideo) {
     return (
       <video
         ref={videoRef}
-        src={videoUrl ?? undefined}
-        poster={imageUrl ?? undefined}
+        src={videoSrc}
+        poster={posterSrc}
         className={className}
         // muted 없이는 자동재생이 브라우저에 막힌다. 셋은 한 묶음이다.
         autoPlay
@@ -73,11 +80,11 @@ export default function BannerMedia({
     );
   }
 
-  if (!imageUrl) return null;
+  if (!posterSrc) return null;
 
   return (
     <img
-      src={imageUrl}
+      src={posterSrc}
       alt={alt}
       className={className}
       loading={eager ? 'eager' : 'lazy'}
