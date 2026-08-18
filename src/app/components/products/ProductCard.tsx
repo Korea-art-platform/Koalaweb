@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useRef } from 'react';
+import { useState, useEffect, useMemo, useRef, useId } from 'react';
 import { Heart, ShoppingCart, Check, ArrowRight, X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link, useNavigate } from 'react-router';
@@ -27,7 +27,14 @@ export default function ProductCard({
   const { t } = useTranslation();
   const navigate = useNavigate();
   const detailPath = `/product/${sku.skuCode}`;
-  const layoutId = `product-card-${sku.skuCode}`;
+
+  // 같은 상품이 홈의 여러 섹션(한정판·장르별·카테고리)에 동시에 그려진다.
+  // layoutId 를 상품코드로만 만들면 framer-motion 이 그 카드들을 "같은 하나의 요소"로 보고
+  // 하나만 남긴 채 나머지를 그쪽으로 끌어당긴다 — 한정판 섹션이 통째로 빈칸이 되던 원인이다.
+  // 인스턴스마다 다른 값을 붙여 충돌을 없앤다. 카드와 상세 모달은 같은 컴포넌트 안에 있으므로
+  // 공유 레이아웃 애니메이션은 그대로 동작한다.
+  const instanceId = useId();
+  const layoutId = `product-card-${sku.skuCode}-${instanceId}`;
   const imageUrl = toCdnUrl(sku.primaryImageUrl) ?? '/placeholder.svg';
   const price = (sku.salePrice ?? sku.listPrice).toLocaleString();
   const categoryLabel = t(`store.categories.${sku.genre}`, { defaultValue: sku.genre }) as string;
