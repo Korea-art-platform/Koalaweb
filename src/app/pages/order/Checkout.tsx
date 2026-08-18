@@ -8,6 +8,7 @@ import { preparePayment } from '@/api/payment';
 import { getMyProfile, getMyAddresses } from '@/api/user';
 import { startPayment, isUserCancel, PAY_METHODS, PG_PROVIDER_CODE, type PayMethod } from '@/app/lib/pg';
 import type { Cart, UserAddress } from '@/api/types';
+import { calcShipping } from '@/app/lib/shipping';
 
 function TossPayIcon({ size = 48 }: { size?: number }) {
   return (
@@ -152,7 +153,7 @@ export default function Checkout() {
 
   const cartItems = cart?.items ?? [];
   const subtotal = cart?.subtotalAmount ?? 0;
-  const shipping = cartItems.length > 0 ? (subtotal >= 50000 ? 0 : 3000) : 0;
+  const shipping = calcShipping(subtotal, cartItems.length);
   const total = subtotal + shipping;
 
   const handleFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {

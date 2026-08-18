@@ -1,3 +1,4 @@
+import { FREE_SHIPPING_THRESHOLD_TEXT, SHIPPING_FEE_AMOUNT_TEXT } from '@/app/lib/shipping';
 export interface FaqItem {
   q: string;
   a: string;
@@ -35,7 +36,7 @@ export const FAQS: FaqCategory[] = [
       },
       {
         q: '배송비는 얼마인가요?',
-        a: '3만원 이상 구매 시 무료 배송이 적용됩니다. 3만원 미만 구매 시 배송비 3,000원이 부과됩니다. 제주 및 도서산간 지역은 추가 배송비(3,000~5,000원)가 발생할 수 있습니다.',
+        a: `${FREE_SHIPPING_THRESHOLD_TEXT} 이상 구매 시 무료 배송이 적용됩니다. ${FREE_SHIPPING_THRESHOLD_TEXT} 미만 구매 시 배송비 ${SHIPPING_FEE_AMOUNT_TEXT}원이 부과됩니다. 제주 및 도서산간 지역은 추가 배송비(3,000~5,000원)가 발생할 수 있습니다.`,
       },
       {
         q: '해외 배송이 가능한가요?',

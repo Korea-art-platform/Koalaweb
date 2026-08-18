@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router';
 import { ArrowLeft, Truck, Clock, MapPin, Package } from 'lucide-react';
+import { FREE_SHIPPING_THRESHOLD_TEXT, FREE_SHIPPING_THRESHOLD_AMOUNT_TEXT, SHIPPING_FEE_AMOUNT_TEXT } from '@/app/lib/shipping';
 
 export default function Shipping() {
   const navigate = useNavigate();
@@ -19,7 +20,7 @@ export default function Shipping() {
           {[
             { icon: Truck, label: '배송사', value: 'CJ대한통운' },
             { icon: Clock, label: '출고 기준', value: '결제 후 1~2 영업일' },
-            { icon: Package, label: '무료 배송', value: '3만원 이상' },
+            { icon: Package, label: '무료 배송', value: `${FREE_SHIPPING_THRESHOLD_TEXT} 이상` },
             { icon: MapPin, label: '배송 가능 지역', value: '국내 전 지역' },
           ].map(({ icon: Icon, label, value }) => (
             <div key={label} className="bg-gray-50 rounded-2xl p-4 text-center">
@@ -42,13 +43,13 @@ export default function Shipping() {
               </thead>
               <tbody className="divide-y divide-gray-100">
                 <tr>
-                  <td className="px-4 py-3 text-gray-600">30,000원 이상</td>
+                  <td className="px-4 py-3 text-gray-600">{FREE_SHIPPING_THRESHOLD_AMOUNT_TEXT}원 이상</td>
                   <td className="px-4 py-3 font-semibold text-black">무료</td>
                   <td className="px-4 py-3 text-gray-400">도서산간 제외</td>
                 </tr>
                 <tr>
-                  <td className="px-4 py-3 text-gray-600">30,000원 미만</td>
-                  <td className="px-4 py-3 text-gray-600">3,000원</td>
+                  <td className="px-4 py-3 text-gray-600">{FREE_SHIPPING_THRESHOLD_AMOUNT_TEXT}원 미만</td>
+                  <td className="px-4 py-3 text-gray-600">{SHIPPING_FEE_AMOUNT_TEXT}원</td>
                   <td className="px-4 py-3 text-gray-400"></td>
                 </tr>
                 <tr>

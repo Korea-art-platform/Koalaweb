@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { getCart, updateCartItem, removeCartItem, clearCart } from '@/api/cart';
 import { useAuth } from '@/app/context/AuthContext';
 import type { Cart } from '@/api/types';
+import { calcShipping } from '@/app/lib/shipping';
 
 export const CART_QUERY_KEY = ['cart'] as const;
 
@@ -83,7 +84,7 @@ export function useCart() {
 
   const cartItems = cart?.items ?? [];
   const subtotal = cart?.subtotalAmount ?? 0;
-  const shipping = cartItems.length > 0 ? (subtotal >= 50000 ? 0 : 3000) : 0;
+  const shipping = calcShipping(subtotal, cartItems.length);
   const total = subtotal + shipping;
 
   return {

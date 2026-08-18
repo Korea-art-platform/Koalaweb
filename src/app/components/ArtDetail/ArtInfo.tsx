@@ -1,3 +1,4 @@
+import { SHIPPING_SUMMARY_TEXT } from '@/app/lib/shipping';
 export interface ArtInfoItem {
   label: string;
   value: string;
@@ -7,8 +8,7 @@ interface ArtInfoProps {
   items: ArtInfoItem[];
 }
 
-// 배송 정보 페이지와 같은 기준. 문구가 갈리지 않게 한 곳에서만 관리
-export const SHIPPING_FEE_TEXT = '3,000원 (3만원 이상 무료 · 제주/도서산간 추가)';
+export const SHIPPING_FEE_TEXT = SHIPPING_SUMMARY_TEXT;
 
 export function ArtInfo({ items }: ArtInfoProps) {
   return (
