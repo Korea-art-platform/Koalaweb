@@ -2,8 +2,20 @@ import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router';
 import { loadTossPayments, ANONYMOUS } from '@tosspayments/tosspayments-sdk';
 import { Check, ChevronRight } from 'lucide-react';
+import { loadNicePay, requestNicePay, type NicePayMethod } from '@/app/lib/nicepay';
 
 const CLIENT_KEY = import.meta.env.VITE_TOSS_CLIENT_KEY as string;
+const NICE_CLIENT_ID = import.meta.env.VITE_NICEPAY_CLIENT_ID as string | undefined;
+const API_BASE = import.meta.env.VITE_API_BASE_URL as string;
+
+// 어느 PG 를 쓸지는 빌드 시점 설정으로 고른다. 키가 없으면 토스 그대로 돈다.
+const USE_NICEPAY = (import.meta.env.VITE_PG as string | undefined) === 'NICEPAY';
+
+const NICE_METHOD: Record<PaymentMethod, NicePayMethod> = {
+  CARD: 'card',
+  TRANSFER: 'bank',
+  MOBILE_PHONE: 'cellphone',
+};
 
 export interface PaymentPageState {
   orderId: string;
@@ -74,6 +86,10 @@ export default function PaymentPage() {
   const handlePayment = async () => {
     setIsProcessing(true);
     try {
+      if (USE_NICEPAY) {
+        await payWithNicePay();
+        return;
+      }
       const tossPayments = await loadTossPayments(CLIENT_KEY);
       const payment = tossPayments.payment({
         customerKey: state.customerKey ?? ANONYMOUS,
@@ -110,6 +126,39 @@ export default function PaymentPage() {
     } finally {
       setIsProcessing(false);
     }
+  };
+
+  /**
+   * 나이스 결제창.
+   *
+   * 토스와 달리 결과가 여기로 돌아오지 않는다. 인증이 끝나면 나이스가 서버의
+   * returnUrl 로 POST 하고, 서버가 승인한 뒤 브라우저를 결과 화면으로 보낸다.
+   * 그래서 성공 처리를 여기서 하지 않고 실패만 받는다.
+   */
+  const payWithNicePay = async () => {
+    if (!NICE_CLIENT_ID) {
+      alert('결제 설정이 완료되지 않았습니다. 잠시 후 다시 시도해 주세요.');
+      return;
+    }
+    await loadNicePay();
+
+    requestNicePay(
+      {
+        clientId: NICE_CLIENT_ID,
+        method: NICE_METHOD[selected],
+        orderId: state.orderId,
+        amount: state.amount,
+        goodsName: state.orderName,
+        returnUrl: `${API_BASE}/api/v1/payments/nice/return`,
+        buyerName: state.customerName,
+        buyerEmail: state.customerEmail,
+        buyerTel: state.customerMobilePhone,
+      },
+      (message) => {
+        setIsProcessing(false);
+        alert(message);
+      },
+    );
   };
 
   const iconFor = (id: PaymentMethod, size: number) =>
