@@ -38,10 +38,13 @@ jobs:
           VITE_IMAGE_CDN_BASE: https://d21ujaa1y1qwaz.cloudfront.net
           # 어느 PG 로 결제창을 띄울지. 값이 없거나 TOSS 면 토스가 뜬다.
           # 전환할 때 이 값만 NICEPAY 또는 PAYPLE 로 바꾸면 된다.
-          VITE_PG: ${{ vars.VITE_PG }}
+          VITE_PG: ${{ vars.VITE_PG || 'NICEPAY' }}
           # 아래 둘은 브라우저에 노출되는 공개 키다(시크릿 키가 아니다).
           # 해당 PG 를 쓸 때만 값이 있으면 된다.
-          VITE_NICEPAY_CLIENT_ID: ${{ vars.VITE_NICEPAY_CLIENT_ID }}
+          #
+          # 여기 적힌 나이스 키는 테스트(샌드박스) 상점 키다. 운영 키를 받으면
+          # 저장소 Variables 에 넣어라 — 그 값이 있으면 아래 기본값을 덮는다.
+          VITE_NICEPAY_CLIENT_ID: ${{ vars.VITE_NICEPAY_CLIENT_ID || 'S2_70b3ebcd8c3a440d81a4ccf4cb91b434' }}
           VITE_PAYPLE_CLIENT_KEY: ${{ vars.VITE_PAYPLE_CLIENT_KEY }}
         run: npm run build
 
