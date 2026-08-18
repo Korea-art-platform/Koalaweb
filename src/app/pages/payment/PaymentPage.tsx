@@ -3,13 +3,17 @@ import { useNavigate, useLocation } from 'react-router';
 import { loadTossPayments, ANONYMOUS } from '@tosspayments/tosspayments-sdk';
 import { Check, ChevronRight } from 'lucide-react';
 import { loadNicePay, requestNicePay, type NicePayMethod } from '@/app/lib/nicepay';
+import { loadPayple, requestPayple } from '@/app/lib/payple';
 
 const CLIENT_KEY = import.meta.env.VITE_TOSS_CLIENT_KEY as string;
 const NICE_CLIENT_ID = import.meta.env.VITE_NICEPAY_CLIENT_ID as string | undefined;
 const API_BASE = import.meta.env.VITE_API_BASE_URL as string;
 
 // 어느 PG 를 쓸지는 빌드 시점 설정으로 고른다. 키가 없으면 토스 그대로 돈다.
-const USE_NICEPAY = (import.meta.env.VITE_PG as string | undefined) === 'NICEPAY';
+const PG = (import.meta.env.VITE_PG as string | undefined) ?? 'TOSS';
+const USE_NICEPAY = PG === 'NICEPAY';
+const USE_PAYPLE = PG === 'PAYPLE';
+const PAYPLE_CLIENT_KEY = import.meta.env.VITE_PAYPLE_CLIENT_KEY as string | undefined;
 
 const NICE_METHOD: Record<PaymentMethod, NicePayMethod> = {
   CARD: 'card',
@@ -86,6 +90,10 @@ export default function PaymentPage() {
   const handlePayment = async () => {
     setIsProcessing(true);
     try {
+      if (USE_PAYPLE) {
+        await payWithPayple();
+        return;
+      }
       if (USE_NICEPAY) {
         await payWithNicePay();
         return;
@@ -153,6 +161,37 @@ export default function PaymentPage() {
         buyerName: state.customerName,
         buyerEmail: state.customerEmail,
         buyerTel: state.customerMobilePhone,
+      },
+      (message) => {
+        setIsProcessing(false);
+        alert(message);
+      },
+    );
+  };
+
+  /**
+   * 페이플 결제창.
+   *
+   * 나이스와 같이 결과가 여기로 돌아오지 않는다. 인증이 끝나면 페이플이 서버로 POST 하고
+   * 서버가 승인한다. 그래서 성공 처리를 여기서 하지 않고 실패만 받는다.
+   */
+  const payWithPayple = async () => {
+    if (!PAYPLE_CLIENT_KEY) {
+      alert('결제 설정이 완료되지 않았습니다. 잠시 후 다시 시도해 주세요.');
+      return;
+    }
+    await loadPayple(import.meta.env.MODE === 'production');
+
+    requestPayple(
+      {
+        clientKey: PAYPLE_CLIENT_KEY,
+        orderId: state.orderId,
+        amount: state.amount,
+        goodsName: state.orderName,
+        returnUrl: `${API_BASE}/api/v1/payments/payple/return`,
+        payerName: state.customerName,
+        payerEmail: state.customerEmail,
+        payerHp: state.customerMobilePhone,
       },
       (message) => {
         setIsProcessing(false);

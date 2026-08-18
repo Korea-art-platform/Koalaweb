@@ -12,6 +12,7 @@ interface ImportMetaEnv {
   // 'NICEPAY' 면 나이스 결제창을 쓴다. 없거나 다른 값이면 토스.
   readonly VITE_PG?: string;
   readonly VITE_NICEPAY_CLIENT_ID?: string;
+  readonly VITE_PAYPLE_CLIENT_KEY?: string;
   readonly MODE: string;
 }
 
