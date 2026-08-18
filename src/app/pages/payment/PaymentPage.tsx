@@ -13,7 +13,6 @@ export interface PaymentPageState {
   customerMobilePhone?: string;
 }
 
-
 function CardIcon({ size = 40 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -49,7 +48,6 @@ function MobileIcon({ size = 40 }: { size?: number }) {
   );
 }
 
-// 결제수단은 PG 마다 다르다 — @/app/lib/pg 가 지금 쓰는 PG 에 맞는 것만 준다
 const METHODS = PAY_METHODS;
 
 export default function PaymentPage() {
@@ -57,8 +55,6 @@ export default function PaymentPage() {
   const location = useLocation();
   const state = location.state as PaymentPageState | null;
 
-  // PG 마다 목록이 다르므로 첫 번째를 고른다. 'CARD' 로 못박으면 토스에서는
-  // 목록에 없는 값이 선택된 채로 시작한다
   const [selected, setSelected]         = useState<PayMethod>(METHODS[0].id);
   const [isProcessing, setIsProcessing] = useState(false);
 

@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useSearchParams, useNavigate } from 'react-router';
 import { confirmPayment } from '@/api/payment';
 import { getOrder } from '@/api/order';
+import { PG_DISPLAY_NAME } from '@/app/lib/pg';
 
 type Status = 'pending' | 'success' | 'error';
 
@@ -20,8 +21,46 @@ export default function PaymentSuccess() {
     const paymentKey = searchParams.get('paymentKey');
     const orderId    = searchParams.get('orderId');
     const amount     = searchParams.get('amount');
+    const orderNo    = searchParams.get('orderNo');
+
+    const goToCompletion = async (no: string) => {
+      window.dispatchEvent(new Event('cart-updated'));
+
+      let orderDetail: any = null;
+      try {
+        const orderRes = await getOrder(no);
+        orderDetail = orderRes.data.data;
+      } catch {
+      }
+
+      setStatus('success');
+
+      navigate('/checkout/success', {
+        state: {
+          orderNo: no,
+          orderInfo: orderDetail ? {
+            total: orderDetail.totalAmount,
+            subtotal: orderDetail.productAmount ?? orderDetail.subtotal ?? orderDetail.totalAmount,
+            shipping: orderDetail.shippingAmount ?? orderDetail.shippingFee ?? 0,
+            items: orderDetail.orderItems ?? orderDetail.items ?? [],
+          } : null,
+          shippingAddress: orderDetail?.shipment ? {
+            recipient: orderDetail.shipment.recipientName,
+            phone: orderDetail.shipment.recipientPhone,
+            address: `[${orderDetail.shipment.zipCode}] ${orderDetail.shipment.address1}`,
+            address2: orderDetail.shipment.address2,
+          } : null,
+          paymentMethod: PG_DISPLAY_NAME,
+        },
+        replace: true,
+      });
+    };
 
     if (!paymentKey || !orderId || !amount) {
+      if (orderNo) {
+        goToCompletion(orderNo);
+        return;
+      }
       navigate('/', { replace: true });
       return;
     }
@@ -29,37 +68,7 @@ export default function PaymentSuccess() {
     const confirm = async () => {
       try {
         await confirmPayment(paymentKey, orderId, Number(amount));
-
-        window.dispatchEvent(new Event('cart-updated'));
-
-        let orderDetail: any = null;
-        try {
-          const orderRes = await getOrder(orderId);
-          orderDetail = orderRes.data.data;
-        } catch {
-        }
-
-        setStatus('success');
-
-        navigate('/checkout/success', {
-          state: {
-            orderNo: orderId,
-            orderInfo: orderDetail ? {
-              total: orderDetail.totalAmount,
-              subtotal: orderDetail.productAmount ?? orderDetail.subtotal ?? orderDetail.totalAmount,
-              shipping: orderDetail.shippingAmount ?? orderDetail.shippingFee ?? 0,
-              items: orderDetail.orderItems ?? orderDetail.items ?? [],
-            } : null,
-            shippingAddress: orderDetail?.shipment ? {
-              recipient: orderDetail.shipment.recipientName,
-              phone: orderDetail.shipment.recipientPhone,
-              address: `[${orderDetail.shipment.zipCode}] ${orderDetail.shipment.address1}`,
-              address2: orderDetail.shipment.address2,
-            } : null,
-            paymentMethod: '토스페이먼츠',
-          },
-          replace: true,
-        });
+        await goToCompletion(orderId);
       } catch (e: unknown) {
         const apiMsg = (e as { response?: { data?: { message?: string } } })?.response?.data?.message;
         const errMsg = (e as { message?: string })?.message;

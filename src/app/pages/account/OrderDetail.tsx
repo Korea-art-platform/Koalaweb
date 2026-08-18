@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { ArrowLeft } from 'lucide-react';
 import { getOrder, cancelOrder, getReturnByOrder } from '@/api/order';
+import { ProductToast } from '@/app/components/products/ProductToast';
 import type { Order } from '@/api/types';
 
 import {
@@ -41,12 +42,21 @@ export default function OrderDetail() {
 
   useEffect(() => { fetchOrder(); }, [orderNo]);
 
+  const [toast, setToast] = useState('');
+
+  useEffect(() => {
+    if (!toast) return;
+    const timer = setTimeout(() => setToast(''), 3000);
+    return () => clearTimeout(timer);
+  }, [toast]);
+
   const handleCancel = async () => {
     if (!window.confirm(t('order.detail.confirmCancel'))) return;
     setCancelling(true);
     try {
       await cancelOrder(orderNo!);
       setOrder((prev) => prev ? { ...prev, orderStatus: 'CANCELLED' } : null);
+      setToast(t('order.detail.cancelledMessage'));
     } catch (e: unknown) {
       const msg = (e as { response?: { data?: { message?: string } } })?.response?.data?.message;
       alert(msg || t('order.detail.cancelFailed'));
@@ -95,6 +105,7 @@ export default function OrderDetail() {
           />
         </div>
       ) : null}
+      <ProductToast show={!!toast} message={toast} onClose={() => setToast('')} />
     </>
   );
 }

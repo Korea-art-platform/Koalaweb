@@ -35,7 +35,6 @@ function BankTransferIcon({ size = 48 }: { size?: number }) {
   );
 }
 
-// 결제수단 목록은 PG 마다 다르다 — @/app/lib/pg 가 지금 쓰는 PG 에 맞는 것만 준다
 function CardIcon({ size = 48 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -65,7 +64,6 @@ function iconFor(id: PayMethod) {
   return <CardIcon size={48} />;
 }
 
-// 결제수단 목록은 PG 마다 다르다 — @/app/lib/pg 가 지금 쓰는 PG 에 맞는 것만 준다
 const paymentMethods = PAY_METHODS;
 
 export default function Checkout() {

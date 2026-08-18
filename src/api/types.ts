@@ -191,7 +191,6 @@ export interface Order {
   ordererPhone?: string;
 }
 
-// 백엔드 PaymentProvider.getProviderCode() 가 돌려주는 값과 같아야 한다
 export type PaymentProvider = 'TOSS' | 'NICEPAY' | 'PAYPLE';
 export type PaymentMethodType = 'CARD' | 'TRANSFER' | 'MOBILE_PHONE' | 'TOSSPAY' | 'VBANK';
 

@@ -3,6 +3,7 @@ import { Package, ChevronRight, Box } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { getMyOrders, cancelOrder } from '@/api/order';
+import { ProductToast } from '@/app/components/products/ProductToast';
 
 const getStatusColor = (status: string) => {
   const colors: Record<string, string> = {
@@ -38,11 +39,20 @@ export default function AccountOrders() {
     fetchOrders();
   }, [page]);
 
+  const [toast, setToast] = useState('');
+
+  useEffect(() => {
+    if (!toast) return;
+    const timer = setTimeout(() => setToast(''), 3000);
+    return () => clearTimeout(timer);
+  }, [toast]);
+
   const handleCancel = async (orderNo: string) => {
     if (!window.confirm(t('order.detail.confirmCancel'))) return;
     try {
       await cancelOrder(orderNo);
       setOrders((prev) => prev.map((o) => o.orderNo === orderNo ? { ...o, orderStatus: 'CANCELLED' } : o));
+      setToast(t('order.detail.cancelledMessage'));
     } catch (e: unknown) {
       const msg = (e as { response?: { data?: { message?: string } } })?.response?.data?.message;
       alert(msg || t('order.detail.cancelFailed'));
@@ -121,6 +131,7 @@ export default function AccountOrders() {
           )}
         </div>
       )}
+      <ProductToast show={!!toast} message={toast} onClose={() => setToast('')} />
     </>
   );
 }
