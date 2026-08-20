@@ -123,17 +123,15 @@ export default function ProductCard({
           {t('store.product.limited') as string}
         </span>
       )}
-      <span
-        className={`px-2 py-1 rounded-md text-[9px] md:text-xs font-bold shadow-sm ${
-          sku.status === 'ACTIVE' ? 'bg-green-500/90 text-white'
-            : sku.status === 'OUT_OF_STOCK' ? 'bg-gray-900/90 text-white'
-            : 'bg-blue-500/90 text-white'
-        }`}
-      >
-        {sku.status === 'ACTIVE' ? t('store.product.status.available') as string
-          : sku.status === 'OUT_OF_STOCK' ? t('store.product.status.soldOut') as string
-          : sku.status}
-      </span>
+      {sku.status !== 'ACTIVE' && (
+        <span
+          className={`px-2 py-1 rounded-md text-[9px] md:text-xs font-bold shadow-sm ${
+            sku.status === 'OUT_OF_STOCK' ? 'bg-gray-900/90 text-white' : 'bg-blue-500/90 text-white'
+          }`}
+        >
+          {sku.status === 'OUT_OF_STOCK' ? t('store.product.status.soldOut') as string : sku.status}
+        </span>
+      )}
     </div>
   );
 
