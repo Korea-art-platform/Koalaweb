@@ -7,7 +7,7 @@ import {
   ShoppingCart, Clock, AlertTriangle,
 } from 'lucide-react';
 import {
-  getDashboardStats, getDailyRevenue, getPaymentsNeedingAttention,
+  getDashboardStats, getDailyRevenue, getPaymentsNeedingAttention, resolveStuckPayment,
   type DashboardStats, type DailyRevenue, type PaymentNeedingAttention,
 } from '@/api/adminApi';
 
@@ -82,12 +82,35 @@ export default function AdminDashboard() {
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [daily, setDaily] = useState<DailyRevenue[]>([]);
   const [attention, setAttention] = useState<PaymentNeedingAttention[]>([]);
+  const [resolving, setResolving] = useState<string | null>(null);
+
+  const loadAttention = () => getPaymentsNeedingAttention().then(setAttention).catch(() => {});
 
   useEffect(() => {
     getDashboardStats().then(setStats).catch(() => {});
     getDailyRevenue().then(setDaily).catch(() => {});
-    getPaymentsNeedingAttention().then(setAttention).catch(() => {});
+    loadAttention();
   }, []);
+
+  const handleResolve = async (
+    p: PaymentNeedingAttention,
+    outcome: 'CAPTURED' | 'CANCELLED' | 'FAILED',
+    label: string,
+  ) => {
+    if (!window.confirm(
+      `${p.orderNo} 결제를 '${label}'(으)로 종결합니다.\n` +
+      `PG 콘솔에서 실제 상태를 확인하셨나요? 되돌릴 수 없습니다.`,
+    )) return;
+    setResolving(p.paymentNo);
+    try {
+      await resolveStuckPayment(p.paymentNo, outcome, label);
+      await loadAttention();
+    } catch (e: any) {
+      alert(e?.response?.data?.message ?? '처리에 실패했습니다.');
+    } finally {
+      setResolving(null);
+    }
+  };
 
   return (
     <div className="p-8">
@@ -118,31 +141,56 @@ export default function AdminDashboard() {
           </div>
           <p className="text-xs text-red-700 mb-3">
             PG 응답을 받지 못해 승인·취소 여부가 확정되지 않았습니다.
-            토스 콘솔에서 실제 상태를 확인한 뒤 수동 처리해 주세요.
+            <strong> PG 콘솔에서 실제 상태를 확인한 뒤</strong> 아래에서 종결해 주세요.
           </p>
           <div className="space-y-2">
             {attention.map((p) => (
-              <Link
+              <div
                 key={p.paymentNo}
-                to={`/admin/orders/${p.orderNo}`}
-                className="flex items-center justify-between bg-white rounded-lg border border-red-100 px-4 py-2.5 hover:border-red-300 transition-colors"
+                className="bg-white rounded-lg border border-red-100 px-4 py-3"
               >
-                <div className="min-w-0">
-                  <div className="text-xs font-semibold text-gray-900">
-                    {p.orderNo}
-                    <span className="ml-2 text-[11px] font-medium text-red-600">
-                      {ATTENTION_STATUS_LABEL[p.status] ?? p.status}
-                    </span>
-                  </div>
-                  <div className="text-[11px] text-gray-400 truncate">
-                    {p.paymentNo}
-                    {p.failureMessage ? ` · ${p.failureMessage}` : ''}
+                <div className="flex items-center justify-between gap-3">
+                  <Link to={`/admin/orders/${p.orderNo}`} className="min-w-0 group">
+                    <div className="text-xs font-semibold text-gray-900 group-hover:underline">
+                      {p.orderNo}
+                      <span className="ml-2 text-[11px] font-medium text-red-600">
+                        {ATTENTION_STATUS_LABEL[p.status] ?? p.status}
+                      </span>
+                    </div>
+                    <div className="text-[11px] text-gray-400 truncate">
+                      {p.paymentNo}
+                      {p.failureMessage ? ` · ${p.failureMessage}` : ''}
+                    </div>
+                  </Link>
+                  <div className="text-xs font-semibold text-gray-700 shrink-0">
+                    {fmt(p.requestedAmount)}원
                   </div>
                 </div>
-                <div className="text-xs font-semibold text-gray-700 shrink-0 ml-3">
-                  {fmt(p.requestedAmount)}원
+                <div className="flex flex-wrap gap-1.5 mt-2.5 pt-2.5 border-t border-red-50">
+                  <span className="text-[11px] text-gray-400 self-center mr-1">실제 상태로 종결:</span>
+                  <button
+                    disabled={resolving === p.paymentNo}
+                    onClick={() => handleResolve(p, 'CAPTURED', '정상 결제')}
+                    className="text-[11px] px-2.5 py-1 rounded-md border border-green-200 text-green-700 hover:bg-green-50 disabled:opacity-40"
+                  >
+                    정상 결제됨 (돈 받음)
+                  </button>
+                  <button
+                    disabled={resolving === p.paymentNo}
+                    onClick={() => handleResolve(p, 'CANCELLED', '취소 완료')}
+                    className="text-[11px] px-2.5 py-1 rounded-md border border-gray-200 text-gray-600 hover:bg-gray-50 disabled:opacity-40"
+                  >
+                    취소·환불 완료
+                  </button>
+                  <button
+                    disabled={resolving === p.paymentNo}
+                    onClick={() => handleResolve(p, 'FAILED', '결제 실패')}
+                    className="text-[11px] px-2.5 py-1 rounded-md border border-red-200 text-red-600 hover:bg-red-50 disabled:opacity-40"
+                  >
+                    결제 안 됨 (실패)
+                  </button>
                 </div>
-              </Link>
+              </div>
             ))}
           </div>
         </div>

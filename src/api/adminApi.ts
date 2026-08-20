@@ -343,6 +343,15 @@ export async function getPaymentsNeedingAttention() {
   return res.data.data;
 }
 
+export async function resolveStuckPayment(
+  paymentNo: string,
+  outcome: 'CAPTURED' | 'CANCELLED' | 'FAILED',
+  memo?: string,
+) {
+  const res = await adminInstance.post(`${BASE}/payments/${paymentNo}/resolve`, { outcome, memo });
+  return res.data.data;
+}
+
 export async function getAdminBanners() {
   const res = await adminInstance.get(`${BASE}/banners`);
   return res.data.data as BannerResponse[];
