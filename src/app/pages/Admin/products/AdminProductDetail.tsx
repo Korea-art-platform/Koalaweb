@@ -120,8 +120,12 @@ function InfoTab({ sku, onSaved }: { sku: any; onSaved: () => void }) {
     catch { return []; }
   })();
 
+  const cmToMm = (v: any) => (v || v === 0 ? String(Number(v) * 10) : '');
+
   const [form, setForm] = useState({
     name: sku.name ?? '',
+    model: sku.model ?? '',
+    subModelName: sku.subModelName ?? '',
     slug: sku.slug ?? '',
     description: sku.description ?? '',
     mainCategory: sku.mainCategory ?? '',
@@ -134,6 +138,10 @@ function InfoTab({ sku, onSaved }: { sku: any; onSaved: () => void }) {
     salePrice: sku.salePrice ? String(sku.salePrice) : '',
     editionSize: sku.editionSize ? String(sku.editionSize) : '',
     editionNumber: sku.editionNumber ? String(sku.editionNumber) : '',
+    widthCm: cmToMm(sku.widthCm),
+    heightCm: cmToMm(sku.heightCm),
+    depthCm: cmToMm(sku.depthCm),
+    weightKg: sku.weightKg ? String(sku.weightKg) : '',
     badges: parsedBadges as BadgeItem[],
   });
   const [saving, setSaving] = useState(false);
@@ -161,6 +169,8 @@ function InfoTab({ sku, onSaved }: { sku: any; onSaved: () => void }) {
     try {
       await updateSku(sku.skuCode, {
         name: form.name.trim(),
+        model: form.model.trim() || undefined,
+        subModelName: form.subModelName.trim() || undefined,
         slug: form.slug.trim(),
         description: form.description.trim() || undefined,
         mainCategory: form.mainCategory,
@@ -172,9 +182,12 @@ function InfoTab({ sku, onSaved }: { sku: any; onSaved: () => void }) {
         listPrice: Number(form.listPrice),
         salePrice: form.salePrice ? Number(form.salePrice) : undefined,
         primaryImageUrl: sku.primaryImageUrl,
-
         editionSize: isLimited && form.editionSize ? Number(form.editionSize) : undefined,
         editionNumber: isLimited && form.editionNumber ? Number(form.editionNumber) : undefined,
+        widthCm: form.widthCm ? Number(form.widthCm) / 10 : undefined,
+        heightCm: form.heightCm ? Number(form.heightCm) / 10 : undefined,
+        depthCm: form.depthCm ? Number(form.depthCm) / 10 : undefined,
+        weightKg: form.weightKg ? Number(form.weightKg) : undefined,
         badges: form.badges.length > 0 ? JSON.stringify(form.badges) : undefined,
       });
       setSuccess(true);
@@ -200,6 +213,31 @@ function InfoTab({ sku, onSaved }: { sku: any; onSaved: () => void }) {
           <div>
             <label className="block text-xs text-gray-500 mb-1.5">슬러그 *</label>
             <input value={form.slug} onChange={(e) => setF({ slug: e.target.value })} className={inputCls} />
+          </div>
+        </div>
+        <div className="grid grid-cols-2 gap-3">
+          <div>
+            <label className="block text-xs text-gray-500 mb-1.5">모델 <span className="text-gray-300">작품명</span></label>
+            <input value={form.model} onChange={(e) => setF({ model: e.target.value })} className={inputCls} placeholder="예: 닥스훈트" />
+          </div>
+          <div>
+            <label className="block text-xs text-gray-500 mb-1.5">세부모델명 <span className="text-gray-300">변형 — 색상 등</span></label>
+            <input value={form.subModelName} onChange={(e) => setF({ subModelName: e.target.value })} className={inputCls} placeholder="예: 청색" />
+          </div>
+        </div>
+        <div>
+          <p className="text-xs text-gray-500 mb-2">작품 크기 / 무게 <span className="text-gray-400">(크기 단위 mm)</span></p>
+          <div className="grid grid-cols-4 gap-2">
+            {(['widthCm', 'depthCm', 'heightCm', 'weightKg'] as const).map((key) => {
+              const label = { widthCm: '가로(mm)', depthCm: '세로(mm)', heightCm: '높이(mm)', weightKg: '무게(kg)' }[key];
+              return (
+                <div key={key}>
+                  <label className="block text-xs text-gray-400 mb-1">{label}</label>
+                  <input type="number" value={(form as any)[key]} onChange={(e) => setF({ [key]: e.target.value } as any)}
+                    className={inputCls + ' py-1.5'} placeholder="0" min="0" step="0.1" />
+                </div>
+              );
+            })}
           </div>
         </div>
         <div className="grid grid-cols-2 gap-3">

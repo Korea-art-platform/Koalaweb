@@ -21,6 +21,7 @@ const SKU_STATUS_LABEL: Record<string, string> = {
 };
 
 const LIMITED = 'LIMITED';
+const OPEN = 'NORMAL';
 
 const inputCls = 'w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black/10';
 
@@ -29,6 +30,8 @@ interface BadgeItem { text: string; type: string; }
 interface CreateForm {
   artistCode: string;
   name: string;
+  model: string;
+  subModelName: string;
   slug: string;
   description: string;
 
@@ -47,7 +50,7 @@ interface CreateForm {
 }
 
 const EMPTY_FORM: CreateForm = {
-  artistCode: '', name: '', slug: '', description: '',
+  artistCode: '', name: '', model: '', subModelName: '', slug: '', description: '',
   mainCategory: '', genre: '',
   listPrice: '', salePrice: '',
   editionSize: '', editionNumber: '',
@@ -114,8 +117,6 @@ export default function AdminProductList() {
     try {
       const groups = await getCategories();
       setCategories(groups);
-
-      setF({ mainCategory: groups.main[0]?.code ?? '' });
     } catch {
       setCategories({ main: [], sub: [] });
     }
@@ -148,13 +149,13 @@ export default function AdminProductList() {
     if (Number(form.listPrice) < 0) { setFormError('정가는 0원 이상이어야 합니다.'); return; }
 
     if (!form.description.trim()) { setFormError('작품 설명을 입력해 주세요. (상세 페이지에 노출됩니다)'); return; }
-    for (const [key, label] of [['widthCm', '가로'], ['heightCm', '세로'], ['weightKg', '무게']] as const) {
+    for (const [key, label] of [['widthCm', '가로'], ['heightCm', '높이'], ['weightKg', '무게']] as const) {
       const v = form[key];
       if (!v) { setFormError(`규격 - ${label}을(를) 입력해 주세요.`); return; }
       if (isNaN(Number(v)) || Number(v) <= 0) { setFormError(`규격 - ${label}은(는) 0보다 큰 숫자로 입력해 주세요.`); return; }
     }
     if (form.depthCm && (isNaN(Number(form.depthCm)) || Number(form.depthCm) < 0)) {
-      setFormError('규격 - 깊이는 0 이상의 숫자로 입력해 주세요.'); return;
+      setFormError('규격 - 세로는 0 이상의 숫자로 입력해 주세요.'); return;
     }
     if (form.salePrice) {
       if (isNaN(Number(form.salePrice))) { setFormError('판매가를 올바르게 입력해 주세요.'); return; }
@@ -183,9 +184,11 @@ export default function AdminProductList() {
         editionSize: isLimited && form.editionSize ? Number(form.editionSize) : undefined,
         editionNumber: isLimited && form.editionNumber ? Number(form.editionNumber) : undefined,
         badges: form.badges.length > 0 ? JSON.stringify(form.badges) : undefined,
-        widthCm: form.widthCm ? Number(form.widthCm) : undefined,
-        heightCm: form.heightCm ? Number(form.heightCm) : undefined,
-        depthCm: form.depthCm ? Number(form.depthCm) : undefined,
+        model: form.model.trim() || undefined,
+        subModelName: form.subModelName.trim() || undefined,
+        widthCm: form.widthCm ? Number(form.widthCm) / 10 : undefined,
+        heightCm: form.heightCm ? Number(form.heightCm) / 10 : undefined,
+        depthCm: form.depthCm ? Number(form.depthCm) / 10 : undefined,
         weightKg: form.weightKg ? Number(form.weightKg) : undefined,
       });
       createdSkuCode = created?.skuCode ?? null;
@@ -398,7 +401,7 @@ export default function AdminProductList() {
 
       {createOpen && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 overflow-y-auto">
-          <div className="bg-white rounded-xl p-6 w-full max-w-lg shadow-xl my-8">
+          <div className="bg-white rounded-xl p-6 w-full max-w-2xl shadow-xl my-8">
             <h2 className="font-semibold text-gray-900 mb-5">상품 추가</h2>
             <div className="space-y-4">
               <div>
@@ -429,12 +432,40 @@ export default function AdminProductList() {
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="block text-xs text-gray-500 mb-1.5">
-                    대분류 * <span className="text-gray-300">판매 형태</span>
+                    모델 <span className="text-gray-300">작품명</span>
                   </label>
-                  <select value={form.mainCategory} onChange={(e) => setF({ mainCategory: e.target.value })} className={inputCls}>
-                    <option value="">-- 선택 --</option>
-                    {categories.main.map((c) => <option key={c.id} value={c.code}>{c.name}</option>)}
-                  </select>
+                  <input value={form.model} onChange={(e) => setF({ model: e.target.value })}
+                    className={inputCls} placeholder="예: 닥스훈트" />
+                </div>
+                <div>
+                  <label className="block text-xs text-gray-500 mb-1.5">
+                    세부모델명 <span className="text-gray-300">변형 — 색상 등</span>
+                  </label>
+                  <input value={form.subModelName} onChange={(e) => setF({ subModelName: e.target.value })}
+                    className={inputCls} placeholder="예: 청색" />
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs text-gray-500 mb-1.5">
+                    에디션 * <span className="text-gray-300">판매 형태</span>
+                  </label>
+                  <div className="flex gap-2">
+                    {[{ v: LIMITED, l: '한정판' }, { v: OPEN, l: '오픈에디션' }].map((o) => (
+                      <button
+                        key={o.v}
+                        type="button"
+                        onClick={() => setF({ mainCategory: o.v })}
+                        className={`flex-1 py-2 text-sm rounded-lg border transition-colors ${
+                          form.mainCategory === o.v
+                            ? 'border-koala-navy bg-koala-navy text-white'
+                            : 'border-gray-200 text-gray-600 hover:border-gray-300'
+                        }`}
+                      >
+                        {o.l}
+                      </button>
+                    ))}
+                  </div>
                 </div>
                 <div>
                   <label className="block text-xs text-gray-500 mb-1.5">
@@ -517,11 +548,11 @@ export default function AdminProductList() {
               <div>
                 <p className="text-xs text-gray-500 mb-2">
                   작품 크기 / 무게 <span className="text-red-500">*</span>
-                  <span className="text-gray-400 ml-1">(깊이는 평면 작품이면 비워두세요)</span>
+                  <span className="text-gray-400 ml-1">(세로는 평면 작품이면 비워두세요 · 크기 단위 mm)</span>
                 </p>
                 <div className="grid grid-cols-4 gap-2">
-                  {(['widthCm', 'heightCm', 'depthCm', 'weightKg'] as const).map((key) => {
-                    const label = { widthCm: '가로(cm)', heightCm: '세로(cm)', depthCm: '깊이(cm)', weightKg: '무게(kg)' }[key];
+                  {(['widthCm', 'depthCm', 'heightCm', 'weightKg'] as const).map((key) => {
+                    const label = { widthCm: '가로(mm)', depthCm: '세로(mm)', heightCm: '높이(mm)', weightKg: '무게(kg)' }[key];
                     const optional = key === 'depthCm';
                     return (
                       <div key={key}>
