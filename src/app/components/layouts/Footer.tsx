@@ -5,12 +5,26 @@ export default function Footer() {
   const { t } = useTranslation();
 
   return (
-    <footer className="relative bg-koala-navy overflow-hidden">
-      {/* 상단 그라데이션 빛 라인 — 히어로에서 이어지는 마감 */}
-      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent" />
-      {/* 은은한 상단 글로우로 깊이 */}
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-white/[0.05] to-transparent" />
-      <div className="relative max-w-[1600px] mx-auto px-6 md:px-8 py-14 md:py-20">
+    <footer className="relative overflow-hidden bg-[#140b20]">
+      {/* 상단 경계 빛 라인 */}
+      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/25 to-transparent" />
+      {/* 바닥에서 피어오르는 흰-보라 대기광 (뒤 레이어) */}
+      <div
+        className="pointer-events-none absolute inset-x-0 bottom-0 h-[560px]"
+        style={{
+          background:
+            'radial-gradient(135% 100% at 50% 100%, rgba(162,142,191,0.75) 0%, rgba(133,110,166,0.42) 20%, rgba(62,34,89,0.20) 40%, transparent 66%)',
+        }}
+      />
+      {/* 바닥 중앙의 밝은 흰빛 코어 (해 뜨는 지평선 느낌) */}
+      <div
+        className="pointer-events-none absolute inset-x-0 bottom-0 h-[340px]"
+        style={{
+          background:
+            'radial-gradient(85% 70% at 50% 104%, rgba(255,255,255,0.60) 0%, rgba(228,214,246,0.24) 30%, transparent 58%)',
+        }}
+      />
+      <div className="relative max-w-[1600px] mx-auto px-6 md:px-8 pt-16 md:pt-24 pb-36 md:pb-52">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-10 md:gap-12 mb-14">
           <div className="lg:col-span-2">
             <div className="mb-6">

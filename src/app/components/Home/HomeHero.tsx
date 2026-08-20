@@ -90,6 +90,15 @@ export default function HomeHero({ banners }: HomeHeroProps) {
       ))}
 
       <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/35 to-transparent" />
+      {/* 하단 흰-보라 대기광 — 푸터의 글로우와 대칭. 화면(screen) 블렌드로 이미지를 가리지 않고 빛만 더한다 */}
+      <div
+        className="pointer-events-none absolute inset-x-0 bottom-0 h-[45%]"
+        style={{
+          background:
+            'radial-gradient(130% 100% at 50% 100%, rgba(162,142,191,0.45) 0%, rgba(133,110,166,0.24) 26%, rgba(62,34,89,0.12) 46%, transparent 68%)',
+          mixBlendMode: 'screen',
+        }}
+      />
       <div className="relative h-full flex items-end px-6 md:px-12 pb-10 md:pb-14">
         <div className="max-w-[1800px] mx-auto w-full">
           <div className="flex items-end justify-between gap-6">
