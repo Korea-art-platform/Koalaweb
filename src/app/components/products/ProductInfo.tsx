@@ -11,12 +11,11 @@ interface BadgeItem {
   type: string;
 }
 
-const BADGE_COLORS: Record<string, string> = {
-  green:   'bg-green-50 text-green-700 border-green-200',
-  amber:   'bg-amber-50 text-amber-600 border-amber-200',
-  blue:    'bg-blue-50 text-blue-600 border-blue-200',
-  default: 'bg-gray-50 text-gray-600 border-gray-200',
-};
+const GLASS_CHIP =
+  'inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold ' +
+  'text-gray-700 border border-white/80 backdrop-blur-md ' +
+  'bg-gradient-to-b from-white/90 to-koala-navy/[0.05] ' +
+  'shadow-[0_2px_10px_-3px_rgba(62,34,89,0.18),inset_0_1px_0_rgba(255,255,255,0.9)]';
 
 interface Props {
   sku: any;
@@ -84,12 +83,13 @@ export function ProductInfo({ sku, selectedColor, onColorSelect }: Props) {
         )}
 
         {badges.length > 0 && (
-          <div className="flex flex-wrap gap-2 mt-3 bg-gray-50 rounded-xl px-4 py-3">
+          <div className="flex flex-wrap gap-2 mt-4">
             {badges.map((badge, idx) => (
-              <span
-                key={idx}
-                className={`inline-flex items-center px-3 py-1.5 rounded-full border text-xs font-medium ${BADGE_COLORS[badge.type] ?? BADGE_COLORS.default}`}
-              >
+              <span key={idx} className={GLASS_CHIP}>
+                <span
+                  className="w-1.5 h-1.5 rounded-full bg-gradient-to-br from-koala-navy to-koala-red/70"
+                  aria-hidden
+                />
                 {badge.text}
               </span>
             ))}

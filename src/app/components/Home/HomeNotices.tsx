@@ -21,7 +21,8 @@ export default function HomeNotices({ notices }: Props) {
           title="공지사항 · 자주 묻는 질문"
           sub="새로운 소식과 자주 문의주시는 내용을 모았습니다"
         />
-        <div className="grid lg:grid-cols-2 gap-10 lg:gap-16">
+        <div className={hasNotices ? 'grid lg:grid-cols-2 gap-10 lg:gap-16' : 'max-w-3xl'}>
+          {hasNotices && (
           <div>
             <div className="flex items-center justify-between mb-3">
               <h3 className="text-sm md:text-base font-bold text-gray-900">공지사항</h3>
@@ -33,8 +34,7 @@ export default function HomeNotices({ notices }: Props) {
               </Link>
             </div>
 
-            {hasNotices ? (
-              <div className="flex flex-col border-t border-gray-200">
+            <div className="flex flex-col border-t border-gray-200">
                 {notices.slice(0, 3).map((n) => (
                   <Link
                     key={n.noticeCode}
@@ -58,12 +58,8 @@ export default function HomeNotices({ notices }: Props) {
                   </Link>
                 ))}
               </div>
-            ) : (
-              <div className="border-t border-gray-200 py-10 text-center text-sm text-gray-400">
-                등록된 공지사항이 없습니다.
-              </div>
-            )}
           </div>
+          )}
           <div>
             <div className="flex items-center justify-between mb-3">
               <h3 className="text-sm md:text-base font-bold text-gray-900">자주 묻는 질문</h3>

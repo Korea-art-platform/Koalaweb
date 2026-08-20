@@ -19,15 +19,15 @@ export default function Footer() {
             <p className="text-sm text-gray-400 leading-relaxed max-w-sm break-keep">
               {t('footer.brand.description')}
             </p>
-            <div className="mt-6 flex items-center gap-4">
+            <div className="mt-6 flex items-center gap-3">
               <a
                 href="https://www.instagram.com/koalaobjects/"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="KOALA Instagram"
-                className="text-gray-500 hover:text-white transition-colors"
+                className="inline-flex items-center justify-center w-10 h-10 rounded-full border border-white/15 bg-white/5 text-white/75 backdrop-blur-sm shadow-[inset_0_1px_0_rgba(255,255,255,0.15)] hover:bg-white/15 hover:text-white hover:border-white/30 transition-colors"
               >
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
                   <rect x="2" y="2" width="20" height="20" rx="5" />
                   <circle cx="12" cy="12" r="4" />
                   <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" />
