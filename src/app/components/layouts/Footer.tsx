@@ -5,9 +5,13 @@ export default function Footer() {
   const { t } = useTranslation();
 
   return (
-    <footer className="bg-koala-navy border-t border-white/10">
-      <div className="max-w-[1600px] mx-auto px-6 md:px-8 py-12 md:py-16">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-10 md:gap-12 mb-12">
+    <footer className="relative bg-koala-navy overflow-hidden">
+      {/* 상단 그라데이션 빛 라인 — 히어로에서 이어지는 마감 */}
+      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent" />
+      {/* 은은한 상단 글로우로 깊이 */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-white/[0.05] to-transparent" />
+      <div className="relative max-w-[1600px] mx-auto px-6 md:px-8 py-14 md:py-20">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-10 md:gap-12 mb-14">
           <div className="lg:col-span-2">
             <div className="mb-6">
               <img
@@ -72,15 +76,17 @@ export default function Footer() {
             </div>
           </div>
         </div>
-        <div className="pt-8 border-t border-white/10 space-y-4">
-          <p className="text-xs md:text-sm text-gray-400 leading-relaxed break-keep">
-            상호명: 헤론 &nbsp;|&nbsp; 서비스명: KOALA-ART &nbsp;|&nbsp; 대표이사: 정동훈 &nbsp;|&nbsp; 사업자등록번호: 203-87-01972
-            &nbsp;|&nbsp; 통신판매업 신고번호: 제2024-서울서초-3956호
-            <br className="hidden sm:block" />
-            &nbsp;|&nbsp; 주소: 서울 강서구 마곡중앙6로21 이너매스마곡1차 제619호
-            &nbsp;|&nbsp; 고객센터: <a href="tel:18332817" className="hover:text-gray-400 transition-colors">1833-2817</a>
-            &nbsp;|&nbsp; 이메일: koala-art@heron.kr
-          </p>
+        <div className="pt-10 border-t border-white/10 space-y-5">
+          <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-5 py-4 md:px-6 md:py-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]">
+            <p className="text-xs md:text-[13px] text-gray-400 leading-relaxed break-keep">
+              상호명: 헤론 &nbsp;|&nbsp; 서비스명: KOALA-ART &nbsp;|&nbsp; 대표이사: 정동훈 &nbsp;|&nbsp; 사업자등록번호: 203-87-01972
+              &nbsp;|&nbsp; 통신판매업 신고번호: 제2024-서울서초-3956호
+              <br className="hidden sm:block" />
+              &nbsp;|&nbsp; 주소: 서울 강서구 마곡중앙6로21 이너매스마곡1차 제619호
+              &nbsp;|&nbsp; 고객센터: <a href="tel:18332817" className="text-gray-300 hover:text-white transition-colors">1833-2817</a>
+              &nbsp;|&nbsp; 이메일: <a href="mailto:koala-art@heron.kr" className="text-gray-300 hover:text-white transition-colors">koala-art@heron.kr</a>
+            </p>
+          </div>
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-xs text-gray-500 order-2 md:order-1">
               {t('footer.bottom.copyright')}
