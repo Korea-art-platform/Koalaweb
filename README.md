@@ -18,7 +18,7 @@
 | 애니메이션 | framer-motion 12 |
 | 다국어 | i18next |
 | 모니터링 | Sentry, Google Tag Manager |
-| 결제 | Toss Payments 결제위젯 |
+| 결제 | PG 추상화 (`src/app/lib/pg.ts`) — 나이스페이먼츠(운영) · 토스 · 페이플, `VITE_PG` 로 전환 |
 
 ## 로컬 실행
 
@@ -48,11 +48,16 @@ Vite 환경변수는 **빌드 시점에 번들에 박힙니다.** 값을 바꾸�
 |---|---|
 | `VITE_API_BASE_URL` | 백엔드 API 주소 |
 | `VITE_OAUTH_KAKAO_URL` / `VITE_OAUTH_NAVER_URL` | 소셜 로그인 시작 URL |
-| `VITE_TOSS_CLIENT_KEY` / `VITE_TOSS_WIDGET_CLIENT_KEY` | Toss 클라이언트 키 |
+| `VITE_PG` | 결제창 PG 선택 — `NICEPAY` / `PAYPLE` / `TOSS` (없으면 토스) |
+| `VITE_NICEPAY_CLIENT_ID` / `VITE_PAYPLE_CLIENT_KEY` / `VITE_TOSS_CLIENT_KEY` | 각 PG 클라이언트 키(브라우저 노출 공개값). 쓰는 PG 것만 |
 | `VITE_KAKAO_APP_KEY` | 카카오 공유 SDK JavaScript 키 |
 | `VITE_GTM_ID` | Google Tag Manager ID |
 | `VITE_SENTRY_DSN` | Sentry DSN |
 | `VITE_IMAGE_CDN_BASE` | 상품 이미지 CDN 도메인 (아래 참조) |
+
+> **PG 전환은 서버·프론트 양쪽을 같이 바꿔야 합니다.** 서버는 `.env` 의 `*_ENABLED`,
+> 프론트는 `VITE_PG`. 결제 관련 판단은 `src/app/lib/pg.ts` 한 곳에 모여 있어
+> 결제 화면과 주문서가 갈리지 않습니다.
 
 운영 빌드용 값은 `.github/workflows/deploy.yml` 의 Build 스텝에 정의되어 있습니다.
 키 성격의 값은 GitHub Secrets 로 주입합니다.
