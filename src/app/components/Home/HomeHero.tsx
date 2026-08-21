@@ -73,19 +73,19 @@ export default function HomeHero({ banners, featured = [] }: HomeHeroProps) {
       <Link
         key={key}
         to={`/product/${s.skuCode}`}
-        className="group/card flex items-center gap-3 rounded-xl bg-white/95 hover:bg-white p-2.5 mb-2.5 shadow-sm transition-colors"
+        className="group/card flex items-center gap-4 rounded-2xl bg-white/95 hover:bg-white p-3.5 mb-3.5 shadow-sm transition-colors"
       >
         <img
           src={toCdnUrl(s.primaryImageUrl) ?? '/placeholder.svg'}
           alt={s.name}
-          className="w-16 h-16 rounded-lg object-cover shrink-0 bg-gray-100"
+          className="w-[88px] h-[88px] rounded-xl object-cover shrink-0 bg-gray-100"
         />
         <div className="min-w-0 flex-1">
-          <p className="text-[11px] text-gray-500 truncate">{s.artistName}</p>
-          <p className="text-sm font-bold text-gray-900 truncate">{s.name}</p>
-          <p className="text-sm font-bold text-koala-gold-deep mt-0.5">₩{price}</p>
+          <p className="text-xs text-gray-500 truncate mb-0.5">{s.artistName}</p>
+          <p className="text-base font-bold text-gray-900 truncate">{s.name}</p>
+          <p className="text-base font-bold text-koala-gold-deep mt-1">₩{price}</p>
         </div>
-        <ArrowRight className="w-4 h-4 text-gray-300 shrink-0 opacity-0 -translate-x-1 group-hover/card:opacity-100 group-hover/card:translate-x-0 transition-all" />
+        <ArrowRight className="w-5 h-5 text-gray-300 shrink-0 opacity-0 -translate-x-1 group-hover/card:opacity-100 group-hover/card:translate-x-0 transition-all" />
       </Link>
     );
   };
@@ -243,7 +243,7 @@ export default function HomeHero({ banners, featured = [] }: HomeHeroProps) {
                 ))}
               </div>
             ) : railItems.length > 3 ? (
-              <div className="group relative flex-1 min-h-0 overflow-hidden [mask-image:linear-gradient(to_bottom,transparent,#000_6%,#000_94%,transparent)] [-webkit-mask-image:linear-gradient(to_bottom,transparent,#000_6%,#000_94%,transparent)]">
+              <div className="group relative h-[390px] my-auto overflow-hidden [mask-image:linear-gradient(to_bottom,transparent,#000_7%,#000_93%,transparent)] [-webkit-mask-image:linear-gradient(to_bottom,transparent,#000_7%,#000_93%,transparent)]">
                 <div
                   className="koala-marquee flex flex-col will-change-transform group-hover:[animation-play-state:paused]"
                   style={{
