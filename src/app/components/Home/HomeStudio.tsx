@@ -38,7 +38,7 @@ export default function HomeStudio({ banner }: Props) {
               )}
             </div>
             <div className="flex flex-col justify-center gap-4 md:gap-6 bg-gray-50 p-8 md:p-14 transition-colors duration-500 group-hover:bg-koala-purple">
-              <span className="text-[10px] md:text-xs font-bold uppercase tracking-[0.24em] text-koala-purple transition-colors duration-500 group-hover:text-white/60">
+              <span className="text-[10px] md:text-xs font-bold uppercase tracking-[0.24em] text-koala-gold-deep transition-colors duration-500 group-hover:text-white/60">
                 + 004 — Studio
               </span>
               <h2 className="text-2xl md:text-4xl lg:text-5xl font-bold tracking-tight text-gray-900 break-keep transition-colors duration-500 group-hover:text-white">

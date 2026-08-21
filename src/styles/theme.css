@@ -23,6 +23,9 @@
   --koala-navy-hover: #52306F;
   --koala-red: #856EA6;
   --koala-red-hover: #6F5A8C;
+  --koala-gold: #C7A15A;
+  --koala-gold-deep: #A5813D;
+  --koala-gold-soft: #EFE0C4;
   --secondary: #F4F4F4;
   --secondary-foreground: #000000;
   --muted: #EAEAEA;
@@ -108,6 +111,9 @@
   --color-koala-navy-hover: var(--koala-navy-hover);
   --color-koala-red: var(--koala-red);
   --color-koala-red-hover: var(--koala-red-hover);
+  --color-koala-gold: var(--koala-gold);
+  --color-koala-gold-deep: var(--koala-gold-deep);
+  --color-koala-gold-soft: var(--koala-gold-soft);
   --color-secondary: var(--secondary);
   --color-secondary-foreground: var(--secondary-foreground);
   --color-muted: var(--muted);

@@ -22,7 +22,7 @@ export default function SectionHeader({
   return (
     <div className="mb-6 md:mb-10 flex flex-wrap items-end justify-between gap-3">
       <div className="flex flex-col gap-1.5 md:gap-2.5">
-        <span className="text-[10px] md:text-xs font-bold uppercase tracking-[0.24em] text-koala-purple">
+        <span className="text-[10px] md:text-xs font-bold uppercase tracking-[0.24em] text-koala-gold-deep">
           + {eyebrow}
         </span>
         <h2 className="text-2xl md:text-4xl lg:text-5xl font-bold tracking-tight text-gray-900">

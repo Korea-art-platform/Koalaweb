@@ -119,7 +119,7 @@ export default function ProductCard({
         {categoryLabel}
       </span>
       {sku.isLimitedEdition && (
-        <span className="px-2 py-1 rounded-md bg-koala-red text-white text-[9px] md:text-xs font-bold uppercase shadow-sm">
+        <span className="px-2 py-1 rounded-md bg-koala-gold text-koala-purple text-[9px] md:text-xs font-bold uppercase shadow-sm">
           {t('store.product.limited') as string}
         </span>
       )}
