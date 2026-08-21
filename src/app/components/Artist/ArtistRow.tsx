@@ -92,7 +92,7 @@ export default function ArtistRow({ artist, index }: ArtistRowProps) {
             >
               <span
                 aria-hidden
-                className="pointer-events-none absolute inset-y-0 right-0 w-[66%] translate-x-full group-hover:translate-x-0 transition-transform duration-500 ease-out"
+                className="pointer-events-none absolute inset-y-0 right-0 w-[58%] translate-x-full group-hover:translate-x-0 transition-transform duration-500 ease-out"
                 style={{
                   background: 'linear-gradient(115deg, #3E2259 0%, #533274 44%, #7c5a86 70%, #b58f4e 100%)',
                   clipPath: 'polygon(20% 0, 100% 0, 100% 100%, 0% 100%)',
@@ -107,16 +107,16 @@ export default function ArtistRow({ artist, index }: ArtistRowProps) {
                   />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-xs text-gray-400 uppercase tracking-widest mb-1 transition-colors duration-500 group-hover:text-koala-gold-soft">대표 작품</p>
-                  <p className="text-base font-semibold text-gray-900 truncate transition-colors duration-500 group-hover:text-white">{artist.featuredSku.name}</p>
+                  <p className="text-xs text-gray-400 uppercase tracking-widest mb-1">대표 작품</p>
+                  <p className="text-base font-semibold text-gray-900 truncate">{artist.featuredSku.name}</p>
                   <div className="flex items-center gap-2 mt-1.5">
                     {artist.featuredSku.salePrice ? (
                       <>
-                        <span className="text-base font-bold text-koala-red transition-colors duration-500 group-hover:text-white">₩{fmt(artist.featuredSku.salePrice)}</span>
-                        <span className="text-sm text-gray-400 line-through transition-colors duration-500 group-hover:text-white/60">₩{fmt(artist.featuredSku.listPrice)}</span>
+                        <span className="text-base font-bold text-koala-red">₩{fmt(artist.featuredSku.salePrice)}</span>
+                        <span className="text-sm text-gray-400 line-through">₩{fmt(artist.featuredSku.listPrice)}</span>
                       </>
                     ) : (
-                      <span className="text-base font-bold text-gray-900 transition-colors duration-500 group-hover:text-white">₩{fmt(artist.featuredSku.listPrice)}</span>
+                      <span className="text-base font-bold text-gray-900">₩{fmt(artist.featuredSku.listPrice)}</span>
                     )}
                   </div>
                 </div>
