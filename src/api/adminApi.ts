@@ -413,6 +413,63 @@ export async function uploadBannerImage(file: File): Promise<string> {
   return res.data.data.imageUrl;
 }
 
+export interface PartnerStore {
+  storeCode: string;
+  name: string;
+  zipCode?: string;
+  address: string;
+  addressDetail?: string;
+  phone: string;
+  phone2?: string;
+  email?: string;
+  description?: string;
+  mapUrl?: string;
+  isActive: boolean;
+  sortOrder: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface StoreInput {
+  name: string;
+  zipCode?: string;
+  address: string;
+  addressDetail?: string;
+  phone: string;
+  phone2?: string;
+  email?: string;
+  description?: string;
+  mapUrl?: string;
+  sortOrder?: number;
+}
+
+export async function getAdminStores(): Promise<PartnerStore[]> {
+  const res = await adminInstance.get(`${BASE}/stores`);
+  return res.data.data as PartnerStore[];
+}
+
+export async function createStore(data: StoreInput): Promise<PartnerStore> {
+  const res = await adminInstance.post(`${BASE}/stores`, data);
+  return res.data.data as PartnerStore;
+}
+
+export async function updateStore(storeCode: string, data: StoreInput): Promise<PartnerStore> {
+  const res = await adminInstance.put(`${BASE}/stores/${storeCode}`, data);
+  return res.data.data as PartnerStore;
+}
+
+export async function activateStore(storeCode: string) {
+  await adminInstance.patch(`${BASE}/stores/${storeCode}/activate`);
+}
+
+export async function deactivateStore(storeCode: string) {
+  await adminInstance.patch(`${BASE}/stores/${storeCode}/deactivate`);
+}
+
+export async function deleteStore(storeCode: string) {
+  await adminInstance.delete(`${BASE}/stores/${storeCode}`);
+}
+
 export async function updateBannerImage(bannerCode: string, file: File): Promise<BannerResponse> {
   const formData = new FormData();
   formData.append('file', file);

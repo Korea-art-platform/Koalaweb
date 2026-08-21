@@ -31,6 +31,7 @@ const AccountDeletion = lazy(() => import("@/app/pages/legal/AccountDeletion"));
 
 const Notice = lazy(() => import("@/app/pages/Notice"));
 const NoticeDetail = lazy(() => import("@/app/pages/NoticeDetail"));
+const Stores = lazy(() => import("@/app/pages/Stores"));
 
 const FAQ = lazy(() => import("@/app/pages/support/FAQ"));
 const Shipping = lazy(() => import("@/app/pages/support/Shipping"));
@@ -76,6 +77,7 @@ const AdminUserDetail = lazy(() => import("@/app/pages/Admin/users/AdminUserDeta
 const AdminReturnList = lazy(() => import("@/app/pages/Admin/returns/AdminReturnList"));
 const AdminReturnDetail = lazy(() => import("@/app/pages/Admin/returns/AdminReturnDetail"));
 const AdminNoticeList = lazy(() => import("@/app/pages/Admin/notices/AdminNoticeList"));
+const AdminStoreList = lazy(() => import("@/app/pages/Admin/stores/AdminStoreList"));
 const AdminInquiryList = lazy(() => import("@/app/pages/Admin/inquiries/AdminInquiryList"));
 const AdminInquiryDetail = lazy(() => import("@/app/pages/Admin/inquiries/AdminInquiryDetail"));
 const AdminSettlementList = lazy(() => import("@/app/pages/Admin/settlements/AdminSettlementList"));
@@ -111,6 +113,7 @@ export function AppRoutes() {
         <Route path="/account-deletion" element={<AccountDeletion />} />
         <Route path="/notice" element={<Notice />} />
         <Route path="/notice/:noticeCode" element={<NoticeDetail />} />
+        <Route path="/stores" element={<Stores />} />
         <Route path="/faq" element={<FAQ />} />
         <Route path="/shipping" element={<Shipping />} />
         <Route path="/contact" element={<Contact />} />
@@ -154,6 +157,7 @@ export function AppRoutes() {
             <Route path="/admin/returns" element={<AdminReturnList />} />
             <Route path="/admin/returns/:returnNo" element={<AdminReturnDetail />} />
             <Route path="/admin/notices" element={<AdminNoticeList />} />
+            <Route path="/admin/stores" element={<AdminStoreList />} />
             <Route path="/admin/inquiries" element={<AdminInquiryList />} />
             <Route path="/admin/inquiries/:inquiryCode" element={<AdminInquiryDetail />} />
             <Route path="/admin/settlements" element={<AdminSettlementList />} />

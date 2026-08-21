@@ -56,7 +56,8 @@ export default function Footer() {
               <ul className="space-y-3">
                 {[
                   { key: 'artistLab', path: '/artist-lab' },
-                  { key: 'store', path: '/store' }
+                  { key: 'store', path: '/store' },
+                  { key: 'stores', path: '/stores' }
                 ].map((link) => (
                   <li key={link.key}>
                     <Link to={link.path} className="text-sm text-gray-500 hover:text-white transition-colors">
