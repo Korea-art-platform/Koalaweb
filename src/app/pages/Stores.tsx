@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import Navigation from '@/app/components/layouts/Header';
 import { MapPin, Phone, Mail, Store as StoreIcon, ArrowUpRight, Instagram, ChevronRight } from 'lucide-react';
 import { getStores, type StoreItem } from '@/api/store';
@@ -8,6 +9,8 @@ export default function Stores() {
   const [stores, setStores] = useState<StoreItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState(0);
+  const reduce = useReducedMotion();
+  const dy = reduce ? 0 : 1;
 
   useEffect(() => {
     getStores()
@@ -46,20 +49,36 @@ export default function Stores() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-[300px_1fr] gap-5 md:gap-7 items-start">
             {/* 좌측: 매장 리스트 */}
-            <div className="flex flex-col gap-2.5">
+            <motion.div
+              className="flex flex-col gap-2.5"
+              initial="hidden"
+              animate="show"
+              variants={{ show: { transition: { staggerChildren: 0.06 } } }}
+            >
               {stores.map((s, i) => {
                 const on = i === selected;
                 return (
-                  <button
+                  <motion.button
                     key={s.storeCode}
                     onClick={() => setSelected(i)}
                     aria-pressed={on}
-                    className={`text-left rounded-xl border px-4 py-3.5 transition-colors ${
+                    variants={{ hidden: { opacity: 0, y: 8 * dy }, show: { opacity: 1, y: 0 } }}
+                    transition={{ duration: 0.32, ease: 'easeOut' }}
+                    whileHover={{ x: reduce ? 0 : 3 }}
+                    whileTap={{ scale: 0.99 }}
+                    className={`relative text-left rounded-xl border px-4 py-3.5 transition-colors ${
                       on
                         ? 'border-koala-purple bg-koala-purple/[0.04] shadow-sm'
                         : 'border-gray-200 bg-white hover:border-gray-300'
                     }`}
                   >
+                    {on && (
+                      <motion.span
+                        layoutId="store-active-bar"
+                        className="absolute left-0 top-2 bottom-2 w-[3px] rounded-full bg-koala-purple"
+                        transition={{ type: 'spring', stiffness: 500, damping: 34 }}
+                      />
+                    )}
                     <div className="flex items-center justify-between gap-2">
                       <span className={`font-bold text-sm truncate ${on ? 'text-koala-purple' : 'text-gray-900'}`}>
                         {s.name}
@@ -67,14 +86,26 @@ export default function Stores() {
                       <ChevronRight className={`w-4 h-4 shrink-0 transition-colors ${on ? 'text-koala-purple' : 'text-gray-300'}`} />
                     </div>
                     <p className="text-xs text-gray-400 truncate mt-1">{s.address}</p>
-                  </button>
+                  </motion.button>
                 );
               })}
-            </div>
+            </motion.div>
 
             {/* 우측: 선택 매장 상세 */}
             <div className="bg-white rounded-2xl border border-gray-100 shadow-[0_10px_30px_-20px_rgba(62,34,89,0.35)] overflow-hidden min-h-[420px]">
-              {active && <StoreDetail key={active.storeCode} store={active} />}
+              <AnimatePresence mode="wait">
+                {active && (
+                  <motion.div
+                    key={active.storeCode}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.2, ease: 'easeOut' }}
+                  >
+                    <StoreDetail store={active} reduce={!!reduce} />
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
           </div>
         )}
@@ -83,19 +114,35 @@ export default function Stores() {
   );
 }
 
-function StoreDetail({ store: s }: { store: StoreItem }) {
+function StoreDetail({ store: s, reduce }: { store: StoreItem; reduce: boolean }) {
+  const dy = reduce ? 0 : 1;
+  const item = { hidden: { opacity: 0, y: 10 * dy }, show: { opacity: 1, y: 0 } };
   return (
     <div className="flex flex-col">
       {s.imageUrl ? (
-        <img src={s.imageUrl} alt={s.name} className="w-full h-56 md:h-72 object-cover" />
+        <div className="overflow-hidden">
+          <motion.img
+            src={s.imageUrl}
+            alt={s.name}
+            className="w-full h-56 md:h-72 object-cover"
+            initial={{ scale: reduce ? 1 : 1.05, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ duration: 0.5, ease: 'easeOut' }}
+          />
+        </div>
       ) : (
         <div className="w-full h-40 bg-gradient-to-br from-koala-purple/10 to-koala-gold/10 flex items-center justify-center">
           <StoreIcon className="w-10 h-10 text-koala-purple/30" />
         </div>
       )}
 
-      <div className="p-6 md:p-8">
-        <div className="flex items-start justify-between gap-4">
+      <motion.div
+        className="p-6 md:p-8"
+        initial="hidden"
+        animate="show"
+        variants={{ show: { transition: { staggerChildren: 0.07, delayChildren: 0.06 } } }}
+      >
+        <motion.div variants={item} className="flex items-start justify-between gap-4">
           <h2 className="text-xl md:text-2xl font-bold text-gray-900">{s.name}</h2>
           <div className="flex items-center gap-2 shrink-0">
             {s.snsUrl && (
@@ -122,13 +169,13 @@ function StoreDetail({ store: s }: { store: StoreItem }) {
               </a>
             )}
           </div>
-        </div>
+        </motion.div>
 
         {s.description && (
-          <p className="text-sm md:text-[15px] text-gray-600 leading-relaxed break-keep mt-4">{s.description}</p>
+          <motion.p variants={item} className="text-sm md:text-[15px] text-gray-600 leading-relaxed break-keep mt-4">{s.description}</motion.p>
         )}
 
-        <div className="mt-6 pt-6 border-t border-gray-100 grid gap-3.5 text-sm">
+        <motion.div variants={item} className="mt-6 pt-6 border-t border-gray-100 grid gap-3.5 text-sm">
           <div className="flex items-start gap-3">
             <MapPin className="w-4 h-4 text-koala-gold-deep mt-0.5 shrink-0" />
             <span className="text-gray-700 break-keep">
@@ -155,8 +202,8 @@ function StoreDetail({ store: s }: { store: StoreItem }) {
               <a href={`mailto:${s.email}`} className="text-gray-700 hover:text-koala-purple transition-colors break-all">{s.email}</a>
             </div>
           )}
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
     </div>
   );
 }
