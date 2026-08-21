@@ -4,6 +4,7 @@ import { Helmet } from 'react-helmet-async';
 import Navigation from '@/app/components/layouts/Header';
 import { ArrowLeft, Pin } from 'lucide-react';
 import { getNotice, type NoticeItem } from '@/api/notice';
+import { noticeToSafeHtml } from '@/app/lib/html';
 
 export default function NoticeDetail() {
   const { noticeCode } = useParams<{ noticeCode: string }>();
@@ -69,9 +70,10 @@ export default function NoticeDetail() {
                 })}
               </p>
             </div>
-            <div className="text-sm text-gray-700 leading-relaxed whitespace-pre-wrap">
-              {notice.content}
-            </div>
+            <div
+              className="koala-prose"
+              dangerouslySetInnerHTML={{ __html: noticeToSafeHtml(notice.content) }}
+            />
           </article>
         )}
       </div>

@@ -5,6 +5,8 @@ import {
   activateNotice, deactivateNotice, deleteNotice,
   type NoticeResponse,
 } from '@/api/adminApi';
+import RichTextEditor from '@/app/components/admin/RichTextEditor';
+import { stripHtml, isHtmlEmpty } from '@/app/lib/html';
 
 interface NoticeForm {
   title: string;
@@ -46,7 +48,7 @@ export default function AdminNoticeList() {
 
   const handleSubmit = async () => {
     if (!form.title.trim()) { setFormError('제목은 필수 항목입니다.'); return; }
-    if (!form.content.trim()) { setFormError('내용은 필수 항목입니다.'); return; }
+    if (isHtmlEmpty(form.content)) { setFormError('내용은 필수 항목입니다.'); return; }
     setFormError('');
     setSubmitting(true);
     try {
@@ -107,7 +109,7 @@ export default function AdminNoticeList() {
                   {n.isPinned && <Pin className="w-3.5 h-3.5 text-orange-400 flex-shrink-0" />}
                   <span className="font-medium text-gray-900 text-sm truncate">{n.title}</span>
                 </div>
-                <p className="text-xs text-gray-400 line-clamp-2 mb-1">{n.content}</p>
+                <p className="text-xs text-gray-400 line-clamp-2 mb-1">{stripHtml(n.content)}</p>
                 <p className="text-xs text-gray-300">
                   {n.createdByAdminName && `${n.createdByAdminName} · `}
                   {new Date(n.createdAt).toLocaleDateString('ko-KR')}
@@ -141,7 +143,7 @@ export default function AdminNoticeList() {
 
       {createOpen && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl p-6 w-full max-w-lg shadow-xl max-h-[90vh] overflow-y-auto">
+          <div className="bg-white rounded-xl p-6 w-full max-w-2xl shadow-xl max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between mb-4">
               <h2 className="font-semibold text-gray-900">
                 {editTarget ? '공지사항 수정' : '공지사항 등록'}
@@ -162,13 +164,13 @@ export default function AdminNoticeList() {
               </div>
               <div>
                 <label className="block text-xs text-gray-500 mb-1.5">내용 *</label>
-                <textarea
+                <RichTextEditor
                   value={form.content}
-                  onChange={(e) => setForm((f) => ({ ...f, content: e.target.value }))}
-                  rows={8}
-                  className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-black/10 resize-y"
-                  placeholder="공지사항 내용을 입력하세요..."
+                  onChange={(html) => setForm((f) => ({ ...f, content: html }))}
                 />
+                <p className="mt-1.5 text-[11px] text-gray-400">
+                  이미지·굵게·제목·목록·링크를 툴바로 넣을 수 있습니다. 이미지는 버튼으로 업로드하세요.
+                </p>
               </div>
               <label className="flex items-center gap-2 cursor-pointer">
                 <input
