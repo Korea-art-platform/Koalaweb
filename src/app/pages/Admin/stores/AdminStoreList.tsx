@@ -1,8 +1,8 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { Store, MapPin, X, Search, Lock, ImagePlus } from 'lucide-react';
+import { Store, MapPin, X, Search, Lock, ImagePlus, GripVertical } from 'lucide-react';
 import {
   getAdminStores, createStore, updateStore,
-  activateStore, deactivateStore, deleteStore, uploadBannerImage,
+  activateStore, deactivateStore, deleteStore, uploadBannerImage, reorderStores,
   type PartnerStore, type StoreInput,
 } from '@/api/adminApi';
 import { openAddressSearch } from '@/app/lib/daumPostcode';
@@ -23,10 +23,44 @@ export default function AdminStoreList() {
   const [error, setError] = useState('');
   const imgRef = useRef<HTMLInputElement>(null);
 
+  const [orderDirty, setOrderDirty] = useState(false);
+  const [savingOrder, setSavingOrder] = useState(false);
+  const dragIndex = useRef<number | null>(null);
+
   const load = useCallback(() => {
     setLoading(true);
-    getAdminStores().then(setStores).finally(() => setLoading(false));
+    getAdminStores()
+      .then((list) => { setStores(list); setOrderDirty(false); })
+      .finally(() => setLoading(false));
   }, []);
+
+  const onDragStart = (i: number) => { dragIndex.current = i; };
+  const onDragOver = (e: React.DragEvent, i: number) => {
+    e.preventDefault();
+    const from = dragIndex.current;
+    if (from === null || from === i) return;
+    setStores((prev) => {
+      const next = [...prev];
+      const [moved] = next.splice(from, 1);
+      next.splice(i, 0, moved);
+      return next;
+    });
+    dragIndex.current = i;
+    setOrderDirty(true);
+  };
+  const onDragEnd = () => { dragIndex.current = null; };
+
+  const saveOrder = async () => {
+    setSavingOrder(true);
+    try {
+      await reorderStores(stores.map((s) => s.storeCode));
+      setOrderDirty(false);
+    } catch {
+      window.alert('순서 저장에 실패했습니다.');
+    } finally {
+      setSavingOrder(false);
+    }
+  };
 
   useEffect(() => { load(); }, [load]);
 
@@ -110,12 +144,23 @@ export default function AdminStoreList() {
       </div>
       <div className="flex items-center justify-between mb-2">
         <h1 className="text-xl font-bold text-gray-900">매장 목록</h1>
-        <button
-          onClick={openCreate}
-          className="px-3 py-2 text-xs bg-koala-navy text-white rounded-lg hover:bg-koala-navy-hover transition-colors"
-        >
-          + 매장 등록
-        </button>
+        <div className="flex items-center gap-2">
+          {orderDirty && (
+            <button
+              onClick={saveOrder}
+              disabled={savingOrder}
+              className="px-3 py-2 text-xs bg-koala-gold-deep text-white rounded-lg hover:opacity-90 disabled:opacity-50 transition-opacity"
+            >
+              {savingOrder ? '저장 중...' : '순서 저장'}
+            </button>
+          )}
+          <button
+            onClick={openCreate}
+            className="px-3 py-2 text-xs bg-koala-navy text-white rounded-lg hover:bg-koala-navy-hover transition-colors"
+          >
+            + 매장 등록
+          </button>
+        </div>
       </div>
       <p className="flex items-center gap-1.5 text-[11px] text-gray-400 mb-6">
         <Lock className="w-3 h-3" />
@@ -130,8 +175,22 @@ export default function AdminStoreList() {
         </div>
       ) : (
         <div className="space-y-3">
-          {stores.map((s) => (
-            <div key={s.storeCode} className="bg-white rounded-xl border border-gray-200 p-4 flex items-start gap-4">
+          {stores.map((s, i) => (
+            <div
+              key={s.storeCode}
+              draggable
+              onDragStart={() => onDragStart(i)}
+              onDragOver={(e) => onDragOver(e, i)}
+              onDragEnd={onDragEnd}
+              className="bg-white rounded-xl border border-gray-200 p-4 flex items-start gap-3"
+            >
+              <span
+                className="mt-0.5 text-gray-300 hover:text-gray-500 cursor-grab active:cursor-grabbing shrink-0"
+                title="드래그로 순서 변경"
+                aria-label="순서 변경 핸들"
+              >
+                <GripVertical className="w-4 h-4" />
+              </span>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-1">
                   <span className="font-semibold text-gray-900 text-sm truncate">{s.name}</span>

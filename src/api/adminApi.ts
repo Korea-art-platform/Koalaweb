@@ -474,6 +474,10 @@ export async function deleteStore(storeCode: string) {
   await adminInstance.delete(`${BASE}/stores/${storeCode}`);
 }
 
+export async function reorderStores(storeCodes: string[]) {
+  await adminInstance.post(`${BASE}/stores/reorder`, { storeCodes });
+}
+
 export async function updateBannerImage(bannerCode: string, file: File): Promise<BannerResponse> {
   const formData = new FormData();
   formData.append('file', file);
