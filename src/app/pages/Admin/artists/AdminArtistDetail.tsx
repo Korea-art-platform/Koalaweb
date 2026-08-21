@@ -10,6 +10,8 @@ import {
   getArtistMedia,
   addArtistMedia,
   addArtistMediaUrl,
+  updateArtistMediaThumbnail,
+  uploadBannerImage,
   deleteArtistMedia,
   addArtistCareer,
   updateArtistCareer,
@@ -273,8 +275,10 @@ function SectionCard({
 }) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const replaceRef = useRef<HTMLInputElement>(null);
+  const thumbRef = useRef<HTMLInputElement>(null);
   const [replaceId, setReplaceId] = useState<number | null>(null);
   const [uploading, setUploading] = useState(false);
+  const [thumbUploading, setThumbUploading] = useState(false);
   const [deleting, setDeleting] = useState<number | null>(null);
   const [error, setError] = useState('');
 
@@ -361,6 +365,23 @@ function SectionCard({
     finally { setDeleting(null); }
   };
 
+  const uploadThumbnail = async (files: FileList | null, mediaId: number) => {
+    if (!files || files.length === 0) return;
+    setError('');
+    setThumbUploading(true);
+    try {
+      const file = await downscaleImage(files[0]);
+      const url = await uploadBannerImage(file);
+      await updateArtistMediaThumbnail(artistCode, mediaId, url);
+      onChanged();
+    } catch {
+      setError('썸네일 업로드에 실패했습니다.');
+    } finally {
+      setThumbUploading(false);
+      if (thumbRef.current) thumbRef.current.value = '';
+    }
+  };
+
   const triggerReplace = (id: number) => {
     setReplaceId(id);
     setTimeout(() => replaceRef.current?.click(), 0);
@@ -406,6 +427,39 @@ function SectionCard({
               </div>
             ) : (
               <p className="text-xs text-gray-400">아직 등록된 영상이 없습니다.</p>
+            )}
+
+            {current && (
+              <div className="flex items-center gap-3 p-3 bg-white rounded-lg border border-gray-200">
+                <div className="w-28 h-16 flex-shrink-0 rounded overflow-hidden bg-gray-100 flex items-center justify-center">
+                  {current.thumbnailUrl ? (
+                    <img src={current.thumbnailUrl} alt="썸네일" className="w-full h-full object-cover" />
+                  ) : (
+                    <span className="text-[10px] text-gray-400">썸네일 없음</span>
+                  )}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs font-medium text-gray-700 mb-0.5">재생 전 썸네일</p>
+                  <p className="text-[11px] text-gray-400 leading-snug">
+                    영상 재생 버튼 위에 보이는 이미지입니다. 없으면 회색으로 표시됩니다.
+                  </p>
+                </div>
+                <input
+                  ref={thumbRef}
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={(e) => uploadThumbnail(e.target.files, current.id)}
+                />
+                <button
+                  onClick={() => thumbRef.current?.click()}
+                  disabled={thumbUploading}
+                  className="px-3 py-2 text-xs font-medium bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 disabled:opacity-50 whitespace-nowrap inline-flex items-center gap-1.5"
+                >
+                  <ImagePlus className="w-3.5 h-3.5" />
+                  {thumbUploading ? '업로드 중...' : current.thumbnailUrl ? '교체' : '썸네일 업로드'}
+                </button>
+              </div>
             )}
 
             <div className="flex gap-2">

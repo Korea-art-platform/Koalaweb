@@ -187,7 +187,7 @@ export async function getArtistMedia(artistCode: string) {
 export async function addArtistMedia(
   artistCode: string,
   file: File,
-  meta: { mediaType: string; mediaRole: string; title?: string; sortOrder?: number }
+  meta: { mediaType: string; mediaRole: string; title?: string; thumbnailUrl?: string; sortOrder?: number }
 ) {
   const formData = new FormData();
   formData.append('file', file);
@@ -200,9 +200,21 @@ export async function addArtistMedia(
 
 export async function addArtistMediaUrl(
   artistCode: string,
-  data: { fileUrl: string; mediaType: string; mediaRole: string; title?: string; sortOrder?: number }
+  data: { fileUrl: string; mediaType: string; mediaRole: string; title?: string; thumbnailUrl?: string; sortOrder?: number }
 ) {
   const res = await adminInstance.post(`${BASE}/artists/${artistCode}/media-url`, data);
+  return res.data.data as ArtistMediaResponse;
+}
+
+export async function updateArtistMediaThumbnail(
+  artistCode: string,
+  mediaId: number,
+  thumbnailUrl: string
+) {
+  const res = await adminInstance.patch(
+    `${BASE}/artists/${artistCode}/media/${mediaId}/thumbnail`,
+    { thumbnailUrl }
+  );
   return res.data.data as ArtistMediaResponse;
 }
 
