@@ -74,7 +74,7 @@ export default function HomeHero({ banners, featured = [] }: HomeHeroProps) {
     >
       <div className="grid lg:grid-cols-[1.55fr_1fr]">
         <div
-          className="relative h-[64vh] min-h-[440px] max-h-[600px] lg:h-[560px] overflow-hidden"
+          className="relative h-[64vh] min-h-[440px] max-h-[600px] lg:h-[58vh] lg:min-h-[600px] lg:max-h-[860px] overflow-hidden"
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
@@ -182,17 +182,17 @@ export default function HomeHero({ banners, featured = [] }: HomeHeroProps) {
           style={{ background: 'linear-gradient(175deg, #1a0f27 0%, #241338 52%, #2c1a30 100%)' }}
         >
           <div
-            className="pointer-events-none absolute inset-x-0 bottom-0 h-[420px]"
+            className="pointer-events-none absolute inset-x-0 bottom-0 h-[520px]"
             style={{
               background:
-                'radial-gradient(135% 100% at 50% 100%, rgba(199,161,90,0.62) 0%, rgba(165,129,61,0.34) 20%, rgba(62,34,89,0.16) 44%, transparent 72%)',
+                'radial-gradient(150% 110% at 50% 100%, rgba(199,161,90,0.72) 0%, rgba(165,129,61,0.40) 22%, rgba(62,34,89,0.18) 48%, transparent 76%)',
             }}
           />
           <div
-            className="pointer-events-none absolute inset-x-0 bottom-0 h-[240px]"
+            className="pointer-events-none absolute inset-x-0 bottom-0 h-[320px]"
             style={{
               background:
-                'radial-gradient(80% 62% at 50% 106%, rgba(244,228,198,0.42) 0%, rgba(228,206,158,0.18) 32%, transparent 60%)',
+                'radial-gradient(92% 68% at 50% 106%, rgba(244,228,198,0.52) 0%, rgba(228,206,158,0.22) 34%, transparent 64%)',
             }}
           />
           <div className="relative">
