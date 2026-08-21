@@ -47,9 +47,15 @@ export default function HomeStudio({ banner }: Props) {
               <p className="text-sm md:text-base text-gray-500 leading-relaxed break-keep max-w-md transition-colors duration-500 group-hover:text-white/80">
                 {description}
               </p>
-              <span className="mt-2 self-start inline-flex items-center gap-2 px-7 py-3.5 rounded-full bg-koala-purple text-white text-sm font-bold transition-colors duration-500 group-hover:bg-white group-hover:text-koala-purple">
-                작가 만나보기
-                <ArrowRight className="w-4 h-4 transition-transform duration-500 group-hover:translate-x-1" />
+              <span className="relative mt-2 self-start inline-flex items-center gap-2 px-7 py-3.5 rounded-full bg-koala-purple text-white text-sm font-bold overflow-hidden transition-shadow duration-700 group-hover:shadow-[0_12px_30px_-10px_rgba(199,161,90,0.55)]">
+                <span
+                  aria-hidden
+                  className="pointer-events-none absolute inset-0 rounded-full bg-gradient-to-r from-koala-purple via-koala-purple-light to-koala-gold opacity-0 group-hover:opacity-100 transition-opacity duration-700 ease-out"
+                />
+                <span className="relative z-10 inline-flex items-center gap-2">
+                  작가 만나보기
+                  <ArrowRight className="w-4 h-4 transition-transform duration-500 group-hover:translate-x-1" />
+                </span>
               </span>
             </div>
           </div>
