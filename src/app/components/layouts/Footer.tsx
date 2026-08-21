@@ -8,21 +8,21 @@ export default function Footer() {
     <footer className="relative overflow-hidden bg-[#140b20]">
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/25 to-transparent" />
       <div
-        className="pointer-events-none absolute inset-x-0 bottom-0 h-[560px]"
+        className="pointer-events-none absolute inset-x-0 bottom-0 h-[440px]"
         style={{
           background:
-            'radial-gradient(135% 100% at 50% 100%, rgba(199,161,90,0.72) 0%, rgba(165,129,61,0.40) 20%, rgba(62,34,89,0.22) 42%, transparent 66%)',
+            'radial-gradient(165% 135% at 50% 100%, rgba(199,161,90,0.80) 0%, rgba(165,129,61,0.46) 22%, rgba(62,34,89,0.22) 48%, transparent 76%)',
         }}
       />
       <div
-        className="pointer-events-none absolute inset-x-0 bottom-0 h-[340px]"
+        className="pointer-events-none absolute inset-x-0 bottom-0 h-[300px]"
         style={{
           background:
-            'radial-gradient(85% 70% at 50% 104%, rgba(250,240,214,0.58) 0%, rgba(232,211,164,0.26) 30%, transparent 58%)',
+            'radial-gradient(105% 82% at 50% 106%, rgba(250,240,214,0.64) 0%, rgba(232,211,164,0.28) 34%, transparent 66%)',
         }}
       />
-      <div className="relative max-w-[1600px] mx-auto px-6 md:px-8 pt-16 md:pt-24 pb-36 md:pb-52">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-10 md:gap-12 mb-14">
+      <div className="relative max-w-[1600px] mx-auto px-6 md:px-8 pt-12 md:pt-16 pb-24 md:pb-32">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8 md:gap-10 mb-10">
           <div className="lg:col-span-2">
             <div className="mb-6">
               <img
