@@ -265,3 +265,11 @@
 .koala-prose pre code { background: none; padding: 0; }
 .koala-prose:focus { outline: none; }
 .koala-prose .ProseMirror-selectednode { outline: 2px solid var(--koala-gold); border-radius: .6rem; }
+
+@keyframes koala-marquee-y {
+  from { transform: translateY(0); }
+  to   { transform: translateY(-50%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .koala-marquee { animation: none !important; }
+}

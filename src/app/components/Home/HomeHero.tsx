@@ -65,7 +65,30 @@ export default function HomeHero({ banners, featured = [] }: HomeHeroProps) {
   }
 
   const banner = banners[current] ?? null;
-  const railItems = featured.slice(0, 3);
+  const railItems = featured;
+
+  const renderRailCard = (s: Sku, key: React.Key) => {
+    const price = (s.salePrice ?? s.listPrice)?.toLocaleString();
+    return (
+      <Link
+        key={key}
+        to={`/product/${s.skuCode}`}
+        className="group/card flex items-center gap-3 rounded-xl bg-white/95 hover:bg-white p-2.5 mb-2.5 shadow-sm transition-colors"
+      >
+        <img
+          src={toCdnUrl(s.primaryImageUrl) ?? '/placeholder.svg'}
+          alt={s.name}
+          className="w-16 h-16 rounded-lg object-cover shrink-0 bg-gray-100"
+        />
+        <div className="min-w-0 flex-1">
+          <p className="text-[11px] text-gray-500 truncate">{s.artistName}</p>
+          <p className="text-sm font-bold text-gray-900 truncate">{s.name}</p>
+          <p className="text-sm font-bold text-koala-gold-deep mt-0.5">₩{price}</p>
+        </div>
+        <ArrowRight className="w-4 h-4 text-gray-300 shrink-0 opacity-0 -translate-x-1 group-hover/card:opacity-100 group-hover/card:translate-x-0 transition-all" />
+      </Link>
+    );
+  };
 
   return (
     <section
@@ -178,7 +201,7 @@ export default function HomeHero({ banners, featured = [] }: HomeHeroProps) {
         </div>
 
         <aside
-          className="relative hidden lg:flex flex-col justify-center lg:px-8 lg:pt-28 lg:pb-8 overflow-hidden"
+          className="relative hidden lg:flex flex-col lg:px-8 lg:pt-28 lg:pb-8 overflow-hidden"
           style={{ background: 'linear-gradient(175deg, #1a0f27 0%, #241338 52%, #2c1a30 100%)' }}
         >
           <div
@@ -195,8 +218,8 @@ export default function HomeHero({ banners, featured = [] }: HomeHeroProps) {
                 'radial-gradient(92% 68% at 50% 106%, rgba(244,228,198,0.52) 0%, rgba(228,206,158,0.22) 34%, transparent 64%)',
             }}
           />
-          <div className="relative">
-            <div className="flex items-baseline justify-between mb-4">
+          <div className="relative z-10 flex flex-col flex-1 min-h-0">
+            <div className="flex items-baseline justify-between mb-4 shrink-0">
               <div>
                 <p className="text-[11px] font-bold uppercase tracking-[0.24em] text-koala-gold mb-1">Featured</p>
                 <h2 className="text-white text-lg font-bold tracking-tight">지금 주목받는 작품</h2>
@@ -206,41 +229,38 @@ export default function HomeHero({ banners, featured = [] }: HomeHeroProps) {
               </Link>
             </div>
 
-            <div className="flex flex-col gap-2.5">
-              {railItems.length > 0
-                ? railItems.map((s) => {
-                    const price = (s.salePrice ?? s.listPrice)?.toLocaleString();
-                    return (
-                      <Link
-                        key={s.skuCode}
-                        to={`/product/${s.skuCode}`}
-                        className="group flex items-center gap-3 rounded-xl bg-white/95 hover:bg-white p-2.5 shadow-sm transition-colors"
-                      >
-                        <img
-                          src={toCdnUrl(s.primaryImageUrl) ?? '/placeholder.svg'}
-                          alt={s.name}
-                          className="w-16 h-16 rounded-lg object-cover shrink-0 bg-gray-100"
-                        />
-                        <div className="min-w-0 flex-1">
-                          <p className="text-[11px] text-gray-500 truncate">{s.artistName}</p>
-                          <p className="text-sm font-bold text-gray-900 truncate">{s.name}</p>
-                          <p className="text-sm font-bold text-koala-gold-deep mt-0.5">₩{price}</p>
-                        </div>
-                        <ArrowRight className="w-4 h-4 text-gray-300 shrink-0 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all" />
-                      </Link>
-                    );
-                  })
-                : Array.from({ length: 3 }).map((_, i) => (
-                    <div key={i} className="flex items-center gap-3 rounded-xl bg-white/10 p-2.5 animate-pulse">
-                      <div className="w-16 h-16 rounded-lg bg-white/15 shrink-0" />
-                      <div className="flex-1 space-y-2">
-                        <div className="h-2.5 w-1/3 rounded bg-white/15" />
-                        <div className="h-3 w-2/3 rounded bg-white/15" />
-                        <div className="h-3 w-1/4 rounded bg-white/15" />
-                      </div>
+            {railItems.length === 0 ? (
+              <div className="flex flex-col gap-2.5">
+                {Array.from({ length: 3 }).map((_, i) => (
+                  <div key={i} className="flex items-center gap-3 rounded-xl bg-white/10 p-2.5 animate-pulse">
+                    <div className="w-16 h-16 rounded-lg bg-white/15 shrink-0" />
+                    <div className="flex-1 space-y-2">
+                      <div className="h-2.5 w-1/3 rounded bg-white/15" />
+                      <div className="h-3 w-2/3 rounded bg-white/15" />
+                      <div className="h-3 w-1/4 rounded bg-white/15" />
                     </div>
-                  ))}
-            </div>
+                  </div>
+                ))}
+              </div>
+            ) : railItems.length > 3 ? (
+              <div className="group relative flex-1 min-h-0 overflow-hidden [mask-image:linear-gradient(to_bottom,transparent,#000_6%,#000_94%,transparent)] [-webkit-mask-image:linear-gradient(to_bottom,transparent,#000_6%,#000_94%,transparent)]">
+                <div
+                  className="koala-marquee flex flex-col will-change-transform group-hover:[animation-play-state:paused]"
+                  style={{
+                    animationName: 'koala-marquee-y',
+                    animationDuration: `${railItems.length * 3.2}s`,
+                    animationTimingFunction: 'linear',
+                    animationIterationCount: 'infinite',
+                  }}
+                >
+                  {[...railItems, ...railItems].map((s, i) => renderRailCard(s, `${s.skuCode}-${i}`))}
+                </div>
+              </div>
+            ) : (
+              <div className="flex flex-col">
+                {railItems.map((s, i) => renderRailCard(s, `${s.skuCode}-${i}`))}
+              </div>
+            )}
           </div>
         </aside>
       </div>

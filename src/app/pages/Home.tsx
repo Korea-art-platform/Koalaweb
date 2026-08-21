@@ -58,7 +58,7 @@ export default function Home() {
   const limitedSkus = skus.filter((s) => s.mainCategory === LIMITED || s.isLimitedEdition);
   const heroFeatured = (limitedSkus.length ? limitedSkus : skus)
     .filter((s) => s.status === 'ACTIVE')
-    .slice(0, 3);
+    .slice(0, 12);
 
   return (
     <main className="bg-white font-sans">
