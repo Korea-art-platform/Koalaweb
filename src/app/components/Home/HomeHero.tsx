@@ -68,7 +68,7 @@ export default function HomeHero({ banners }: HomeHeroProps) {
     <section
       data-hero="dark"
 
-      className="relative h-screen h-[100dvh] overflow-hidden bg-koala-navy"
+      className="relative h-[64vh] min-h-[420px] max-h-[600px] overflow-hidden bg-koala-navy"
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
