@@ -424,6 +424,8 @@ export interface PartnerStore {
   email?: string;
   description?: string;
   mapUrl?: string;
+  snsUrl?: string;
+  imageUrl?: string;
   isActive: boolean;
   sortOrder: number;
   createdAt: string;
@@ -440,6 +442,8 @@ export interface StoreInput {
   email?: string;
   description?: string;
   mapUrl?: string;
+  snsUrl?: string;
+  imageUrl?: string;
   sortOrder?: number;
 }
 

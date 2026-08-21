@@ -11,6 +11,8 @@ export interface StoreItem {
   email?: string;
   description?: string;
   mapUrl?: string;
+  snsUrl?: string;
+  imageUrl?: string;
 }
 
 export const getStores = () =>

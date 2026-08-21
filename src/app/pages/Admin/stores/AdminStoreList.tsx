@@ -1,15 +1,15 @@
-import { useState, useEffect, useCallback } from 'react';
-import { Store, MapPin, X, Search, Lock } from 'lucide-react';
+import { useState, useEffect, useCallback, useRef } from 'react';
+import { Store, MapPin, X, Search, Lock, ImagePlus } from 'lucide-react';
 import {
   getAdminStores, createStore, updateStore,
-  activateStore, deactivateStore, deleteStore,
+  activateStore, deactivateStore, deleteStore, uploadBannerImage,
   type PartnerStore, type StoreInput,
 } from '@/api/adminApi';
 import { openAddressSearch } from '@/app/lib/daumPostcode';
 
 const EMPTY: StoreInput = {
   name: '', zipCode: '', address: '', addressDetail: '',
-  phone: '', phone2: '', email: '', description: '', mapUrl: '', sortOrder: 0,
+  phone: '', phone2: '', email: '', description: '', mapUrl: '', snsUrl: '', imageUrl: '', sortOrder: 0,
 };
 
 export default function AdminStoreList() {
@@ -19,7 +19,9 @@ export default function AdminStoreList() {
   const [editTarget, setEditTarget] = useState<PartnerStore | null>(null);
   const [form, setForm] = useState<StoreInput>(EMPTY);
   const [submitting, setSubmitting] = useState(false);
+  const [imgUploading, setImgUploading] = useState(false);
   const [error, setError] = useState('');
+  const imgRef = useRef<HTMLInputElement>(null);
 
   const load = useCallback(() => {
     setLoading(true);
@@ -42,7 +44,7 @@ export default function AdminStoreList() {
       name: s.name, zipCode: s.zipCode ?? '', address: s.address,
       addressDetail: s.addressDetail ?? '', phone: s.phone, phone2: s.phone2 ?? '',
       email: s.email ?? '', description: s.description ?? '', mapUrl: s.mapUrl ?? '',
-      sortOrder: s.sortOrder,
+      snsUrl: s.snsUrl ?? '', imageUrl: s.imageUrl ?? '', sortOrder: s.sortOrder,
     });
     setEditTarget(s);
     setError('');
@@ -52,6 +54,22 @@ export default function AdminStoreList() {
   const searchAddress = () => {
     openAddressSearch(({ zipCode, address }) => set({ zipCode, address }))
       .catch(() => setError('주소 검색을 여는 데 실패했습니다. 잠시 후 다시 시도해 주세요.'));
+  };
+
+  const uploadImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    e.target.value = '';
+    if (!file) return;
+    if (!file.type.startsWith('image/')) { setError('이미지 파일만 업로드할 수 있습니다.'); return; }
+    setImgUploading(true);
+    try {
+      const url = await uploadBannerImage(file);
+      set({ imageUrl: url });
+    } catch {
+      setError('사진 업로드에 실패했습니다.');
+    } finally {
+      setImgUploading(false);
+    }
   };
 
   const submit = async () => {
@@ -152,6 +170,29 @@ export default function AdminStoreList() {
             </div>
 
             <div className="space-y-4">
+              <div>
+                <label className="block text-xs text-gray-500 mb-1.5">매장 사진</label>
+                <div className="flex items-center gap-3">
+                  <div className="w-28 h-20 rounded-lg overflow-hidden bg-gray-100 flex items-center justify-center flex-shrink-0">
+                    {form.imageUrl
+                      ? <img src={form.imageUrl} alt="매장 사진" className="w-full h-full object-cover" />
+                      : <span className="text-[10px] text-gray-400">사진 없음</span>}
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <input ref={imgRef} type="file" accept="image/*" className="hidden" onChange={uploadImage} />
+                    <button type="button" onClick={() => imgRef.current?.click()} disabled={imgUploading}
+                      className="px-3 py-2 text-xs font-medium bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 disabled:opacity-50 inline-flex items-center gap-1.5 w-fit">
+                      <ImagePlus className="w-3.5 h-3.5" />
+                      {imgUploading ? '업로드 중...' : form.imageUrl ? '사진 교체' : '사진 업로드'}
+                    </button>
+                    {form.imageUrl && (
+                      <button type="button" onClick={() => set({ imageUrl: '' })}
+                        className="text-[11px] text-red-400 hover:text-red-600 w-fit">사진 제거</button>
+                    )}
+                  </div>
+                </div>
+              </div>
+
               <Field label="매장명 *">
                 <input value={form.name} onChange={(e) => set({ name: e.target.value })}
                   className={inputCls} placeholder="예) KOALA 강남점" />
@@ -187,6 +228,11 @@ export default function AdminStoreList() {
               <Field label="이메일">
                 <input value={form.email} onChange={(e) => set({ email: e.target.value })}
                   className={inputCls} placeholder="store@example.com" />
+              </Field>
+
+              <Field label="SNS 링크 (인스타그램 등)">
+                <input value={form.snsUrl} onChange={(e) => set({ snsUrl: e.target.value })}
+                  className={inputCls} placeholder="https://instagram.com/..." />
               </Field>
 
               <Field label="사업장 소개글">
