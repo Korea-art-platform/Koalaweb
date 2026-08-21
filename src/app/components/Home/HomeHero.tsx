@@ -201,7 +201,7 @@ export default function HomeHero({ banners, featured = [] }: HomeHeroProps) {
         </div>
 
         <aside
-          className="relative hidden lg:flex flex-col lg:px-8 lg:pt-28 lg:pb-8 overflow-hidden"
+          className="relative hidden lg:flex flex-col lg:h-[58vh] lg:min-h-[600px] lg:max-h-[860px] lg:px-8 lg:pt-28 lg:pb-8 overflow-hidden"
           style={{ background: 'linear-gradient(175deg, #1a0f27 0%, #241338 52%, #2c1a30 100%)' }}
         >
           <div
