@@ -56,10 +56,13 @@ export default function Home() {
   }, []);
 
   const limitedSkus = skus.filter((s) => s.mainCategory === LIMITED || s.isLimitedEdition);
+  const heroFeatured = (limitedSkus.length ? limitedSkus : skus)
+    .filter((s) => s.status === 'ACTIVE')
+    .slice(0, 3);
 
   return (
     <main className="bg-white font-sans">
-      <HomeHero banners={banners} />
+      <HomeHero banners={banners} featured={heroFeatured} />
       <HomeLimitedEdition skus={limitedSkus} loading={loading} />
       <HomeGenreCollections genreCounts={genreCounts} skus={skus} />
       <HomeCategorySections categories={subCategories} skus={skus} />
