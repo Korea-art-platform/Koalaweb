@@ -9,7 +9,7 @@ export default function CornerBookmark({ className = '' }: Props) {
       className={`pointer-events-none absolute z-10 -top-5 right-[16%] ${className}`}
     >
       <span className="koala-bm-swing block">
-        <svg width="46" height="104" viewBox="0 0 46 104" style={{ overflow: 'visible' }}>
+        <svg width="55" height="124" viewBox="0 0 46 104" style={{ overflow: 'visible' }}>
           <circle cx="23" cy="8" r="5" fill="none" stroke="#c9a45c" strokeWidth="2.2" />
           <line x1="23" y1="13" x2="23" y2="17" stroke="#c9a45c" strokeWidth="2.2" strokeLinecap="round" />
           <rect x="8" y="17" width="30" height="80" rx="5" fill="#3e2259" stroke="#c9a45c" strokeWidth="2.2" />
