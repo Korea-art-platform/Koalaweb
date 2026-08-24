@@ -4,7 +4,7 @@ import { motion, AnimatePresence, useReducedMotion, type PanInfo } from 'framer-
 import Navigation from '@/app/components/layouts/Header';
 import { MapPin, Phone, Mail, Store as StoreIcon, ArrowUpRight, Instagram, ChevronRight, Search, X } from 'lucide-react';
 import { getStores, type StoreItem } from '@/api/store';
-import CornerAccent from '@/app/components/common/CornerAccent';
+import CornerBookmark from '@/app/components/common/CornerBookmark';
 
 const cityOf = (addr?: string) => (addr?.trim().split(/\s+/)[0]) || '기타';
 
@@ -149,7 +149,7 @@ export default function Stores() {
                             : 'border-gray-200 bg-white hover:border-gray-300'
                         }`}
                       >
-                        <CornerAccent corner="tr" />
+                        <CornerBookmark corner="tr" />
                         {on && (
                           <motion.span
                             layoutId="store-active-bar"
@@ -178,7 +178,7 @@ export default function Stores() {
 
               {/* 우측 상세 (데스크톱 전용) */}
               <div className="group hidden md:block sticky top-28 bg-white rounded-2xl border border-gray-100 shadow-[0_10px_30px_-20px_rgba(62,34,89,0.35)] overflow-hidden min-h-[420px]">
-                <CornerAccent corner="tr" className="z-10" />
+                <CornerBookmark corner="tr" />
                 <AnimatePresence mode="wait">
                   {active && (
                     <motion.div
