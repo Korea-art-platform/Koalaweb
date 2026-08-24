@@ -1,5 +1,6 @@
 import { Link } from 'react-router';
 import { ArrowRight } from 'lucide-react';
+import CornerBookmark from '@/app/components/common/CornerBookmark';
 import { useTranslation } from 'react-i18next';
 import { ImageWithFallback } from '@/app/components/fallback/ImageWithFallback';
 import VideoPlayer from '@/app/components/common/VideoPlayer';
@@ -98,6 +99,7 @@ export default function ArtistRow({ artist, index }: ArtistRowProps) {
                   clipPath: 'polygon(20% 0, 100% 0, 100% 100%, 0% 100%)',
                 }}
               />
+              <CornerBookmark corner="tl" />
               <div className="relative z-10 flex items-center gap-5 p-4">
                 <div className="w-24 h-24 flex-shrink-0 rounded-xl overflow-hidden bg-gray-100">
                   <ImageWithFallback
