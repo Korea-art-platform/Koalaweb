@@ -1,5 +1,5 @@
-import { Heart } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import WishBookmark from '@/app/components/common/WishBookmark';
 
 interface Props {
   sku: any;
@@ -28,13 +28,14 @@ export function ProductActions({ sku, cartLoading, isWishlisted, onAddToCart, on
       </button>
       <button
         onClick={onWishlist}
-        className="w-[52px] h-[52px] flex items-center justify-center border border-gray-200 rounded-xl hover:bg-gray-50 hover:border-gray-300 transition-all active:scale-[0.98] flex-shrink-0"
+        aria-label="찜하기"
+        className={`w-[52px] h-[52px] flex items-center justify-center border rounded-xl transition-all active:scale-[0.98] flex-shrink-0 ${
+          isWishlisted
+            ? 'border-koala-gold bg-koala-gold/5 text-koala-gold-deep'
+            : 'border-gray-200 text-gray-400 hover:bg-gray-50 hover:border-gray-300'
+        }`}
       >
-        <Heart
-          className={`w-5 h-5 transition-colors ${
-            isWishlisted ? 'text-koala-red fill-koala-red' : 'text-gray-400'
-          }`}
-        />
+        <WishBookmark active={isWishlisted} size={22} />
       </button>
     </div>
   );

@@ -1,5 +1,6 @@
 import { Link } from 'react-router';
-import { Heart, Sparkles } from 'lucide-react';
+import { Sparkles } from 'lucide-react';
+import WishBookmark from '@/app/components/common/WishBookmark';
 import { ImageWithFallback } from '@/app/components/fallback/ImageWithFallback';
 
 interface ArtworkCardProps {
@@ -47,8 +48,8 @@ export default function ArtworkCard({
             </div>
           )}
 
-          <button className="absolute top-4 right-4 p-2.5 rounded-full bg-white/90 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:bg-white">
-            <Heart className="w-4 h-4 text-gray-600" />
+          <button aria-label="찜하기" className="absolute top-4 right-4 p-2.5 rounded-full bg-white/90 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:bg-white text-gray-500">
+            <WishBookmark active={false} size={17} />
           </button>
         </div>
       </div>

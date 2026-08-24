@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo, useRef, useId } from 'react';
-import { Heart, ShoppingCart, Check, ArrowRight, X, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ShoppingCart, Check, ArrowRight, X, ChevronLeft, ChevronRight } from 'lucide-react';
+import WishBookmark from '@/app/components/common/WishBookmark';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link, useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
@@ -160,16 +161,14 @@ export default function ProductCard({
           disabled={isWishlistLoading}
           aria-label="찜하기"
           whileTap={{ scale: 0.85 }}
-          className={`absolute top-2.5 right-2.5 md:top-4 md:right-4 p-2 md:p-2.5 rounded-full backdrop-blur-sm shadow-sm transition-colors ${
-            isWishlisted ? 'bg-koala-red text-white' : 'bg-white/90 text-gray-500 hover:text-koala-red'
+          className={`absolute top-2.5 right-2.5 md:top-4 md:right-4 p-2 md:p-2.5 rounded-full bg-white/90 backdrop-blur-sm shadow-sm transition-colors ${
+            isWishlisted ? 'text-koala-gold-deep' : 'text-gray-400 hover:text-koala-purple'
           } ${isWishlistLoading ? 'cursor-wait' : ''}`}
         >
           {isWishlistLoading ? (
             <span className="block w-4 h-4 md:w-[18px] md:h-[18px] border-2 border-current border-t-transparent rounded-full animate-spin" />
           ) : (
-            <motion.span key={isWishlisted ? 'on' : 'off'} initial={{ scale: 0.4 }} animate={{ scale: 1 }} transition={{ type: 'spring', stiffness: 500, damping: 13 }} className="block">
-              <Heart className="w-4 h-4 md:w-[18px] md:h-[18px]" fill={isWishlisted ? 'currentColor' : 'none'} />
-            </motion.span>
+            <WishBookmark active={isWishlisted} size={17} className="block" />
           )}
         </motion.button>
         <div className="absolute bottom-0 left-0 w-full p-4 md:p-5 translate-y-3 group-hover:translate-y-0 transition-transform duration-300">
@@ -327,10 +326,10 @@ export default function ProductCard({
                       disabled={isWishlistLoading}
                       aria-label="찜하기"
                       className={`flex items-center justify-center gap-1.5 px-4 py-3 rounded-xl border text-sm font-bold transition-colors ${
-                        isWishlisted ? 'border-koala-red text-koala-red bg-koala-red/5' : 'border-gray-200 text-gray-600 hover:border-koala-red hover:text-koala-red'
+                        isWishlisted ? 'border-koala-gold text-koala-gold-deep bg-koala-gold/5' : 'border-gray-200 text-gray-600 hover:border-koala-purple hover:text-koala-purple'
                       }`}
                     >
-                      <Heart className="w-4 h-4" fill={isWishlisted ? 'currentColor' : 'none'} /> 찜
+                      <WishBookmark active={isWishlisted} size={15} /> 찜
                     </button>
                     <Link
                       to={detailPath}

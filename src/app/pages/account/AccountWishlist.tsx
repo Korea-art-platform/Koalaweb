@@ -1,5 +1,6 @@
 import { Link } from 'react-router';
-import { Heart, ShoppingCart, Trash2 } from 'lucide-react';
+import { ShoppingCart, Trash2 } from 'lucide-react';
+import WishBookmark from '@/app/components/common/WishBookmark';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { getWishlist, removeWishlist } from '@/api/wishlist';
@@ -69,7 +70,7 @@ export default function AccountWishlist() {
                 </div>
             ) : wishlist.length === 0 ? (
                 <div className="bg-white rounded-3xl p-12 md:p-20 shadow-sm border border-dashed border-gray-200 text-center">
-                    <Heart className="w-12 h-12 text-gray-200 mx-auto mb-4" />
+                    <div className="text-gray-300 flex justify-center mb-4"><WishBookmark active={false} size={44} /></div>
                     <h3 className="text-lg md:text-xl font-bold mb-2">{t('account.wishlist.emptyTitle')}</h3>
                     <p className="text-sm text-gray-400 mb-6">
                         {t('account.wishlist.emptyDesc')}
