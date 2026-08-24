@@ -6,19 +6,25 @@ export default function CornerBookmark({ className = '' }: Props) {
   return (
     <span
       aria-hidden
-      className={`pointer-events-none absolute z-10 -top-4 right-[20%] ${className}`}
+      className={`pointer-events-none absolute z-10 -top-5 right-[16%] ${className}`}
     >
       <span className="koala-bm-swing block">
-        <svg width="30" height="70" viewBox="0 0 30 70" style={{ overflow: 'visible' }}>
-          <circle cx="15" cy="6" r="3.6" fill="none" stroke="#5e3b9e" strokeWidth="1.9" />
-          <line x1="15" y1="9.6" x2="15" y2="12.4" stroke="#5e3b9e" strokeWidth="1.9" strokeLinecap="round" />
-          <rect x="6.5" y="12.4" width="17" height="50" rx="3.6" fill="#c9a45c" stroke="#8a6a2e" strokeWidth="1.9" />
+        <svg width="46" height="104" viewBox="0 0 46 104" style={{ overflow: 'visible' }}>
+          <circle cx="23" cy="8" r="5" fill="none" stroke="#5e3b9e" strokeWidth="2.2" />
+          <line x1="23" y1="13" x2="23" y2="17" stroke="#5e3b9e" strokeWidth="2.2" strokeLinecap="round" />
+          <rect x="8" y="17" width="30" height="80" rx="5" fill="#c9a45c" stroke="#8a6a2e" strokeWidth="2.2" />
+
           <g fill="#e79aa8">
-            <circle cx="11" cy="22" r="1.7" />
-            <circle cx="19" cy="26" r="1.7" />
+            <circle cx="15" cy="28" r="2.1" />
+            <circle cx="31" cy="33" r="2.1" />
+            <circle cx="16" cy="86" r="2.1" />
           </g>
-          <circle cx="15" cy="40" r="2.4" fill="#3e2259" />
-          <path d="M10.6 46 q4.4 3.6 8.8 0" fill="none" stroke="#3e2259" strokeWidth="1.5" strokeLinecap="round" />
+
+          <circle cx="23" cy="57" r="14" fill="#d8b878" stroke="#8a6a2e" strokeWidth="1.4" />
+          <svg x="10" y="44" width="26" height="26" viewBox="0 0 157.43 157.43" preserveAspectRatio="xMidYMid meet" style={{ overflow: 'visible' }}>
+            <path transform="matrix(1,0,0,-1,77.939807,77.40271)" d="M0 0C-9.343-.915-7.063-23.633 2.474-19.722 8.477-17.26 8.308 .814 0 0M-19.183 34.397C-18.423 33.708-17.332 31.252-16.203 31.13-5.496 35.903 6.368 35.789 17.051 31.002 26.756 44.874 48.517 44.123 56.03 28.479 61.343 17.416 56.807 3.984 45.848-1.434 43.826-2.433 40.473-2.747 39.35-4.186 38.284-5.551 37.932-11.817 36.87-14.643 28.46-37.04-8.197-35.86-10.768-11.709-11.535-4.514-7.75 5.604 .913 4.929 12.765 4.006 13.682-12.854 8.453-20.768L4.487-24.495C15.505-28.579 29.208-23.267 32.694-11.707 33.751-8.203 33.039-4.479 35.33-1.406 38.714 3.131 47.042 2.135 51.267 10.4 59.673 26.846 40.412 43.376 25.773 32.763 24.548 31.875 21.103 28.971 22.406 27.562 23.504 26.374 26.106 25.076 27.338 23.862 32.344 18.93 36.09 11.217 37.797 4.464L32.873 1.977C29.605 25.837 .866 37.698-18.658 23.541-20.796 29.946-25.851 35.199-32.854 35.836-53.881 37.748-59.744 9.982-40.853 2.01-41.356 .948-40.49-3.414-42.09-2.939-49.304-.796-56.286 7.826-57.157 15.283-59.706 37.112-35.494 49.172-19.183 34.397" fill="#3e2259"/>
+            <path transform="matrix(1,0,0,-1,93.1926,117.19681)" d="M0 0C-27.346-11.961-60.173 12.692-51.809 46.085-50.387 51.76-46.617 58.495-42.556 62.714-41.451 63.862-40.394 65.478-38.542 65.174-36.648 59.217-42.409 55.976-44.822 50.813-56.7 25.397-35.02-3.688-7.163 2.762-5.576 3.13-4.035 3.629-2.491 4.18" fill="#3e2259"/>
+          </svg>
         </svg>
       </span>
     </span>
