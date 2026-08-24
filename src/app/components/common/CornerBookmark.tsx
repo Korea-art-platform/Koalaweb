@@ -14,6 +14,17 @@ export default function CornerBookmark({ className = '' }: Props) {
           <line x1="23" y1="13" x2="23" y2="17" stroke="#5e3b9e" strokeWidth="2.2" strokeLinecap="round" />
           <rect x="8" y="17" width="30" height="80" rx="5" fill="#c9a45c" stroke="#8a6a2e" strokeWidth="2.2" />
 
+          <rect x="11.5" y="20.5" width="23" height="73" rx="3" fill="none" stroke="#8a6a2e" strokeWidth="0.7" opacity="0.5" />
+          <g stroke="#8a6a2e" strokeWidth="0.5" opacity="0.16">
+            <path d="M11.5 32 H34.5 M11.5 82 H34.5" />
+            <path d="M17 22 V41 M23 22 V41 M29 22 V41" />
+            <path d="M17 73 V92 M23 73 V92 M29 73 V92" />
+          </g>
+          <g stroke="#8a6a2e" strokeWidth="0.8" opacity="0.5">
+            <path d="M12.5 25.5 H33.5 M12.5 27.2 H33.5" />
+            <path d="M12.5 86.5 H33.5 M12.5 88.2 H33.5" />
+          </g>
+
           <g fill="#e79aa8">
             <circle cx="15" cy="28" r="2.1" />
             <circle cx="31" cy="33" r="2.1" />
