@@ -270,6 +270,30 @@
   from { transform: translateY(0); }
   to   { transform: translateY(-50%); }
 }
+
+@keyframes koala-swing-in {
+  0%   { transform: rotate(-104deg); opacity: 0; }
+  30%  { opacity: 1; }
+  68%  { transform: rotate(-33deg); }
+  86%  { transform: rotate(-51deg); }
+  100% { transform: rotate(-45deg); opacity: 1; }
+}
+.koala-bm-swing {
+  transform: rotate(-45deg);
+  transform-origin: 50% 7%;
+  opacity: 0;
+  transition: opacity .3s ease;
+}
+.group:hover .koala-bm-swing {
+  opacity: 1;
+  animation: koala-swing-in .72s cubic-bezier(.34, 1.1, .6, 1) both;
+}
+@media (hover: none) {
+  .koala-bm-swing { opacity: .42; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .group:hover .koala-bm-swing { animation: none; }
+}
 @media (prefers-reduced-motion: reduce) {
   .koala-marquee { animation: none !important; }
 }

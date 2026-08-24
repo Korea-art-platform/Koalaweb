@@ -4,6 +4,7 @@ import { motion, AnimatePresence, useReducedMotion, type PanInfo } from 'framer-
 import Navigation from '@/app/components/layouts/Header';
 import { MapPin, Phone, Mail, Store as StoreIcon, ArrowUpRight, Instagram, ChevronRight, Search, X } from 'lucide-react';
 import { getStores, type StoreItem } from '@/api/store';
+import CornerBookmark from '@/app/components/common/CornerBookmark';
 
 const cityOf = (addr?: string) => (addr?.trim().split(/\s+/)[0]) || '기타';
 
@@ -148,6 +149,7 @@ export default function Stores() {
                             : 'border-gray-200 bg-white hover:border-gray-300'
                         }`}
                       >
+                        <CornerBookmark />
                         {on && (
                           <motion.span
                             layoutId="store-active-bar"
