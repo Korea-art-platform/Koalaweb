@@ -5,13 +5,13 @@ import ProtectedRoute from "@/app/components/routers/ProtectedRoute";
 import AccountLayout from "@/app/components/layouts/AccountLayout";
 
 import Home from "@/app/pages/Home";
-import SmartStore from "@/app/pages/product/SmartStore";
-import ArtDetail from "@/app/pages/product/ArtDetail";
-import ProductDetail from "@/app/pages/product/Detail";
-import ArtistLab from "@/app/pages/Artist/ArtistLab";
-import ArtistDetail from "@/app/pages/Artist/ArtistDetail";
-import Auth from "@/app/pages/auth/Auth";
-import NotFound from "@/app/pages/NotFound";
+const SmartStore = lazy(() => import("@/app/pages/product/SmartStore"));
+const ArtDetail = lazy(() => import("@/app/pages/product/ArtDetail"));
+const ProductDetail = lazy(() => import("@/app/pages/product/Detail"));
+const ArtistLab = lazy(() => import("@/app/pages/Artist/ArtistLab"));
+const ArtistDetail = lazy(() => import("@/app/pages/Artist/ArtistDetail"));
+const Auth = lazy(() => import("@/app/pages/auth/Auth"));
+const NotFound = lazy(() => import("@/app/pages/NotFound"));
 
 const Search = lazy(() => import("@/app/pages/Search"));
 const ArtistWorks = lazy(() => import("@/app/pages/Artist/ArtistWorks"));
