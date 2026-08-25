@@ -372,7 +372,7 @@ export async function getAdminBanners() {
 export async function createBanner(body: {
   bannerType: string;
   title: string;
-  imageUrl: string;
+  imageUrl?: string;
   videoUrl?: string;
   subtitle?: string;
   badge?: string;

@@ -55,6 +55,7 @@ export default function AdminBannerList() {
   const [videoFile, setVideoFile] = useState<File | null>(null);
   const [videoPreview, setVideoPreview] = useState('');
   const [videoUrl, setVideoUrl] = useState('');
+  const [mediaType, setMediaType] = useState<'IMAGE' | 'VIDEO'>('IMAGE');
   const [useVideoUpload, setUseVideoUpload] = useState(true);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const videoInputRef = useRef<HTMLInputElement>(null);
@@ -97,36 +98,50 @@ export default function AdminBannerList() {
       return;
     }
 
-    if (useUpload && !imageFile) {
-      setFormError('이미지 파일을 선택해 주세요.');
-      return;
-    }
-    if (!useUpload && !imageUrl.trim()) {
-      setFormError('이미지 URL을 입력해 주세요.');
-      return;
+    if (mediaType === 'IMAGE') {
+      if (useUpload && !imageFile) {
+        setFormError('이미지 파일을 선택해 주세요.');
+        return;
+      }
+      if (!useUpload && !imageUrl.trim()) {
+        setFormError('이미지 URL을 입력해 주세요.');
+        return;
+      }
+    } else {
+      if (useVideoUpload && !videoFile) {
+        setFormError('영상 파일을 선택해 주세요.');
+        return;
+      }
+      if (!useVideoUpload && !videoUrl.trim()) {
+        setFormError('영상 URL을 입력해 주세요.');
+        return;
+      }
     }
 
     setFormError('');
     setSubmitting(true);
     try {
       let finalImageUrl = imageUrl.trim();
-      if (useUpload && imageFile) {
+      if (imageFile) {
         setUploading(true);
         finalImageUrl = await uploadBannerImage(imageFile);
         setUploading(false);
       }
 
-      let finalVideoUrl = useVideoUpload ? '' : videoUrl.trim();
-      if (useVideoUpload && videoFile) {
-        setUploading(true);
-        finalVideoUrl = await uploadBannerImage(videoFile);
-        setUploading(false);
+      let finalVideoUrl = '';
+      if (mediaType === 'VIDEO') {
+        finalVideoUrl = useVideoUpload ? '' : videoUrl.trim();
+        if (useVideoUpload && videoFile) {
+          setUploading(true);
+          finalVideoUrl = await uploadBannerImage(videoFile);
+          setUploading(false);
+        }
       }
 
       await createBanner({
         bannerType: form.bannerType,
         title: form.title.trim(),
-        imageUrl: finalImageUrl,
+        imageUrl: finalImageUrl || undefined,
         videoUrl: finalVideoUrl || undefined,
         subtitle: form.subtitle.trim() || undefined,
         badge: form.badge.trim() || undefined,
@@ -152,6 +167,7 @@ export default function AdminBannerList() {
     setImagePreview('');
     setImageUrl('');
     setUseUpload(true);
+    setMediaType('IMAGE');
     setVideoFile(null);
     setVideoPreview('');
     setVideoUrl('');
@@ -200,6 +216,7 @@ export default function AdminBannerList() {
         description: editForm.description.trim() || null,
         imageUrl: editTarget.imageUrl,
         mobileImageUrl: editTarget.mobileImageUrl ?? null,
+        videoUrl: editTarget.videoUrl ?? null,
         linkUrl: editForm.linkUrl.trim() || null,
         linkTarget: editTarget.linkTarget ?? null,
         bgColor: editTarget.bgColor ?? null,
@@ -335,87 +352,100 @@ export default function AdminBannerList() {
                 />
               </div>
               <div>
+                <label className="block text-xs text-gray-500 mb-2">미디어 유형 *</label>
+                <div className="flex gap-2 mb-3">
+                  {([
+                    { v: 'IMAGE', label: '이미지' },
+                    { v: 'VIDEO', label: '영상 (자동재생)' },
+                  ] as const).map((o) => (
+                    <label
+                      key={o.v}
+                      className={mediaType === o.v
+                        ? 'flex-1 flex items-center gap-2 px-3 py-2.5 rounded-lg border cursor-pointer text-sm transition-colors border-koala-purple bg-koala-purple/5 text-koala-purple font-medium'
+                        : 'flex-1 flex items-center gap-2 px-3 py-2.5 rounded-lg border cursor-pointer text-sm transition-colors border-gray-200 text-gray-500 hover:border-gray-300'}
+                    >
+                      <input
+                        type="radio"
+                        name="mediaType"
+                        checked={mediaType === o.v}
+                        onChange={() => setMediaType(o.v)}
+                        className="accent-koala-purple"
+                      />
+                      {o.label}
+                    </label>
+                  ))}
+                </div>
+
                 <div className="flex items-center justify-between mb-1.5">
-                  <label className="text-xs text-gray-500">이미지 *</label>
+                  <label className="text-xs text-gray-500">
+                    {mediaType === 'IMAGE' ? '이미지 파일 *' : '영상 파일 *'}
+                  </label>
                   <div className="flex bg-gray-100 rounded-lg p-0.5 text-xs">
                     <button
-                      onClick={() => setUseUpload(true)}
-                      className={`px-2.5 py-1 rounded-md transition-colors ${useUpload ? 'bg-white text-gray-900 shadow-sm font-medium' : 'text-gray-400'}`}
+                      onClick={() => (mediaType === 'IMAGE' ? setUseUpload(true) : setUseVideoUpload(true))}
+                      className={(mediaType === 'IMAGE' ? useUpload : useVideoUpload)
+                        ? 'px-2.5 py-1 rounded-md transition-colors bg-white text-gray-900 shadow-sm font-medium'
+                        : 'px-2.5 py-1 rounded-md transition-colors text-gray-400'}
                     >
                       파일 업로드
                     </button>
                     <button
-                      onClick={() => setUseUpload(false)}
-                      className={`px-2.5 py-1 rounded-md transition-colors ${!useUpload ? 'bg-white text-gray-900 shadow-sm font-medium' : 'text-gray-400'}`}
+                      onClick={() => (mediaType === 'IMAGE' ? setUseUpload(false) : setUseVideoUpload(false))}
+                      className={!(mediaType === 'IMAGE' ? useUpload : useVideoUpload)
+                        ? 'px-2.5 py-1 rounded-md transition-colors bg-white text-gray-900 shadow-sm font-medium'
+                        : 'px-2.5 py-1 rounded-md transition-colors text-gray-400'}
                     >
                       URL 입력
                     </button>
                   </div>
                 </div>
 
-                {useUpload ? (
-                  <div>
-                    <input
-                      ref={fileInputRef}
-                      type="file"
-                      accept="image/*"
-                      className="hidden"
-                      onChange={(e) => handleFileChange(e.target.files?.[0] ?? null)}
-                    />
-                    {imagePreview ? (
-                      <div className="relative inline-block">
-                        <img src={imagePreview} alt="preview" className="h-20 rounded-lg object-cover border" />
-                        <button
-                          onClick={() => { handleFileChange(null); if (fileInputRef.current) fileInputRef.current.value = ''; }}
-                          className="absolute -top-1.5 -right-1.5 bg-koala-navy text-white rounded-full p-0.5 hover:bg-red-600"
-                        >
-                          <X className="w-3 h-3" />
-                        </button>
-                      </div>
-                    ) : (
-                      <button
-                        onClick={() => fileInputRef.current?.click()}
-                        className="flex items-center gap-2 w-full justify-center py-4 text-xs border-2 border-dashed border-gray-200 rounded-lg text-gray-400 hover:border-gray-400 hover:text-gray-600 transition-colors"
-                      >
-                        <Upload className="w-4 h-4" />
-                        이미지 파일 선택 (JPG, PNG, WEBP)
-                      </button>
-                    )}
-                  </div>
-                ) : (
-                  <input
-                    value={imageUrl}
-                    onChange={(e) => setImageUrl(e.target.value)}
-                    className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-black/10"
-                    placeholder="https://..."
-                  />
+                {mediaType === 'VIDEO' && (
+                  <p className="text-[11px] text-gray-400 mb-2.5">
+                    영상은 자동 재생되며 브라우저 규칙상 <b>항상 무음</b>입니다.
+                    20MB 이하 · 10~15초 · 720p mp4 를 권장합니다.
+                  </p>
                 )}
-              </div>
 
-              <div className="border-t border-gray-100 pt-4">
-                <div className="flex items-center justify-between mb-1.5">
-                  <label className="text-xs text-gray-500">영상 (선택)</label>
-                  <div className="flex bg-gray-100 rounded-lg p-0.5 text-[11px]">
-                    <button
-                      onClick={() => setUseVideoUpload(true)}
-                      className={`px-2.5 py-1 rounded-md transition-colors ${useVideoUpload ? 'bg-white text-gray-900 shadow-sm font-medium' : 'text-gray-400'}`}
-                    >
-                      파일 업로드
-                    </button>
-                    <button
-                      onClick={() => setUseVideoUpload(false)}
-                      className={`px-2.5 py-1 rounded-md transition-colors ${!useVideoUpload ? 'bg-white text-gray-900 shadow-sm font-medium' : 'text-gray-400'}`}
-                    >
-                      URL 입력
-                    </button>
-                  </div>
-                </div>
-                <p className="text-[11px] text-gray-400 mb-2.5">
-                  넣으면 영상이 자동 재생되고, 위 이미지는 <b>로딩 중·재생 불가 시 배경</b>으로 쓰입니다.
-                  자동 재생은 브라우저 규칙상 <b>항상 무음</b>입니다. 20MB 이하 · 10~15초 · 720p mp4 를 권장합니다.
-                </p>
-
-                {useVideoUpload ? (
+                {mediaType === 'IMAGE' ? (
+                  useUpload ? (
+                    <div>
+                      <input
+                        ref={fileInputRef}
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={(e) => handleFileChange(e.target.files?.[0] ?? null)}
+                      />
+                      {imagePreview ? (
+                        <div className="relative inline-block">
+                          <img src={imagePreview} alt="preview" className="h-20 rounded-lg object-cover border" />
+                          <button
+                            onClick={() => { handleFileChange(null); if (fileInputRef.current) fileInputRef.current.value = ''; }}
+                            className="absolute -top-1.5 -right-1.5 bg-koala-navy text-white rounded-full p-0.5 hover:bg-red-600"
+                          >
+                            <X className="w-3 h-3" />
+                          </button>
+                        </div>
+                      ) : (
+                        <button
+                          onClick={() => fileInputRef.current?.click()}
+                          className="flex items-center gap-2 w-full justify-center py-4 text-xs border-2 border-dashed border-gray-200 rounded-lg text-gray-400 hover:border-gray-400 hover:text-gray-600 transition-colors"
+                        >
+                          <Upload className="w-4 h-4" />
+                          이미지 파일 선택 (JPG, PNG, WEBP)
+                        </button>
+                      )}
+                    </div>
+                  ) : (
+                    <input
+                      value={imageUrl}
+                      onChange={(e) => setImageUrl(e.target.value)}
+                      className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-black/10"
+                      placeholder="https://..."
+                    />
+                  )
+                ) : useVideoUpload ? (
                   <div>
                     <input
                       ref={videoInputRef}
@@ -453,6 +483,41 @@ export default function AdminBannerList() {
                   />
                 )}
               </div>
+
+              {mediaType === 'VIDEO' && (
+                <div className="border-t border-gray-100 pt-4">
+                  <label className="block text-xs text-gray-500 mb-1.5">썸네일 이미지 (선택)</label>
+                  <p className="text-[11px] text-gray-400 mb-2.5">
+                    영상이 뜨기 전과 자동재생이 막혔을 때 대신 보일 이미지입니다. 비워도 됩니다.
+                  </p>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={(e) => handleFileChange(e.target.files?.[0] ?? null)}
+                  />
+                  {imagePreview ? (
+                    <div className="relative inline-block">
+                      <img src={imagePreview} alt="preview" className="h-20 rounded-lg object-cover border" />
+                      <button
+                        onClick={() => { handleFileChange(null); if (fileInputRef.current) fileInputRef.current.value = ''; }}
+                        className="absolute -top-1.5 -right-1.5 bg-koala-navy text-white rounded-full p-0.5 hover:bg-red-600"
+                      >
+                        <X className="w-3 h-3" />
+                      </button>
+                    </div>
+                  ) : (
+                    <button
+                      onClick={() => fileInputRef.current?.click()}
+                      className="flex items-center gap-2 w-full justify-center py-3 text-xs border-2 border-dashed border-gray-200 rounded-lg text-gray-400 hover:border-gray-400 hover:text-gray-600 transition-colors"
+                    >
+                      <Upload className="w-4 h-4" />
+                      썸네일 이미지 선택
+                    </button>
+                  )}
+                </div>
+              )}
 
               <div>
                 <label className="block text-xs text-gray-500 mb-1.5">부제목 (선택)</label>
