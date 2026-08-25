@@ -146,7 +146,7 @@ export default function Returns() {
                 </tr>
                 <tr>
                   <td className="px-4 py-3 font-semibold text-gray-700 bg-gray-50">사업장 주소</td>
-                  <td className="px-4 py-3 text-gray-600">서울 강서구 마곡중앙6로21 이너매스마곡1차 제619호</td>
+                  <td className="px-4 py-3 text-gray-600">서울특별시 서초구 서운로6길 26, 4층 4482호(지훈빌딩)</td>
                 </tr>
                 <tr>
                   <td className="px-4 py-3 font-semibold text-gray-700 bg-gray-50">반송지 주소</td>
