@@ -9,6 +9,9 @@ const API_BASE = import.meta.env.VITE_API_BASE_URL as string;
 
 export const ACTIVE_PG = ((import.meta.env.VITE_PG as string | undefined) || 'TOSS') as PgCode;
 
+export const EASYPAY_ENABLED =
+  (import.meta.env.VITE_NICE_EASYPAY as string | undefined) === 'true';
+
 export type PgCode = 'TOSS' | 'NICEPAY' | 'PAYPLE';
 
 export const PG_PROVIDER_CODE: PgCode = ACTIVE_PG;
@@ -36,8 +39,12 @@ const METHODS_BY_PG: Record<PgCode, PayMethodOption[]> = {
   ],
   NICEPAY: [
     { id: 'CARD',         label: '신용카드',   desc: '국내 모든 카드' },
-    { id: 'KAKAOPAY',     label: '카카오페이', desc: '카카오페이 간편결제' },
-    { id: 'NAVERPAY',     label: '네이버페이', desc: '네이버페이 간편결제' },
+    ...(EASYPAY_ENABLED
+      ? ([
+          { id: 'KAKAOPAY', label: '카카오페이', desc: '카카오페이 간편결제' },
+          { id: 'NAVERPAY', label: '네이버페이', desc: '네이버페이 간편결제' },
+        ] as PayMethodOption[])
+      : []),
     { id: 'TRANSFER',     label: '계좌이체',   desc: '실시간 계좌이체' },
     { id: 'MOBILE_PHONE', label: '휴대폰',     desc: '휴대폰 소액결제' },
   ],

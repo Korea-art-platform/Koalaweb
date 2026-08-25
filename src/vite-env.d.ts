@@ -12,6 +12,9 @@ interface ImportMetaEnv {
   // 'NICEPAY' 면 나이스 결제창을 쓴다. 없거나 다른 값이면 토스.
   readonly VITE_PG?: string;
   readonly VITE_NICEPAY_CLIENT_ID?: string;
+  // 'true' 면 나이스 결제수단에 카카오페이·네이버페이가 뜬다.
+  // 나이스 계약에서 간편결제가 승인된 뒤에 켤 것.
+  readonly VITE_NICE_EASYPAY?: string;
   readonly VITE_PAYPLE_CLIENT_KEY?: string;
   readonly MODE: string;
 }

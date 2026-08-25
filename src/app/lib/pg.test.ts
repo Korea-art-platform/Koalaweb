@@ -9,9 +9,10 @@ describe('PG 전환', () => {
     vi.unstubAllEnvs();
   });
 
-  async function loadWith(pg?: string) {
+  async function loadWith(pg?: string, easyPay = 'true') {
     if (pg) vi.stubEnv('VITE_PG', pg);
     else vi.stubEnv('VITE_PG', '');
+    vi.stubEnv('VITE_NICE_EASYPAY', easyPay);
     return import('./pg');
   }
 
@@ -22,6 +23,12 @@ describe('PG 전환', () => {
     expect(PAY_METHODS.map((m) => m.id)).toEqual([
       'CARD', 'KAKAOPAY', 'NAVERPAY', 'TRANSFER', 'MOBILE_PHONE',
     ]);
+  });
+
+  it('스위치가 꺼져 있으면 간편결제가 안 뜬다 — 승인 전에 노출되면 결제가 실패한다', async () => {
+    const { PAY_METHODS } = await loadWith('NICEPAY', 'false');
+
+    expect(PAY_METHODS.map((m) => m.id)).toEqual(['CARD', 'TRANSFER', 'MOBILE_PHONE']);
   });
 
   it('간편결제는 나이스 결제창이 아는 값으로 넘어간다', async () => {

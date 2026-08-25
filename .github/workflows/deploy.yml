@@ -45,6 +45,10 @@ jobs:
           # 여기 적힌 나이스 키는 테스트(샌드박스) 상점 키다. 운영 키를 받으면
           # 저장소 Variables 에 넣어라 — 그 값이 있으면 아래 기본값을 덮는다.
           VITE_NICEPAY_CLIENT_ID: ${{ vars.VITE_NICEPAY_CLIENT_ID || 'S2_70b3ebcd8c3a440d81a4ccf4cb91b434' }}
+          # 카카오페이·네이버페이 노출 스위치. 나이스가 간편결제를 승인한 뒤
+          # Variables 에 VITE_NICE_EASYPAY=true 를 넣고 재배포하면 켜진다.
+          # 승인 전에 켜면 고객이 결제 실패를 겪는다.
+          VITE_NICE_EASYPAY: ${{ vars.VITE_NICE_EASYPAY || 'false' }}
           VITE_PAYPLE_CLIENT_KEY: ${{ vars.VITE_PAYPLE_CLIENT_KEY }}
         run: npm run build
 
