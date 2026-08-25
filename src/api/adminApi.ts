@@ -784,3 +784,24 @@ export async function markSettlementPaid(settlementId: number, memo?: string) {
 export async function changeCommissionRate(artistId: number, commissionRate: number) {
   await adminInstance.patch(`${BASE}/settlements/artists/${artistId}/commission-rate`, { commissionRate });
 }
+
+export interface ImageBackfillResult {
+  scanned: number;
+  thumbsCreated: number;
+  headersFixed: number;
+  skipped: number;
+  failed: number;
+  nextToken: string | null;
+  done: boolean;
+}
+
+export async function backfillImageDerivatives(
+  prefix: string,
+  limit: number,
+  nextToken?: string | null
+): Promise<ImageBackfillResult> {
+  const res = await adminInstance.post(`${BASE}/maintenance/image-derivatives`, null, {
+    params: { prefix, limit, ...(nextToken ? { nextToken } : {}) },
+  });
+  return res.data.data as ImageBackfillResult;
+}

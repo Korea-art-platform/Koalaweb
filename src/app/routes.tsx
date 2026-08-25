@@ -81,6 +81,7 @@ const AdminStoreList = lazy(() => import("@/app/pages/Admin/stores/AdminStoreLis
 const AdminInquiryList = lazy(() => import("@/app/pages/Admin/inquiries/AdminInquiryList"));
 const AdminInquiryDetail = lazy(() => import("@/app/pages/Admin/inquiries/AdminInquiryDetail"));
 const AdminSettlementList = lazy(() => import("@/app/pages/Admin/settlements/AdminSettlementList"));
+const AdminMaintenance = lazy(() => import("@/app/pages/Admin/maintenance/AdminMaintenance"));
 
 function RouteFallback() {
   return <div className="min-h-screen" />;
@@ -161,6 +162,7 @@ export function AppRoutes() {
             <Route path="/admin/inquiries" element={<AdminInquiryList />} />
             <Route path="/admin/inquiries/:inquiryCode" element={<AdminInquiryDetail />} />
             <Route path="/admin/settlements" element={<AdminSettlementList />} />
+            <Route path="/admin/maintenance" element={<AdminMaintenance />} />
           </Route>
         </Route>
         <Route path="*" element={<NotFound />} />
