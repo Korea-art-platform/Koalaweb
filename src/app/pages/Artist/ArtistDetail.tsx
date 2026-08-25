@@ -1,6 +1,5 @@
 import { useParams } from 'react-router';
 import { Helmet } from 'react-helmet-async';
-import Navigation from '@/app/components/layouts/Header';
 import { useArtistDetail } from '@/app/hooks/useArtistDetail';
 import { useArtistSkus } from '@/app/hooks/useArtistSkus';
 import { ArtistDetailSkeleton, ArtistNotFound } from '@/app/components/Artist';
@@ -55,7 +54,6 @@ export default function ArtistDetail() {
         <meta name="twitter:description" content={artistDescription} />
         <meta name="twitter:image" content={artistImage} />
       </Helmet>
-      <Navigation />
       <main className="pt-24 pb-24 px-5 md:px-8 max-w-2xl mx-auto w-full">
         <ArtistWorldView
           breadcrumb="작가 소개"

@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router';
 import { ArrowLeft, MapPin, CreditCard, Package, Check, ChevronRight, Search } from 'lucide-react';
-import Navigation from '@/app/components/layouts/Header';
 import { createOrder } from '@/api/order';
 import { getCart } from '@/api/cart';
 import { preparePayment } from '@/api/payment';
@@ -220,7 +219,6 @@ export default function Checkout() {
   if (loading) {
     return (
       <div className="min-h-screen bg-[#FAFAFA]">
-        <Navigation />
         <div className="pt-32 px-8 animate-pulse max-w-[1300px] mx-auto">
           <div className="h-10 bg-gray-100 rounded w-1/4 mb-8" />
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
@@ -237,7 +235,6 @@ export default function Checkout() {
 
   return (
     <div className="min-h-screen bg-[#FAFAFA]">
-      <Navigation />
       <div className="pt-24 pb-20 px-8">
         <div className="max-w-[1300px] mx-auto">
           <button

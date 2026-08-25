@@ -2,7 +2,6 @@ import { useState, useRef, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { ArrowLeft, RotateCw, ZoomIn, ZoomOut, Maximize2, X, Info, ShoppingCart } from 'lucide-react';
-import Navigation from '@/app/components/layouts/Header';
 import { getSku } from '@/api/sku';
 import { addCartItem } from '@/api/cart';
 import type { Sku } from '@/api/types';
@@ -167,7 +166,6 @@ export default function Product360View() {
 
   return (
     <div className="min-h-screen bg-koala-navy">
-      <Navigation />
 
       {showToast && (
         <div className="fixed bottom-10 left-1/2 -translate-x-1/2 z-[100]">

@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router';
 import { ArrowLeft } from 'lucide-react';
-import Navigation from '@/app/components/layouts/Header';
 import { getSku } from '@/api/sku';
 import { getArtist } from '@/api/artist';
 import type { Sku, Artist } from '@/api/types';
@@ -77,7 +76,6 @@ export default function ArtDetail() {
 
   return (
     <div className="min-h-screen bg-white">
-      <Navigation />
       <main className="pt-24 pb-24 px-5 md:px-8 max-w-2xl mx-auto w-full">
         <div className="flex items-center justify-between mb-8">
           <button

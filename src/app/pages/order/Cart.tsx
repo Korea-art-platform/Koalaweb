@@ -1,6 +1,5 @@
 import { Link } from 'react-router';
 import { ArrowLeft } from 'lucide-react';
-import Navigation from '@/app/components/layouts/Header';
 import { useTranslation } from 'react-i18next';
 import { useCart } from '@/app/hooks/useCart';
 import { CartSkeleton } from '@/app/components/Cart';
@@ -26,7 +25,6 @@ export default function Cart() {
 
   return (
     <div className="min-h-screen bg-[#FAFAFA]">
-      <Navigation />
       <div className="pt-24 pb-16 px-8">
         <div className="max-w-[1200px] mx-auto">
           <div className="mb-12">

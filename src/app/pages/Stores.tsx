@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { motion, AnimatePresence, useReducedMotion, type PanInfo } from 'framer-motion';
-import Navigation from '@/app/components/layouts/Header';
 import { MapPin, Phone, Mail, Store as StoreIcon, ArrowUpRight, Instagram, ChevronRight, Search, X } from 'lucide-react';
 import { getStores, type StoreItem } from '@/api/store';
 import CornerBookmark from '@/app/components/common/CornerBookmark';
@@ -63,7 +62,6 @@ export default function Stores() {
         <title>입점 매장 — KOALA</title>
         <meta name="description" content="KOALA 작품을 직접 만나보실 수 있는 공식 입점 매장 안내." />
       </Helmet>
-      <Navigation />
 
       <div className="pt-32 pb-24 px-6 max-w-6xl mx-auto">
         <div className="mb-8">

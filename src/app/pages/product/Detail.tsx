@@ -3,7 +3,6 @@ import { useParams, useNavigate } from 'react-router';
 import { Helmet } from 'react-helmet-async';
 import { ArrowLeft } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import Navigation from '@/app/components/layouts/Header';
 import { getSku } from '@/api/sku';
 import { getArtist } from '@/api/artist';
 import { addCartItem } from '@/api/cart';
@@ -203,7 +202,6 @@ export default function ProductDetail() {
         <meta name="twitter:description" content={pageDescription} />
         <meta name="twitter:image" content={pageImage} />
       </Helmet>
-      <Navigation />
       <ProductToast
         show={showToast}
         message={toastMessage}

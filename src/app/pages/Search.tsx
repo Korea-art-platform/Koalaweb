@@ -1,7 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router';
 import { Search as SearchIcon, X, TrendingUp, Clock, ArrowLeft } from 'lucide-react';
-import Navigation from '@/app/components/layouts/Header';
 import { useViewMode } from '@/app/context/ViewModeContext';
 import { useTranslation } from 'react-i18next';
 import { fetchAllSkus } from '@/api/fetchAllSkus';
@@ -63,7 +62,6 @@ export default function Search() {
 
   return (
     <div className="min-h-screen bg-[#FAFAFA]">
-      <Navigation />
       <div className="pt-24 pb-16 px-8">
         <div className="max-w-[1400px] mx-auto">
           <div className="mb-8">

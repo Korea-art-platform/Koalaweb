@@ -1,4 +1,3 @@
-import Navigation from '@/app/components/layouts/Header';
 import { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { RotateCcw, Move, ZoomIn, ZoomOut, Maximize2, CheckCircle2, X, Camera } from 'lucide-react';
@@ -81,7 +80,6 @@ export default function ARView() {
 
   return (
     <div className="min-h-screen bg-white overflow-hidden">
-      <Navigation />
 
       {showToast && (
         <div className="fixed bottom-10 left-1/2 -translate-x-1/2 z-[100] animate-in fade-in slide-in-from-bottom-4 duration-300">

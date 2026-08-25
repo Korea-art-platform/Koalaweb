@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { useLocation } from 'react-router';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import Navigation from '@/app/components/layouts/Header';
 import LoginForm from '@/app/components/Auth/LoginForm';
 import SignupForm from '@/app/components/Auth/SignupForm';
 import SocialLogin from '@/app/components/Auth/SocialLogin';
@@ -51,7 +50,6 @@ export default function Auth() {
 
   return (
     <div className="min-h-screen bg-[#FAFAFA]">
-      <Navigation />
       <div className="lg:flex lg:items-stretch overflow-x-hidden">
         <div
           style={visualStyle}

@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router';
 import { Mail, Lock, KeyRound } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import Navigation from '@/app/components/layouts/Header';
 import {
   sendPasswordResetCode,
   verifyPasswordResetCode,
@@ -89,7 +88,6 @@ export default function ForgotPassword() {
 
   return (
     <div className="min-h-screen bg-[#FAFAFA]">
-      <Navigation />
       <div className="pt-24 pb-16 px-8">
         <div className="max-w-md mx-auto">
           <div className="text-center mb-12">

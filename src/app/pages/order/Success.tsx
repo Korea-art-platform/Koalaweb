@@ -1,6 +1,5 @@
 import { Link, useLocation, useNavigate } from 'react-router';
 import { CheckCircle, Package, MapPin, CreditCard, ChevronRight, Home } from 'lucide-react';
-import Navigation from '@/app/components/layouts/Header';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -34,7 +33,6 @@ export default function CheckoutSuccess() {
 
   return (
     <div className="min-h-screen bg-[#FAFAFA]">
-      <Navigation />
       <div className="pt-24 pb-20 px-8">
         <div className="max-w-2xl mx-auto">
           <div className="text-center mb-12">

@@ -1,6 +1,5 @@
 import { useTranslation } from 'react-i18next';
 import { useQuery } from '@tanstack/react-query';
-import Navigation from '@/app/components/layouts/Header';
 import ArtistLabHero from '@/app/components/Hero/ArtistLabHero';
 import ArtistListSkeleton from '@/app/components/Artist/ArtistListSkeleton';
 import ArtistRow from '@/app/components/Artist/ArtistRow';
@@ -22,7 +21,6 @@ export default function ArtistLab() {
 
   return (
     <div className="min-h-screen bg-white">
-      <Navigation />
       <ArtistLabHero />
       <section className="px-6 md:px-8 pb-32">
         <div className="max-w-[1600px] mx-auto space-y-20 md:space-y-32">

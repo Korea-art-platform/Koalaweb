@@ -1,6 +1,5 @@
 import { useParams, useNavigate, Link } from 'react-router';
 import { ArrowLeft } from 'lucide-react';
-import Navigation from '@/app/components/layouts/Header';
 import { useArtistDetail } from '@/app/hooks/useArtistDetail';
 import { useArtistSkus } from '@/app/hooks/useArtistSkus';
 import { ArtistDetailSkeleton, ArtistNotFound } from '@/app/components/Artist';
@@ -17,7 +16,6 @@ export default function ArtistWorks() {
 
   return (
     <div className="min-h-screen bg-white flex flex-col">
-      <Navigation />
       <main className="flex-1 pt-24 pb-24 px-5 md:px-8 max-w-2xl mx-auto w-full">
         <button
           onClick={() => navigate(`/artist/${id}`)}

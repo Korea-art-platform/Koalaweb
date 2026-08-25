@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { Helmet } from 'react-helmet-async';
-import Navigation from '@/app/components/layouts/Header';
 import { Bell, Pin, ChevronRight } from 'lucide-react';
 import { getNotices, type NoticeItem } from '@/api/notice';
 
@@ -22,7 +21,6 @@ export default function NoticeList() {
         <title>공지사항 — KOALA</title>
         <meta name="description" content="KOALA 공지사항을 확인하세요." />
       </Helmet>
-      <Navigation />
       <div className="pt-32 pb-20 px-6 max-w-2xl mx-auto">
         <div className="mb-10">
           <p className="text-xs text-gray-400 tracking-widest uppercase mb-2">Notice</p>

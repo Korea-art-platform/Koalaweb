@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import Navigation from '@/app/components/layouts/Header';
 import StoreHero from '@/app/components/Hero/StoreHero';
 import StoreFilter from '@/app/components/store/StoreFilter';
 import StoreProductGrid from '@/app/components/store/StoreProductGrid';
@@ -47,7 +46,6 @@ export default function SmartStore() {
 
   return (
     <div className="min-h-screen bg-white">
-      <Navigation />
       <StoreHero />
       <StoreFilter
         categories={categories}

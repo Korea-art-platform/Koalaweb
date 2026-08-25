@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router';
 import { Helmet } from 'react-helmet-async';
-import Navigation from '@/app/components/layouts/Header';
 import { ArrowLeft, Pin } from 'lucide-react';
 import { getNotice, type NoticeItem } from '@/api/notice';
 import { noticeToSafeHtml } from '@/app/lib/html';
@@ -26,7 +25,6 @@ export default function NoticeDetail() {
       <Helmet>
         <title>{notice ? `${notice.title} — KOALA` : '공지사항 — KOALA'}</title>
       </Helmet>
-      <Navigation />
       <div className="pt-32 pb-20 px-6 max-w-2xl mx-auto">
         <button
           onClick={() => navigate('/notice')}

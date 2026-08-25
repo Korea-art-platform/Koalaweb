@@ -1,4 +1,3 @@
-import Navigation from '@/app/components/layouts/Header';
 import { Filter, TrendingUp, Shield, Globe } from 'lucide-react';
 import { Link } from 'react-router';
 import { useState } from 'react';
@@ -81,7 +80,6 @@ export default function ResellMarket() {
 
   return (
     <div className="min-h-screen bg-white">
-      <Navigation />
       <section className="pt-32 pb-12 px-8">
         <div className="max-w-[1600px] mx-auto">
           <div className="max-w-2xl">
