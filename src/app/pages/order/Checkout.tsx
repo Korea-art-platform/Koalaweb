@@ -7,62 +7,12 @@ import { getCart } from '@/api/cart';
 import { preparePayment } from '@/api/payment';
 import { getMyProfile, getMyAddresses } from '@/api/user';
 import { startPayment, isUserCancel, PAY_METHODS, PG_PROVIDER_CODE, type PayMethod } from '@/app/lib/pg';
+import { payMethodIcon } from '@/app/components/common/PayMethodIcons';
 import type { Cart, UserAddress } from '@/api/types';
 import { calcShipping } from '@/app/lib/shipping';
 
-function TossPayIcon({ size = 48 }: { size?: number }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect width="48" height="48" rx="12" fill="#0064FF" />
-      <text x="50%" y="54%" dominantBaseline="middle" textAnchor="middle"
-        fill="white" fontSize="22" fontWeight="800" fontFamily="'Pretendard','Apple SD Gothic Neo',sans-serif"
-        letterSpacing="-1">
-        toss
-      </text>
-    </svg>
-  );
-}
-
-function BankTransferIcon({ size = 48 }: { size?: number }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect width="48" height="48" rx="12" fill="#F2F4F6" />
-      <path d="M24 10L38 19H10L24 10Z" fill="#4E5968" />
-      <rect x="13" y="21" width="4" height="12" rx="1" fill="#4E5968" />
-      <rect x="22" y="21" width="4" height="12" rx="1" fill="#4E5968" />
-      <rect x="31" y="21" width="4" height="12" rx="1" fill="#4E5968" />
-      <rect x="10" y="34" width="28" height="3" rx="1.5" fill="#4E5968" />
-    </svg>
-  );
-}
-
-function CardIcon({ size = 48 }: { size?: number }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect width="48" height="48" rx="12" fill="#3E2259" />
-      <rect x="10" y="15" width="28" height="18" rx="3" fill="white" />
-      <rect x="10" y="19" width="28" height="4" fill="#3E2259" />
-      <rect x="14" y="28" width="8" height="2.5" rx="1.25" fill="#3E2259" />
-    </svg>
-  );
-}
-
-function MobileIcon({ size = 48 }: { size?: number }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect width="48" height="48" rx="12" fill="#F2F4F6" />
-      <rect x="16" y="10" width="16" height="28" rx="3" fill="#4E5968" />
-      <rect x="19" y="13" width="10" height="18" rx="1" fill="#F2F4F6" />
-      <circle cx="24" cy="34.5" r="1.5" fill="#F2F4F6" />
-    </svg>
-  );
-}
-
 function iconFor(id: PayMethod) {
-  if (id === 'TOSSPAY') return <TossPayIcon size={48} />;
-  if (id === 'TRANSFER') return <BankTransferIcon size={48} />;
-  if (id === 'MOBILE_PHONE') return <MobileIcon size={48} />;
-  return <CardIcon size={48} />;
+  return payMethodIcon(id, 48);
 }
 
 const paymentMethods = PAY_METHODS;

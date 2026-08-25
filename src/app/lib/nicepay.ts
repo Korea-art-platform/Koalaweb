@@ -34,7 +34,7 @@ export function loadNicePay(): Promise<void> {
   return loading;
 }
 
-export type NicePayMethod = 'card' | 'bank' | 'cellphone';
+export type NicePayMethod = 'card' | 'bank' | 'cellphone' | 'kakaopay' | 'naverpayCard';
 
 export type NicePayRequest = {
   clientId: string;

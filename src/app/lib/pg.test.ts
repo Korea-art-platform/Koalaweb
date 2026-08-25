@@ -19,7 +19,24 @@ describe('PG 전환', () => {
     const { PAY_METHODS, ACTIVE_PG } = await loadWith('NICEPAY');
 
     expect(ACTIVE_PG).toBe('NICEPAY');
-    expect(PAY_METHODS.map((m) => m.id)).toEqual(['CARD', 'TRANSFER', 'MOBILE_PHONE']);
+    expect(PAY_METHODS.map((m) => m.id)).toEqual([
+      'CARD', 'KAKAOPAY', 'NAVERPAY', 'TRANSFER', 'MOBILE_PHONE',
+    ]);
+  });
+
+  it('간편결제는 나이스 결제창이 아는 값으로 넘어간다', async () => {
+    const { NICE_METHOD_MAP } = await loadWith('NICEPAY');
+
+    expect(NICE_METHOD_MAP.KAKAOPAY).toBe('kakaopay');
+    expect(NICE_METHOD_MAP.NAVERPAY).toBe('naverpayCard');
+  });
+
+  it('고를 수 있는 수단은 모두 나이스 값 매핑이 있다 — 빠지면 카드로 잘못 결제된다', async () => {
+    const { PAY_METHODS, NICE_METHOD_MAP } = await loadWith('NICEPAY');
+
+    for (const m of PAY_METHODS) {
+      expect(NICE_METHOD_MAP[m.id], `${m.id} 매핑`).toBeDefined();
+    }
   });
 
   it('페이플에서는 카드만 뜬다 — 연동해 둔 수단이 그것뿐이다', async () => {

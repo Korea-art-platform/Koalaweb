@@ -192,7 +192,8 @@ export interface Order {
 }
 
 export type PaymentProvider = 'TOSS' | 'NICEPAY' | 'PAYPLE';
-export type PaymentMethodType = 'CARD' | 'TRANSFER' | 'MOBILE_PHONE' | 'TOSSPAY' | 'VBANK';
+export type PaymentMethodType =
+  | 'CARD' | 'TRANSFER' | 'MOBILE_PHONE' | 'TOSSPAY' | 'VBANK' | 'KAKAOPAY' | 'NAVERPAY';
 
 export type BannerType = 'MAIN' | 'MAIN_SUB' | string;
 

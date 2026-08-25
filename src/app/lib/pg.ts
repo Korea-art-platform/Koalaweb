@@ -21,7 +21,7 @@ const PG_LABELS: Record<PgCode, string> = {
 
 export const PG_DISPLAY_NAME: string = PG_LABELS[ACTIVE_PG] ?? PG_LABELS.TOSS;
 
-export type PayMethod = 'CARD' | 'TRANSFER' | 'MOBILE_PHONE' | 'TOSSPAY';
+export type PayMethod = 'CARD' | 'TRANSFER' | 'MOBILE_PHONE' | 'TOSSPAY' | 'KAKAOPAY' | 'NAVERPAY';
 
 export interface PayMethodOption {
   id: PayMethod;
@@ -35,9 +35,11 @@ const METHODS_BY_PG: Record<PgCode, PayMethodOption[]> = {
     { id: 'TRANSFER',     label: '계좌이체', desc: '실시간 계좌이체' },
   ],
   NICEPAY: [
-    { id: 'CARD',         label: '신용카드', desc: '국내 모든 카드' },
-    { id: 'TRANSFER',     label: '계좌이체', desc: '실시간 계좌이체' },
-    { id: 'MOBILE_PHONE', label: '휴대폰',   desc: '휴대폰 소액결제' },
+    { id: 'CARD',         label: '신용카드',   desc: '국내 모든 카드' },
+    { id: 'KAKAOPAY',     label: '카카오페이', desc: '카카오페이 간편결제' },
+    { id: 'NAVERPAY',     label: '네이버페이', desc: '네이버페이 간편결제' },
+    { id: 'TRANSFER',     label: '계좌이체',   desc: '실시간 계좌이체' },
+    { id: 'MOBILE_PHONE', label: '휴대폰',     desc: '휴대폰 소액결제' },
   ],
   PAYPLE: [
     { id: 'CARD',         label: '신용카드', desc: '국내 모든 카드' },
@@ -50,7 +52,11 @@ const NICE_METHOD: Partial<Record<PayMethod, NicePayMethod>> = {
   CARD: 'card',
   TRANSFER: 'bank',
   MOBILE_PHONE: 'cellphone',
+  KAKAOPAY: 'kakaopay',
+  NAVERPAY: 'naverpayCard',
 };
+
+export const NICE_METHOD_MAP: Readonly<Partial<Record<PayMethod, NicePayMethod>>> = NICE_METHOD;
 
 export interface StartPaymentParams {
   method: PayMethod;
