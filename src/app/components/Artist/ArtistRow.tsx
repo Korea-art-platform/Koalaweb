@@ -1,5 +1,6 @@
 import { Link } from 'react-router';
 import { ArrowRight } from 'lucide-react';
+import WindowFrame from '@/app/components/common/WindowFrame';
 import { useTranslation } from 'react-i18next';
 import { ImageWithFallback } from '@/app/components/fallback/ImageWithFallback';
 import VideoPlayer from '@/app/components/common/VideoPlayer';
@@ -36,6 +37,7 @@ export default function ArtistRow({ artist, index }: ArtistRowProps) {
               className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            <WindowFrame />
           </div>
         </Link>
       </div>
@@ -98,6 +100,7 @@ export default function ArtistRow({ artist, index }: ArtistRowProps) {
                   clipPath: 'polygon(20% 0, 100% 0, 100% 100%, 0% 100%)',
                 }}
               />
+              <WindowFrame />
               <div className="relative z-10 flex items-center gap-5 p-4">
                 <div className="w-24 h-24 flex-shrink-0 rounded-xl overflow-hidden bg-gray-100">
                   <ImageWithFallback

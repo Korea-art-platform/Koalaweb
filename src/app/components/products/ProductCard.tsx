@@ -1,7 +1,6 @@
 import { useState, useEffect, useMemo, useRef, useId } from 'react';
 import { ShoppingCart, Check, ArrowRight, X, ChevronLeft, ChevronRight } from 'lucide-react';
 import WishBookmark from '@/app/components/common/WishBookmark';
-import WindowFrame from '@/app/components/common/WindowFrame';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link, useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
@@ -156,7 +155,6 @@ export default function ProductCard({
           transition={{ duration: 0.4 }}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent opacity-90 group-hover:opacity-100 transition-opacity" />
-        <WindowFrame />
         <div className="absolute top-2.5 left-2.5 md:top-4 md:left-4 pointer-events-none">{Badges}</div>
         <motion.button
           onClick={(e) => onWishlistClick(e, sku.skuCode)}
