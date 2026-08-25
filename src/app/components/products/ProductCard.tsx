@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo, useRef, useId } from 'react';
+import { useThumbSrc } from '@/app/hooks/useThumbSrc';
 import { ShoppingCart, Check, ArrowRight, X, ChevronLeft, ChevronRight } from 'lucide-react';
 import WishBookmark from '@/app/components/common/WishBookmark';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -37,7 +38,7 @@ export default function ProductCard({
   // 공유 레이아웃 애니메이션은 그대로 동작한다.
   const instanceId = useId();
   const layoutId = `product-card-${sku.skuCode}-${instanceId}`;
-  const imageUrl = toCdnUrl(sku.primaryImageUrl) ?? '/placeholder.svg';
+  const { src: imageUrl, onError: onImageError } = useThumbSrc(sku.primaryImageUrl);
   const price = (sku.salePrice ?? sku.listPrice).toLocaleString();
   const categoryLabel = t(`store.categories.${sku.genre}`, { defaultValue: sku.genre }) as string;
 
@@ -149,6 +150,7 @@ export default function ProductCard({
         <motion.img
           layoutId={`image-${layoutId}`}
           src={imageUrl}
+          onError={onImageError}
           alt={sku.name}
           className="absolute inset-0 h-full w-full object-cover"
           variants={{ hover: { scale: 1.05 } }}

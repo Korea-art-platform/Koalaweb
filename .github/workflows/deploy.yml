@@ -49,6 +49,9 @@ jobs:
           # Variables 에 VITE_NICE_EASYPAY=true 를 넣고 재배포하면 켜진다.
           # 승인 전에 켜면 고객이 결제 실패를 겪는다.
           VITE_NICE_EASYPAY: ${{ vars.VITE_NICE_EASYPAY || 'false' }}
+          # 축소본 사용 스위치. 어드민 image-derivatives 일괄 생성을 끝낸 뒤
+          # Variables 에 VITE_IMAGE_THUMBS=true 를 넣고 재배포하면 켜진다.
+          VITE_IMAGE_THUMBS: ${{ vars.VITE_IMAGE_THUMBS || 'false' }}
           VITE_PAYPLE_CLIENT_KEY: ${{ vars.VITE_PAYPLE_CLIENT_KEY }}
         run: npm run build
 

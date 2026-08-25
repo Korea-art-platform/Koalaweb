@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import type { Banner, Sku } from '@/api/types';
 import BannerMedia from '@/app/components/common/BannerMedia';
 import { useIsDesktop } from '@/app/hooks/useMediaQuery';
-import { toCdnUrl } from '@/app/lib/imageUrl';
+import { toCdnUrl, toThumbUrl } from '@/app/lib/imageUrl';
 
 interface HomeHeroProps {
   banners: Banner[];
@@ -96,7 +96,8 @@ export default function HomeHero({ banners, featured = [] }: HomeHeroProps) {
         className="group/card flex items-center gap-4 rounded-2xl bg-white/95 hover:bg-white p-3.5 mb-3.5 shadow-sm transition-colors"
       >
         <img
-          src={toCdnUrl(s.primaryImageUrl) ?? '/placeholder.svg'}
+          src={toThumbUrl(s.primaryImageUrl) ?? '/placeholder.svg'}
+          onError={(e) => { const img = e.currentTarget; const full = toCdnUrl(s.primaryImageUrl); if (full && img.src !== full) img.src = full; }}
           alt={s.name}
           className="w-[88px] h-[88px] rounded-xl object-cover shrink-0 bg-gray-100"
         />

@@ -104,6 +104,7 @@ export default function ArtistRow({ artist, index }: ArtistRowProps) {
               <div className="relative z-10 flex items-center gap-5 p-4">
                 <div className="w-24 h-24 flex-shrink-0 rounded-xl overflow-hidden bg-gray-100">
                   <ImageWithFallback
+                    thumb
                     src={artist.featuredSku.imageUrl ?? ''}
                     alt={artist.featuredSku.name}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"

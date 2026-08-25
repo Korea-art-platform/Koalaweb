@@ -15,6 +15,8 @@ interface ImportMetaEnv {
   // 'true' 면 나이스 결제수단에 카카오페이·네이버페이가 뜬다.
   // 나이스 계약에서 간편결제가 승인된 뒤에 켤 것.
   readonly VITE_NICE_EASYPAY?: string;
+  // 'true' 면 목록·카드가 축소본(_t480)을 쓴다. 일괄 생성 후에 켤 것.
+  readonly VITE_IMAGE_THUMBS?: string;
   readonly VITE_PAYPLE_CLIENT_KEY?: string;
   readonly MODE: string;
 }

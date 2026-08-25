@@ -49,6 +49,7 @@ export default function TrendingArtists({ excludeArtistCode }: TrendingArtistsPr
           >
             <div className="w-full aspect-[4/5] rounded-2xl overflow-hidden bg-gray-100 mb-3">
               <ImageWithFallback
+                thumb
                 src={artist.profileImageUrl ?? ''}
                 alt={artist.name}
                 className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"

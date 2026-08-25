@@ -35,6 +35,7 @@ export default function ArtworkCard({
       <div className="relative overflow-hidden rounded-2xl bg-gray-50">
         <div className={`${heights[size]} relative`}>
           <ImageWithFallback
+            thumb
             src={image}
             alt={title}
             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
