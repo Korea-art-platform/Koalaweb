@@ -10,7 +10,6 @@ import Header from './components/layouts/Header';
 import Footer from './components/layouts/Footer';
 import ScrollToTop from './components/common/ScrollToTop';
 import QuickMenu from './components/common/QuickMenu';
-import WheelNav from './components/layouts/WheelNav';
 import { useEffect } from 'react';
 import TagManager from 'react-gtm-module';
 
@@ -36,7 +35,6 @@ function Layout() {
         <AppRoutes />
       </main>
       {!isAdmin && <Footer />}
-      {!isAdmin && <WheelNav />}
       {!isAdmin && <QuickMenu />}
     </div>
   );

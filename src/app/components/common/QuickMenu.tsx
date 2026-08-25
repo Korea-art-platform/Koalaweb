@@ -1,62 +1,73 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router';
-import { ArrowUp, MessageCircle, Phone } from 'lucide-react';
-
-const BTN =
-  `w-10 h-10 rounded-full bg-white/95 backdrop-blur border border-gray-200 shadow-sm
-   text-gray-500 flex items-center justify-center transition-all
-   hover:text-koala-purple hover:border-koala-gold hover:shadow-md
-   focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-koala-gold`;
-
-function Tip({ children }: { children: string }) {
-  return (
-    <span
-      className="absolute right-12 top-1/2 -translate-y-1/2 whitespace-nowrap rounded-md
-        bg-koala-navy px-2 py-1 text-[11px] font-medium text-white opacity-0 translate-x-1
-        transition-all group-hover:opacity-100 group-hover:translate-x-0 pointer-events-none"
-    >
-      {children}
-    </span>
-  );
-}
+import { AnimatePresence, motion } from 'framer-motion';
+import { MessageCircle, Phone, X } from 'lucide-react';
 
 export default function QuickMenu() {
-  const [scrolled, setScrolled] = useState(false);
+  const [open, setOpen] = useState(false);
+  const wrapRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const on = () => setScrolled(window.scrollY > 400);
-    on();
-    window.addEventListener('scroll', on, { passive: true });
-    return () => window.removeEventListener('scroll', on);
-  }, []);
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setOpen(false); };
+    const onDown = (e: PointerEvent) => {
+      if (!wrapRef.current?.contains(e.target as Node)) setOpen(false);
+    };
+    window.addEventListener('keydown', onKey);
+    window.addEventListener('pointerdown', onDown);
+    return () => {
+      window.removeEventListener('keydown', onKey);
+      window.removeEventListener('pointerdown', onDown);
+    };
+  }, [open]);
+
+  const itemClass =
+    `flex items-center gap-3 pl-3 pr-4 h-11 rounded-full bg-white border border-gray-200
+     shadow-[0_6px_18px_rgba(0,0,0,.1)] text-sm font-semibold text-gray-700
+     hover:border-koala-gold hover:text-koala-purple transition-colors
+     focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-koala-gold`;
+
+  const iconClass = 'w-7 h-7 rounded-full bg-koala-navy/5 text-koala-purple flex items-center justify-center';
 
   return (
-    <div className="fixed z-40 bottom-6 right-6 flex flex-col items-end gap-2">
-      <div className="group relative">
-        <Tip>1:1 문의</Tip>
-        <Link to="/account/inquiry" aria-label="1:1 문의" className={BTN}>
-          <MessageCircle className="w-[18px] h-[18px]" />
-        </Link>
-      </div>
+    <div ref={wrapRef} className="fixed z-40 bottom-6 right-6 flex flex-col items-end gap-2">
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ opacity: 0, y: 8, scale: 0.94 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 8, scale: 0.94 }}
+            transition={{ type: 'spring', stiffness: 320, damping: 26 }}
+            className="flex flex-col items-end gap-2"
+          >
+            <Link to="/account/inquiry" className={itemClass} onClick={() => setOpen(false)}>
+              <span className={iconClass}><MessageCircle className="w-4 h-4" /></span>
+              1:1 문의
+            </Link>
+            <a href="tel:18332817" className={itemClass} onClick={() => setOpen(false)}>
+              <span className={iconClass}><Phone className="w-4 h-4" /></span>
+              전화 상담
+            </a>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-      <div className="group relative">
-        <Tip>전화 상담 1833-2817</Tip>
-        <a href="tel:18332817" aria-label="전화 상담" className={BTN}>
-          <Phone className="w-[18px] h-[18px]" />
-        </a>
-      </div>
-
-      <div className={`group relative transition-all ${scrolled ? 'opacity-100' : 'opacity-0 pointer-events-none translate-y-1'}`}>
-        <Tip>맨 위로</Tip>
-        <button
-          type="button"
-          aria-label="맨 위로"
-          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-          className={BTN}
-        >
-          <ArrowUp className="w-[18px] h-[18px]" />
-        </button>
-      </div>
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        aria-expanded={open}
+        aria-label={open ? '고객지원 닫기' : '고객지원 열기'}
+        className="w-12 h-12 rounded-full bg-white border border-gray-200
+          shadow-[0_8px_24px_rgba(62,34,89,.18)] flex items-center justify-center
+          transition-transform hover:scale-105 active:scale-95
+          focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-koala-gold"
+      >
+        {open ? (
+          <X className="w-5 h-5 text-gray-500" />
+        ) : (
+          <img src="/logo-symbol.svg" alt="" aria-hidden className="w-7 h-7" />
+        )}
+      </button>
     </div>
   );
 }
