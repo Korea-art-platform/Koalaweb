@@ -4,6 +4,7 @@ import { ArrowRight, ChevronLeft, ChevronRight, Sparkles, Palette, Layers } from
 import { useTranslation } from 'react-i18next';
 import type { Banner, Sku } from '@/api/types';
 import BannerMedia from '@/app/components/common/BannerMedia';
+import { useIsDesktop } from '@/app/hooks/useMediaQuery';
 import { toCdnUrl } from '@/app/lib/imageUrl';
 
 interface HomeHeroProps {
@@ -20,6 +21,7 @@ export default function HomeHero({ banners, featured = [] }: HomeHeroProps) {
   const touchEndX = useRef<number | null>(null);
   const SWIPE_THRESHOLD = 50;
 
+  const isDesktop = useIsDesktop();
   const total = banners.length;
 
   // 이미지 배너가 머무는 시간
@@ -223,8 +225,9 @@ export default function HomeHero({ banners, featured = [] }: HomeHeroProps) {
           )}
         </div>
 
+        {isDesktop && (
         <aside
-          className="relative hidden lg:flex flex-col lg:h-[58vh] lg:min-h-[600px] lg:max-h-[860px] lg:px-8 lg:pt-28 lg:pb-8 overflow-hidden"
+          className="relative flex flex-col lg:h-[58vh] lg:min-h-[600px] lg:max-h-[860px] lg:px-8 lg:pt-28 lg:pb-8 overflow-hidden"
           style={{ background: 'linear-gradient(175deg, #1a0f27 0%, #241338 52%, #2c1a30 100%)' }}
         >
           <div
@@ -286,6 +289,7 @@ export default function HomeHero({ banners, featured = [] }: HomeHeroProps) {
             )}
           </div>
         </aside>
+        )}
       </div>
     </section>
   );
