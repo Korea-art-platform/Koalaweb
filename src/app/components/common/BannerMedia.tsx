@@ -7,6 +7,10 @@ type Props = {
   alt?: string;
   className?: string;
   eager?: boolean;
+  active?: boolean;
+  loop?: boolean;
+  onEnded?: () => void;
+  onFallback?: () => void;
 };
 
 function prefersReducedMotion() {
@@ -20,6 +24,10 @@ export default function BannerMedia({
   alt = '',
   className = 'w-full h-full object-cover object-center',
   eager = false,
+  active = true,
+  loop = true,
+  onEnded,
+  onFallback,
 }: Props) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [loadFailed, setLoadFailed] = useState(false);
@@ -47,6 +55,15 @@ export default function BannerMedia({
     const video = videoRef.current;
     if (!video || reduceMotion || loadFailed) return;
 
+    // 캐러셀은 모든 슬라이드를 동시에 그려 두고 opacity 로만 바꾼다.
+    // 보이지 않는 영상까지 돌면 대역폭이 낭비되고, 끝나는 순간 onEnded 가
+    // 엉뚱하게 발화해 화면이 저절로 넘어간다.
+    if (!active) {
+      video.pause();
+      video.currentTime = 0;
+      return;
+    }
+
     const play = () => video.play().catch(() => {});
     play();
 
@@ -56,9 +73,19 @@ export default function BannerMedia({
     };
     document.addEventListener('visibilitychange', onVisible);
     return () => document.removeEventListener('visibilitychange', onVisible);
-  }, [videoUrl, reduceMotion, loadFailed]);
+  }, [videoUrl, reduceMotion, loadFailed, active]);
 
   const showVideo = Boolean(videoSrc) && !loadFailed && !reduceMotion;
+
+  // 영상이 있는 배너인데 이미지로 내려갔다면 onEnded 가 영영 오지 않는다.
+  // 부모가 시간 기반 전환으로 갈아탈 수 있도록 알려 준다.
+  const fallbackNotified = useRef<string | null>(null);
+  useEffect(() => {
+    if (!videoUrl || showVideo) return;
+    if (fallbackNotified.current === videoUrl) return;
+    fallbackNotified.current = videoUrl;
+    onFallback?.();
+  }, [videoUrl, showVideo, onFallback]);
 
   if (showVideo) {
     return (
@@ -70,10 +97,11 @@ export default function BannerMedia({
         // muted 없이는 자동재생이 브라우저에 막힌다. 셋은 한 묶음이다.
         autoPlay
         muted
-        loop
+        loop={loop}
         // 없으면 iOS 사파리가 영상을 전체화면으로 띄운다
         playsInline
         preload={eager ? 'auto' : 'metadata'}
+        onEnded={onEnded}
         onError={() => setLoadFailed(true)}
         aria-label={alt || undefined}
       />

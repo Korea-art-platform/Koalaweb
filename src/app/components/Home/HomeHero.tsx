@@ -22,13 +22,31 @@ export default function HomeHero({ banners, featured = [] }: HomeHeroProps) {
 
   const total = banners.length;
 
+  // 이미지 배너가 머무는 시간
+  const IMAGE_MS = 5000;
+  // 영상은 끝나면 넘어간다. 다만 자동재생이 막히거나 파일이 멈춰 버리면
+  // onEnded 가 오지 않아 캐러셀이 영영 서 버리므로 상한을 같이 건다.
+  const VIDEO_MAX_MS = 30000;
+
+  const hasVideo = Boolean(banners[current]?.videoUrl);
+  const [videoMode, setVideoMode] = useState(hasVideo);
+
+  useEffect(() => {
+    setVideoMode(Boolean(banners[current]?.videoUrl));
+  }, [current, banners]);
+
   useEffect(() => {
     if (total <= 1) return;
-    const id = setInterval(() => {
+    const id = setTimeout(() => {
       setCurrent((prev) => (prev + 1) % total);
-    }, 5000);
-    return () => clearInterval(id);
-  }, [total]);
+    }, videoMode ? VIDEO_MAX_MS : IMAGE_MS);
+    return () => clearTimeout(id);
+  }, [total, current, videoMode]);
+
+  function handleVideoEnded() {
+    if (total <= 1) return;
+    setCurrent((prev) => (prev + 1) % total);
+  }
 
   function goToIndex(index: number) {
     if (index === current || animating) return;
@@ -113,6 +131,11 @@ export default function HomeHero({ banners, featured = [] }: HomeHeroProps) {
                 videoUrl={b.videoUrl}
                 alt={b.title ?? 'Banner'}
                 eager={i === 0}
+                active={i === current}
+                // 배너가 하나뿐이면 넘어갈 곳이 없으니 그대로 반복한다
+                loop={total <= 1}
+                onEnded={handleVideoEnded}
+                onFallback={i === current ? () => setVideoMode(false) : undefined}
               />
             </div>
           ))}
