@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router';
 import { ArrowRight, ChevronDown } from 'lucide-react';
-import { motion, useScroll, useTransform, useSpring, useReducedMotion } from 'framer-motion';
+import { motion, useScroll, useTransform, useSpring, useMotionValue, useReducedMotion, type MotionValue } from 'framer-motion';
 import { getArtists } from '@/api/artist';
 import { getBanners } from '@/api/banner';
 import { toCdnUrl } from '@/app/lib/imageUrl';
 import { ImageWithFallback } from '@/app/components/fallback/ImageWithFallback';
+import { ImageLightbox } from '@/app/components/common/ImageLightbox';
 import { useIsDesktop } from '@/app/hooks/useMediaQuery';
 import type { Artist, Banner, PageResponse } from '@/api/types';
 
@@ -142,23 +143,27 @@ function Preface({ note }: { note: string }) {
 function ArtistRoom({ room, index }: { room: Room; index: number }) {
   const ref = useRef<HTMLElement>(null);
   const reduce = useReducedMotion();
+  const isDesktop = useIsDesktop();
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'end start'] });
 
   // 작가 이름은 스크롤보다 느리게 흘러 지나간다 — 전시실을 걷는 느낌
   const nameX = useTransform(scrollYProgress, [0, 1], reduce ? ['0%', '0%'] : ['12%', '-12%']);
 
+  // 스크롤에 따라 원이 아주 조금 돈다. 크게 돌리면 사진을 읽기 어려워진다.
+  const spin = useTransform(scrollYProgress, [0, 1], reduce ? [0, 0] : [-7, 7]);
+
   return (
     <section ref={ref} className="relative border-t border-white/5 py-24 md:py-36">
       <motion.p
         style={{ x: nameX }}
-        className="pointer-events-none mb-10 select-none whitespace-nowrap px-6 text-[15vw]
-          font-black leading-none tracking-tighter text-white/[0.055] md:mb-16 md:text-[11vw]"
+        className="pointer-events-none mb-6 select-none whitespace-nowrap px-6 text-[15vw]
+          font-black leading-none tracking-tighter text-white/[0.055] md:mb-10 md:text-[11vw]"
       >
         {room.artist.name}
       </motion.p>
 
       <div className="mx-auto max-w-[1500px] px-6 md:px-12">
-        <div className="mb-10 flex items-end justify-between gap-4 md:mb-16">
+        <div className="mb-8 flex items-end justify-between gap-4 md:mb-4">
           <div>
             <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.3em] text-koala-gold">
               Room {String(index + 1).padStart(2, '0')}
@@ -174,13 +179,199 @@ function ArtistRoom({ room, index }: { room: Room; index: number }) {
           </Link>
         </div>
 
-        <div className="grid gap-5 md:grid-cols-3 md:gap-7">
-          {room.photos.map((photo, i) => (
-            <Frame key={photo.fileUrl} src={photo.fileUrl} caption={photo.title} delay={i * 0.09} />
-          ))}
-        </div>
+        {isDesktop ? (
+          <Ring room={room} spin={spin} />
+        ) : (
+          <Stack room={room} />
+        )}
       </div>
     </section>
+  );
+}
+
+/**
+ * 작가를 가운데 두고 전시 사진이 그 주위를 둘러싼다. 끌어서 돌려 볼 수 있다.
+ *
+ * 원 위의 좌표는 삼각함수로 직접 계산한다. rotate + translate 로 배치하면
+ * 부모가 회전할 때 사진까지 같이 기울어져 얼굴과 글자가 돌아가 버린다.
+ */
+function Ring({
+  room,
+  spin,
+}: {
+  room: Room;
+  spin: MotionValue<number>;
+}) {
+  const photos = room.photos.slice(0, 5);
+  const step = 360 / photos.length;
+  const RADIUS = 36;
+
+  const boxRef = useRef<HTMLDivElement>(null);
+  const drag = useMotionValue(0);
+  const [dragging, setDragging] = useState(false);
+
+  // 스크롤에 따른 미세한 회전과 사용자가 끌어 돌린 각도를 더한다
+  const angle = useTransform([spin, drag], ([a, b]) => (a as number) + (b as number));
+  const counter = useTransform(angle, (v) => -v);
+
+  const startAngle = (e: React.PointerEvent) => {
+    const r = boxRef.current!.getBoundingClientRect();
+    return (Math.atan2(e.clientY - (r.top + r.height / 2), e.clientX - (r.left + r.width / 2)) * 180) / Math.PI;
+  };
+
+  const onPointerDown = (e: React.PointerEvent) => {
+    const from = startAngle(e);
+    const base = drag.get();
+    setDragging(true);
+
+    const move = (ev: PointerEvent) => {
+      const r = boxRef.current?.getBoundingClientRect();
+      if (!r) return;
+      const now =
+        (Math.atan2(ev.clientY - (r.top + r.height / 2), ev.clientX - (r.left + r.width / 2)) * 180) /
+        Math.PI;
+      let d = now - from;
+      if (d > 180) d -= 360;
+      if (d < -180) d += 360;
+      drag.set(base + d);
+    };
+    const up = () => {
+      setDragging(false);
+      window.removeEventListener('pointermove', move);
+      window.removeEventListener('pointerup', up);
+      window.removeEventListener('pointercancel', up);
+    };
+    window.addEventListener('pointermove', move);
+    window.addEventListener('pointerup', up);
+    window.addEventListener('pointercancel', up);
+  };
+
+  return (
+    <div className="relative">
+      <div
+        ref={boxRef}
+        onPointerDown={onPointerDown}
+        className={`relative mx-auto aspect-square w-full max-w-[760px] touch-none select-none
+          ${dragging ? 'cursor-grabbing' : 'cursor-grab'}`}
+      >
+        <motion.div style={{ rotate: angle }} className="absolute inset-0">
+          <span
+            aria-hidden
+            className="absolute left-1/2 top-1/2 h-[72%] w-[72%] -translate-x-1/2 -translate-y-1/2
+              rounded-full border border-dashed border-white/[0.07]"
+          />
+
+          {photos.map((photo, i) => {
+            const rad = ((i * step - 90) * Math.PI) / 180;
+            return (
+              <div
+                key={photo.fileUrl}
+                className="absolute w-[23%]"
+                style={{
+                  left: `${50 + RADIUS * Math.cos(rad)}%`,
+                  top: `${50 + RADIUS * Math.sin(rad)}%`,
+                  transform: 'translate(-50%, -50%)',
+                }}
+              >
+                <motion.div style={{ rotate: counter }}>
+                  <Frame src={photo.fileUrl} caption={photo.title} delay={i * 0.08} />
+                </motion.div>
+              </div>
+            );
+          })}
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true, margin: '-20%' }}
+          transition={{ duration: 0.8, ease: [0.22, 0.68, 0.32, 1] }}
+          className="pointer-events-none absolute left-1/2 top-1/2 w-[30%] -translate-x-1/2 -translate-y-1/2"
+        >
+          <div className="relative aspect-square overflow-hidden rounded-full border border-koala-gold/35 bg-white/[0.04]">
+            <ImageWithFallback
+              src={room.artist.profileImageUrl ?? '/placeholder.svg'}
+              alt={room.artist.name}
+              thumb
+              className="h-full w-full object-cover"
+            />
+            <span
+              aria-hidden
+              className="pointer-events-none absolute inset-0 rounded-full bg-gradient-to-t from-black/45 to-transparent"
+            />
+          </div>
+        </motion.div>
+      </div>
+
+      <p className="mt-2 text-center text-[11px] text-white/25">끌어서 돌려 보세요</p>
+    </div>
+  );
+}
+
+/**
+ * 모바일에서는 원이 좁아 사진이 겹친다. 만화 컷처럼 크기를 달리해 쌓고,
+ * 누르면 상품 상세와 같은 확대 보기로 띄운다.
+ */
+function Stack({ room }: { room: Room }) {
+  const photos = room.photos.slice(0, 5);
+  const [open, setOpen] = useState<number | null>(null);
+
+  // 컷마다 크기를 달리해 단조로운 격자를 피한다
+  const spans = ['col-span-2 aspect-[16/10]', 'aspect-square', 'aspect-square',
+                 'col-span-2 aspect-[16/11]', 'col-span-2 aspect-[16/10]'];
+
+  return (
+    <>
+      <div className="mx-auto mb-6 w-32">
+        <div className="relative aspect-square overflow-hidden rounded-full border border-koala-gold/35 bg-white/[0.04]">
+          <ImageWithFallback
+            src={room.artist.profileImageUrl ?? '/placeholder.svg'}
+            alt={room.artist.name}
+            thumb
+            className="h-full w-full object-cover"
+          />
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-2.5">
+        {photos.map((photo, i) => (
+          <motion.button
+            key={photo.fileUrl}
+            type="button"
+            onClick={() => setOpen(i)}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-8%' }}
+            transition={{ duration: 0.55, delay: i * 0.06 }}
+            className={`relative overflow-hidden bg-white/[0.04] ${spans[i] ?? 'aspect-square'}`}
+          >
+            <ImageWithFallback
+              src={photo.fileUrl}
+              alt={photo.title ?? ''}
+              className="h-full w-full object-cover"
+            />
+            <span
+              aria-hidden
+              className="pointer-events-none absolute inset-0 border border-white/10"
+            />
+            {photo.title && (
+              <span className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/75 to-transparent px-2.5 py-2 text-left text-[11px] text-white/80">
+                {photo.title}
+              </span>
+            )}
+          </motion.button>
+        ))}
+      </div>
+
+      {open !== null && (
+        <ImageLightbox
+          images={photos.map((p) => toCdnUrl(p.fileUrl) ?? p.fileUrl)}
+          initialIndex={open}
+          title={room.artist.name}
+          onClose={() => setOpen(null)}
+        />
+      )}
+    </>
   );
 }
 
@@ -201,15 +392,15 @@ function Frame({ src, caption, delay }: { src: string; caption?: string; delay: 
     const r = e.currentTarget.getBoundingClientRect();
     const px = (e.clientX - r.left) / r.width - 0.5;
     const py = (e.clientY - r.top) / r.height - 0.5;
-    setTilt({ x: -py * 9, y: px * 9 });
+    setTilt({ x: -py * 10, y: px * 10 });
   };
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 44 }}
-      whileInView={{ opacity: 1, y: 0 }}
+      initial={{ opacity: 0, scale: 0.88 }}
+      whileInView={{ opacity: 1, scale: 1 }}
       viewport={{ once: true, margin: '-10%' }}
-      transition={{ duration: 0.75, delay, ease: [0.22, 0.68, 0.32, 1] }}
+      transition={{ duration: 0.7, delay, ease: [0.22, 0.68, 0.32, 1] }}
       style={{ perspective: 900 }}
     >
       <motion.div
@@ -218,21 +409,19 @@ function Frame({ src, caption, delay }: { src: string; caption?: string; delay: 
         style={{ rotateX: rx, rotateY: ry, transformStyle: 'preserve-3d' }}
         className="group relative"
       >
-        <div className="relative overflow-hidden bg-white/[0.04] aspect-[4/5]">
+        <div className="relative overflow-hidden bg-white/[0.04] aspect-square">
           <ImageWithFallback
             src={src}
             alt={caption ?? ''}
-            className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
+            className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.05]"
           />
-          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-transparent" />
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
           <span
             aria-hidden
-            className="pointer-events-none absolute inset-0 border border-koala-gold/0 transition-colors duration-500 group-hover:border-koala-gold/45"
+            className="pointer-events-none absolute inset-0 border border-koala-gold/0 transition-colors duration-500 group-hover:border-koala-gold/50"
           />
         </div>
-        {caption && (
-          <p className="mt-3 text-xs text-white/45 break-keep">{caption}</p>
-        )}
+        {caption && <p className="mt-2 text-[11px] text-white/45 break-keep">{caption}</p>}
       </motion.div>
     </motion.div>
   );

@@ -9,7 +9,7 @@ import {
 } from '@/api/adminApi';
 
 const ROLE = 'EXHIBITION';
-const MAX = 3;
+const MAX = 5;
 
 interface ArtistRow {
   artistCode: string;
