@@ -21,7 +21,7 @@ export function ProductImageGallery({ sku, images, selectedImage, setSelectedIma
             <button
               key={index}
               onClick={() => setSelectedImage(index)}
-              className={`relative w-[68px] h-[68px] rounded-xl overflow-hidden flex-shrink-0 border-2 transition-all duration-200 ${
+              className={`relative w-[68px] h-[68px] overflow-hidden flex-shrink-0 border-2 transition-all duration-200 ${
                 selectedImage === index
                   ? 'border-gray-900 opacity-100'
                   : 'border-transparent opacity-45 hover:opacity-75'
@@ -36,7 +36,7 @@ export function ProductImageGallery({ sku, images, selectedImage, setSelectedIma
           ))}
         </div>
         <div
-          className="flex-1 relative overflow-hidden rounded-2xl bg-gray-50 aspect-square cursor-zoom-in group"
+          className="flex-1 relative overflow-hidden bg-gray-50 aspect-square cursor-zoom-in group"
           onClick={() => setLightboxIndex(selectedImage)}
         >
           <ImageWithFallback

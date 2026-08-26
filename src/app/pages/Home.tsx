@@ -4,12 +4,15 @@ import { fetchAllSkus } from '@/api/fetchAllSkus';
 import { getBanners } from '@/api/banner';
 import { getNotices, type NoticeItem } from '@/api/notice';
 import { useCategories } from '@/app/hooks/useCategories';
-import type { Sku, Banner } from '@/api/types';
+import type { Sku, Banner, Artist, PageResponse } from '@/api/types';
+import { useQuery } from '@tanstack/react-query';
+import { getArtists } from '@/api/artist';
 
 import HomeHero from '@/app/components/Home/HomeHero';
 import HomeLimitedEdition from '@/app/components/Home/HomeLimitedEdition';
 import HomeGenreCollections from '@/app/components/Home/HomeGenreCollections';
 import HomeCategorySections from '@/app/components/Home/HomeCategorySections';
+import HomeArtists from '@/app/components/Home/HomeArtists';
 import HomeStudio from '@/app/components/Home/HomeStudio';
 import HomeNotices from '@/app/components/Home/HomeNotices';
 
@@ -24,6 +27,16 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
 
   const { sub: subCategories } = useCategories();
+
+  const { data: artists = [] } = useQuery<Artist[]>({
+    queryKey: ['artists', 'header'],
+    queryFn: async () => {
+      const res = await getArtists(0, 10);
+      const page: PageResponse<Artist> = res.data.data;
+      return page.content ?? [];
+    },
+    staleTime: 1000 * 60 * 10,
+  });
 
   useEffect(() => {
     const fetchHomeData = async () => {
@@ -66,6 +79,7 @@ export default function Home() {
       <HomeLimitedEdition skus={limitedSkus} loading={loading} />
       <HomeGenreCollections genreCounts={genreCounts} skus={skus} />
       <HomeCategorySections categories={subCategories} skus={skus} />
+      <HomeArtists artists={artists} />
       <HomeStudio banner={studioBanner} />
       <HomeNotices notices={notices} />
     </main>

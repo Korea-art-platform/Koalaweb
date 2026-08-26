@@ -30,7 +30,7 @@ export default function ArtistRow({ artist, index }: ArtistRowProps) {
     >
       <div className={isReverse ? 'lg:col-start-2' : ''}>
         <Link to={`/artist/${artist.artistCode}`} className="group block">
-          <div className="relative overflow-hidden rounded-2xl md:rounded-3xl bg-gray-50 aspect-[4/5] sm:aspect-[3/4]">
+          <div className="relative overflow-hidden bg-gray-50 aspect-[4/5] sm:aspect-[3/4]">
             <ImageWithFallback
               src={artist.profileImageUrl ?? '/placeholder.svg'}
               alt={artist.name}
@@ -90,7 +90,7 @@ export default function ArtistRow({ artist, index }: ArtistRowProps) {
           {artist.featuredSku && (
             <Link
               to={`/product/${artist.featuredSku.skuCode}`}
-              className="group relative block border border-gray-200 rounded-2xl overflow-hidden hover:border-koala-purple/40 transition-colors mt-2"
+              className="group relative block border border-gray-200 overflow-hidden hover:border-koala-purple/40 transition-colors mt-2"
             >
               <span
                 aria-hidden
@@ -102,7 +102,7 @@ export default function ArtistRow({ artist, index }: ArtistRowProps) {
               />
               <WindowFrame />
               <div className="relative z-10 flex items-center gap-5 p-4">
-                <div className="w-24 h-24 flex-shrink-0 rounded-xl overflow-hidden bg-gray-100">
+                <div className="w-24 h-24 flex-shrink-0 overflow-hidden bg-gray-100">
                   <ImageWithFallback
                     thumb
                     src={artist.featuredSku.imageUrl ?? ''}

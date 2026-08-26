@@ -45,7 +45,7 @@ export default function HomeStudio({ banner }: Props) {
               />
               <div className="relative z-10 flex flex-col gap-4 md:gap-6">
                 <span className="text-[10px] md:text-xs font-bold uppercase tracking-[0.24em] text-koala-gold-deep transition-colors duration-500 group-hover:text-koala-gold-soft">
-                  + 004 — Studio
+                  + 005 — Studio
                 </span>
                 <h2 className="text-2xl md:text-4xl lg:text-5xl font-bold tracking-tight text-gray-900 break-keep transition-colors duration-500 group-hover:text-white">
                   {title}

@@ -32,7 +32,7 @@ export default function ArtworkCard({
 
   return (
     <Link to={`/product/${id}`} className="group block">
-      <div className="relative overflow-hidden rounded-2xl bg-gray-50">
+      <div className="relative overflow-hidden bg-gray-50">
         <div className={`${heights[size]} relative`}>
           <ImageWithFallback
             thumb
