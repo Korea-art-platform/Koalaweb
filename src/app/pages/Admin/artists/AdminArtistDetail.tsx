@@ -1067,14 +1067,22 @@ function FeaturedTab({
               return (
                 <div
                   key={sku.skuCode}
-                  className={`flex items-center gap-3 p-3 rounded-xl border transition-colors
-                    ${isCurrent ? 'border-black bg-gray-50' : 'border-gray-200 bg-white hover:border-gray-300'}`}
+                  className={`relative flex items-center gap-3 p-3 rounded-xl border-2 transition-colors
+                    ${isCurrent
+                      ? 'border-koala-purple bg-koala-purple/[0.06] shadow-[0_0_0_3px_rgba(62,34,89,0.10)]'
+                      : 'border-gray-200 bg-white hover:border-gray-300'}`}
                 >
-                  <div className="w-14 h-14 flex-shrink-0 rounded-lg overflow-hidden bg-gray-100 border border-gray-200">
+                  <div className={`w-14 h-14 flex-shrink-0 relative rounded-lg overflow-hidden bg-gray-100 border
+                    ${isCurrent ? 'border-koala-purple' : 'border-gray-200'}`}>
                     {sku.imageUrl
                       ? <img src={sku.imageUrl} alt={sku.name} className="w-full h-full object-cover" />
                       : <div className="w-full h-full flex items-center justify-center text-gray-300 text-[10px]">없음</div>
                     }
+                    {isCurrent && (
+                      <span className="absolute inset-0 flex items-center justify-center bg-koala-purple/55">
+                        <Check className="w-7 h-7 text-white" strokeWidth={3.5} />
+                      </span>
+                    )}
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium text-gray-900 truncate">{sku.name}</p>
@@ -1094,7 +1102,10 @@ function FeaturedTab({
                     </div>
                   </div>
                   {isCurrent ? (
-                    <span className="text-[10px] font-semibold bg-koala-navy text-white px-2 py-1 rounded-full">대표</span>
+                    <span className="flex items-center gap-1 text-[11px] font-bold bg-koala-purple text-koala-gold px-2.5 py-1.5 rounded-full whitespace-nowrap">
+                      <Check className="w-3.5 h-3.5" strokeWidth={3} />
+                      대표 작품
+                    </span>
                   ) : (
                     <button
                       onClick={() => handleSet(sku.skuCode)}
