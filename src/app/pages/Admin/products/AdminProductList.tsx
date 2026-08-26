@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
+import { romanize } from '@/utils/romanize';
 import { useNavigate } from 'react-router';
 import { getAdminSkus, createSku, addSkuMedia, publishSku, discontinueSku, deleteSku, adjustStock, getAdminArtists } from '@/api/adminApi';
 import { getCategories, type CategoryGroups } from '@/api/category';
@@ -50,6 +51,12 @@ interface CreateForm {
   weightG: string;
 }
 
+const NAME_ROWS = [
+  ['model', 'modelEn', '모델', '닥쿤이', 'dakkuni'],
+  ['subModelName', 'subModelNameEn', '세부모델명', '호돌이', 'hodori'],
+  ['color', 'colorEn', '색상', '검정', 'black'],
+] as const;
+
 const EMPTY_FORM: CreateForm = {
   artistCode: '',
   model: '', modelEn: '', subModelName: '', subModelNameEn: '', color: '', colorEn: '',
@@ -88,6 +95,8 @@ export default function AdminProductList() {
 
   const [createOpen, setCreateOpen] = useState(false);
   const [form, setForm] = useState<CreateForm>(EMPTY_FORM);
+  // 영문 칸을 직접 고쳤는지. 고친 뒤에는 한국어를 따라가지 않는다.
+  const [enTouched, setEnTouched] = useState<Record<string, boolean>>({});
   const [artists, setArtists] = useState<any[]>([]);
   const [submitting, setSubmitting] = useState(false);
   const [formError, setFormError] = useState('');
@@ -106,7 +115,7 @@ export default function AdminProductList() {
   useEffect(() => { load(); }, [load]);
 
   const openCreate = async () => {
-    setForm(EMPTY_FORM);
+    setForm(EMPTY_FORM); setEnTouched({});
     setFormError('');
     setPrimaryFile(null);
     setPrimaryPreview('');
@@ -439,18 +448,27 @@ export default function AdminProductList() {
                   <span className="text-xs font-semibold text-gray-500">영문</span>
                 </div>
 
-                {([
-                  ['model', 'modelEn', '모델', '닥쿤이', 'dakkuni'],
-                  ['subModelName', 'subModelNameEn', '세부모델명', '호돌이', 'hodori'],
-                  ['color', 'colorEn', '색상', '검정', 'black'],
-                ] as const).map(([ko, en, label, phKo, phEn]) => (
+                {NAME_ROWS.map(([ko, en, label, phKo, phEn]) => (
                   <div key={ko} className="mb-2.5 grid grid-cols-[5.5rem_1fr_1fr] items-center gap-3">
                     <label className="text-xs text-gray-500">
                       {label} <span className="text-red-500">*</span>
                     </label>
-                    <input value={form[ko]} onChange={(e) => setF({ [ko]: e.target.value } as Partial<CreateForm>)}
+                    <input
+                      value={form[ko]}
+                      onChange={(e) => {
+                        const v = e.target.value;
+                        // 영문을 직접 고치기 전까지는 한국어를 따라간다
+                        setF(enTouched[en]
+                          ? ({ [ko]: v } as Partial<CreateForm>)
+                          : ({ [ko]: v, [en]: romanize(v) } as Partial<CreateForm>));
+                      }}
                       className={inputCls} placeholder={`예: ${phKo}`} />
-                    <input value={form[en]} onChange={(e) => setF({ [en]: e.target.value } as Partial<CreateForm>)}
+                    <input
+                      value={form[en]}
+                      onChange={(e) => {
+                        setEnTouched((t) => ({ ...t, [en]: true }));
+                        setF({ [en]: e.target.value } as Partial<CreateForm>);
+                      }}
                       className={inputCls} placeholder={`예: ${phEn}`} />
                   </div>
                 ))}

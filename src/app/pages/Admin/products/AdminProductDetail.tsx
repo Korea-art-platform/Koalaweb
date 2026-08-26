@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useRef, KeyboardEvent } from 'react';
+import { romanize } from '@/utils/romanize';
 import { useParams, useNavigate } from 'react-router';
 import { ArrowLeft, Check, ImagePlus, Trash2, Star } from 'lucide-react';
 import {
@@ -96,6 +97,12 @@ export default function AdminProductDetail() {
 
 const LIMITED = 'LIMITED';
 
+const NAME_ROWS = [
+  ['model', 'modelEn', '모델', '닥쿤이', 'dakkuni'],
+  ['subModelName', 'subModelNameEn', '세부모델명', '호돌이', 'hodori'],
+  ['color', 'colorEn', '색상', '검정', 'black'],
+] as const;
+
 const MEDIA_ACCEPT = 'image/*,video/mp4,video/quicktime,video/webm';
 
 interface BadgeItem { text: string; type: string; }
@@ -148,6 +155,12 @@ function InfoTab({ sku, onSaved }: { sku: any; onSaved: () => void }) {
       : sku.weightKg ? String(Math.round(Number(sku.weightKg) * 1000)) : '',
     badges: parsedBadges as BadgeItem[],
   });
+  // 이미 저장된 영문명은 사람이 정한 값이다. 한국어를 고쳐도 덮어쓰지 않는다.
+  const [enTouched, setEnTouched] = useState<Record<string, boolean>>(() => ({
+    modelEn: Boolean(sku.modelEn),
+    subModelNameEn: Boolean(sku.subModelNameEn),
+    colorEn: Boolean(sku.colorEn),
+  }));
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
@@ -253,18 +266,24 @@ function InfoTab({ sku, onSaved }: { sku: any; onSaved: () => void }) {
             <span className="text-xs font-semibold text-gray-500">영문</span>
           </div>
 
-          {([
-            ['model', 'modelEn', '모델', '닥쿤이', 'dakkuni'],
-            ['subModelName', 'subModelNameEn', '세부모델명', '호돌이', 'hodori'],
-            ['color', 'colorEn', '색상', '검정', 'black'],
-          ] as const).map(([ko, en, label, phKo, phEn]) => (
+          {NAME_ROWS.map(([ko, en, label, phKo, phEn]) => (
             <div key={ko} className="mb-2.5 grid grid-cols-[5.5rem_1fr_1fr] items-center gap-3">
               <label className="text-xs text-gray-500">
                 {label} <span className="text-red-500">*</span>
               </label>
-              <input value={(form as any)[ko]} onChange={(e) => setF({ [ko]: e.target.value } as any)}
+              <input
+                value={(form as any)[ko]}
+                onChange={(e) => {
+                  const v = e.target.value;
+                  setF(enTouched[en] ? ({ [ko]: v } as any) : ({ [ko]: v, [en]: romanize(v) } as any));
+                }}
                 className={inputCls} placeholder={`예: ${phKo}`} />
-              <input value={(form as any)[en]} onChange={(e) => setF({ [en]: e.target.value } as any)}
+              <input
+                value={(form as any)[en]}
+                onChange={(e) => {
+                  setEnTouched((t) => ({ ...t, [en]: true }));
+                  setF({ [en]: e.target.value } as any);
+                }}
                 className={inputCls} placeholder={`예: ${phEn}`} />
             </div>
           ))}
