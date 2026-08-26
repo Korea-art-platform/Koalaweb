@@ -32,6 +32,7 @@ const AccountDeletion = lazy(() => import("@/app/pages/legal/AccountDeletion"));
 const Notice = lazy(() => import("@/app/pages/Notice"));
 const NoticeDetail = lazy(() => import("@/app/pages/NoticeDetail"));
 const Stores = lazy(() => import("@/app/pages/Stores"));
+const Exhibition = lazy(() => import("@/app/pages/Exhibition"));
 
 const FAQ = lazy(() => import("@/app/pages/support/FAQ"));
 const Shipping = lazy(() => import("@/app/pages/support/Shipping"));
@@ -116,6 +117,7 @@ export function AppRoutes() {
         <Route path="/notice" element={<Notice />} />
         <Route path="/notice/:noticeCode" element={<NoticeDetail />} />
         <Route path="/stores" element={<Stores />} />
+        <Route path="/exhibition" element={<Exhibition />} />
         <Route path="/faq" element={<FAQ />} />
         <Route path="/shipping" element={<Shipping />} />
         <Route path="/contact" element={<Contact />} />

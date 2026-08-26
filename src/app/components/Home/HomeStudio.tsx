@@ -8,10 +8,10 @@ interface Props {
 }
 
 export default function HomeStudio({ banner }: Props) {
-  const title = '작가의 공방에서';
+  const title = '작가의 전시';
   const description =
-    '흙을 빚고 색을 입히는 손끝에서 작품이 태어납니다. 작가가 머무는 공간과 그 과정을 소개합니다.';
-  const linkUrl = '/artist-lab';
+    '작가들이 걸어온 전시의 순간들을 모았습니다. 한 사람씩 천천히 만나 보세요.';
+  const linkUrl = '/exhibition';
   const imageUrl = banner?.imageUrl ?? null;
   const videoUrl = banner?.videoUrl ?? null;
 
@@ -20,7 +20,7 @@ export default function HomeStudio({ banner }: Props) {
       <div className="max-w-[1800px] mx-auto">
         <Link
           to={linkUrl}
-          className="group block rounded-2xl md:rounded-3xl overflow-hidden border border-gray-100 hover:border-koala-purple transition-colors duration-500"
+          className="group block overflow-hidden border border-gray-100 hover:border-koala-purple transition-colors duration-500"
         >
           <div className="grid lg:grid-cols-2">
             <div className="relative min-h-[260px] md:min-h-[420px] bg-koala-purple overflow-hidden">
@@ -45,7 +45,7 @@ export default function HomeStudio({ banner }: Props) {
               />
               <div className="relative z-10 flex flex-col gap-4 md:gap-6">
                 <span className="text-[10px] md:text-xs font-bold uppercase tracking-[0.24em] text-koala-gold-deep transition-colors duration-500 group-hover:text-koala-gold-soft">
-                  + 005 — Studio
+                  + 005 — Exhibition
                 </span>
                 <h2 className="text-2xl md:text-4xl lg:text-5xl font-bold tracking-tight text-gray-900 break-keep transition-colors duration-500 group-hover:text-white">
                   {title}
@@ -54,7 +54,7 @@ export default function HomeStudio({ banner }: Props) {
                   {description}
                 </p>
                 <span className="mt-2 self-start inline-flex items-center gap-2 px-7 py-3.5 rounded-full bg-koala-purple text-white text-sm font-bold transition-colors duration-500 group-hover:bg-white group-hover:text-koala-purple">
-                  작가 만나보기
+                  전시 보러가기
                   <ArrowRight className="w-4 h-4 transition-transform duration-500 group-hover:translate-x-1" />
                 </span>
               </div>

@@ -6,11 +6,12 @@ import {
   type BannerResponse,
 } from '@/api/adminApi';
 
-const BANNER_TYPES = ['MAIN', 'MAIN_SUB', 'LOGIN', 'SUB', 'EVENT', 'PROMOTION', 'ARTIST'];
+const BANNER_TYPES = ['MAIN', 'MAIN_SUB', 'EXHIBITION', 'LOGIN', 'SUB', 'EVENT', 'PROMOTION', 'ARTIST'];
 
 const BANNER_TYPE_LABELS: Record<string, string> = {
   MAIN: 'MAIN (메인 히어로)',
   MAIN_SUB: 'MAIN_SUB (메인 하단 — 작가의 공방)',
+  EXHIBITION: 'EXHIBITION (전시 페이지 — 제목·서문·대표이미지)',
   LOGIN: 'LOGIN (로그인 화면 배경)',
   SUB: 'SUB',
   EVENT: 'EVENT',
