@@ -78,6 +78,7 @@ const AdminReturnList = lazy(() => import("@/app/pages/Admin/returns/AdminReturn
 const AdminReturnDetail = lazy(() => import("@/app/pages/Admin/returns/AdminReturnDetail"));
 const AdminNoticeList = lazy(() => import("@/app/pages/Admin/notices/AdminNoticeList"));
 const AdminStoreList = lazy(() => import("@/app/pages/Admin/stores/AdminStoreList"));
+const AdminExhibition = lazy(() => import("@/app/pages/Admin/exhibition/AdminExhibition"));
 const AdminInquiryList = lazy(() => import("@/app/pages/Admin/inquiries/AdminInquiryList"));
 const AdminInquiryDetail = lazy(() => import("@/app/pages/Admin/inquiries/AdminInquiryDetail"));
 const AdminSettlementList = lazy(() => import("@/app/pages/Admin/settlements/AdminSettlementList"));
@@ -159,6 +160,7 @@ export function AppRoutes() {
             <Route path="/admin/returns/:returnNo" element={<AdminReturnDetail />} />
             <Route path="/admin/notices" element={<AdminNoticeList />} />
             <Route path="/admin/stores" element={<AdminStoreList />} />
+            <Route path="/admin/exhibition" element={<AdminExhibition />} />
             <Route path="/admin/inquiries" element={<AdminInquiryList />} />
             <Route path="/admin/inquiries/:inquiryCode" element={<AdminInquiryDetail />} />
             <Route path="/admin/settlements" element={<AdminSettlementList />} />
