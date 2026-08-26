@@ -4,29 +4,68 @@ import { useTranslation } from 'react-i18next';
 import { useCategories } from '@/app/hooks/useCategories';
 
 interface StoreFilterProps {
+  /** 소분류 코드들. 맨 앞은 'All' 이다. */
   categories: string[];
   selectedCategory: string;
   onSelectCategory: (category: string) => void;
+  /** 대분류 코드들. 맨 앞은 'All' 이다. */
+  mainCategories: string[];
+  selectedMain: string;
+  onSelectMain: (code: string) => void;
   viewMode: 'grid' | 'large';
   onViewModeChange: (mode: 'grid' | 'large') => void;
 }
+
+const ALL = 'All';
+
 export default function StoreFilter({
   categories,
   selectedCategory,
   onSelectCategory,
+  mainCategories,
+  selectedMain,
+  onSelectMain,
   viewMode,
   onViewModeChange,
 }: StoreFilterProps) {
   const { t } = useTranslation();
-  const { subLabel } = useCategories();
+  const { subLabel, mainLabel } = useCategories();
 
-  const labelOf = (category: string) =>
-    category === 'All' ? (t('store.categories.All') as string) : subLabel(category);
+  const allLabel = t('store.categories.All') as string;
 
   return (
     <section className="px-5 md:px-8 lg:px-12 pb-8 md:pb-12">
-      <div className="max-w-[1600px] mx-auto">
-        <div className="flex items-center justify-between gap-6 pb-6 border-b border-gray-100">
+      <div className="max-w-[1600px] mx-auto space-y-3 pb-6 border-b border-gray-100">
+        {/* 대분류 — 원작·한정판처럼 작품의 등급을 고른다. 소분류와 함께 걸린다. */}
+        {mainCategories.length > 1 && (
+          <div className="flex items-center gap-1 overflow-x-auto no-scrollbar py-1">
+            {mainCategories.map((code) => {
+              const active = selectedMain === code;
+              return (
+                <button
+                  key={code}
+                  onClick={() => onSelectMain(code)}
+                  className={`relative px-4 py-2 rounded-full text-xs md:text-sm font-bold whitespace-nowrap transition-colors duration-200 ${
+                    active ? 'text-koala-gold' : 'text-gray-500 hover:text-gray-900'
+                  }`}
+                >
+                  {active && (
+                    <motion.span
+                      layoutId="store-main-pill"
+                      className="absolute inset-0 bg-koala-purple rounded-full"
+                      transition={{ type: 'spring', stiffness: 420, damping: 34 }}
+                    />
+                  )}
+                  <span className="relative z-10">
+                    {code === ALL ? allLabel : mainLabel(code)}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        )}
+
+        <div className="flex items-center justify-between gap-6">
           <div className="flex items-center gap-1 overflow-x-auto no-scrollbar py-1">
             {categories.map((category) => {
               const active = selectedCategory === category;
@@ -45,7 +84,9 @@ export default function StoreFilter({
                       transition={{ type: 'spring', stiffness: 420, damping: 34 }}
                     />
                   )}
-                  <span className="relative z-10">{labelOf(category)}</span>
+                  <span className="relative z-10">
+                    {category === ALL ? allLabel : subLabel(category)}
+                  </span>
                 </button>
               );
             })}

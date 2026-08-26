@@ -21,5 +21,8 @@ export const getSku = (skuCode: string) =>
 export const getGenreCounts = () =>
     instance.get('/api/v1/skus/genre-counts');
 
+export const getMainCategoryCounts = () =>
+    instance.get('/api/v1/skus/main-category-counts');
+
 export const getSkuReviews = (skuCode: string, page = 0, size = 10) =>
     instance.get(`/api/v1/skus/${skuCode}/reviews`, { params: { page, size } });

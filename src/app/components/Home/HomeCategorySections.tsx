@@ -12,6 +12,13 @@ interface Props {
 
 const MAX_PER_SECTION = 12;
 
+// 어드민에서 한글 이름으로 분류를 만들면 코드가 SUB_2 처럼 순번으로 붙는다.
+// 그대로 라벨에 쓰면 방문자에게 "SUB 2" 라고 보인다. 그럴 땐 이름을 쓴다.
+const GENERATED_CODE = /^(MAIN|SUB)_\d+$/;
+
+const eyebrowOf = (code: string, name: string) =>
+  GENERATED_CODE.test(code) ? name : code.replace(/_/g, ' ');
+
 export default function HomeCategorySections({ categories, skus }: Props) {
   const { wishlistedCodes, wishlistLoading, handleWishlist } = useWishlistToggle();
 
@@ -30,7 +37,7 @@ export default function HomeCategorySections({ categories, skus }: Props) {
         <section key={category.id} className="px-4 md:px-12 pt-12 md:pt-24">
           <div className="max-w-[1800px] mx-auto">
             <SectionHeader
-              eyebrow={category.code.replace(/_/g, ' ')}
+              eyebrow={eyebrowOf(category.code, category.name)}
               title={category.name}
               sub={`${items.length}점의 작품`}
               viewAllHref={`/store?category=${category.code}`}
