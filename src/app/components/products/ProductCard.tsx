@@ -2,6 +2,8 @@ import { useState, useEffect, useMemo, useRef, useId } from 'react';
 import { useThumbSrc } from '@/app/hooks/useThumbSrc';
 import { ShoppingCart, Check, ArrowRight, X, ChevronLeft, ChevronRight } from 'lucide-react';
 import WishBookmark from '@/app/components/common/WishBookmark';
+import OriginalBadge from '@/app/components/common/OriginalBadge';
+import { useOriginalCategoryCode } from '@/app/hooks/useOriginalCategory';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link, useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
@@ -29,6 +31,8 @@ export default function ProductCard({
 }: ProductCardProps) {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const originalCode = useOriginalCategoryCode();
+  const isOriginal = Boolean(originalCode) && sku.mainCategory === originalCode;
   const detailPath = `/product/${sku.skuCode}`;
 
   // 같은 상품이 홈의 여러 섹션(한정판·장르별·카테고리)에 동시에 그려진다.
@@ -123,6 +127,7 @@ export default function ProductCard({
 
   const Badges = (
     <div className="flex flex-wrap gap-1.5">
+      {isOriginal && <OriginalBadge />}
       <span className="px-2 py-1 rounded-md bg-white/90 backdrop-blur-sm text-[9px] md:text-xs font-bold tracking-tight uppercase shadow-sm text-gray-900">
         {categoryLabel}
       </span>

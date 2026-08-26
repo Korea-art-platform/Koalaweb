@@ -1,5 +1,7 @@
 import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
+import OriginalBadge from '@/app/components/common/OriginalBadge';
+import { useOriginalCategoryCode } from '@/app/hooks/useOriginalCategory';
 
 interface ColorOption {
   name: string;
@@ -25,6 +27,8 @@ interface Props {
 
 export function ProductInfo({ sku, selectedColor, onColorSelect }: Props) {
   const { t } = useTranslation();
+  const originalCode = useOriginalCategoryCode();
+  const isOriginal = Boolean(originalCode) && sku.mainCategory === originalCode;
 
   const price = sku.salePrice ?? sku.listPrice;
   const hasDiscount = sku.salePrice && sku.salePrice < sku.listPrice;
@@ -45,11 +49,14 @@ export function ProductInfo({ sku, selectedColor, onColorSelect }: Props) {
         <span className="text-[10px] font-bold text-gray-400 tracking-[0.2em] uppercase">
           {sku.genre}
         </span>
-        {sku.isLimitedEdition && (
-          <span className="text-[10px] font-bold px-2.5 py-1 bg-koala-gold text-koala-purple rounded-full tracking-wide whitespace-nowrap">
-            {t('product.detail.gallery.limitedEdition')}
-          </span>
-        )}
+        <span className="flex items-center gap-1.5">
+          {isOriginal && <OriginalBadge size="md" />}
+          {sku.isLimitedEdition && (
+            <span className="text-[10px] font-bold px-2.5 py-1 bg-koala-gold text-koala-purple rounded-full tracking-wide whitespace-nowrap">
+              {t('product.detail.gallery.limitedEdition')}
+            </span>
+          )}
+        </span>
       </div>
       <h1 className="text-xl font-bold tracking-tight leading-snug mb-1.5 text-gray-900">
         {sku.name}

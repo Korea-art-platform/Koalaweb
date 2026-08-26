@@ -9,7 +9,7 @@ interface Props {
   loading: boolean;
 }
 
-export default function HomeLimitedEdition({ skus, loading }: Props) {
+export default function HomeOriginal({ skus, loading }: Props) {
   const { wishlistedCodes, wishlistLoading, handleWishlist } = useWishlistToggle();
 
   if (!loading && skus.length === 0) return null;
@@ -18,9 +18,9 @@ export default function HomeLimitedEdition({ skus, loading }: Props) {
     <section className="px-4 md:px-12 pt-12 md:pt-24">
       <div className="max-w-[1800px] mx-auto">
         <SectionHeader
-          eyebrow="001 — Limited"
-          title="한정판 에디션"
-          sub="한정 수량으로 제작된 소장 가치 높은 작품"
+          eyebrow="000 — Original"
+          title="원작"
+          sub="작가의 손에서 하나만 나온 유일한 작품"
           viewAllHref="/store"
         />
 
@@ -28,12 +28,12 @@ export default function HomeLimitedEdition({ skus, loading }: Props) {
           <div className="flex gap-4 md:gap-6 overflow-hidden">
             {[...Array(4)].map((_, i) => (
               <div key={i} className="w-[260px] md:w-[300px] shrink-0 animate-pulse">
-                <div className="aspect-[3/4] bg-gray-100 rounded-2xl" />
+                <div className="aspect-[3/4] bg-gray-100" />
               </div>
             ))}
           </div>
         ) : (
-          <CarouselArrows label="한정판">
+          <CarouselArrows label="원작">
             {skus.map((sku) => (
               <div key={sku.skuCode} className="w-[260px] md:w-[300px] shrink-0 snap-start">
                 <ProductCard

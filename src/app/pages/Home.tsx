@@ -4,11 +4,13 @@ import { fetchAllSkus } from '@/api/fetchAllSkus';
 import { getBanners } from '@/api/banner';
 import { getNotices, type NoticeItem } from '@/api/notice';
 import { useCategories } from '@/app/hooks/useCategories';
+import { useOriginalCategoryCode } from '@/app/hooks/useOriginalCategory';
 import type { Sku, Banner, Artist, PageResponse } from '@/api/types';
 import { useQuery } from '@tanstack/react-query';
 import { getArtists } from '@/api/artist';
 
 import HomeHero from '@/app/components/Home/HomeHero';
+import HomeOriginal from '@/app/components/Home/HomeOriginal';
 import HomeLimitedEdition from '@/app/components/Home/HomeLimitedEdition';
 import HomeGenreCollections from '@/app/components/Home/HomeGenreCollections';
 import HomeCategorySections from '@/app/components/Home/HomeCategorySections';
@@ -27,6 +29,7 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
 
   const { sub: subCategories } = useCategories();
+  const originalCode = useOriginalCategoryCode();
 
   const { data: artists = [] } = useQuery<Artist[]>({
     queryKey: ['artists', 'header'],
@@ -68,7 +71,15 @@ export default function Home() {
     fetchHomeData();
   }, []);
 
-  const limitedSkus = skus.filter((s) => s.mainCategory === LIMITED || s.isLimitedEdition);
+  // 원작이 제일 위 등급이라 한정판보다 먼저 걸러 낸다 —
+  // 원작이면서 한정판인 작품이 아래 한정판 줄에 또 나오지 않게 한다.
+  const originalSkus = originalCode
+    ? skus.filter((s) => s.mainCategory === originalCode)
+    : [];
+  const originalCodes = new Set(originalSkus.map((s) => s.skuCode));
+  const limitedSkus = skus.filter(
+    (s) => !originalCodes.has(s.skuCode) && (s.mainCategory === LIMITED || s.isLimitedEdition),
+  );
   const heroFeatured = (limitedSkus.length ? limitedSkus : skus)
     .filter((s) => s.status === 'ACTIVE')
     .slice(0, 12);
@@ -76,6 +87,7 @@ export default function Home() {
   return (
     <main className="bg-white font-sans">
       <HomeHero banners={banners} featured={heroFeatured} />
+      <HomeOriginal skus={originalSkus} loading={loading} />
       <HomeLimitedEdition skus={limitedSkus} loading={loading} />
       <HomeGenreCollections genreCounts={genreCounts} skus={skus} />
       <HomeCategorySections categories={subCategories} skus={skus} />

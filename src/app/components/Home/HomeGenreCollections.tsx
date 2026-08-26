@@ -26,7 +26,7 @@ export default function HomeGenreCollections({ genreCounts, skus }: Props) {
     <section className="px-4 md:px-12 pt-12 md:pt-24">
       <div className="max-w-[1800px] mx-auto">
         <SectionHeader
-          eyebrow="Collections"
+          eyebrow="002 — Collections"
           title="장르별 컬렉션"
           sub="장르마다 다른 작가의 시선을 만나보세요"
         />
