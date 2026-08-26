@@ -1,7 +1,16 @@
 import instance from './instance';
 
-export const getSkus = (page = 0, size = 20) =>
-    instance.get('/api/v1/skus', { params: { page, size } });
+interface SkuFilter {
+    /** 소분류 코드 (조각·아트토이…) */
+    genre?: string;
+    /** 대분류 코드 (원작·한정판…) */
+    mainCategory?: string;
+}
+
+export const getSkus = (page = 0, size = 20, filter: SkuFilter = {}) =>
+    instance.get('/api/v1/skus', {
+        params: { page, size, genre: filter.genre, mainCategory: filter.mainCategory },
+    });
 
 export const getSkusByArtist = (artistCode: string, page = 0, size = 50) =>
     instance.get(`/api/v1/artists/${artistCode}/skus`, { params: { page, size } });

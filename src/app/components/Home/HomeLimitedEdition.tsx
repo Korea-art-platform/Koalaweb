@@ -21,7 +21,7 @@ export default function HomeLimitedEdition({ skus, loading }: Props) {
           eyebrow="001 — Limited"
           title="한정판 에디션"
           sub="한정 수량으로 제작된 소장 가치 높은 작품"
-          viewAllHref="/store"
+          viewAllHref="/store?main=LIMITED"
         />
 
         {loading ? (

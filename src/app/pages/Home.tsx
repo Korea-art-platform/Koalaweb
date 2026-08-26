@@ -87,7 +87,7 @@ export default function Home() {
   return (
     <main className="bg-white font-sans">
       <HomeHero banners={banners} featured={heroFeatured} />
-      <HomeOriginal skus={originalSkus} loading={loading} />
+      <HomeOriginal skus={originalSkus} loading={loading} categoryCode={originalCode} />
       <HomeLimitedEdition skus={limitedSkus} loading={loading} />
       <HomeGenreCollections genreCounts={genreCounts} skus={skus} />
       <HomeCategorySections categories={subCategories} skus={skus} />

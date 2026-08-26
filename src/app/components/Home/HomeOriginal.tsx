@@ -7,9 +7,11 @@ import type { Sku } from '@/api/types';
 interface Props {
   skus: Sku[];
   loading: boolean;
+  /** 원작 대분류의 코드. 아직 카테고리를 못 불러왔으면 null 이다. */
+  categoryCode: string | null;
 }
 
-export default function HomeOriginal({ skus, loading }: Props) {
+export default function HomeOriginal({ skus, loading, categoryCode }: Props) {
   const { wishlistedCodes, wishlistLoading, handleWishlist } = useWishlistToggle();
 
   if (!loading && skus.length === 0) return null;
@@ -21,7 +23,7 @@ export default function HomeOriginal({ skus, loading }: Props) {
           eyebrow="000 — Original"
           title="원작"
           sub="작가의 손에서 하나만 나온 유일한 작품"
-          viewAllHref="/store"
+          viewAllHref={categoryCode ? `/store?main=${categoryCode}` : '/store'}
         />
 
         {loading ? (
