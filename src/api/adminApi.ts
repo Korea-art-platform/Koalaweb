@@ -96,7 +96,8 @@ export async function getAdminCategories() {
 
 export async function createCategory(body: {
   type: 'MAIN' | 'SUB';
-  code: string;
+  // 코드는 서버가 표시 이름으로 만든다. 화면에서는 보내지 않는다.
+  code?: string;
   name: string;
   sortOrder?: number;
 }) {

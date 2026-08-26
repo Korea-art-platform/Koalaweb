@@ -123,10 +123,13 @@ function InfoTab({ sku, onSaved }: { sku: any; onSaved: () => void }) {
   const cmToMm = (v: any) => (v || v === 0 ? String(Number(v) * 10) : '');
 
   const [form, setForm] = useState({
-    name: sku.name ?? '',
+    // 상품명과 슬러그는 모델·세부모델명·색상에서 서버가 만든다. 화면에 두지 않는다.
     model: sku.model ?? '',
+    modelEn: sku.modelEn ?? '',
     subModelName: sku.subModelName ?? '',
-    slug: sku.slug ?? '',
+    subModelNameEn: sku.subModelNameEn ?? '',
+    color: sku.color ?? '',
+    colorEn: sku.colorEn ?? '',
     description: sku.description ?? '',
     mainCategory: sku.mainCategory ?? '',
     genre: sku.genre ?? '',
@@ -141,7 +144,8 @@ function InfoTab({ sku, onSaved }: { sku: any; onSaved: () => void }) {
     widthCm: cmToMm(sku.widthCm),
     heightCm: cmToMm(sku.heightCm),
     depthCm: cmToMm(sku.depthCm),
-    weightKg: sku.weightKg ? String(sku.weightKg) : '',
+    weightG: sku.weightG ? String(sku.weightG)
+      : sku.weightKg ? String(Math.round(Number(sku.weightKg) * 1000)) : '',
     badges: parsedBadges as BadgeItem[],
   });
   const [saving, setSaving] = useState(false);
@@ -157,22 +161,45 @@ function InfoTab({ sku, onSaved }: { sku: any; onSaved: () => void }) {
   const isLimited = form.mainCategory === LIMITED;
 
   const handleSave = async () => {
-    if (!form.name.trim() || !form.slug.trim()) { setError('이름과 슬러그는 필수입니다.'); return; }
+    for (const [key, label] of [
+      ['model', '모델'], ['modelEn', '모델(영문)'],
+      ['subModelName', '세부모델명'], ['subModelNameEn', '세부모델명(영문)'],
+      ['color', '색상'], ['colorEn', '색상(영문)'],
+    ] as const) {
+      if (!form[key].trim()) { setError(`${label}을(를) 입력해 주세요.`); return; }
+    }
     if (!form.mainCategory) { setError('대분류를 선택해 주세요.'); return; }
     if (!form.genre) { setError('소분류를 선택해 주세요.'); return; }
     if (!form.listPrice || isNaN(Number(form.listPrice))) { setError('정가를 올바르게 입력해 주세요.'); return; }
-    if (form.salePrice && Number(form.salePrice) > Number(form.listPrice)) {
-      setError('판매가는 정가보다 클 수 없습니다.'); return;
+    if (!form.salePrice || isNaN(Number(form.salePrice))) {
+      setError('할인가를 입력해 주세요. 할인이 없으면 정가와 같은 값을 넣으시면 됩니다.'); return;
+    }
+    if (Number(form.salePrice) > Number(form.listPrice)) {
+      setError('할인가는 정가보다 클 수 없습니다.'); return;
+    }
+    if (!sku.primaryImageUrl) {
+      setError('대표 이미지가 없습니다. 아래 이미지 탭에서 먼저 등록해 주세요.'); return;
+    }
+    if (!form.description.trim()) { setError('작품 설명을 입력해 주세요.'); return; }
+    for (const [key, label] of [
+      ['widthCm', '가로'], ['heightCm', '높이'], ['depthCm', '세로'], ['weightG', '무게'],
+    ] as const) {
+      const v = form[key];
+      if (!v || isNaN(Number(v)) || Number(v) <= 0) {
+        setError(`규격 - ${label}을(를) 0보다 큰 숫자로 입력해 주세요.`); return;
+      }
     }
     setError('');
     setSaving(true);
     try {
       await updateSku(sku.skuCode, {
-        name: form.name.trim(),
-        model: form.model.trim() || undefined,
-        subModelName: form.subModelName.trim() || undefined,
-        slug: form.slug.trim(),
-        description: form.description.trim() || undefined,
+        model: form.model.trim(),
+        modelEn: form.modelEn.trim(),
+        subModelName: form.subModelName.trim(),
+        subModelNameEn: form.subModelNameEn.trim(),
+        color: form.color.trim(),
+        colorEn: form.colorEn.trim(),
+        description: form.description.trim(),
         mainCategory: form.mainCategory,
         genre: form.genre,
         material: form.material.trim() || undefined,
@@ -180,14 +207,14 @@ function InfoTab({ sku, onSaved }: { sku: any; onSaved: () => void }) {
         packagingTitle: form.packagingTitle.trim() || undefined,
         packagingDescription: form.packagingDescription.trim() || undefined,
         listPrice: Number(form.listPrice),
-        salePrice: form.salePrice ? Number(form.salePrice) : undefined,
+        salePrice: Number(form.salePrice),
         primaryImageUrl: sku.primaryImageUrl,
         editionSize: isLimited && form.editionSize ? Number(form.editionSize) : undefined,
         editionNumber: isLimited && form.editionNumber ? Number(form.editionNumber) : undefined,
-        widthCm: form.widthCm ? Number(form.widthCm) / 10 : undefined,
-        heightCm: form.heightCm ? Number(form.heightCm) / 10 : undefined,
-        depthCm: form.depthCm ? Number(form.depthCm) / 10 : undefined,
-        weightKg: form.weightKg ? Number(form.weightKg) : undefined,
+        widthCm: Number(form.widthCm) / 10,
+        heightCm: Number(form.heightCm) / 10,
+        depthCm: Number(form.depthCm) / 10,
+        weightG: Number(form.weightG),
         badges: form.badges.length > 0 ? JSON.stringify(form.badges) : undefined,
       });
       setSuccess(true);
@@ -207,18 +234,22 @@ function InfoTab({ sku, onSaved }: { sku: any; onSaved: () => void }) {
       <div className="bg-white rounded-xl border border-gray-200 p-5 space-y-4">
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className="block text-xs text-gray-500 mb-1.5">상품명 *</label>
-            <input value={form.name} onChange={(e) => setF({ name: e.target.value })} className={inputCls} />
+            <label className="block text-xs text-gray-500 mb-1.5">상품명</label>
+            <input value={[form.model, form.subModelName, form.color].filter(Boolean).join(' ')}
+              readOnly disabled
+              className={`${inputCls} bg-gray-50 text-gray-500`} />
+            <p className="text-[11px] text-gray-400 mt-1.5">모델·세부모델명·색상으로 자동으로 만들어집니다.</p>
           </div>
           <div>
-            <label className="block text-xs text-gray-500 mb-1.5">슬러그 *</label>
-            <input value={form.slug} onChange={(e) => setF({ slug: e.target.value })} className={inputCls} />
+            <label className="block text-xs text-gray-500 mb-1.5">주소(슬러그)</label>
+            <input value={sku.slug ?? ''} readOnly disabled className={`${inputCls} bg-gray-50 text-gray-500 font-mono`} />
+            <p className="text-[11px] text-gray-400 mt-1.5">바꾸면 기존 링크가 깨져 수정할 수 없습니다.</p>
           </div>
         </div>
         <div className="grid grid-cols-2 gap-3">
           <div>
             <label className="block text-xs text-gray-500 mb-1.5">모델 <span className="text-gray-300">작품명</span></label>
-            <input value={form.model} onChange={(e) => setF({ model: e.target.value })} className={inputCls} placeholder="예: 닥스훈트" />
+            <input value={form.model} onChange={(e) => setF({ model: e.target.value })} className={inputCls} placeholder="예: 닥쿤이" />
           </div>
           <div>
             <label className="block text-xs text-gray-500 mb-1.5">세부모델명 <span className="text-gray-300">변형 — 색상 등</span></label>
@@ -228,8 +259,8 @@ function InfoTab({ sku, onSaved }: { sku: any; onSaved: () => void }) {
         <div>
           <p className="text-xs text-gray-500 mb-2">작품 크기 / 무게 <span className="text-gray-400">(크기 단위 mm)</span></p>
           <div className="grid grid-cols-4 gap-2">
-            {(['widthCm', 'depthCm', 'heightCm', 'weightKg'] as const).map((key) => {
-              const label = { widthCm: '가로(mm)', depthCm: '세로(mm)', heightCm: '높이(mm)', weightKg: '무게(kg)' }[key];
+            {(['widthCm', 'depthCm', 'heightCm', 'weightG'] as const).map((key) => {
+              const label = { widthCm: '가로(mm)', depthCm: '세로(mm)', heightCm: '높이(mm)', weightG: '무게(g)' }[key];
               return (
                 <div key={key}>
                   <label className="block text-xs text-gray-400 mb-1">{label}</label>

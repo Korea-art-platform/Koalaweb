@@ -27,7 +27,6 @@ export default function AdminCategoryList() {
   const [loading, setLoading] = useState(true);
 
   const [addingType, setAddingType] = useState<CategoryType | null>(null);
-  const [newCode, setNewCode] = useState('');
   const [newName, setNewName] = useState('');
   const [formError, setFormError] = useState('');
   const [submitting, setSubmitting] = useState(false);
@@ -44,7 +43,6 @@ export default function AdminCategoryList() {
 
   const openAdd = (type: CategoryType) => {
     setAddingType(type);
-    setNewCode('');
     setNewName('');
     setFormError('');
   };
@@ -52,19 +50,13 @@ export default function AdminCategoryList() {
   const handleCreate = async () => {
     if (!addingType) return;
 
-    const code = newCode.trim().toUpperCase();
     const name = newName.trim();
-
-    if (!name) return setFormError('표시 이름을 입력해 주세요.');
-    if (!code) return setFormError('코드를 입력해 주세요.');
-    if (!/^[A-Z0-9_]+$/.test(code)) {
-      return setFormError('코드는 영문 대문자·숫자·언더바만 쓸 수 있습니다. (예: ART_TOY)');
-    }
+    if (!name) return setFormError('이름을 입력해 주세요.');
 
     setFormError('');
     setSubmitting(true);
     try {
-      await createCategory({ type: addingType, code, name });
+      await createCategory({ type: addingType, name });
       setAddingType(null);
       load();
     } catch (e) {
@@ -102,12 +94,20 @@ export default function AdminCategoryList() {
   const handleToggleActive = async (c: Category) => {
     if (c.isActive) {
       const used = c.usedCount ?? 0;
-      const warning = used > 0
-        ? `이 카테고리를 쓰는 상품이 ${used}건 있습니다.\n숨기면 상품 등록 화면과 메인 페이지에서 사라집니다.\n(상품 데이터는 그대로 남습니다)\n\n숨길까요?`
-        : '이 카테고리를 숨길까요?';
-      if (!confirm(warning)) return;
+      if (used > 0) {
+        alert(`이 분류로 등록된 상품이 ${used}건 있어 삭제할 수 없습니다.\n해당 상품의 분류를 먼저 바꿔 주세요.`);
+        return;
+      }
+      if (!confirm('이 분류를 삭제할까요?')) return;
 
-      await deactivateCategory(c.id);
+      try {
+        await deactivateCategory(c.id);
+      } catch (e) {
+        const message = (e as { response?: { data?: { message?: string } } })
+          .response?.data?.message;
+        alert(message ?? '삭제에 실패했습니다.');
+        return;
+      }
     } else {
       await updateCategory(c.id, { isActive: true });
     }
@@ -152,29 +152,18 @@ export default function AdminCategoryList() {
                   <div className="bg-white rounded-xl border border-gray-200 p-4 mb-3">
                     <div className="flex gap-3">
                       <div className="flex-1">
-                        <label className="block text-xs text-gray-500 mb-1">표시 이름</label>
+                        <label className="block text-xs text-gray-500 mb-1">이름</label>
                         <input
                           value={newName}
                           onChange={(e) => setNewName(e.target.value)}
-                          placeholder={section.type === 'MAIN' ? '예: 기획전' : '예: 도자'}
+                          placeholder={section.type === 'MAIN' ? '예: 한정판, 오픈에디션, 원작' : '예: 조각, 아트토이, 도자'}
                           className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:border-koala-navy"
                           autoFocus
                         />
                       </div>
-                      <div className="flex-1">
-                        <label className="block text-xs text-gray-500 mb-1">
-                          코드 <span className="text-gray-300">— 등록 후 변경 불가</span>
-                        </label>
-                        <input
-                          value={newCode}
-                          onChange={(e) => setNewCode(e.target.value.toUpperCase())}
-                          placeholder={section.type === 'MAIN' ? 'SPECIAL' : 'CERAMIC'}
-                          className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg font-mono focus:outline-none focus:border-koala-navy"
-                        />
-                      </div>
                     </div>
                     <p className="text-xs text-gray-400 mt-2">
-                      코드는 상품에 그대로 저장되는 값이라 나중에 바꿀 수 없습니다. 이름은 언제든 바꿀 수 있습니다.
+                      이름만 넣으면 됩니다. 이름은 나중에 언제든 바꿀 수 있습니다.
                     </p>
                     {formError && <p className="text-xs text-red-500 mt-2">{formError}</p>}
 
@@ -247,9 +236,6 @@ export default function AdminCategoryList() {
                               {c.name}
                             </button>
                           )}
-                          <span className="ml-2 text-xs font-mono text-gray-400 bg-gray-100 px-1.5 py-0.5 rounded">
-                            {c.code}
-                          </span>
                         </div>
                         <span className="text-xs text-gray-400 flex-shrink-0">
                           상품 {c.usedCount ?? 0}건
@@ -258,10 +244,10 @@ export default function AdminCategoryList() {
                           onClick={() => handleToggleActive(c)}
                           className={`px-3 py-1.5 text-xs rounded-lg transition-colors font-medium flex-shrink-0
                             ${c.isActive
-                              ? 'bg-green-50 text-green-700 hover:bg-green-100'
-                              : 'bg-gray-100 text-gray-500 hover:bg-gray-200'}`}
+                              ? 'bg-gray-100 text-gray-500 hover:bg-red-50 hover:text-red-600'
+                              : 'bg-koala-purple/10 text-koala-purple hover:bg-koala-purple/20'}`}
                         >
-                          {c.isActive ? '사용중' : '숨김'}
+                          {c.isActive ? '삭제' : '되살리기'}
                         </button>
                       </div>
                     ))}

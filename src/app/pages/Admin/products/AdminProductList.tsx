@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router';
 import { getAdminSkus, createSku, addSkuMedia, publishSku, discontinueSku, deleteSku, adjustStock, getAdminArtists } from '@/api/adminApi';
 import { getCategories, type CategoryGroups } from '@/api/category';
 import { downscaleImage } from '@/utils/downscaleImage';
-import { slugify, slugifyInput } from '@/utils/slugify';
 import { Package, ImagePlus, X, FileSpreadsheet } from 'lucide-react';
 import AdminCsvImportModal from './AdminCsvImportModal';
 
@@ -21,7 +20,6 @@ const SKU_STATUS_LABEL: Record<string, string> = {
 };
 
 const LIMITED = 'LIMITED';
-const OPEN = 'NORMAL';
 
 const inputCls = 'w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black/10';
 
@@ -29,14 +27,17 @@ interface BadgeItem { text: string; type: string; }
 
 interface CreateForm {
   artistCode: string;
-  name: string;
+
+  // 상품명과 슬러그는 입력하지 않는다. 아래 세 값으로 서버가 만든다.
   model: string;
+  modelEn: string;
   subModelName: string;
-  slug: string;
+  subModelNameEn: string;
+  color: string;
+  colorEn: string;
+
   description: string;
-
   mainCategory: string;
-
   genre: string;
   listPrice: string;
   salePrice: string;
@@ -46,16 +47,18 @@ interface CreateForm {
   widthCm: string;
   heightCm: string;
   depthCm: string;
-  weightKg: string;
+  weightG: string;
 }
 
 const EMPTY_FORM: CreateForm = {
-  artistCode: '', name: '', model: '', subModelName: '', slug: '', description: '',
+  artistCode: '',
+  model: '', modelEn: '', subModelName: '', subModelNameEn: '', color: '', colorEn: '',
+  description: '',
   mainCategory: '', genre: '',
   listPrice: '', salePrice: '',
   editionSize: '', editionNumber: '',
   badges: [],
-  widthCm: '', heightCm: '', depthCm: '', weightKg: '',
+  widthCm: '', heightCm: '', depthCm: '', weightG: '',
 };
 
 const BADGE_COLORS: Record<string, string> = {
@@ -136,34 +139,47 @@ export default function AdminProductList() {
 
   const isLimited = form.mainCategory === LIMITED;
 
-  const handleSlugAutoFill = (name: string) => setF({ slug: slugify(name) });
-
   const handleCreate = async () => {
     if (!form.artistCode) { setFormError('아티스트를 선택해 주세요.'); return; }
-    if (!form.name.trim()) { setFormError('상품명을 입력해 주세요.'); return; }
-    if (!form.slug.trim()) { setFormError('슬러그를 입력해 주세요.'); return; }
+
+    const NAMES = [
+      ['model', '모델'], ['modelEn', '모델(영문)'],
+      ['subModelName', '세부모델명'], ['subModelNameEn', '세부모델명(영문)'],
+      ['color', '색상'], ['colorEn', '색상(영문)'],
+    ] as const;
+    for (const [key, label] of NAMES) {
+      if (!form[key].trim()) { setFormError(`${label}을(를) 입력해 주세요.`); return; }
+    }
+    if (!/^[A-Za-z0-9 \-]+$/.test(
+      `${form.modelEn} ${form.subModelNameEn} ${form.colorEn}`
+    )) {
+      setFormError('영문 칸에는 영문·숫자·띄어쓰기만 입력해 주세요. 주소(URL)를 만드는 데 쓰입니다.');
+      return;
+    }
+
     if (!form.mainCategory) { setFormError('대분류를 선택해 주세요.'); return; }
-
     if (!form.genre) { setFormError('소분류를 선택해 주세요. (메인 페이지가 소분류 단위로 나뉩니다)'); return; }
-    if (!form.listPrice || isNaN(Number(form.listPrice))) { setFormError('정가를 올바르게 입력해 주세요.'); return; }
-    if (Number(form.listPrice) < 0) { setFormError('정가는 0원 이상이어야 합니다.'); return; }
 
+    if (!form.listPrice || isNaN(Number(form.listPrice)) || Number(form.listPrice) < 0) {
+      setFormError('정가를 올바르게 입력해 주세요.'); return;
+    }
+    if (!form.salePrice || isNaN(Number(form.salePrice)) || Number(form.salePrice) < 0) {
+      setFormError('할인가를 입력해 주세요. 할인이 없으면 정가와 같은 값을 넣으시면 됩니다.'); return;
+    }
+    if (Number(form.salePrice) > Number(form.listPrice)) {
+      setFormError('할인가는 정가보다 클 수 없습니다.\n예) 정가 100,000원 → 할인가 80,000원');
+      return;
+    }
+
+    if (!primaryFile) { setFormError('대표 이미지를 선택해 주세요.'); return; }
     if (!form.description.trim()) { setFormError('작품 설명을 입력해 주세요. (상세 페이지에 노출됩니다)'); return; }
-    for (const [key, label] of [['widthCm', '가로'], ['heightCm', '높이'], ['weightKg', '무게']] as const) {
+
+    for (const [key, label] of [
+      ['widthCm', '가로'], ['heightCm', '높이'], ['depthCm', '세로'], ['weightG', '무게'],
+    ] as const) {
       const v = form[key];
       if (!v) { setFormError(`규격 - ${label}을(를) 입력해 주세요.`); return; }
       if (isNaN(Number(v)) || Number(v) <= 0) { setFormError(`규격 - ${label}은(는) 0보다 큰 숫자로 입력해 주세요.`); return; }
-    }
-    if (form.depthCm && (isNaN(Number(form.depthCm)) || Number(form.depthCm) < 0)) {
-      setFormError('규격 - 세로는 0 이상의 숫자로 입력해 주세요.'); return;
-    }
-    if (form.salePrice) {
-      if (isNaN(Number(form.salePrice))) { setFormError('판매가를 올바르게 입력해 주세요.'); return; }
-      if (Number(form.salePrice) < 0) { setFormError('판매가는 0원 이상이어야 합니다.'); return; }
-      if (Number(form.salePrice) > Number(form.listPrice)) {
-        setFormError('판매가는 정가보다 클 수 없습니다. (판매가 ≤ 정가)\n예) 정가 100,000원 → 판매가 80,000원');
-        return;
-      }
     }
     setFormError('');
     setSubmitting(true);
@@ -173,28 +189,31 @@ export default function AdminProductList() {
     try {
       const created: any = await createSku({
         artistCode: form.artistCode,
-        name: form.name.trim(),
-        slug: form.slug.trim(),
-        description: form.description.trim() || undefined,
+        model: form.model.trim(),
+        modelEn: form.modelEn.trim(),
+        subModelName: form.subModelName.trim(),
+        subModelNameEn: form.subModelNameEn.trim(),
+        color: form.color.trim(),
+        colorEn: form.colorEn.trim(),
+        description: form.description.trim(),
         mainCategory: form.mainCategory,
         genre: form.genre,
         listPrice: Number(form.listPrice),
-        salePrice: form.salePrice ? Number(form.salePrice) : undefined,
+        salePrice: Number(form.salePrice),
 
         editionSize: isLimited && form.editionSize ? Number(form.editionSize) : undefined,
         editionNumber: isLimited && form.editionNumber ? Number(form.editionNumber) : undefined,
         badges: form.badges.length > 0 ? JSON.stringify(form.badges) : undefined,
-        model: form.model.trim() || undefined,
-        subModelName: form.subModelName.trim() || undefined,
-        widthCm: form.widthCm ? Number(form.widthCm) / 10 : undefined,
-        heightCm: form.heightCm ? Number(form.heightCm) / 10 : undefined,
-        depthCm: form.depthCm ? Number(form.depthCm) / 10 : undefined,
-        weightKg: form.weightKg ? Number(form.weightKg) : undefined,
+        // 화면은 mm 로 받고 서버는 cm 로 저장한다
+        widthCm: Number(form.widthCm) / 10,
+        heightCm: Number(form.heightCm) / 10,
+        depthCm: Number(form.depthCm) / 10,
+        weightG: Number(form.weightG),
       });
       createdSkuCode = created?.skuCode ?? null;
     } catch (err: any) {
       const serverMsg = err?.response?.data?.message;
-      setFormError(serverMsg || '상품 등록에 실패했습니다. 슬러그가 중복되었을 수 있습니다.');
+      setFormError(serverMsg || '상품 등록에 실패했습니다.');
       setSubmitting(false);
       return;
     }
@@ -413,59 +432,45 @@ export default function AdminProductList() {
                   ))}
                 </select>
               </div>
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-xs text-gray-500 mb-1.5">상품명 *</label>
-                  <input value={form.name}
-                    onChange={(e) => { setF({ name: e.target.value }); handleSlugAutoFill(e.target.value); }}
-                    className={inputCls} placeholder="작품 제목" />
+              <div className="rounded-xl border border-gray-200 p-4">
+                <div className="mb-3 grid grid-cols-[5.5rem_1fr_1fr] items-center gap-3">
+                  <span />
+                  <span className="text-xs font-semibold text-gray-500">한국어</span>
+                  <span className="text-xs font-semibold text-gray-500">영문</span>
                 </div>
-                <div>
-                  <label className="block text-xs text-gray-500 mb-1.5">슬러그 *</label>
-                  <input value={form.slug} onChange={(e) => setF({ slug: slugifyInput(e.target.value) })}
-                    className={inputCls} placeholder="artwork-title" />
-                  <p className="text-[11px] text-gray-400 mt-1.5">
-                    상품명에서 자동으로 채워집니다. 상품마다 달라야 합니다.
-                  </p>
-                </div>
-              </div>
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-xs text-gray-500 mb-1.5">
-                    모델 <span className="text-gray-300">작품명</span>
-                  </label>
-                  <input value={form.model} onChange={(e) => setF({ model: e.target.value })}
-                    className={inputCls} placeholder="예: 닥스훈트" />
-                </div>
-                <div>
-                  <label className="block text-xs text-gray-500 mb-1.5">
-                    세부모델명 <span className="text-gray-300">변형 — 색상 등</span>
-                  </label>
-                  <input value={form.subModelName} onChange={(e) => setF({ subModelName: e.target.value })}
-                    className={inputCls} placeholder="예: 청색" />
-                </div>
-              </div>
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-xs text-gray-500 mb-1.5">
-                    에디션 * <span className="text-gray-300">판매 형태</span>
-                  </label>
-                  <div className="flex gap-2">
-                    {[{ v: LIMITED, l: '한정판' }, { v: OPEN, l: '오픈에디션' }].map((o) => (
-                      <button
-                        key={o.v}
-                        type="button"
-                        onClick={() => setF({ mainCategory: o.v })}
-                        className={`flex-1 py-2 text-sm rounded-lg border transition-colors ${
-                          form.mainCategory === o.v
-                            ? 'border-koala-navy bg-koala-navy text-white'
-                            : 'border-gray-200 text-gray-600 hover:border-gray-300'
-                        }`}
-                      >
-                        {o.l}
-                      </button>
-                    ))}
+
+                {([
+                  ['model', 'modelEn', '모델', '닥쿤이', 'dakkuni'],
+                  ['subModelName', 'subModelNameEn', '세부모델명', '호돌이', 'hodori'],
+                  ['color', 'colorEn', '색상', '검정', 'black'],
+                ] as const).map(([ko, en, label, phKo, phEn]) => (
+                  <div key={ko} className="mb-2.5 grid grid-cols-[5.5rem_1fr_1fr] items-center gap-3">
+                    <label className="text-xs text-gray-500">
+                      {label} <span className="text-red-500">*</span>
+                    </label>
+                    <input value={form[ko]} onChange={(e) => setF({ [ko]: e.target.value } as Partial<CreateForm>)}
+                      className={inputCls} placeholder={`예: ${phKo}`} />
+                    <input value={form[en]} onChange={(e) => setF({ [en]: e.target.value } as Partial<CreateForm>)}
+                      className={inputCls} placeholder={`예: ${phEn}`} />
                   </div>
+                ))}
+
+                <p className="mt-3 text-[11px] leading-relaxed text-gray-400">
+                  상품명은 <b className="text-gray-500">
+                    {[form.model, form.subModelName, form.color].filter(Boolean).join(' ') || '모델 세부모델명 색상'}
+                  </b> 으로 자동으로 만들어집니다.
+                  주소는 영문으로 만들어지며, 한글 주소는 브라우저에서 알아볼 수 없게 바뀝니다.
+                </p>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs text-gray-500 mb-1.5">
+                    대분류 * <span className="text-gray-300">판매 형태</span>
+                  </label>
+                  <select value={form.mainCategory} onChange={(e) => setF({ mainCategory: e.target.value })} className={inputCls}>
+                    <option value="">-- 선택 --</option>
+                    {categories.main.map((c) => <option key={c.id} value={c.code}>{c.name}</option>)}
+                  </select>
                 </div>
                 <div>
                   <label className="block text-xs text-gray-500 mb-1.5">
@@ -487,14 +492,14 @@ export default function AdminProductList() {
                 </div>
                 <div>
                   <label className="block text-xs text-gray-500 mb-1.5">
-                    할인가 (원) <span className="text-gray-300">정가보다 낮아야 함</span>
+                    할인가 (원) * <span className="text-gray-300">할인 없으면 정가와 동일</span>
                   </label>
                   <input type="number" value={form.salePrice} onChange={(e) => setF({ salePrice: e.target.value })}
                     className={inputCls} placeholder="1200000" min="0" />
                 </div>
               </div>
               <div>
-                <label className="block text-xs text-gray-500 mb-1.5">대표 이미지 (선택)</label>
+                <label className="block text-xs text-gray-500 mb-1.5">대표 이미지 <span className="text-red-500">*</span></label>
                 <input
                   ref={primaryInputRef}
                   type="file"
@@ -551,8 +556,8 @@ export default function AdminProductList() {
                   <span className="text-gray-400 ml-1">(세로는 평면 작품이면 비워두세요 · 크기 단위 mm)</span>
                 </p>
                 <div className="grid grid-cols-4 gap-2">
-                  {(['widthCm', 'depthCm', 'heightCm', 'weightKg'] as const).map((key) => {
-                    const label = { widthCm: '가로(mm)', depthCm: '세로(mm)', heightCm: '높이(mm)', weightKg: '무게(kg)' }[key];
+                  {(['widthCm', 'depthCm', 'heightCm', 'weightG'] as const).map((key) => {
+                    const label = { widthCm: '가로(mm)', depthCm: '세로(mm)', heightCm: '높이(mm)', weightG: '무게(g)' }[key];
                     const optional = key === 'depthCm';
                     return (
                       <div key={key}>
