@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import SectionHeader from './SectionHeader';
 import { useCategories } from '@/app/hooks/useCategories';
 import type { Sku } from '@/api/types';
+import { toCdnUrl, toThumbUrl } from '@/app/lib/imageUrl';
 
 interface Props {
   genreCounts: Record<string, number>;
@@ -53,7 +54,18 @@ export default function HomeGenreCollections({ genreCounts, skus }: Props) {
                 >
                   {cover ? (
                     <>
-                      <img src={cover} alt="" className="h-full w-full object-cover" />
+                      <img
+                        src={toThumbUrl(cover)}
+                        onError={(e) => {
+                          const img = e.currentTarget;
+                          const full = toCdnUrl(cover);
+                          if (full && img.src !== full) img.src = full;
+                        }}
+                        alt=""
+                        loading="lazy"
+                        decoding="async"
+                        className="h-full w-full object-cover"
+                      />
                       <div className="absolute inset-0 bg-koala-purple/70" />
                     </>
                   ) : (
