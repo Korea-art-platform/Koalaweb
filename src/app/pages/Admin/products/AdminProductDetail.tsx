@@ -246,15 +246,32 @@ function InfoTab({ sku, onSaved }: { sku: any; onSaved: () => void }) {
             <p className="text-[11px] text-gray-400 mt-1.5">바꾸면 기존 링크가 깨져 수정할 수 없습니다.</p>
           </div>
         </div>
-        <div className="grid grid-cols-2 gap-3">
-          <div>
-            <label className="block text-xs text-gray-500 mb-1.5">모델 <span className="text-gray-300">작품명</span></label>
-            <input value={form.model} onChange={(e) => setF({ model: e.target.value })} className={inputCls} placeholder="예: 닥쿤이" />
+        <div className="rounded-xl border border-gray-200 p-4">
+          <div className="mb-3 grid grid-cols-[5.5rem_1fr_1fr] items-center gap-3">
+            <span />
+            <span className="text-xs font-semibold text-gray-500">한국어</span>
+            <span className="text-xs font-semibold text-gray-500">영문</span>
           </div>
-          <div>
-            <label className="block text-xs text-gray-500 mb-1.5">세부모델명 <span className="text-gray-300">변형 — 색상 등</span></label>
-            <input value={form.subModelName} onChange={(e) => setF({ subModelName: e.target.value })} className={inputCls} placeholder="예: 청색" />
-          </div>
+
+          {([
+            ['model', 'modelEn', '모델', '닥쿤이', 'dakkuni'],
+            ['subModelName', 'subModelNameEn', '세부모델명', '호돌이', 'hodori'],
+            ['color', 'colorEn', '색상', '검정', 'black'],
+          ] as const).map(([ko, en, label, phKo, phEn]) => (
+            <div key={ko} className="mb-2.5 grid grid-cols-[5.5rem_1fr_1fr] items-center gap-3">
+              <label className="text-xs text-gray-500">
+                {label} <span className="text-red-500">*</span>
+              </label>
+              <input value={(form as any)[ko]} onChange={(e) => setF({ [ko]: e.target.value } as any)}
+                className={inputCls} placeholder={`예: ${phKo}`} />
+              <input value={(form as any)[en]} onChange={(e) => setF({ [en]: e.target.value } as any)}
+                className={inputCls} placeholder={`예: ${phEn}`} />
+            </div>
+          ))}
+
+          <p className="mt-3 text-[11px] leading-relaxed text-gray-400">
+            상품명은 이 세 값으로 자동으로 만들어집니다. 영문은 주소를 만드는 데 쓰입니다.
+          </p>
         </div>
         <div>
           <p className="text-xs text-gray-500 mb-2">작품 크기 / 무게 <span className="text-gray-400">(크기 단위 mm)</span></p>
@@ -341,7 +358,7 @@ function InfoTab({ sku, onSaved }: { sku: any; onSaved: () => void }) {
               className={inputCls} min="0" />
           </div>
           <div>
-            <label className="block text-xs text-gray-500 mb-1.5">판매가 (원)</label>
+            <label className="block text-xs text-gray-500 mb-1.5">할인가 (원) *</label>
             <input type="number" value={form.salePrice} onChange={(e) => setF({ salePrice: e.target.value })}
               className={inputCls} min="0" placeholder="할인가 없으면 비워두기" />
           </div>

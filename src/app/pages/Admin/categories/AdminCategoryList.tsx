@@ -34,9 +34,17 @@ export default function AdminCategoryList() {
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editName, setEditName] = useState('');
 
+  const [loadError, setLoadError] = useState('');
+
   const load = useCallback(() => {
     setLoading(true);
-    getAdminCategories().then(setGroups).finally(() => setLoading(false));
+    setLoadError('');
+    getAdminCategories()
+      .then(setGroups)
+      // 실패를 삼키면 "등록된 카테고리가 없습니다" 로 보인다.
+      // 목록이 비어 있는 것과 못 불러온 것은 전혀 다른 상황이다.
+      .catch(() => setLoadError('카테고리를 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.'))
+      .finally(() => setLoading(false));
   }, []);
 
   useEffect(() => { load(); }, [load]);
@@ -127,7 +135,12 @@ export default function AdminCategoryList() {
         대분류와 소분류는 서로 종속되지 않습니다. 상품 하나가 대분류 한 개, 소분류 한 개를 각각 갖습니다.
       </p>
 
-      {loading ? (
+      {loadError ? (
+        <div className="rounded-xl border border-red-100 bg-red-50 px-4 py-8 text-center">
+          <p className="text-sm text-red-600">{loadError}</p>
+          <button onClick={load} className="mt-3 text-xs text-red-700 underline">다시 시도</button>
+        </div>
+      ) : loading ? (
         <div className="py-20 text-center text-sm text-gray-400">불러오는 중...</div>
       ) : (
         <div className="space-y-8">
