@@ -45,10 +45,14 @@ jobs:
           # 여기 적힌 나이스 키는 테스트(샌드박스) 상점 키다. 운영 키를 받으면
           # 저장소 Variables 에 넣어라 — 그 값이 있으면 아래 기본값을 덮는다.
           VITE_NICEPAY_CLIENT_ID: ${{ vars.VITE_NICEPAY_CLIENT_ID || 'S2_70b3ebcd8c3a440d81a4ccf4cb91b434' }}
-          # 카카오페이·네이버페이 노출 스위치. 나이스가 간편결제를 승인한 뒤
-          # Variables 에 VITE_NICE_EASYPAY=true 를 넣고 재배포하면 켜진다.
-          # 승인 전에 켜면 고객이 결제 실패를 겪는다.
-          VITE_NICE_EASYPAY: ${{ vars.VITE_NICE_EASYPAY || 'false' }}
+          # 카카오페이·네이버페이 노출 스위치.
+          #
+          # 나이스 간편결제 활성화가 확인되지 않아 잠갔다. 승인 전에 켜면
+          # 고객이 카카오페이를 눌렀다가 결제 실패를 겪는다.
+          #
+          # 승인이 확인되면 아래 줄을 이렇게 되돌린다:
+          #   VITE_NICE_EASYPAY: ${{ vars.VITE_NICE_EASYPAY || 'false' }}
+          VITE_NICE_EASYPAY: 'false' 
           # 축소본 사용 스위치. 어드민 image-derivatives 일괄 생성을 끝낸 뒤
           # Variables 에 VITE_IMAGE_THUMBS=true 를 넣고 재배포하면 켜진다.
           VITE_IMAGE_THUMBS: ${{ vars.VITE_IMAGE_THUMBS || 'false' }}
