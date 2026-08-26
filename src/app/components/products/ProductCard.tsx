@@ -78,6 +78,12 @@ export default function ProductCard({
     setImgIndex((i) => (i + dir + images.length) % images.length);
 
   const d = detail ?? sku;
+  // 제목은 모델명만 쓴다. 모델명이 없는 옛 상품은 예전처럼 전체 이름을 보여 준다.
+  const title = sku.model ?? d.model ?? sku.name;
+  // 세부모델명과 색상은 상세 응답에만 담겨 자세히 보기를 열어야 채워진다.
+  const subModelName = d.subModelName;
+  const color = d.color;
+
   const description = d.description ?? sku.description;
   const specs: { label: string; value: string }[] = [];
   if (d.material) specs.push({ label: '소재', value: d.material });
@@ -178,7 +184,7 @@ export default function ProductCard({
             {sku.artistName}
           </motion.p>
           <motion.h3 layoutId={`title-${layoutId}`} className="text-base md:text-lg font-bold tracking-tight text-white truncate">
-            {sku.name}
+            {title}
           </motion.h3>
           <p className="text-white font-black tracking-tight mt-1 text-sm md:text-base">₩{price}</p>
         </div>
@@ -261,8 +267,24 @@ export default function ProductCard({
                   {sku.artistName}
                 </motion.p>
                 <motion.h3 layoutId={`title-${layoutId}`} className="text-2xl sm:text-3xl font-bold tracking-tight text-gray-900">
-                  {sku.name}
+                  {title}
                 </motion.h3>
+                {(subModelName || color) && (
+                  <dl className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-sm text-gray-500">
+                    {subModelName && (
+                      <div className="flex gap-1.5">
+                        <dt>세부모델:</dt>
+                        <dd className="text-gray-700">{subModelName}</dd>
+                      </div>
+                    )}
+                    {color && (
+                      <div className="flex gap-1.5">
+                        <dt>색상:</dt>
+                        <dd className="text-gray-700">{color}</dd>
+                      </div>
+                    )}
+                  </dl>
+                )}
                 <motion.div
                   initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0 }} transition={{ delay: 0.15 }}
                   className="mt-4 grow"

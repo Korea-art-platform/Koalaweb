@@ -69,7 +69,17 @@ export interface SkuMedia {
 
 export interface Sku {
   skuCode: string;
+  /** 모델·세부모델명·색상을 이어 붙인 이름. 서버가 만든다. */
   name: string;
+  /** 카드 제목으로 쓰는 모델명. 목록 응답에도 담긴다. */
+  model?: string;
+  modelEn?: string;
+  /** 세부모델명과 색상은 상세 응답에만 있다 — 자세히 보기에서만 쓴다. */
+  subModelName?: string;
+  subModelNameEn?: string;
+  color?: string;
+  colorEn?: string;
+  weightG?: number;
 
   genre: string;
 
