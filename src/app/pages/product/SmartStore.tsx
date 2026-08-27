@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router';
 import { useQuery } from '@tanstack/react-query';
 import StoreHero from '@/app/components/Hero/StoreHero';
-import { StickyHero, RisingPanel } from '@/app/components/layouts/RisingPanel';
 import StoreFilter from '@/app/components/store/StoreFilter';
 import StoreProductGrid from '@/app/components/store/StoreProductGrid';
 import TrendingArtists from '@/app/components/Artist/TrendingArtists';
@@ -78,15 +77,9 @@ export default function SmartStore() {
 
   const { wishlistedCodes, wishlistLoading, handleWishlist } = useWishlistToggle();
 
-  // 히어로가 흰 바탕이면 흰 판이 덮어도 아무것도 안 보인다.
-  // 바탕을 옅게 깔아 판의 윗변이 읽히게 한다.
   return (
-    <div className="min-h-screen bg-[#F2F0F5]">
-      <StickyHero>
-        <StoreHero />
-      </StickyHero>
-
-      <RisingPanel>
+    <div className="min-h-screen bg-white">
+      <StoreHero />
       <StoreFilter
         categories={categories}
         selectedCategory={selectedCategory}
@@ -111,7 +104,6 @@ export default function SmartStore() {
       <div className="px-6 md:px-8 max-w-[1600px] mx-auto pb-20">
         <TrendingArtists />
       </div>
-      </RisingPanel>
     </div>
   );
 }
