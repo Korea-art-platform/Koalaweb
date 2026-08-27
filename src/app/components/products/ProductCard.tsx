@@ -154,7 +154,7 @@ export default function ProductCard({
         layoutId={layoutId}
         onClick={() => setIsOpen(true)}
         whileHover="hover"
-        className={`group relative cursor-pointer overflow-hidden bg-gray-100 ${
+        className={`group relative cursor-pointer overflow-hidden border border-gray-100 shadow-sm bg-gray-100 ${
           viewMode === 'grid' ? 'aspect-[3/4]' : 'aspect-[4/3]'
         }`}
       >
