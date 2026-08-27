@@ -30,7 +30,7 @@ export default function StoreProductGrid({
     <section className="px-5 md:px-8 lg:px-12 pb-32">
       <div className="max-w-[1600px] mx-auto">
         {loading ? (
-          <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8">
+          <div className="grid grid-cols-2 lg:grid-cols-3">
             {[...Array(6)].map((_, i) => (
               <div key={i} className="animate-pulse">
                 <div className="aspect-square bg-gray-100 rounded-2xl mb-4" />
@@ -49,8 +49,8 @@ export default function StoreProductGrid({
             <div
               className={`grid ${
                 viewMode === 'grid'
-                  ? 'grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-10 md:gap-8 lg:gap-12'
-                  : 'grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-12'
+                  ? 'grid-cols-2 lg:grid-cols-3'
+                  : 'grid-cols-1 md:grid-cols-2'
               }`}
             >
               {skus.map((sku) => (

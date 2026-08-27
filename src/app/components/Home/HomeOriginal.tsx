@@ -27,7 +27,7 @@ export default function HomeOriginal({ skus, loading, categoryCode }: Props) {
         />
 
         {loading ? (
-          <div className="flex gap-4 md:gap-6 overflow-hidden">
+          <div className="flex overflow-hidden">
             {[...Array(4)].map((_, i) => (
               <div key={i} className="w-[260px] md:w-[300px] shrink-0 animate-pulse">
                 <div className="aspect-[3/4] bg-gray-100" />

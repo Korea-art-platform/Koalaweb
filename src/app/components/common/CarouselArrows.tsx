@@ -66,7 +66,7 @@ export default function CarouselArrows({
       <div
         ref={trackRef}
         onScroll={syncEdges}
-        className="flex gap-4 md:gap-6 overflow-x-auto no-scrollbar snap-x scroll-smooth
+        className="flex overflow-x-auto no-scrollbar snap-x scroll-smooth
                    pb-2 -mx-4 px-4 md:mx-0 md:px-0"
       >
         {children}

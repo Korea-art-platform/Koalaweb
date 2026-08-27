@@ -32,6 +32,7 @@ export default function BannerMedia({
   const videoRef = useRef<HTMLVideoElement>(null);
   const [loadFailed, setLoadFailed] = useState(false);
   const [reduceMotion, setReduceMotion] = useState(prefersReducedMotion);
+  const [onScreen, setOnScreen] = useState(true);
 
   // 서버는 S3 주소를 그대로 내려준다. CDN 으로 바꾸지 않으면 시드니 버킷에서
   // 직접 받게 되고, 히어로는 첫 화면이라 그 지연이 그대로 체감된다.
@@ -64,6 +65,13 @@ export default function BannerMedia({
       return;
     }
 
+    // 화면 밖으로 나가면 멈춘다. 안 보이는 영상을 계속 디코딩할 이유가 없다.
+    // 되감지는 않는다 — 다시 올라오면 보던 자리에서 이어진다.
+    if (!onScreen) {
+      video.pause();
+      return;
+    }
+
     const play = () => video.play().catch(() => {});
     play();
 
@@ -73,9 +81,22 @@ export default function BannerMedia({
     };
     document.addEventListener('visibilitychange', onVisible);
     return () => document.removeEventListener('visibilitychange', onVisible);
-  }, [videoUrl, reduceMotion, loadFailed, active]);
+  }, [videoUrl, reduceMotion, loadFailed, active, onScreen]);
 
   const showVideo = Boolean(videoSrc) && !loadFailed && !reduceMotion;
+
+  // 화면에 있는지 지켜본다. 경계보다 조금 이르게 켜 두어야, 스크롤로 들어오는
+  // 순간 멈춰 있던 첫 프레임이 잠깐 보이는 일이 없다.
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+    const io = new IntersectionObserver(
+      ([entry]) => setOnScreen(entry.isIntersecting),
+      { rootMargin: '200px' },
+    );
+    io.observe(video);
+    return () => io.disconnect();
+  }, [showVideo]);
 
   // 영상이 있는 배너인데 이미지로 내려갔다면 onEnded 가 영영 오지 않는다.
   // 부모가 시간 기반 전환으로 갈아탈 수 있도록 알려 준다.
