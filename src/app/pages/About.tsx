@@ -4,13 +4,13 @@ import { Helmet } from 'react-helmet-async';
 
 import { getSkus } from '@/api/sku';
 import { getArtists } from '@/api/artist';
-import { toCdnUrl } from '@/app/lib/imageUrl';
 import type { Sku, Artist, PageResponse } from '@/api/types';
 
 import IrisOpening from '@/app/components/about/IrisOpening';
 import DriftGallery from '@/app/components/about/DriftGallery';
 import Reveal from '@/app/components/about/Reveal';
 import SceneNav, { type Scene } from '@/app/components/about/SceneNav';
+import ArtistWheel from '@/app/components/about/ArtistWheel';
 
 const SCENES: Scene[] = [
   { id: 'scene-open', label: 'Opening' },
@@ -94,10 +94,7 @@ export default function About() {
       <SceneNav scenes={SCENES} />
 
       <section id="scene-open">
-        <IrisOpening
-          eyebrow="KOALA — Korea Art Lab"
-          lines={['작가의 손에서 나온 것을,', '그대로.']}
-        />
+        <IrisOpening lines={['작가의 손에서 나온 것을,', '그대로.']} />
       </section>
 
       <section id="scene-why">
@@ -143,48 +140,26 @@ export default function About() {
       </section>
 
       {/* ── 작가 ────────────────────────────────────────────── */}
-      <section id="scene-artists" className="px-5 md:px-12 py-28 md:py-40">
-        <div className="max-w-[1200px] mx-auto">
-          <Reveal>
-            <p className="text-[11px] md:text-xs font-bold tracking-[0.28em] uppercase text-koala-gold-deep mb-5">
-              Artists
-            </p>
-            <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-gray-900 break-keep leading-[1.3]">
-              지금 KOALA와 함께하는 작가들
-            </h2>
-          </Reveal>
-
-          <div className="mt-14 md:mt-20 grid gap-8 md:gap-10 sm:grid-cols-2 lg:grid-cols-3">
-            {artists.map((artist, i) => (
-              <Reveal key={artist.artistCode} index={i % 3}>
-                <Link to={`/artist/${artist.artistCode}`} className="group block">
-                  <div className="aspect-[4/5] overflow-hidden bg-gray-100">
-                    {artist.profileImageUrl ? (
-                      <img
-                        src={toCdnUrl(artist.profileImageUrl)}
-                        alt={artist.name}
-                        loading="lazy"
-                        decoding="async"
-                        className="w-full h-full object-cover transition-transform duration-[900ms] ease-out group-hover:scale-[1.04]"
-                      />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center text-gray-300 text-sm">
-                        준비 중
-                      </div>
-                    )}
-                  </div>
-                  <h3 className="mt-5 text-lg md:text-xl font-bold tracking-tight text-gray-900 group-hover:text-koala-purple transition-colors">
-                    {artist.name}
-                  </h3>
-                  {artist.description && (
-                    <p className="mt-2 text-sm text-gray-500 leading-[1.8] break-keep line-clamp-3">
-                      {artist.description}
-                    </p>
-                  )}
-                </Link>
-              </Reveal>
-            ))}
+      <section id="scene-artists" className="py-28 md:py-40 overflow-hidden">
+        <div className="px-5 md:px-12">
+          <div className="max-w-[1200px] mx-auto">
+            <Reveal>
+              <p className="text-[11px] md:text-xs font-bold tracking-[0.28em] uppercase text-koala-gold-deep mb-5">
+                Artists
+              </p>
+              <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-gray-900 break-keep leading-[1.3]">
+                지금 KOALA와 함께하는 작가들
+              </h2>
+              <p className="mt-6 text-sm md:text-base text-gray-500">
+                옆으로 밀어 돌려 보세요.
+              </p>
+            </Reveal>
           </div>
+        </div>
+
+        {/* 바퀴는 화면 전체 폭을 쓴다. 컨테이너 안에 가두면 가장자리 카드가 잘린다. */}
+        <div className="mt-10 md:mt-14">
+          <ArtistWheel artists={artists} />
         </div>
       </section>
 

@@ -1,7 +1,6 @@
 import { useScrollScene, span, ease } from '@/app/hooks/useScrollScene';
 
 interface Props {
-  eyebrow: string;
   lines: string[];
 }
 
@@ -14,7 +13,7 @@ interface Props {
  * 글은 빛보다 늦게 들어와 빛이 충분히 퍼진 뒤에 읽힌다. 순서를 지키지 않으면
  * 어두운 바탕에 어두운 글씨가 잠깐 보이는 구간이 생긴다.
  */
-export default function IrisOpening({ eyebrow, lines }: Props) {
+export default function IrisOpening({ lines }: Props) {
   const { ref, progress, reduced } = useScrollScene<HTMLDivElement>();
 
   // 움직이지 않을 때는 빛도 글도 다 켜 둔 채로 멈춘다.
@@ -34,9 +33,13 @@ export default function IrisOpening({ eyebrow, lines }: Props) {
           className="relative text-center px-6 will-change-[opacity,transform]"
           style={{ opacity: text * (1 - leave), transform: `translateY(${(1 - text) * 18}px)` }}
         >
-          <p className="text-[11px] md:text-xs font-bold tracking-[0.34em] uppercase text-koala-gold-deep mb-6 md:mb-8">
-            {eyebrow}
-          </p>
+          <img
+            src="/logo-gold.svg"
+            alt="KOALA — Korea Art Lab"
+            width={421}
+            height={117}
+            className="h-11 md:h-16 w-auto mx-auto mb-8 md:mb-11"
+          />
           {lines.map((line) => (
             <p
               key={line}
