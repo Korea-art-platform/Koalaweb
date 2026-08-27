@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import type { Banner, Sku } from '@/api/types';
 import BannerMedia from '@/app/components/common/BannerMedia';
 import { useIsDesktop } from '@/app/hooks/useMediaQuery';
+import { useCoveredByPanel } from '@/app/components/layouts/RisingPanel';
 import { toCdnUrl, toThumbUrl } from '@/app/lib/imageUrl';
 
 interface HomeHeroProps {
@@ -24,6 +25,11 @@ export default function HomeHero({ banners, featured = [] }: HomeHeroProps) {
   const isDesktop = useIsDesktop();
   const total = banners.length;
 
+  // 히어로는 제자리에 붙어 있어 화면 밖으로 나가지 않는다. 판에 다 가려진
+  // 뒤에도 영상이 계속 돌면 보이지도 않는 화면을 디코딩하며 배터리를 쓴다.
+  const heroRef = useRef<HTMLElement>(null);
+  const covered = useCoveredByPanel(heroRef);
+
   // 이미지 배너가 머무는 시간
   const IMAGE_MS = 5000;
   // 영상은 끝나면 넘어간다. 다만 자동재생이 막히거나 파일이 멈춰 버리면
@@ -38,12 +44,14 @@ export default function HomeHero({ banners, featured = [] }: HomeHeroProps) {
   }, [current, banners]);
 
   useEffect(() => {
-    if (total <= 1) return;
+    // 가려진 동안에는 넘기지 않는다. 그냥 두면 안 보이는 채로 배너가 계속
+    // 바뀌면서 다음 영상까지 받아 온다.
+    if (total <= 1 || covered) return;
     const id = setTimeout(() => {
       setCurrent((prev) => (prev + 1) % total);
     }, videoMode ? VIDEO_MAX_MS : IMAGE_MS);
     return () => clearTimeout(id);
-  }, [total, current, videoMode]);
+  }, [total, current, videoMode, covered]);
 
   function handleVideoEnded() {
     if (total <= 1) return;
@@ -113,6 +121,7 @@ export default function HomeHero({ banners, featured = [] }: HomeHeroProps) {
 
   return (
     <section
+      ref={heroRef}
       data-hero="dark"
       className="relative overflow-hidden bg-koala-navy"
     >
@@ -134,7 +143,7 @@ export default function HomeHero({ banners, featured = [] }: HomeHeroProps) {
                 videoUrl={b.videoUrl}
                 alt={b.title ?? 'Banner'}
                 eager={i === 0}
-                active={i === current}
+                active={i === current && !covered}
                 // 배너가 하나뿐이면 넘어갈 곳이 없으니 그대로 반복한다
                 loop={total <= 1}
                 onEnded={handleVideoEnded}

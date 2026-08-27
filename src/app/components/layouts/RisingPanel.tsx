@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react';
+
 interface Props {
   children: React.ReactNode;
   className?: string;
@@ -33,4 +35,44 @@ export function RisingPanel({ children, className = '' }: Props) {
  */
 export function StickyHero({ children }: Props) {
   return <div className="sticky top-0 z-0">{children}</div>;
+}
+
+/**
+ * 올라온 판에 완전히 가려졌는지 알려준다.
+ *
+ * 히어로가 붙어 있으면 화면 밖으로 나가지 않아, IntersectionObserver 로는
+ * 가려졌는지 알 수 없다 — 판에 덮여 안 보일 뿐 여전히 "화면 안"이다.
+ * 판의 윗변이 히어로 위쪽까지 올라온 순간을 다 가려진 것으로 본다.
+ *
+ * 살짝 걸친 정도로는 참으로 두지 않는다. 스크롤을 조금 움직일 때마다 값이
+ * 오가면 영상이 멈췄다 처음부터 다시 재생되기를 되풀이한다.
+ */
+export function useCoveredByPanel(ref: React.RefObject<HTMLElement | null>) {
+  const [covered, setCovered] = useState(false);
+
+  useEffect(() => {
+    let frame = 0;
+
+    const measure = () => {
+      frame = 0;
+      const el = ref.current;
+      const cover = document.querySelector('[data-hero-cover]');
+      if (!el || !cover) return;
+      const hero = el.getBoundingClientRect();
+      setCovered(cover.getBoundingClientRect().top <= hero.top + 1);
+    };
+
+    const schedule = () => { if (!frame) frame = requestAnimationFrame(measure); };
+
+    measure();
+    window.addEventListener('scroll', schedule, { passive: true });
+    window.addEventListener('resize', schedule, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', schedule);
+      window.removeEventListener('resize', schedule);
+      if (frame) cancelAnimationFrame(frame);
+    };
+  }, [ref]);
+
+  return covered;
 }
