@@ -30,8 +30,8 @@ export default function IrisOpening({ lines }: Props) {
   const text = reduced ? 1 : span(progress, 0.3, 0.56);
 
   return (
-    <div ref={ref} className={`relative bg-[#0D0912] ${reduced ? 'h-screen' : 'h-[200vh]'}`}>
-      <div className="sticky top-0 h-screen overflow-hidden flex items-center justify-center">
+    <div ref={ref} className={`relative bg-[#0D0912] ${reduced ? 'koala-stage' : 'koala-scene-2x'}`}>
+      <div className="sticky top-0 koala-stage overflow-hidden flex items-center justify-center">
         <span
           aria-hidden
           className="absolute w-[170vmax] h-[170vmax] rounded-full bg-white blur-[70px] will-change-transform"

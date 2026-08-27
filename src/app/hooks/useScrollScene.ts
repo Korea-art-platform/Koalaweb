@@ -29,7 +29,14 @@ let frame = 0;
 
 function measure(el: HTMLElement) {
   const rect = el.getBoundingClientRect();
-  const travel = rect.height - window.innerHeight;
+
+  // 무대(고정되는 자식)의 실제 높이로 잰다. window.innerHeight 를 쓰면
+  // 모바일에서 주소창이 접히는 순간 값이 바뀌어 진행도가 튄다 —
+  // 스크롤은 그대로인데 화면이 한 번 덜컥한다.
+  const stage = el.firstElementChild as HTMLElement | null;
+  const stageHeight = stage ? stage.getBoundingClientRect().height : window.innerHeight;
+
+  const travel = rect.height - stageHeight;
   if (travel <= 0) return rect.top <= 0 ? 1 : 0;
   return Math.min(1, Math.max(0, -rect.top / travel));
 }

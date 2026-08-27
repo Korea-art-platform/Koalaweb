@@ -74,8 +74,8 @@ export default function DriftGallery({ images, paragraphs }: Props) {
   }
 
   return (
-    <div ref={ref} className="relative h-[300vh] bg-white">
-      <div className="sticky top-0 h-screen overflow-hidden">
+    <div ref={ref} className="relative koala-scene-3x bg-white">
+      <div className="sticky top-0 koala-stage overflow-hidden">
         <div aria-hidden className="absolute inset-0">
           {shown.map((src, i) => {
             const [x0, y0, x1, y1, scale, tilt, blur] = TRACKS[i];
