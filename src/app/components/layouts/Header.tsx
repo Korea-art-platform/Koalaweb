@@ -64,8 +64,14 @@ export function Header() {
         return;
       }
 
-      const heroRect = hero.getBoundingClientRect();
-      setIsHeroActive(heroRect.bottom > 72);
+      // 히어로가 제자리에 붙어 있고 그 위로 다음 섹션이 올라와 덮는 화면에서는,
+      // 히어로 자체는 화면에서 사라지지 않는다. 덮개가 헤더까지 올라온 순간이
+      // 곧 히어로가 끝난 순간이다. 덮개가 없는 페이지는 예전대로 본다.
+      const cover = document.querySelector('[data-hero-cover]');
+      const heroBottom = cover
+        ? cover.getBoundingClientRect().top
+        : hero.getBoundingClientRect().bottom;
+      setIsHeroActive(heroBottom > 72);
       setIsHeroDark(hero.getAttribute('data-hero') === 'dark');
     };
 

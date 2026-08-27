@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { useQuery } from '@tanstack/react-query';
 import ArtistLabHero from '@/app/components/Hero/ArtistLabHero';
+import { StickyHero, RisingPanel } from '@/app/components/layouts/RisingPanel';
 import ArtistListSkeleton from '@/app/components/Artist/ArtistListSkeleton';
 import ArtistRow from '@/app/components/Artist/ArtistRow';
 import { getArtists } from '@/api/artist';
@@ -20,8 +21,12 @@ export default function ArtistLab() {
   });
 
   return (
-    <div className="min-h-screen bg-white">
-      <ArtistLabHero />
+    <div className="min-h-screen bg-[#F2F0F5]">
+      <StickyHero>
+        <ArtistLabHero />
+      </StickyHero>
+
+      <RisingPanel>
       <section className="px-6 md:px-8 pb-32">
         <div className="max-w-[1600px] mx-auto space-y-20 md:space-y-32">
           {loading ? (
@@ -39,6 +44,7 @@ export default function ArtistLab() {
           )}
         </div>
       </section>
+      </RisingPanel>
     </div>
   );
 }

@@ -47,16 +47,6 @@ const TIERS = [
   },
 ];
 
-const COMPANY = [
-  ['상호명', '헤론'],
-  ['서비스명', 'KOALA-ART'],
-  ['대표이사', '정동훈'],
-  ['사업자등록번호', '203-87-01972'],
-  ['통신판매업 신고번호', '제2024-서울서초-3956호'],
-  ['주소', '서울특별시 서초구 서운로6길 26, 4층 4482호(지훈빌딩)'],
-  ['고객센터', '1833-2817'],
-  ['이메일', 'koala-art@heron.kr'],
-];
 
 export default function About() {
   const { data: artworks = [] } = useQuery<Sku[]>({
@@ -165,7 +155,7 @@ export default function About() {
 
       {/* ── 회사 ────────────────────────────────────────────── */}
       <section id="scene-company" className="px-5 md:px-12 py-28 md:py-40 bg-koala-purple text-white">
-        <div className="max-w-[1200px] mx-auto grid gap-14 lg:grid-cols-[1fr_1.2fr] lg:gap-20">
+        <div className="max-w-[1200px] mx-auto">
           <Reveal>
             <p className="text-[11px] md:text-xs font-bold tracking-[0.28em] uppercase text-koala-gold mb-5">
               Company
@@ -173,7 +163,7 @@ export default function About() {
             <h2 className="text-3xl md:text-5xl font-bold tracking-tight break-keep leading-[1.3]">
               헤론이 만듭니다.
             </h2>
-            <p className="mt-6 text-sm md:text-base text-white/70 leading-[1.9] break-keep max-w-md">
+            <p className="mt-6 text-sm md:text-base text-white/70 leading-[1.9] break-keep max-w-xl">
               KOALA-ART는 헤론이 운영하는 미술품 거래 플랫폼입니다.
               작가의 작품을 소개하고, 사고파는 과정을 맡습니다.
             </p>
@@ -185,19 +175,6 @@ export default function About() {
             </Link>
           </Reveal>
 
-          <Reveal index={1}>
-            <dl className="border-t border-white/15">
-              {COMPANY.map(([label, value]) => (
-                <div
-                  key={label}
-                  className="grid grid-cols-[7.5rem_1fr] md:grid-cols-[10rem_1fr] gap-4 py-4 border-b border-white/15"
-                >
-                  <dt className="text-xs md:text-sm text-white/50">{label}</dt>
-                  <dd className="text-xs md:text-sm text-white/90 break-keep">{value}</dd>
-                </div>
-              ))}
-            </dl>
-          </Reveal>
         </div>
       </section>
     </main>

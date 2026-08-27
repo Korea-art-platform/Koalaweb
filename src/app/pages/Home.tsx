@@ -10,6 +10,7 @@ import { useQuery } from '@tanstack/react-query';
 import { getArtists } from '@/api/artist';
 
 import HomeHero from '@/app/components/Home/HomeHero';
+import { StickyHero, RisingPanel } from '@/app/components/layouts/RisingPanel';
 import HomeOriginal from '@/app/components/Home/HomeOriginal';
 import HomeLimitedEdition from '@/app/components/Home/HomeLimitedEdition';
 import HomeGenreCollections from '@/app/components/Home/HomeGenreCollections';
@@ -85,15 +86,24 @@ export default function Home() {
     .slice(0, 12);
 
   return (
-    <main className="bg-white font-sans">
-      <HomeHero banners={banners} featured={heroFeatured} />
-      <HomeOriginal skus={originalSkus} loading={loading} categoryCode={originalCode} />
-      <HomeLimitedEdition skus={limitedSkus} loading={loading} />
-      <HomeGenreCollections genreCounts={genreCounts} skus={skus} />
-      <HomeCategorySections categories={subCategories} skus={skus} />
-      <HomeArtists artists={artists} />
-      <HomeStudio banner={studioBanner} />
-      <HomeNotices notices={notices} />
+    <main className="bg-koala-navy font-sans">
+      {/* 히어로는 제자리에 붙어 있는다. 스크롤을 내리면 히어로가 밀려 올라가는 게
+          아니라, 아래 섹션들이 한 장의 판처럼 그 위로 올라와 덮는다.
+          sticky 는 부모 높이 안에서만 붙으므로 부모는 main 이어야 한다 —
+          히어로를 딱 맞는 상자로 감싸면 붙을 여유가 0 이라 아예 붙지 않는다. */}
+      <StickyHero>
+        <HomeHero banners={banners} featured={heroFeatured} />
+      </StickyHero>
+
+      <RisingPanel>
+        <HomeOriginal skus={originalSkus} loading={loading} categoryCode={originalCode} />
+        <HomeLimitedEdition skus={limitedSkus} loading={loading} />
+        <HomeGenreCollections genreCounts={genreCounts} skus={skus} />
+        <HomeCategorySections categories={subCategories} skus={skus} />
+        <HomeArtists artists={artists} />
+        <HomeStudio banner={studioBanner} />
+        <HomeNotices notices={notices} />
+      </RisingPanel>
     </main>
   );
 }
