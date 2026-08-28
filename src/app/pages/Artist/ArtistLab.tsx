@@ -5,6 +5,7 @@ import ArtistListSkeleton from '@/app/components/Artist/ArtistListSkeleton';
 import ArtistRow from '@/app/components/Artist/ArtistRow';
 import { getArtists } from '@/api/artist';
 import type { Artist, PageResponse } from '@/api/types';
+import PageMeta from '@/app/components/common/PageMeta';
 
 export default function ArtistLab() {
   const { t } = useTranslation();
@@ -21,6 +22,7 @@ export default function ArtistLab() {
 
   return (
     <div className="min-h-screen bg-white">
+      <PageMeta title="작가의 연구소" description="한국 현대미술 작가들의 작품 세계와 창작 여정을 소개합니다." />
       <ArtistLabHero />
       <section className="px-6 md:px-8 pb-32">
         <div className="max-w-[1600px] mx-auto space-y-20 md:space-y-32">

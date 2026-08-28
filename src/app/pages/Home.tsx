@@ -18,6 +18,7 @@ import HomeCategorySections from '@/app/components/Home/HomeCategorySections';
 import HomeArtists from '@/app/components/Home/HomeArtists';
 import HomeStudio from '@/app/components/Home/HomeStudio';
 import HomeNotices from '@/app/components/Home/HomeNotices';
+import PageMeta from '@/app/components/common/PageMeta';
 
 const LIMITED = 'LIMITED';
 
@@ -87,6 +88,7 @@ export default function Home() {
 
   return (
     <main className="bg-koala-navy font-sans">
+      <PageMeta title="한국 미술 작품 마켓" description="한국 작가의 원작·한정판·오픈에디션 작품을 만나보세요. 조각·아트토이·굿즈·회화까지, KOALA에서 소장하세요." />
       {/* 히어로는 제자리에 붙어 있는다. 스크롤을 내리면 히어로가 밀려 올라가는 게
           아니라, 아래 섹션들이 한 장의 판처럼 그 위로 올라와 덮는다.
           sticky 는 부모 높이 안에서만 붙으므로 부모는 main 이어야 한다 —

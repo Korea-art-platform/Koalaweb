@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router';
 import { ArrowLeft, MessageSquare, Truck, RotateCcw, HelpCircle, ChevronRight } from 'lucide-react';
 import { Link } from 'react-router';
+import PageMeta from '@/app/components/common/PageMeta';
 
 const HELP_SECTIONS = [
   {
@@ -38,6 +39,7 @@ export default function Help() {
 
   return (
     <div className="min-h-screen bg-white">
+      <PageMeta title="고객 지원" />
       <div className="sticky top-0 z-10 bg-white border-b border-gray-100">
         <div className="max-w-3xl mx-auto flex items-center gap-4 px-6 py-4">
           <button onClick={() => navigate(-1)} className="text-gray-700 hover:text-black transition-colors">

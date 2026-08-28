@@ -72,7 +72,7 @@ export default function About() {
   return (
     <main className="bg-white">
       <Helmet>
-        <title>회사 소개 | KOALA</title>
+        <title>회사 소개 — KOALA</title>
         <meta
           name="description"
           content="헤론이 만드는 KOALA-ART는 한국 작가의 작품을 원작·한정판·오픈에디션으로 나누어 소개하는 미술품 거래 플랫폼입니다."

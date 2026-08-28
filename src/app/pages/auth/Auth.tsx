@@ -7,6 +7,7 @@ import SignupForm from '@/app/components/Auth/SignupForm';
 import SocialLogin from '@/app/components/Auth/SocialLogin';
 import { getBanners } from '@/api/banner';
 import type { Banner } from '@/api/types';
+import PageMeta from '@/app/components/common/PageMeta';
 
 const PANEL_SLIDE = 'transition-transform duration-[450ms] ease-[cubic-bezier(0.65,0,0.35,1)]';
 
@@ -50,6 +51,7 @@ export default function Auth() {
 
   return (
     <div className="min-h-screen bg-[#FAFAFA]">
+      <PageMeta title="로그인" />
       <div className="lg:flex lg:items-stretch overflow-x-hidden">
         <div
           style={visualStyle}

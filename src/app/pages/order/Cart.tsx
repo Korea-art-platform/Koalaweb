@@ -6,6 +6,7 @@ import { CartSkeleton } from '@/app/components/Cart';
 import { EmptyCart } from '@/app/components/Cart';
 import { CartItem } from '@/app/components/Cart';
 import { OrderSummary } from '@/app/components/Cart';
+import PageMeta from '@/app/components/common/PageMeta';
 
 export default function Cart() {
   const { t } = useTranslation();
@@ -25,6 +26,7 @@ export default function Cart() {
 
   return (
     <div className="min-h-screen bg-[#FAFAFA]">
+      <PageMeta title="장바구니" />
       <div className="pt-24 pb-16 px-8">
         <div className="max-w-[1200px] mx-auto">
           <div className="mb-12">

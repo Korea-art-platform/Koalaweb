@@ -1,12 +1,14 @@
 import { useNavigate } from 'react-router';
 import { ArrowLeft, Truck, Clock, MapPin, Package } from 'lucide-react';
 import { FREE_SHIPPING_THRESHOLD_TEXT, FREE_SHIPPING_THRESHOLD_AMOUNT_TEXT, SHIPPING_FEE_AMOUNT_TEXT } from '@/app/lib/shipping';
+import PageMeta from '@/app/components/common/PageMeta';
 
 export default function Shipping() {
   const navigate = useNavigate();
 
   return (
     <div className="min-h-screen bg-white">
+      <PageMeta title="배송 정보" />
       <div className="sticky top-0 z-10 bg-white border-b border-gray-100">
         <div className="max-w-3xl mx-auto flex items-center gap-4 px-6 py-4">
           <button onClick={() => navigate(-1)} className="text-gray-700 hover:text-black transition-colors">

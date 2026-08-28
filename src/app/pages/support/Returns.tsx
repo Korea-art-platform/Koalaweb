@@ -1,11 +1,13 @@
 import { useNavigate } from 'react-router';
 import { ArrowLeft } from 'lucide-react';
+import PageMeta from '@/app/components/common/PageMeta';
 
 export default function Returns() {
   const navigate = useNavigate();
 
   return (
     <div className="min-h-screen bg-white">
+      <PageMeta title="교환 및 반품" />
       <div className="sticky top-0 z-10 bg-white border-b border-gray-100">
         <div className="max-w-3xl mx-auto flex items-center gap-4 px-6 py-4">
           <button onClick={() => navigate(-1)} className="text-gray-700 hover:text-black transition-colors">
