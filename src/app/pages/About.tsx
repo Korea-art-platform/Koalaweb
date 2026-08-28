@@ -1,5 +1,4 @@
 import { useQuery } from '@tanstack/react-query';
-import { Link } from 'react-router';
 import { Helmet } from 'react-helmet-async';
 
 import { getSkus } from '@/api/sku';
@@ -17,7 +16,6 @@ const SCENES: Scene[] = [
   { id: 'scene-why', label: 'Why' },
   { id: 'scene-tiers', label: 'Tiers' },
   { id: 'scene-artists', label: 'Artists' },
-  { id: 'scene-company', label: 'Company' },
 ];
 
 const WHY: string[][] = [
@@ -153,30 +151,6 @@ export default function About() {
         </div>
       </section>
 
-      {/* ── 회사 ────────────────────────────────────────────── */}
-      <section id="scene-company" className="px-5 md:px-12 py-28 md:py-40 bg-koala-purple text-white">
-        <div className="max-w-[1200px] mx-auto">
-          <Reveal>
-            <p className="text-[11px] md:text-xs font-bold tracking-[0.28em] uppercase text-koala-gold mb-5">
-              Company
-            </p>
-            <h2 className="text-3xl md:text-5xl font-bold tracking-tight break-keep leading-[1.3]">
-              헤론이 만듭니다.
-            </h2>
-            <p className="mt-6 text-sm md:text-base text-white/70 leading-[1.9] break-keep max-w-xl">
-              KOALA-ART는 헤론이 운영하는 미술품 거래 플랫폼입니다.
-              작가의 작품을 소개하고, 사고파는 과정을 맡습니다.
-            </p>
-            <Link
-              to="/artist-lab"
-              className="inline-flex items-center gap-2 mt-10 px-6 py-3.5 bg-koala-gold text-koala-purple text-sm font-bold hover:bg-koala-gold-soft transition-colors"
-            >
-              작가의 연구소 둘러보기
-            </Link>
-          </Reveal>
-
-        </div>
-      </section>
     </main>
   );
 }
