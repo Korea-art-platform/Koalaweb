@@ -123,6 +123,7 @@ export function Header() {
     { key: 'lab', path: '/artist-lab' },
     { key: 'store', path: '/store' },
     { key: 'stores', path: '/stores' },
+    { key: 'about', path: '/about' },
   ];
 
   const subMenus = [

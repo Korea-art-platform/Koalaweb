@@ -1,10 +1,9 @@
 import { useEffect, useState, useRef } from 'react';
 import { Link } from 'react-router';
-import { ArrowRight, ChevronLeft, ChevronRight, Sparkles, Palette, Layers } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import type { Banner, Sku } from '@/api/types';
 import BannerMedia from '@/app/components/common/BannerMedia';
-import { useIsDesktop } from '@/app/hooks/useMediaQuery';
 import { useCoveredByPanel } from '@/app/components/layouts/RisingPanel';
 import { toCdnUrl, toThumbUrl } from '@/app/lib/imageUrl';
 
@@ -22,7 +21,6 @@ export default function HomeHero({ banners, featured = [] }: HomeHeroProps) {
   const touchEndX = useRef<number | null>(null);
   const SWIPE_THRESHOLD = 50;
 
-  const isDesktop = useIsDesktop();
   const total = banners.length;
 
   // 히어로는 제자리에 붙어 있어 화면 밖으로 나가지 않는다. 판에 다 가려진
@@ -65,14 +63,6 @@ export default function HomeHero({ banners, featured = [] }: HomeHeroProps) {
     setTimeout(() => setAnimating(false), 700);
   }
 
-  function goPrev() {
-    goToIndex((current - 1 + total) % total);
-  }
-
-  function goNext() {
-    goToIndex((current + 1) % total);
-  }
-
   function handleTouchStart(e: React.TouchEvent) {
     touchStartX.current = e.touches[0].clientX;
     touchEndX.current = null;
@@ -86,220 +76,174 @@ export default function HomeHero({ banners, featured = [] }: HomeHeroProps) {
     if (touchStartX.current === null || touchEndX.current === null) return;
     const diff = touchStartX.current - touchEndX.current;
     if (Math.abs(diff) >= SWIPE_THRESHOLD) {
-      diff > 0 ? goNext() : goPrev();
+      goToIndex((current + (diff > 0 ? 1 : total - 1)) % total);
     }
     touchStartX.current = null;
     touchEndX.current = null;
   }
 
   const banner = banners[current] ?? null;
-  const railItems = featured;
-
-  const renderRailCard = (s: Sku, key: React.Key) => {
-    const price = (s.salePrice ?? s.listPrice)?.toLocaleString();
-    return (
-      <Link
-        key={key}
-        to={`/product/${s.skuCode}`}
-        className="group/card flex items-center gap-4 rounded-2xl bg-white/95 hover:bg-white p-3.5 mb-3.5 shadow-sm transition-colors"
-      >
-        <img
-          src={toThumbUrl(s.primaryImageUrl) ?? '/placeholder.svg'}
-          onError={(e) => { const img = e.currentTarget; const full = toCdnUrl(s.primaryImageUrl); if (full && img.src !== full) img.src = full; }}
-          alt={s.name}
-          className="w-[88px] h-[88px] rounded-xl object-cover shrink-0 bg-gray-100"
-        />
-        <div className="min-w-0 flex-1">
-          <p className="text-xs text-gray-500 truncate mb-0.5">{s.artistName}</p>
-          <p className="text-base font-bold text-gray-900 truncate">{s.name}</p>
-          <p className="text-base font-bold text-koala-gold-deep mt-1">₩{price}</p>
-        </div>
-        <ArrowRight className="w-5 h-5 text-gray-300 shrink-0 opacity-0 -translate-x-1 group-hover/card:opacity-100 group-hover/card:translate-x-0 transition-all" />
-      </Link>
-    );
-  };
+  const pick = featured[0] ?? null;
+  const pickPrice = pick ? (pick.salePrice ?? pick.listPrice)?.toLocaleString() : null;
+  const two = (n: number) => String(n).padStart(2, '0');
 
   return (
     <section
       ref={heroRef}
       data-hero="dark"
-      className="relative overflow-hidden bg-koala-navy"
+      className="relative koala-stage overflow-hidden bg-koala-navy"
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
     >
-      <div className="grid lg:grid-cols-[1.55fr_1fr]">
+      {banners.map((b, i) => (
         <div
-          className="relative h-[64vh] min-h-[440px] max-h-[600px] lg:h-[58vh] lg:min-h-[600px] lg:max-h-[860px] overflow-hidden"
-          onTouchStart={handleTouchStart}
-          onTouchMove={handleTouchMove}
-          onTouchEnd={handleTouchEnd}
+          key={b.id}
+          className="absolute inset-0 transition-opacity duration-700 ease-in-out"
+          style={{ opacity: i === current ? 1 : 0 }}
         >
-          {banners.map((b, i) => (
-            <div
-              key={b.id}
-              className="absolute inset-0 transition-opacity duration-700 ease-in-out"
-              style={{ opacity: i === current ? 1 : 0 }}
-            >
-              <BannerMedia
-                imageUrl={b.imageUrl}
-                videoUrl={b.videoUrl}
-                alt={b.title ?? 'Banner'}
-                eager={i === 0}
-                active={i === current && !covered}
-                // 배너가 하나뿐이면 넘어갈 곳이 없으니 그대로 반복한다
-                loop={total <= 1}
-                onEnded={handleVideoEnded}
-                onFallback={i === current ? () => setVideoMode(false) : undefined}
-              />
-            </div>
-          ))}
+          <BannerMedia
+            imageUrl={b.imageUrl}
+            videoUrl={b.videoUrl}
+            alt={b.title ?? 'Banner'}
+            eager={i === 0}
+            active={i === current && !covered}
+            // 배너가 하나뿐이면 넘어갈 곳이 없으니 그대로 반복한다
+            loop={total <= 1}
+            onEnded={handleVideoEnded}
+            onFallback={i === current ? () => setVideoMode(false) : undefined}
+          />
+        </div>
+      ))}
 
-          <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/35 to-transparent" />
+      {/*
+        위아래 어두운 막. 배너 사진은 관리자가 올리는 것이라 밝을 수도 어두울 수도
+        있는데 그 위에 흰 글씨가 얹힌다. 사진에 기대지 않고 읽히게 만든다.
+        · 위  — 헤더 글자가 밝은 배너 위에서도 보이게
+        · 아래 — 제목과 정보 바가 사진에서 떠 보이지 않게
 
-          <div className="relative h-full flex items-end px-6 md:px-10 lg:px-12 pb-8 md:pb-12">
-            <div
-              className="max-w-xl text-white transition-opacity duration-500"
-              style={{ opacity: animating ? 0.6 : 1 }}
-            >
-              <div className="flex flex-wrap items-center gap-x-5 gap-y-2 mb-4 text-[11px] md:text-xs text-white/80">
-                <span className="inline-flex items-center gap-1.5">
-                  <Sparkles className="w-3.5 h-3.5" />
-                  {banner?.badge ?? t('home.hero.badge')}
-                </span>
-                {banner?.subtitle && (
-                  <span className="inline-flex items-center gap-1.5">
-                    <Palette className="w-3.5 h-3.5" />
-                    {banner.subtitle}
-                  </span>
-                )}
-                {total > 1 && (
-                  <span className="inline-flex items-center gap-1.5 tabular-nums">
-                    <Layers className="w-3.5 h-3.5" />
-                    {String(current + 1).padStart(2, '0')} / {String(total).padStart(2, '0')}
-                  </span>
-                )}
-              </div>
-              <h1 className="text-3xl sm:text-4xl md:text-6xl mb-3 md:mb-5 font-bold tracking-tighter leading-[1.05]">
-                {banner?.title ?? t('home.hero.defaultTitle')}
-              </h1>
-              <p className="hidden sm:block text-sm md:text-base text-white/75 mb-6 md:mb-8 max-w-lg break-keep">
-                {banner?.description ?? t('home.hero.description')}
-              </p>
-              <div className="flex flex-wrap items-center gap-3">
-                <Link
-                  to={banner?.linkUrl ?? '/store'}
-                  className="inline-flex items-center gap-2 pl-5 pr-6 py-3 bg-white text-black rounded-full hover:bg-white/90 transition-colors font-bold group text-sm"
-                >
-                  <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
-                  {t('home.hero.shopNow')}
-                </Link>
-                <Link
-                  to="/artist-lab"
-                  className="inline-flex items-center px-6 py-3 rounded-full border border-white/40 text-white text-sm font-bold hover:bg-white/10 hover:border-white/70 transition-colors"
-                >
-                  {t('home.hero.learnMore', { defaultValue: '작가 둘러보기' })}
-                </Link>
-                {total > 1 && (
-                  <span className="hidden md:flex items-center gap-2 ml-1">
-                    <button
-                      onClick={goPrev}
-                      className="inline-flex items-center justify-center w-10 h-10 rounded-full border border-white/40 text-white hover:bg-white/10 hover:border-white/70 transition-colors"
-                      aria-label="이전 배너"
-                    >
-                      <ChevronLeft className="w-4 h-4" />
-                    </button>
-                    <button
-                      onClick={goNext}
-                      className="inline-flex items-center justify-center w-10 h-10 rounded-full border border-white/40 text-white hover:bg-white/10 hover:border-white/70 transition-colors"
-                      aria-label="다음 배너"
-                    >
-                      <ChevronRight className="w-4 h-4" />
-                    </button>
-                  </span>
-                )}
-              </div>
+        Tailwind 임의색에 투명도를 붙이는 대신 인라인으로 적는다. 앞서 그렇게
+        했을 때 막이 제대로 걸리지 않아 헤더 명암비가 2:1 에 머물렀다.
+      */}
+      <div
+        aria-hidden
+        className="absolute inset-x-0 top-0 h-[200px]"
+        style={{ background: 'linear-gradient(to bottom, rgba(13,9,18,.85) 0%, rgba(13,9,18,.45) 45%, transparent 100%)' }}
+      />
+      <div
+        aria-hidden
+        className="absolute inset-x-0 bottom-0 h-[58%]"
+        style={{ background: 'linear-gradient(to top, rgba(13,9,18,.94) 0%, rgba(13,9,18,.55) 38%, transparent 100%)' }}
+      />
+
+      {/* 아래 정보 묶음 — 작품을 가리지 않도록 제목·버튼을 전부 밑으로 내렸다 */}
+      <div className="absolute inset-x-0 bottom-0 z-20">
+        <div
+          className="flex flex-col md:flex-row md:items-end gap-5 md:gap-8 px-5 md:px-12 pt-5 pb-4 md:pb-5 border-b border-white/12"
+          style={{ opacity: animating ? 0.65 : 1, transition: 'opacity .5s' }}
+        >
+          <div className="min-w-0 flex-1 text-white">
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mb-1.5 text-[11px] md:text-xs tracking-wide">
+              <span className="font-bold text-koala-gold">{banner?.badge ?? t('home.hero.badge')}</span>
+              {banner?.subtitle && <span className="text-white/65">· {banner.subtitle}</span>}
             </div>
+            <h1 className="text-2xl md:text-[2rem] font-black tracking-tight leading-tight truncate">
+              {banner?.title ?? t('home.hero.defaultTitle')}
+            </h1>
+            <p className="hidden md:block text-sm text-white/65 mt-1 truncate">
+              {banner?.description ?? t('home.hero.description')}
+            </p>
           </div>
 
-          {total > 1 && (
-            <div className="lg:hidden absolute bottom-4 right-5 flex gap-2">
-              {banners.map((_, i) => (
-                <button
-                  key={i}
-                  onClick={() => goToIndex(i)}
-                  className={`rounded-full transition-all duration-300 ${
-                    i === current ? 'w-6 h-2 bg-white' : 'w-2 h-2 bg-white/50 hover:bg-white/80'
-                  }`}
-                  aria-label={`배너 ${i + 1}`}
-                />
-              ))}
-            </div>
-          )}
-        </div>
-
-        {isDesktop && (
-        <aside
-          className="relative flex flex-col lg:h-[58vh] lg:min-h-[600px] lg:max-h-[860px] lg:px-8 lg:pt-28 lg:pb-8 overflow-hidden"
-          style={{ background: 'linear-gradient(175deg, #1a0f27 0%, #241338 52%, #2c1a30 100%)' }}
-        >
-          <div
-            className="pointer-events-none absolute inset-x-0 bottom-0 h-[520px]"
-            style={{
-              background:
-                'radial-gradient(150% 110% at 50% 100%, rgba(199,161,90,0.72) 0%, rgba(165,129,61,0.40) 22%, rgba(62,34,89,0.18) 48%, transparent 76%)',
-            }}
-          />
-          <div
-            className="pointer-events-none absolute inset-x-0 bottom-0 h-[320px]"
-            style={{
-              background:
-                'radial-gradient(92% 68% at 50% 106%, rgba(244,228,198,0.52) 0%, rgba(228,206,158,0.22) 34%, transparent 64%)',
-            }}
-          />
-          <div className="relative z-10 flex flex-col flex-1 min-h-0">
-            <div className="flex items-baseline justify-between mb-4 shrink-0">
-              <div>
-                <p className="text-[11px] font-bold uppercase tracking-[0.24em] text-koala-gold mb-1">Featured</p>
-                <h2 className="text-white text-lg font-bold tracking-tight">지금 주목받는 작품</h2>
-              </div>
-              <Link to="/store" className="text-xs font-bold text-white/50 hover:text-white transition-colors whitespace-nowrap">
-                더보기 +
-              </Link>
-            </div>
-
-            {railItems.length === 0 ? (
-              <div className="flex flex-col gap-2.5">
-                {Array.from({ length: 3 }).map((_, i) => (
-                  <div key={i} className="flex items-center gap-3 rounded-xl bg-white/10 p-2.5 animate-pulse">
-                    <div className="w-16 h-16 rounded-lg bg-white/15 shrink-0" />
-                    <div className="flex-1 space-y-2">
-                      <div className="h-2.5 w-1/3 rounded bg-white/15" />
-                      <div className="h-3 w-2/3 rounded bg-white/15" />
-                      <div className="h-3 w-1/4 rounded bg-white/15" />
-                    </div>
-                  </div>
+          <div className="flex items-center gap-4 md:gap-6 shrink-0">
+            {total > 1 && (
+              <div className="flex items-center gap-2.5">
+                {banners.map((b, i) => (
+                  <button
+                    key={b.id}
+                    onClick={() => goToIndex(i)}
+                    aria-label={`배너 ${i + 1}`}
+                    aria-current={i === current ? 'true' : undefined}
+                    className={`rounded-full transition-all duration-300 ${
+                      i === current ? 'w-6 h-1.5 bg-koala-gold' : 'w-1.5 h-1.5 bg-white/40 hover:bg-white/75'
+                    }`}
+                  />
                 ))}
-              </div>
-            ) : railItems.length > 3 ? (
-              <div className="group relative h-[390px] my-auto overflow-hidden [mask-image:linear-gradient(to_bottom,transparent,#000_7%,#000_93%,transparent)] [-webkit-mask-image:linear-gradient(to_bottom,transparent,#000_7%,#000_93%,transparent)]">
-                <div
-                  className="koala-marquee flex flex-col will-change-transform group-hover:[animation-play-state:paused]"
-                  style={{
-                    animationName: 'koala-marquee-y',
-                    animationDuration: `${railItems.length * 3.2}s`,
-                    animationTimingFunction: 'linear',
-                    animationIterationCount: 'infinite',
-                  }}
-                >
-                  {[...railItems, ...railItems].map((s, i) => renderRailCard(s, `${s.skuCode}-${i}`))}
-                </div>
-              </div>
-            ) : (
-              <div className="flex flex-col">
-                {railItems.map((s, i) => renderRailCard(s, `${s.skuCode}-${i}`))}
+                <span className="ml-1 text-xs font-bold text-white/55 tabular-nums">
+                  {two(current + 1)} / {two(total)}
+                </span>
               </div>
             )}
+            <div className="flex gap-2.5">
+              <Link
+                to={banner?.linkUrl ?? '/store'}
+                className="group inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white text-black text-[13px] font-bold hover:bg-white/90 transition-colors whitespace-nowrap"
+              >
+                {t('home.hero.shopNow')}
+                <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+              </Link>
+              <Link
+                to="/artist-lab"
+                className="inline-flex items-center px-5 py-2.5 rounded-full border border-white/40 text-white text-[13px] font-bold hover:bg-white/10 hover:border-white/70 transition-colors whitespace-nowrap"
+              >
+                {t('home.hero.learnMore', { defaultValue: '작가 둘러보기' })}
+              </Link>
+            </div>
           </div>
-        </aside>
+        </div>
+
+      {/* 하단 정보 바 — 주목받는 작품 한 점과 주요 이동 */}
+        <div className="grid grid-cols-2 md:grid-cols-[1.55fr_.9fr_.9fr] backdrop-blur-md">
+        {pick ? (
+          <Link
+            to={`/product/${pick.skuCode}`}
+            className="col-span-2 md:col-span-1 px-5 md:px-7 py-3.5 md:py-5 bg-[#0D0912]/62 border-r border-white/12 hover:bg-[#0D0912]/80 transition-colors"
+          >
+            <p className="text-[10px] font-bold tracking-[0.24em] text-koala-gold mb-2">
+              FEATURED · 지금 주목받는 작품
+            </p>
+            <div className="flex items-center gap-3.5">
+              <img
+                src={toThumbUrl(pick.primaryImageUrl) ?? '/placeholder.svg'}
+                onError={(e) => {
+                  const img = e.currentTarget;
+                  const full = toCdnUrl(pick.primaryImageUrl);
+                  if (full && img.src !== full) img.src = full;
+                }}
+                alt=""
+                className="w-11 h-11 md:w-[52px] md:h-[52px] object-cover bg-white/10 shrink-0"
+              />
+              <div className="min-w-0">
+                <p className="text-[11px] text-white/60 truncate">{pick.artistName}</p>
+                <p className="text-sm md:text-[15px] font-bold text-white truncate">
+                  {pick.model ?? pick.name}
+                </p>
+              </div>
+              <p className="ml-auto text-sm md:text-[15px] font-black text-koala-gold whitespace-nowrap">
+                ₩{pickPrice}
+              </p>
+            </div>
+          </Link>
+        ) : (
+          <div className="col-span-2 md:col-span-1 bg-[#0D0912]/62 border-r border-white/12" />
         )}
+
+        <Link
+          to="/store"
+          className="flex items-center justify-between px-5 md:px-7 py-4 md:py-5 bg-[#0D0912]/62 border-r border-white/12 text-white hover:bg-[#0D0912]/80 transition-colors"
+        >
+          <span className="text-[13px] md:text-[15px] font-bold">{t('header.menus.store')}</span>
+          <ArrowRight className="w-4 h-4 md:w-[18px] md:h-[18px]" />
+        </Link>
+
+        <Link
+          to="/artist-lab"
+          className="flex items-center justify-between px-5 md:px-7 py-4 md:py-5 text-white bg-gradient-to-r from-koala-purple via-koala-purple-hover to-koala-gold hover:brightness-110 transition-[filter]"
+        >
+          <span className="text-[13px] md:text-[15px] font-bold">{t('header.menus.lab')}</span>
+          <ArrowRight className="w-4 h-4 md:w-[18px] md:h-[18px]" />
+        </Link>
+        </div>
       </div>
     </section>
   );
