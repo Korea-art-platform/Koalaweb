@@ -43,6 +43,7 @@ export default function ProductDetail() {
 
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [cartLoading, setCartLoading] = useState(false);
+  const [buying, setBuying] = useState(false);
   const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
@@ -98,6 +99,24 @@ export default function ProductDetail() {
       showToastMessage(msg || t('product.detail.toast.cartAddFailed'));
     } finally {
       setCartLoading(false);
+    }
+  };
+
+  // 장바구니에 담고 곧바로 주문서로 보낸다. 결제 로직을 따로 두지 않는다 —
+  // 두 벌이 되면 한쪽만 고쳐지는 일이 생긴다.
+  const handleBuyNow = async () => {
+    if (!sku || buying) return;
+    if (!isAuthenticated) { navigate('/login', { state: { from: `/product/${sku.skuCode}` } }); return; }
+    setBuying(true);
+    try {
+      await addCartItem(sku.skuCode, 1);
+      notifyCartUpdated();
+      navigate('/checkout');
+    } catch (e: unknown) {
+      const msg = (e as { response?: { data?: { message?: string } } })?.response?.data?.message;
+      showToastMessage(msg || t('product.detail.toast.cartAddFailed'));
+    } finally {
+      setBuying(false);
     }
   };
 
@@ -233,8 +252,10 @@ export default function ProductDetail() {
               <ProductActions
                 sku={sku}
                 cartLoading={cartLoading}
+                buying={buying}
                 isWishlisted={isWishlisted}
                 onAddToCart={handleAddToCart}
+                onBuyNow={handleBuyNow}
                 onWishlist={handleWishlist}
               />
             </div>

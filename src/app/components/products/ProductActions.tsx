@@ -4,17 +4,22 @@ import WishBookmark from '@/app/components/common/WishBookmark';
 interface Props {
   sku: any;
   cartLoading: boolean;
+  buying?: boolean;
   isWishlisted: boolean;
   onAddToCart: () => void;
+  onBuyNow?: () => void;
   onWishlist: () => void;
 }
 
-export function ProductActions({ sku, cartLoading, isWishlisted, onAddToCart, onWishlist }: Props) {
+export function ProductActions({
+  sku, cartLoading, buying = false, isWishlisted, onAddToCart, onBuyNow, onWishlist,
+}: Props) {
   const { t } = useTranslation();
   const isOutOfStock = sku.status === 'OUT_OF_STOCK';
 
   return (
-    <div className="flex gap-2.5 mt-6">
+    <div className="mt-6">
+    <div className="flex gap-2.5">
       <button
         onClick={onAddToCart}
         disabled={cartLoading || isOutOfStock}
@@ -37,6 +42,18 @@ export function ProductActions({ sku, cartLoading, isWishlisted, onAddToCart, on
       >
         <WishBookmark active={isWishlisted} size={22} />
       </button>
+    </div>
+
+    {onBuyNow && (
+      <button
+        onClick={onBuyNow}
+        disabled={buying || isOutOfStock}
+        className="mt-2.5 w-full py-4 rounded-xl bg-koala-gold text-koala-purple text-base font-bold hover:bg-koala-gold-deep hover:text-white transition-colors active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        {isOutOfStock ? t('product.detail.actions.outOfStock')
+          : buying ? '주문서로 이동 중...' : '구매하기'}
+      </button>
+    )}
     </div>
   );
 }
