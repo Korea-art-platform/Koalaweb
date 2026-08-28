@@ -49,6 +49,7 @@ export default function ProductCard({
   const [isOpen, setIsOpen] = useState(false);
   const [adding, setAdding] = useState(false);
   const [added, setAdded] = useState(false);
+  const [buying, setBuying] = useState(false);
   const [detail, setDetail] = useState<Sku | null>(null);
 
   const [imgIndex, setImgIndex] = useState(0);
@@ -122,6 +123,29 @@ export default function ProductCard({
       }
     } finally {
       setAdding(false);
+    }
+  };
+
+  // 장바구니에 담고 곧바로 주문서로 보낸다. 결제 방식은 장바구니 경로와 같으므로
+  // 결제 로직을 따로 두지 않는다 — 두 벌이 되면 한쪽만 고쳐지는 일이 생긴다.
+  const handleBuyNow = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (buying) return;
+    setBuying(true);
+    try {
+      await addCartItem(sku.skuCode, 1);
+      notifyCartUpdated();
+      navigate('/checkout');
+    } catch (err) {
+      const status = (err as { response?: { status?: number } })?.response?.status;
+      if (status === 401 || status === 403) {
+        navigate('/login', { state: { from: detailPath } });
+      } else {
+        alert(t('product.detail.toast.cartAddFailed', { defaultValue: '장바구니 담기에 실패했습니다.' }) as string);
+      }
+    } finally {
+      setBuying(false);
     }
   };
 
@@ -367,6 +391,16 @@ export default function ProductCard({
                       자세히 보기 <ArrowRight className="w-4 h-4" />
                     </Link>
                   </div>
+
+                  <button
+                    onClick={handleBuyNow}
+                    disabled={buying || sku.status === 'OUT_OF_STOCK'}
+                    className="mt-2.5 w-full py-4 rounded-xl bg-koala-gold text-koala-purple text-base font-bold hover:bg-koala-gold-deep hover:text-white transition-colors active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {sku.status === 'OUT_OF_STOCK'
+                      ? '품절'
+                      : buying ? '주문서로 이동 중...' : '구매하기'}
+                  </button>
                 </motion.div>
               </div>
             </motion.div>
