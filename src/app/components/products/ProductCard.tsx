@@ -395,7 +395,7 @@ export default function ProductCard({
                   <button
                     onClick={handleBuyNow}
                     disabled={buying || sku.status === 'OUT_OF_STOCK'}
-                    className="mt-2.5 w-full py-4 rounded-xl bg-koala-gold text-koala-purple text-base font-bold hover:bg-koala-gold-deep hover:text-white transition-colors active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="mt-2.5 w-full py-4 rounded-xl bg-gradient-to-r from-koala-purple via-koala-purple-hover to-koala-gold text-white hover:brightness-110 text-base font-bold transition-[filter,transform] active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {sku.status === 'OUT_OF_STOCK'
                       ? '품절'
