@@ -45,8 +45,7 @@
       "artGallery": "3D 갤러리",
       "lab": "작가의 연구소",
       "store": "스마트 스토어",
-      "stores": "입점 매장",
-      "about": "KOALA 소개"
+      "stores": "입점 매장"
     },
     "subMenus": {
       "notice": "공지사항",
@@ -68,7 +67,8 @@
         "gallery": "작품 갤러리",
         "artistLab": "작가의 연구소",
         "store": "스마트 스토어",
-        "stores": "입점 매장"
+        "stores": "입점 매장",
+        "about": "KOALA 소개"
       }
     },
     "support": {

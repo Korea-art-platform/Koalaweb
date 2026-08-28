@@ -57,7 +57,8 @@ export default function Footer() {
                 {[
                   { key: 'artistLab', path: '/artist-lab' },
                   { key: 'store', path: '/store' },
-                  { key: 'stores', path: '/stores' }
+                  { key: 'stores', path: '/stores' },
+                  { key: 'about', path: '/about' }
                 ].map((link) => (
                   <li key={link.key}>
                     <Link to={link.path} className="text-sm text-gray-500 hover:text-white transition-colors">
