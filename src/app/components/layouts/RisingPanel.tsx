@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useLocation } from 'react-router';
 
 interface Props {
   children: React.ReactNode;
@@ -75,4 +76,47 @@ export function useCoveredByPanel(ref: React.RefObject<HTMLElement | null>) {
   }, [ref]);
 
   return covered;
+}
+
+/**
+ * 히어로 구간을 지났는지 알려준다.
+ *
+ * 히어로 위에 떠 있는 것(퀵메뉴 같은 것)을 숨기는 데 쓴다. 히어로는 첫 화면의
+ * 인상을 만드는 자리라 그 위에 떠다니는 버튼이 없는 편이 낫다.
+ *
+ * 덮개가 없는 화면에는 가릴 히어로도 없으니 늘 참을 돌려준다. 스토어처럼
+ * 제목 줄만 있는 화면에서까지 버튼이 사라지면 그건 그냥 고장으로 보인다.
+ *
+ * 기준점 72px 은 헤더 높이다. 헤더가 불투명해지는 순간과 같이 맞춰야
+ * 두 가지가 따로 노는 것처럼 보이지 않는다.
+ */
+export function usePastHero() {
+  const { pathname } = useLocation();
+  const [past, setPast] = useState(true);
+
+  useEffect(() => {
+    let frame = 0;
+
+    const measure = () => {
+      frame = 0;
+      const cover = document.querySelector('[data-hero-cover]');
+      if (!cover) { setPast(true); return; }
+      setPast(cover.getBoundingClientRect().top <= 72);
+    };
+
+    const schedule = () => { if (!frame) frame = requestAnimationFrame(measure); };
+
+    // 화면을 옮기면 스크롤이 맨 위로 돌아가므로 여기서 한 번 다시 잰다.
+    // 이게 없으면 홈에서 숨긴 상태가 다음 화면까지 따라간다.
+    measure();
+    window.addEventListener('scroll', schedule, { passive: true });
+    window.addEventListener('resize', schedule, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', schedule);
+      window.removeEventListener('resize', schedule);
+      if (frame) cancelAnimationFrame(frame);
+    };
+  }, [pathname]);
+
+  return past;
 }

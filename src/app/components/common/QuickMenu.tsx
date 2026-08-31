@@ -2,10 +2,20 @@ import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router';
 import { AnimatePresence, motion } from 'framer-motion';
 import { MessageCircle, Phone, X } from 'lucide-react';
+import { usePastHero } from '@/app/components/layouts/RisingPanel';
 
 export default function QuickMenu() {
   const [open, setOpen] = useState(false);
   const wrapRef = useRef<HTMLDivElement>(null);
+
+  // 히어로 위에는 띄우지 않는다. 첫 화면의 인상을 만드는 자리라
+  // 그 위에 떠다니는 버튼이 없는 편이 낫다.
+  const past = usePastHero();
+
+  // 펼친 채로 히어로로 되돌아가면 메뉴만 남아 떠 있다. 접어 둔다.
+  useEffect(() => {
+    if (!past) setOpen(false);
+  }, [past]);
 
   useEffect(() => {
     if (!open) return;
@@ -30,7 +40,14 @@ export default function QuickMenu() {
   const iconClass = 'w-7 h-7 rounded-full bg-koala-navy/5 text-koala-purple flex items-center justify-center';
 
   return (
-    <div ref={wrapRef} className="fixed z-40 bottom-6 right-6 flex flex-col items-end gap-2">
+    <div
+      ref={wrapRef}
+      aria-hidden={!past}
+      className={`fixed z-40 bottom-6 right-6 flex flex-col items-end gap-2
+        transition-[opacity,transform] duration-300 motion-reduce:transition-none ${
+        past ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-3 pointer-events-none'
+      }`}
+    >
       <AnimatePresence>
         {open && (
           <motion.div
@@ -55,6 +72,7 @@ export default function QuickMenu() {
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
+        tabIndex={past ? 0 : -1}
         aria-expanded={open}
         aria-label={open ? '고객지원 닫기' : '고객지원 열기'}
         className="w-12 h-12 rounded-full bg-white border border-gray-200
