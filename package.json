@@ -42,17 +42,15 @@
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "@types/react-gtm-module": "^2.0.4",
-    "@vheemstra/vite-plugin-imagemin": "^2.2.1",
     "@vitejs/plugin-react": "4.7.0",
-    "imagemin-mozjpeg": "^10.0.0",
-    "imagemin-pngquant": "^10.0.0",
-    "imagemin-svgo": "^12.0.0",
-    "imagemin-webp": "^8.0.0",
     "jsdom": "^29.1.1",
+    "sharp": "^0.35.4",
+    "svgo": "^4.1.0",
     "tailwindcss": "4.1.12",
-    "vite": "6.3.5",
+    "vite": "6.4.3",
+    "vite-plugin-image-optimizer": "^2.0.3",
     "vite-tsconfig-paths": "^6.1.1",
-    "vitest": "^2.1.9"
+    "vitest": "^4.1.11"
   },
   "peerDependencies": {
     "react": "18.3.1",
@@ -68,7 +66,7 @@
   },
   "pnpm": {
     "overrides": {
-      "vite": "6.3.5"
+      "vite": "6.4.3"
     }
   }
 }
