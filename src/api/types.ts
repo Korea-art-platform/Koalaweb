@@ -184,6 +184,12 @@ export interface Artist {
 
 export interface CreateOrderRequest {
   cartItemIds?: number[];
+
+  /**
+   * 장바구니를 거치지 않고 한 건만 살 때. 이게 있으면 cartItemIds 는 무시된다.
+   * 상품 화면의 "구매하기"가 쓴다.
+   */
+  directItem?: { skuCode: string; quantity?: number };
   shippingAddressId?: number;
   [key: string]: unknown;
 }

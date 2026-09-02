@@ -1,13 +1,15 @@
 import { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router';
+import { useNavigate, useLocation } from 'react-router';
 import { ArrowLeft, MapPin, CreditCard, Package, Check, ChevronRight, Search } from 'lucide-react';
 import { createOrder } from '@/api/order';
 import { getCart } from '@/api/cart';
+import { getSku } from '@/api/sku';
+import { displayPrice } from '@/app/lib/price';
 import { preparePayment } from '@/api/payment';
 import { getMyProfile, getMyAddresses } from '@/api/user';
 import { startPayment, isUserCancel, PAY_METHODS, PG_PROVIDER_CODE, type PayMethod } from '@/app/lib/pg';
 import { payMethodIcon } from '@/app/components/common/PayMethodIcons';
-import type { Cart, UserAddress } from '@/api/types';
+import type { Cart, Sku, UserAddress } from '@/api/types';
 import { calcShipping } from '@/app/lib/shipping';
 
 function iconFor(id: PayMethod) {
@@ -16,10 +18,20 @@ function iconFor(id: PayMethod) {
 
 const paymentMethods = PAY_METHODS;
 
+/** 상품 화면에서 "구매하기"로 넘어올 때 실어 보내는 값 */
+interface BuyNowState {
+  skuCode: string;
+  quantity?: number;
+}
+
 export default function Checkout() {
   const navigate = useNavigate();
+  // 장바구니를 거치지 않고 이 상품 하나만 사는 경우다. 담아 둔 다른 물건까지
+  // 같이 결제되던 것을 막는다.
+  const buyNow = (useLocation().state as { buyNow?: BuyNowState } | null)?.buyNow ?? null;
 
   const [cart, setCart] = useState<Cart | null>(null);
+  const [directSku, setDirectSku] = useState<Sku | null>(null);
   const [loading, setLoading] = useState(true);
   const [selectedMethod, setSelectedMethod] = useState<PayMethod | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -89,8 +101,15 @@ export default function Checkout() {
           }));
         }
 
-        const cartRes = await getCart();
-        setCart(cartRes?.data?.data);
+        // 바로구매면 장바구니를 부르지 않는다. 담아 둔 것을 보여 주면
+        // 무엇이 결제되는지 헷갈린다.
+        if (buyNow) {
+          const skuRes = await getSku(buyNow.skuCode);
+          setDirectSku(skuRes?.data?.data ?? null);
+        } else {
+          const cartRes = await getCart();
+          setCart(cartRes?.data?.data);
+        }
       } catch (e) {
         console.error('데이터 로딩 실패:', e);
       } finally {
@@ -100,8 +119,23 @@ export default function Checkout() {
     fetchData();
   }, []);
 
-  const cartItems = cart?.items ?? [];
-  const subtotal = cart?.subtotalAmount ?? 0;
+  // 화면에 보여 줄 줄과 금액. 바로구매면 그 상품 한 줄뿐이다.
+  const cartItems = buyNow
+    ? (directSku
+        ? [{
+            id: -1,
+            skuCode: directSku.skuCode,
+            skuName: directSku.name,
+            primaryImageUrl: directSku.primaryImageUrl,
+            quantity: buyNow.quantity ?? 1,
+            unitPrice: displayPrice(directSku) ?? 0,
+            lineAmount: (displayPrice(directSku) ?? 0) * (buyNow.quantity ?? 1),
+          }]
+        : [])
+    : (cart?.items ?? []);
+  const subtotal = buyNow
+    ? cartItems.reduce((sum, i) => sum + (i.lineAmount ?? 0), 0)
+    : (cart?.subtotalAmount ?? 0);
   const shipping = calcShipping(subtotal, cartItems.length);
   const total = subtotal + shipping;
 
@@ -181,7 +215,9 @@ export default function Checkout() {
           address2: form.address2,
           deliveryRequest: form.deliveryRequest,
         },
-        cartItemIds: cartItems.map((item) => item.id),
+        ...(buyNow
+          ? { directItem: { skuCode: buyNow.skuCode, quantity: buyNow.quantity ?? 1 } }
+          : { cartItemIds: cartItems.map((item) => item.id) }),
       });
       const order = orderRes.data.data;
 

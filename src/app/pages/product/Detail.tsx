@@ -102,16 +102,14 @@ export default function ProductDetail() {
     }
   };
 
-  // 장바구니에 담고 곧바로 주문서로 보낸다. 결제 로직을 따로 두지 않는다 —
-  // 두 벌이 되면 한쪽만 고쳐지는 일이 생긴다.
+  // 이 상품 하나만 결제한다. 예전에는 장바구니에 담고 주문서로 보냈는데,
+  // 주문서가 담아 둔 것을 전부 결제해 엉뚱한 물건까지 함께 사졌다.
   const handleBuyNow = async () => {
     if (!sku || buying) return;
     if (!isAuthenticated) { navigate('/login', { state: { from: `/product/${sku.skuCode}` } }); return; }
     setBuying(true);
     try {
-      await addCartItem(sku.skuCode, 1);
-      notifyCartUpdated();
-      navigate('/checkout');
+      navigate('/checkout', { state: { buyNow: { skuCode: sku.skuCode, quantity: 1 } } });
     } catch (e: unknown) {
       const msg = (e as { response?: { data?: { message?: string } } })?.response?.data?.message;
       showToastMessage(msg || t('product.detail.toast.cartAddFailed'));

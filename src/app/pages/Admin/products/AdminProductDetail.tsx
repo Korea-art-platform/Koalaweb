@@ -17,6 +17,7 @@ import adminInstance from '@/api/adminInstance';
 import { getCategories, type CategoryGroups } from '@/api/category';
 import { downscaleImage } from '@/utils/downscaleImage';
 
+import PriceHint from '@/app/components/admin/PriceHint';
 const inputCls = 'w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black/10';
 
 const SKU_STATUS_COLOR: Record<string, string> = {
@@ -372,16 +373,25 @@ function InfoTab({ sku, onSaved }: { sku: any; onSaved: () => void }) {
         </div>
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className="block text-xs text-gray-500 mb-1.5">정가 (원) *</label>
+            <label className="block text-xs text-gray-500 mb-1.5">정가 (원, 부가세 별도) *</label>
             <input type="number" value={form.listPrice} onChange={(e) => setF({ listPrice: e.target.value })}
               className={inputCls} min="0" />
           </div>
           <div>
-            <label className="block text-xs text-gray-500 mb-1.5">할인가 (원) *</label>
+            <label className="block text-xs text-gray-500 mb-1.5">할인가 (원, 부가세 별도) *</label>
             <input type="number" value={form.salePrice} onChange={(e) => setF({ salePrice: e.target.value })}
               className={inputCls} min="0" placeholder="할인가 없으면 비워두기" />
           </div>
         </div>
+
+        {/* 여기 넣는 값은 부가세를 뺀 금액이고, 고객에게는 10% 붙은 금액이 보인다.
+            그 차이를 모르고 33만원을 넣으면 36만 3천원으로 팔린다. 입력한 그대로
+            얼마로 보이는지 옆에 적어 둔다. */}
+        <PriceHint
+          listPrice={form.listPrice}
+          salePrice={form.salePrice}
+          taxExempt={categories.main.find((c) => c.code === form.mainCategory)?.taxExempt}
+        />
         <div>
           <label className="block text-xs text-gray-500 mb-1.5">작품 설명</label>
           <textarea value={form.description} onChange={(e) => setF({ description: e.target.value })}

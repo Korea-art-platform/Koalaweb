@@ -127,17 +127,16 @@ export default function ProductCard({
     }
   };
 
-  // 장바구니에 담고 곧바로 주문서로 보낸다. 결제 방식은 장바구니 경로와 같으므로
-  // 결제 로직을 따로 두지 않는다 — 두 벌이 되면 한쪽만 고쳐지는 일이 생긴다.
+  // 이 상품 하나만 결제한다. 예전에는 장바구니에 담고 주문서로 보냈는데,
+  // 주문서가 담아 둔 것을 전부 결제해 엉뚱한 물건까지 함께 사졌다.
+  // 결제 방식은 장바구니 경로와 같은 화면을 그대로 쓴다.
   const handleBuyNow = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     if (buying) return;
     setBuying(true);
     try {
-      await addCartItem(sku.skuCode, 1);
-      notifyCartUpdated();
-      navigate('/checkout');
+      navigate('/checkout', { state: { buyNow: { skuCode: sku.skuCode, quantity: 1 } } });
     } catch (err) {
       const status = (err as { response?: { status?: number } })?.response?.status;
       if (status === 401 || status === 403) {
