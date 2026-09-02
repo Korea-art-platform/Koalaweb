@@ -148,6 +148,9 @@ export interface CartItem {
 export interface Cart {
   items: CartItem[];
   subtotalAmount: number;
+  /** 그중 부가세. 면세만 담기면 0 이다. */
+  taxAmount?: number;
+  supplyAmount?: number;
 }
 
 export interface ArtistMedia {

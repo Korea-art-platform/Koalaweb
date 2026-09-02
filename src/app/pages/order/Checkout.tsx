@@ -150,6 +150,12 @@ export default function Checkout() {
   const subtotal = buyNow
     ? cartItems.reduce((sum, i) => sum + (i.lineAmount ?? 0), 0)
     : (cart?.subtotalAmount ?? 0);
+
+  // 면세 상품만 담겼으면 "부가세 포함"이라고 적으면 안 된다. 포함할 세액이
+  // 없는데 있는 것처럼 읽힌다. 원작이 여기 해당한다.
+  const allTaxExempt = buyNow
+    ? Boolean(directSku?.taxExempt)
+    : (cart?.taxAmount != null && cart.taxAmount === 0 && cartItems.length > 0);
   const shipping = calcShipping(subtotal, cartItems.length);
   const total = subtotal + shipping;
 
@@ -217,6 +223,12 @@ export default function Checkout() {
 
     setIsProcessing(true);
     try {
+      // 결제를 마치고 돌아왔을 때 비회원은 주문 조회에 전화번호가 필요하다.
+      // 그 사이에만 들고 있다가 결제 화면에서 지운다.
+      if (isGuest) {
+        sessionStorage.setItem('guestOrderPhone', form.ordererPhone);
+      }
+
       const send = isGuest ? createGuestOrder : createOrder;
       const orderRes = await send({
         ordererName: form.ordererName,
@@ -498,7 +510,7 @@ export default function Checkout() {
                       </span>
                     </div>
                     <p className="text-[11px] text-gray-400 text-right">
-                      * 부가세 포함
+                      {allTaxExempt ? '* 면세 상품 (부가세 없음)' : '* 부가세 포함'}
                     </p>
                   </div>
                 </div>

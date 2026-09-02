@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useSearchParams, useNavigate } from 'react-router';
 import { confirmPayment } from '@/api/payment';
-import { getOrder } from '@/api/order';
+import { getOrder, lookupGuestOrder } from '@/api/order';
 import { PG_DISPLAY_NAME } from '@/app/lib/pg';
 import { notifyCartUpdated } from '@/app/hooks/useCart';
 
@@ -27,11 +27,19 @@ export default function PaymentSuccess() {
     const goToCompletion = async (no: string) => {
       notifyCartUpdated();
 
+      // 비회원은 /api/v1/orders/{orderNo} 를 못 부른다(회원 전용). 주문할 때
+      // 적은 전화번호를 잠깐 들고 있다가 비회원 조회로 같은 내용을 가져온다.
+      const guestPhone = sessionStorage.getItem('guestOrderPhone');
       let orderDetail: any = null;
       try {
-        const orderRes = await getOrder(no);
+        const orderRes = guestPhone
+          ? await lookupGuestOrder(no, guestPhone)
+          : await getOrder(no);
         orderDetail = orderRes.data.data;
       } catch {
+      } finally {
+        // 결제가 끝났으면 더 들고 있을 이유가 없다.
+        sessionStorage.removeItem('guestOrderPhone');
       }
 
       setStatus('success');
