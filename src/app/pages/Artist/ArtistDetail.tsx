@@ -15,6 +15,7 @@ import {
 import type { WorkItem } from '@/app/components/ArtistDetail';
 import { ArtQnA } from '@/app/components/ArtDetail';
 
+import { displayPrice } from '@/app/lib/price';
 export default function ArtistDetail() {
   const { id } = useParams();
   const { loading, artist, interviewVideo, interviewImage, studioImages, handsImages, isFollowing } = useArtistDetail(id);
@@ -27,7 +28,7 @@ export default function ArtistDetail() {
     id: sku.skuCode,
     title: sku.name,
     imageUrl: sku.primaryImageUrl ?? '/placeholder.svg',
-    price: sku.salePrice ?? sku.listPrice,
+    price: displayPrice(sku) ?? 0,
   }));
 
   const artistDescription = artist.description

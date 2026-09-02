@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import type { Banner, Sku } from '@/api/types';
 import BannerMedia from '@/app/components/common/BannerMedia';
 import { useCoveredByPanel } from '@/app/components/layouts/RisingPanel';
+import { displayPrice, formatWon } from '@/app/lib/price';
 import { toCdnUrl, toThumbUrl } from '@/app/lib/imageUrl';
 
 interface HomeHeroProps {
@@ -84,7 +85,7 @@ export default function HomeHero({ banners, featured = [] }: HomeHeroProps) {
 
   const banner = banners[current] ?? null;
   const pick = featured[0] ?? null;
-  const pickPrice = pick ? (pick.salePrice ?? pick.listPrice)?.toLocaleString() : null;
+  const pickPrice = pick ? formatWon(displayPrice(pick)) : null;
   const two = (n: number) => String(n).padStart(2, '0');
 
   return (

@@ -3,6 +3,7 @@ import { ArrowLeft } from 'lucide-react';
 import { useArtistDetail } from '@/app/hooks/useArtistDetail';
 import { useArtistSkus } from '@/app/hooks/useArtistSkus';
 import { ArtistDetailSkeleton, ArtistNotFound } from '@/app/components/Artist';
+import { displayPrice, formatWon } from '@/app/lib/price';
 import { ImageWithFallback } from '@/app/components/fallback/ImageWithFallback';
 
 export default function ArtistWorks() {
@@ -72,7 +73,7 @@ export default function ArtistWorks() {
                   {sku.name}
                 </p>
                 <p className="text-sm font-bold mt-1">
-                  ₩{(sku.salePrice ?? sku.listPrice).toLocaleString()}
+                  ₩{formatWon(displayPrice(sku))}
                 </p>
               </Link>
             ))}

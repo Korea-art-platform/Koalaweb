@@ -10,6 +10,9 @@ export interface Category {
   sortOrder: number;
   isActive: boolean;
 
+  /** 면세 분류 — 참이면 부가세를 붙이지 않는다(원작) */
+  taxExempt?: boolean;
+
   usedCount?: number;
 }
 

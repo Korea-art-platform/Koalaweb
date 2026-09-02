@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo, useRef, useId } from 'react';
+import { displayPrice, formatWon } from '@/app/lib/price';
 import { useThumbSrc } from '@/app/hooks/useThumbSrc';
 import { ShoppingCart, Check, ArrowRight, X, ChevronLeft, ChevronRight } from 'lucide-react';
 import WishBookmark from '@/app/components/common/WishBookmark';
@@ -43,7 +44,7 @@ export default function ProductCard({
   const instanceId = useId();
   const layoutId = `product-card-${sku.skuCode}-${instanceId}`;
   const { src: imageUrl, onError: onImageError } = useThumbSrc(sku.primaryImageUrl);
-  const price = (sku.salePrice ?? sku.listPrice).toLocaleString();
+  const price = formatWon(displayPrice(sku));
   const categoryLabel = t(`store.categories.${sku.genre}`, { defaultValue: sku.genre }) as string;
 
   const [isOpen, setIsOpen] = useState(false);

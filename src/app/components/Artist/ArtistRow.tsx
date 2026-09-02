@@ -2,11 +2,9 @@ import { Link } from 'react-router';
 import { ArrowRight } from 'lucide-react';
 import WindowFrame from '@/app/components/common/WindowFrame';
 import { useTranslation } from 'react-i18next';
+import { displayPrice, displayListPrice, hasDiscount, formatWon } from '@/app/lib/price';
 import { ImageWithFallback } from '@/app/components/fallback/ImageWithFallback';
 import VideoPlayer from '@/app/components/common/VideoPlayer';
-
-const fmt = (n: number) => n.toLocaleString('ko-KR');
-
 interface ArtistRowProps {
   artist: any;
   index: number;
@@ -114,13 +112,13 @@ export default function ArtistRow({ artist, index }: ArtistRowProps) {
                   <p className="text-xs text-gray-400 uppercase tracking-widest mb-1 transition-colors duration-300 group-hover:text-koala-purple/70">대표 작품</p>
                   <p className="text-base font-semibold text-gray-900 truncate transition-colors duration-300 group-hover:text-koala-purple">{artist.featuredSku.name}</p>
                   <div className="flex items-center gap-2 mt-1.5">
-                    {artist.featuredSku.salePrice ? (
+                    {hasDiscount(artist.featuredSku) ? (
                       <>
-                        <span className="text-base font-bold text-koala-red transition-colors duration-300 group-hover:text-koala-purple">₩{fmt(artist.featuredSku.salePrice)}</span>
-                        <span className="text-sm text-gray-400 line-through">₩{fmt(artist.featuredSku.listPrice)}</span>
+                        <span className="text-base font-bold text-koala-red transition-colors duration-300 group-hover:text-koala-purple">₩{formatWon(displayPrice(artist.featuredSku))}</span>
+                        <span className="text-sm text-gray-400 line-through">₩{formatWon(displayListPrice(artist.featuredSku))}</span>
                       </>
                     ) : (
-                      <span className="text-base font-bold text-gray-900 transition-colors duration-300 group-hover:text-koala-purple">₩{fmt(artist.featuredSku.listPrice)}</span>
+                      <span className="text-base font-bold text-gray-900 transition-colors duration-300 group-hover:text-koala-purple">₩{formatWon(displayPrice(artist.featuredSku))}</span>
                     )}
                   </div>
                 </div>

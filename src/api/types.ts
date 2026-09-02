@@ -88,8 +88,21 @@ export interface Sku {
   skuType?: string;
   artistName: string;
   artistCode?: string;
+
+  /**
+   * listPrice·salePrice 는 부가세를 뺀 공급가액이다. 어드민이 고치는 값이라
+   * 이대로 두고, 고객에게 보여 줄 때는 아래 displayPrice 를 쓴다.
+   */
   listPrice: number;
   salePrice?: number;
+
+  /** 화면에 보이고 실제로 결제되는 금액 — 공급가액 + 부가세 */
+  displayPrice?: number;
+  /** 정가에 부가세를 더한 금액. 할인 취소선에 쓴다. */
+  displayListPrice?: number;
+  /** 면세 상품인가 — 원작에는 부가세가 붙지 않는다 */
+  taxExempt?: boolean;
+
   status: SkuStatus;
   isLimitedEdition: boolean;
   editionNumber?: number;

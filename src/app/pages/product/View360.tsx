@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
+import { displayPrice, displayListPrice, hasDiscount, formatWon } from '@/app/lib/price';
 import { useParams, Link, useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { ArrowLeft, RotateCw, ZoomIn, ZoomOut, Maximize2, X, Info, ShoppingCart } from 'lucide-react';
@@ -325,12 +326,12 @@ export default function Product360View() {
               )}
               <div className="pt-3 border-t border-white/20">
                 <span className="text-white/60 text-xs">{t('view360.price')}</span>
-                <p className={`text-2xl mt-1 font-bold ${sku.salePrice && sku.salePrice < sku.listPrice ? 'text-koala-red' : ''}`}>
-                  ₩{(sku.salePrice ?? sku.listPrice).toLocaleString()}
+                <p className={`text-2xl mt-1 font-bold ${hasDiscount(sku) ? 'text-koala-red' : ''}`}>
+                  ₩{formatWon(displayPrice(sku))}
                 </p>
-                {sku.salePrice && sku.salePrice < sku.listPrice && (
+                {hasDiscount(sku) && (
                   <p className="text-sm text-white/40 line-through">
-                    ₩{sku.listPrice.toLocaleString()}
+                    ₩{formatWon(displayListPrice(sku))}
                   </p>
                 )}
               </div>
@@ -359,7 +360,7 @@ export default function Product360View() {
             <div>
               <span className="text-[10px] text-white/40 font-bold uppercase">Price</span>
               <p className="text-lg font-black text-white">
-                ₩{(sku.salePrice ?? sku.listPrice).toLocaleString()}
+                ₩{formatWon(displayPrice(sku))}
               </p>
             </div>
             <button

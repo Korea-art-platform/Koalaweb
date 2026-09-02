@@ -7,6 +7,7 @@ import { fetchAllSkus } from '@/api/fetchAllSkus';
 import { getArtists } from '@/api/artist';
 import { ImageWithFallback } from '@/app/components/fallback/ImageWithFallback';
 
+import { displayPrice, formatWon } from '@/app/lib/price';
 const trendingSearches = ['리미티드 에디션', '아트 토이', '조각', '회화', '도자기'];
 
 export default function Search() {
@@ -211,7 +212,7 @@ export default function Search() {
                             <div className="p-4">
                               <h3 className="text-sm mb-1 group-hover:underline truncate">{item.name}</h3>
                               <p className="text-xs text-gray-400 mb-2">{item.artistName}</p>
-                              <p className="text-sm">₩{(item.salePrice ?? item.listPrice ?? 0).toLocaleString()}</p>
+                              <p className="text-sm">₩{formatWon(displayPrice(item))}</p>
                             </div>
                           </div>
                         </Link>

@@ -122,6 +122,20 @@ export default function AdminCategoryList() {
     load();
   };
 
+  const handleToggleTaxExempt = async (c: Category) => {
+    const next = !c.taxExempt;
+    const 안내 = next
+      ? `"${c.name}" 분류의 상품에 부가세를 붙이지 않게 됩니다.
+`
+        + '판매 가격이 10% 내려가 보입니다. 계속할까요?'
+      : `"${c.name}" 분류의 상품에 부가세 10%가 붙습니다.
+`
+        + '판매 가격이 10% 올라가 보입니다. 계속할까요?';
+    if (!confirm(안내)) return;
+    await updateCategory(c.id, { taxExempt: next });
+    load();
+  };
+
   const listOf = (type: CategoryType) => (type === 'MAIN' ? groups.main : groups.sub);
 
   return (
@@ -253,6 +267,20 @@ export default function AdminCategoryList() {
                         <span className="text-xs text-gray-400 flex-shrink-0">
                           상품 {c.usedCount ?? 0}건
                         </span>
+                        {section.type === 'MAIN' && (
+                          <button
+                            onClick={() => handleToggleTaxExempt(c)}
+                            title={c.taxExempt
+                              ? '부가세를 붙이지 않는 분류입니다. 눌러서 과세로 바꿉니다.'
+                              : '부가세 10%가 붙는 분류입니다. 눌러서 면세로 바꿉니다.'}
+                            className={`px-3 py-1.5 text-xs rounded-lg font-medium flex-shrink-0 transition-colors
+                              ${c.taxExempt
+                                ? 'bg-koala-gold/15 text-koala-gold-deep hover:bg-koala-gold/25'
+                                : 'bg-gray-100 text-gray-500 hover:bg-gray-200'}`}
+                          >
+                            {c.taxExempt ? '면세' : '과세 10%'}
+                          </button>
+                        )}
                         <button
                           onClick={() => handleToggleActive(c)}
                           className={`px-3 py-1.5 text-xs rounded-lg transition-colors font-medium flex-shrink-0

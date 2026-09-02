@@ -1,6 +1,7 @@
 import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import OriginalBadge from '@/app/components/common/OriginalBadge';
+import { displayPrice, displayListPrice, hasDiscount } from '@/app/lib/price';
 import { useOriginalCategoryCode } from '@/app/hooks/useOriginalCategory';
 
 interface ColorOption {
@@ -30,8 +31,8 @@ export function ProductInfo({ sku, selectedColor, onColorSelect }: Props) {
   const originalCode = useOriginalCategoryCode();
   const isOriginal = Boolean(originalCode) && sku.mainCategory === originalCode;
 
-  const price = sku.salePrice ?? sku.listPrice;
-  const hasDiscount = sku.salePrice && sku.salePrice < sku.listPrice;
+  const price = displayPrice(sku);
+  const discounted = hasDiscount(sku);
 
   const formatPrice = (val?: number) =>
     val ? val.toLocaleString() : t('product.detail.info.priceOnRequest');
@@ -69,13 +70,13 @@ export function ProductInfo({ sku, selectedColor, onColorSelect }: Props) {
       </Link>
       <div className="mb-5">
         <div className="flex items-baseline gap-2 flex-wrap">
-          <span className={`text-2xl font-bold tracking-tight ${hasDiscount ? 'text-koala-red' : 'text-gray-900'}`}>
-            {formatPrice(price)}
+          <span className={`text-2xl font-bold tracking-tight ${discounted ? 'text-koala-red' : 'text-gray-900'}`}>
+            {formatPrice(price ?? undefined)}
           </span>
-          <span className={`text-sm font-semibold ${hasDiscount ? 'text-koala-red' : 'text-gray-500'}`}>KRW</span>
-          {hasDiscount && (
+          <span className={`text-sm font-semibold ${discounted ? 'text-koala-red' : 'text-gray-500'}`}>KRW</span>
+          {discounted && (
             <span className="text-sm text-gray-400 line-through">
-              {formatPrice(sku.listPrice)}
+              {formatPrice(displayListPrice(sku) ?? undefined)}
             </span>
           )}
         </div>

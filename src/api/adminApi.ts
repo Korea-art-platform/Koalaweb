@@ -100,6 +100,7 @@ export async function createCategory(body: {
   code?: string;
   name: string;
   sortOrder?: number;
+  taxExempt?: boolean;
 }) {
   const res = await adminInstance.post(`${BASE}/categories`, body);
   return res.data.data as Category;
@@ -107,7 +108,7 @@ export async function createCategory(body: {
 
 export async function updateCategory(
   id: number,
-  body: { name?: string; sortOrder?: number; isActive?: boolean }
+  body: { name?: string; sortOrder?: number; isActive?: boolean; taxExempt?: boolean }
 ) {
   const res = await adminInstance.patch(`${BASE}/categories/${id}`, body);
   return res.data.data as Category;

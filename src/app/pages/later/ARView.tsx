@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { displayPrice, formatWon } from '@/app/lib/price';
 import { useTranslation } from 'react-i18next';
 import { RotateCcw, Move, ZoomIn, ZoomOut, Maximize2, CheckCircle2, X, Camera } from 'lucide-react';
 import { ImageWithFallback } from '@/app/components/fallback/ImageWithFallback';
@@ -162,7 +163,7 @@ export default function ARView() {
                   <div className="pt-6 border-t border-gray-100 space-y-4 text-xs">
                     {sku.widthCm && (<div className="flex justify-between"><span className="text-gray-400">{t('ar.size')}</span><span className="font-bold text-gray-900">{sku.widthCm}×{sku.heightCm}{sku.depthCm ? `×${sku.depthCm}` : ''}cm</span></div>)}
                     {sku.isLimitedEdition && (<div className="flex justify-between"><span className="text-gray-400">{t('ar.edition')}</span><span className="font-bold text-gray-900">{sku.editionNumber} / {sku.editionSize}</span></div>)}
-                    <div className="flex justify-between"><span className="text-gray-400">{t('ar.price')}</span><span className="font-bold text-gray-900">₩{(sku.salePrice ?? sku.listPrice).toLocaleString()}</span></div>
+                    <div className="flex justify-between"><span className="text-gray-400">{t('ar.price')}</span><span className="font-bold text-gray-900">₩{formatWon(displayPrice(sku))}</span></div>
                   </div>
                   <div className="flex gap-3">
                     <Link to={`/product/${sku.skuCode}`} className="flex-1 py-4 border border-gray-200 text-black text-center rounded-2xl hover:bg-gray-50 transition-colors text-sm font-bold">{t('ar.viewDetail')}</Link>
@@ -194,7 +195,7 @@ export default function ARView() {
               <div className="flex items-center justify-between gap-4">
                 <div className="flex flex-col">
                   <span className="text-[10px] text-gray-400 font-bold uppercase">Price</span>
-                  <span className="text-lg font-black text-black">₩{(sku.salePrice ?? sku.listPrice).toLocaleString()}</span>
+                  <span className="text-lg font-black text-black">₩{formatWon(displayPrice(sku))}</span>
                 </div>
                 <button onClick={handleAddToCart} disabled={cartLoading || sku.status === 'OUT_OF_STOCK'} className="flex-1 py-4 bg-koala-navy text-white rounded-xl font-bold text-sm disabled:opacity-50">{sku.status === 'OUT_OF_STOCK' ? t('product.detail.actions.outOfStock') : t('product.detail.actions.addToCart')}</button>
               </div>
