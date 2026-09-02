@@ -42,6 +42,12 @@ function ArtistGrid({ artists }: Props) {
     <div className="grid grid-cols-5 gap-x-6 gap-y-8">
       {artists.map((artist) => (
         <Link key={artist.artistCode} to={`/artist/${artist.artistCode}`} className="group block">
+          {/* 평소에는 사진과 이름만 두고, 마우스를 올리면 그 위를 덮으며 소개가
+              펼쳐진다. 다섯 장을 한눈에 보는 첫인상은 그대로 두면서, 궁금한
+              한 명만 더 들여다볼 수 있게 한다.
+
+              키보드로 넘길 때도 같이 열린다. hover 로만 열면 마우스를 쓰지
+              않는 사람에게는 소개가 아예 없는 것과 같다. */}
           <div className="relative aspect-[3/4] overflow-hidden bg-gray-100">
             <ImageWithFallback
               src={artist.profileImageUrl ?? '/placeholder.svg'}
@@ -53,23 +59,25 @@ function ArtistGrid({ artists }: Props) {
             <div
               aria-hidden
               className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent
-                opacity-70 transition-opacity duration-500 group-hover:opacity-90
-                motion-reduce:transition-none"
+                opacity-70 transition-opacity duration-500 group-hover:opacity-0
+                group-focus-visible:opacity-0 motion-reduce:transition-none"
+            />
+            <div
+              aria-hidden
+              className="absolute inset-0 bg-koala-purple/90 opacity-0 transition-opacity duration-500
+                group-hover:opacity-100 group-focus-visible:opacity-100 motion-reduce:transition-none"
             />
 
-            <p className="absolute inset-x-0 bottom-0 p-5 text-lg font-bold tracking-tight text-white">
-              {artist.name}
-            </p>
-
-            <span
-              aria-hidden
-              className="pointer-events-none absolute right-4 top-4 flex h-8 w-8 items-center
-                justify-center bg-koala-gold text-koala-navy opacity-0 translate-y-1
-                transition-all duration-300 group-hover:opacity-100 group-hover:translate-y-0
-                motion-reduce:transition-none"
-            >
-              <ArrowRight className="h-4 w-4" />
-            </span>
+            <div className="absolute inset-0 flex flex-col justify-end p-5">
+              <p className="text-lg font-bold tracking-tight text-white">{artist.name}</p>
+              <p className="mt-2 max-h-0 overflow-hidden break-keep text-xs leading-relaxed
+                text-white/85 opacity-0 transition-all duration-500 line-clamp-[9]
+                group-hover:max-h-64 group-hover:opacity-100
+                group-focus-visible:max-h-64 group-focus-visible:opacity-100
+                motion-reduce:transition-none">
+                {artist.description?.trim() || '작가 소개가 곧 올라옵니다.'}
+              </p>
+            </div>
           </div>
         </Link>
       ))}
