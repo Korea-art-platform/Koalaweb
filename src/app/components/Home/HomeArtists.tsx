@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router';
 import { ArrowRight } from 'lucide-react';
 import SectionHeader from './SectionHeader';
@@ -9,7 +10,46 @@ interface Props {
 }
 
 export default function HomeArtists({ artists }: Props) {
+  const [index, setIndex] = useState(0);
+  const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
+  const mounted = useRef(false);
+
+  // 목록이 늦게 오거나 줄어들면 고른 자리가 범위를 벗어난다.
+  useEffect(() => { setIndex(0); }, [artists.length]);
+
+  useEffect(() => {
+    // 처음 그릴 때는 옮기지 않는다. 페이지를 열자마자 이 구간이
+    // 저 혼자 움직이면 무엇이 움직였는지 알 수 없다.
+    if (!mounted.current) { mounted.current = true; return; }
+
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    // block:'nearest' 가 없으면 이름을 고를 때마다 페이지가 그 자리로 딸려 올라간다.
+    tabRefs.current[index]?.scrollIntoView({
+      behavior: reduce ? 'auto' : 'smooth',
+      inline: 'center',
+      block: 'nearest',
+    });
+  }, [index]);
+
   if (artists.length === 0) return null;
+
+  const active = artists[index] ?? artists[0];
+  const href = `/artist/${active.artistCode}`;
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    const last = artists.length - 1;
+    let next = index;
+
+    if (e.key === 'ArrowRight') next = index === last ? 0 : index + 1;
+    else if (e.key === 'ArrowLeft') next = index === 0 ? last : index - 1;
+    else if (e.key === 'Home') next = 0;
+    else if (e.key === 'End') next = last;
+    else return;
+
+    e.preventDefault();
+    setIndex(next);
+    tabRefs.current[next]?.focus();
+  };
 
   return (
     <section className="mx-auto max-w-[1600px] px-6 py-16 md:px-12 md:py-24">
@@ -20,44 +60,103 @@ export default function HomeArtists({ artists }: Props) {
         viewAllHref="/artist-lab"
       />
 
-      <div className="grid grid-cols-2 gap-x-4 gap-y-8 md:grid-cols-3 md:gap-x-6 lg:grid-cols-5 lg:gap-x-6">
-        {artists.map((artist) => (
-          <Link
+      {/* 이름 줄은 섹션 여백 밖까지 흘려 보낸다. 화면 끝에서 잘린 이름이
+          더 있다는 표시가 되어, 따로 화살표를 두지 않아도 된다. */}
+      <div
+        role="tablist"
+        aria-label="작가 선택"
+        onKeyDown={handleKeyDown}
+        className="-mx-6 flex gap-5 overflow-x-auto border-b border-gray-200 px-6 no-scrollbar md:-mx-12 md:gap-8 md:px-12"
+      >
+        {artists.map((artist, i) => (
+          <button
             key={artist.artistCode}
-            to={`/artist/${artist.artistCode}`}
-            className="group block"
+            ref={(el) => { tabRefs.current[i] = el; }}
+            role="tab"
+            id={`artist-tab-${artist.artistCode}`}
+            aria-selected={i === index}
+            aria-controls={`artist-panel-${artist.artistCode}`}
+            tabIndex={i === index ? 0 : -1}
+            onClick={() => setIndex(i)}
+            className={`relative shrink-0 whitespace-nowrap pb-3 text-base font-bold tracking-tight
+              transition-colors duration-300 motion-reduce:transition-none
+              focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-koala-purple
+              md:text-xl ${
+              i === index ? 'text-gray-900' : 'text-gray-300 hover:text-gray-500'
+            }`}
           >
-            <div className="relative overflow-hidden bg-gray-100 aspect-[3/4]">
-              <ImageWithFallback
-                src={artist.profileImageUrl ?? '/placeholder.svg'}
-                alt={artist.name}
-                thumb
-                className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent opacity-70 transition-opacity duration-500 group-hover:opacity-90" />
-
-              <div className="absolute inset-x-0 bottom-0 p-4 md:p-5">
-                <p className="text-base md:text-lg font-bold text-white tracking-tight">
-                  {artist.name}
-                </p>
-                {artist.specialty && (
-                  <p className="mt-0.5 text-[11px] md:text-xs text-white/70 truncate">
-                    {artist.specialty}
-                  </p>
-                )}
-              </div>
-
-              <span
-                aria-hidden
-                className="pointer-events-none absolute right-4 top-4 flex h-8 w-8 items-center justify-center
-                  bg-koala-gold text-koala-navy opacity-0 translate-y-1
-                  transition-all duration-300 group-hover:opacity-100 group-hover:translate-y-0"
-              >
-                <ArrowRight className="h-4 w-4" />
-              </span>
-            </div>
-          </Link>
+            {artist.name}
+            <span
+              aria-hidden
+              className={`absolute inset-x-0 -bottom-px h-0.5 bg-koala-gold-deep
+                transition-opacity duration-300 motion-reduce:transition-none ${
+                i === index ? 'opacity-100' : 'opacity-0'
+              }`}
+            />
+          </button>
         ))}
+      </div>
+
+      <div
+        role="tabpanel"
+        id={`artist-panel-${active.artistCode}`}
+        aria-labelledby={`artist-tab-${active.artistCode}`}
+        className="mt-6 md:mt-10"
+      >
+        <Link to={href} className="group block">
+          <div className="relative aspect-[4/5] overflow-hidden bg-gray-100 sm:aspect-[3/2] lg:aspect-[16/7]">
+            {/* key 를 걸어 다시 그리게 한다. 같은 자리에서 사진만 바뀌면
+                무엇이 바뀌었는지 눈에 걸리지 않아 페이드를 한 번 준다. */}
+            <div
+              key={active.artistCode}
+              className="absolute inset-0 animate-in fade-in duration-700 motion-reduce:animate-none"
+            >
+              <ImageWithFallback
+                src={active.profileImageUrl ?? '/placeholder.svg'}
+                alt={active.name}
+                className="h-full w-full object-cover transition-transform duration-700
+                  group-hover:scale-105 motion-reduce:transition-none"
+              />
+            </div>
+
+            <div
+              aria-hidden
+              className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/5 to-transparent"
+            />
+
+            <p className="absolute inset-x-0 bottom-0 p-5 text-xl font-bold tracking-tight text-white md:p-8 md:text-3xl">
+              {active.name}
+            </p>
+
+            <span
+              aria-hidden
+              className="pointer-events-none absolute right-5 top-5 flex h-10 w-10 items-center
+                justify-center bg-koala-gold text-koala-navy opacity-0 translate-y-1
+                transition-all duration-300 group-hover:opacity-100 group-hover:translate-y-0
+                motion-reduce:transition-none md:right-8 md:top-8"
+            >
+              <ArrowRight className="h-5 w-5" />
+            </span>
+          </div>
+        </Link>
+
+        <div className="mt-5 flex flex-col gap-4 md:mt-7 md:flex-row md:items-start md:justify-between md:gap-16">
+          {/* 줄 수는 지금 등록된 소개(112~140자)가 잘리지 않는 선에 맞춘다.
+              자르는 목적은 요약이 아니라, 나중에 훨씬 긴 글이 들어왔을 때
+              이 구간이 끝없이 늘어나지 않게 막아 두는 것이다. */}
+          <p className="max-w-[68ch] whitespace-pre-line break-keep text-sm leading-relaxed text-gray-500 line-clamp-5 md:text-base md:line-clamp-4">
+            {active.description?.trim() || '작가 소개가 곧 올라옵니다.'}
+          </p>
+
+          <Link
+            to={href}
+            className="flex shrink-0 items-center gap-1.5 self-start border-b-2 border-gray-900 pb-1
+              text-xs font-bold text-gray-900 transition-colors hover:border-koala-purple
+              hover:text-koala-purple motion-reduce:transition-none md:text-sm"
+          >
+            작가 페이지 <ArrowRight className="h-4 w-4" />
+          </Link>
+        </div>
       </div>
     </section>
   );
