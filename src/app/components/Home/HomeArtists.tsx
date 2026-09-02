@@ -3,13 +3,81 @@ import { Link } from 'react-router';
 import { ArrowRight } from 'lucide-react';
 import SectionHeader from './SectionHeader';
 import { ImageWithFallback } from '@/app/components/fallback/ImageWithFallback';
+import { useIsDesktop } from '@/app/hooks/useMediaQuery';
 import type { Artist } from '@/api/types';
 
 interface Props {
   artists: Artist[];
 }
 
+/**
+ * PC 는 다섯 명을 한눈에 늘어놓고, 좁은 화면은 이름으로 골라 한 명씩 크게 본다.
+ *
+ * 폭이 좁으면 격자 칸이 손톱만 해져 누가 누군지 알아볼 수 없고, 넓으면 한 명만
+ * 큼직하게 띄우는 쪽이 오히려 나머지 네 명을 가린다.
+ *
+ * CSS 로 한쪽을 숨기지 않고 렌더를 나눈다. 숨긴 쪽도 DOM 에 남으면 그 안의
+ * 사진을 전부 내려받는다.
+ */
 export default function HomeArtists({ artists }: Props) {
+  const isDesktop = useIsDesktop();
+
+  if (artists.length === 0) return null;
+
+  return (
+    <section className="mx-auto max-w-[1600px] px-6 py-16 md:px-12 md:py-24">
+      <SectionHeader
+        eyebrow="004 — Artists"
+        title="작가"
+        sub="작품을 만드는 사람들"
+        viewAllHref="/artist-lab"
+      />
+      {isDesktop ? <ArtistGrid artists={artists} /> : <ArtistPicker artists={artists} />}
+    </section>
+  );
+}
+
+function ArtistGrid({ artists }: Props) {
+  return (
+    <div className="grid grid-cols-5 gap-x-6 gap-y-8">
+      {artists.map((artist) => (
+        <Link key={artist.artistCode} to={`/artist/${artist.artistCode}`} className="group block">
+          <div className="relative aspect-[3/4] overflow-hidden bg-gray-100">
+            <ImageWithFallback
+              src={artist.profileImageUrl ?? '/placeholder.svg'}
+              alt={artist.name}
+              thumb
+              className="h-full w-full object-cover transition-transform duration-700
+                group-hover:scale-105 motion-reduce:transition-none"
+            />
+            <div
+              aria-hidden
+              className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent
+                opacity-70 transition-opacity duration-500 group-hover:opacity-90
+                motion-reduce:transition-none"
+            />
+
+            <p className="absolute inset-x-0 bottom-0 p-5 text-lg font-bold tracking-tight text-white">
+              {artist.name}
+            </p>
+
+            <span
+              aria-hidden
+              className="pointer-events-none absolute right-4 top-4 flex h-8 w-8 items-center
+                justify-center bg-koala-gold text-koala-navy opacity-0 translate-y-1
+                transition-all duration-300 group-hover:opacity-100 group-hover:translate-y-0
+                motion-reduce:transition-none"
+            >
+              <ArrowRight className="h-4 w-4" />
+            </span>
+          </div>
+        </Link>
+      ))}
+    </div>
+  );
+}
+
+function ArtistPicker({ artists }: Props) {
   const [index, setIndex] = useState(0);
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const mounted = useRef(false);
@@ -18,8 +86,8 @@ export default function HomeArtists({ artists }: Props) {
   useEffect(() => { setIndex(0); }, [artists.length]);
 
   useEffect(() => {
-    // 처음 그릴 때는 옮기지 않는다. 페이지를 열자마자 이 구간이
-    // 저 혼자 움직이면 무엇이 움직였는지 알 수 없다.
+    // 처음 그릴 때는 옮기지 않는다. 화면을 열자마자 이 구간이 저 혼자
+    // 움직이면 무엇이 움직였는지 알 수 없다.
     if (!mounted.current) { mounted.current = true; return; }
 
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -30,8 +98,6 @@ export default function HomeArtists({ artists }: Props) {
       block: 'nearest',
     });
   }, [index]);
-
-  if (artists.length === 0) return null;
 
   const active = artists[index] ?? artists[0];
   const href = `/artist/${active.artistCode}`;
@@ -52,14 +118,7 @@ export default function HomeArtists({ artists }: Props) {
   };
 
   return (
-    <section className="mx-auto max-w-[1600px] px-6 py-16 md:px-12 md:py-24">
-      <SectionHeader
-        eyebrow="004 — Artists"
-        title="작가"
-        sub="작품을 만드는 사람들"
-        viewAllHref="/artist-lab"
-      />
-
+    <>
       {/* 이름 줄은 섹션 여백 밖까지 흘려 보낸다. 화면 끝에서 잘린 이름이
           더 있다는 표시가 되어, 따로 화살표를 두지 않아도 된다. */}
       <div
@@ -104,7 +163,7 @@ export default function HomeArtists({ artists }: Props) {
         className="mt-6 md:mt-10"
       >
         <Link to={href} className="group block">
-          <div className="relative aspect-[4/5] overflow-hidden bg-gray-100 sm:aspect-[3/2] lg:aspect-[16/7]">
+          <div className="relative aspect-[4/5] overflow-hidden bg-gray-100 sm:aspect-[3/2]">
             {/* key 를 걸어 다시 그리게 한다. 같은 자리에서 사진만 바뀌면
                 무엇이 바뀌었는지 눈에 걸리지 않아 페이드를 한 번 준다. */}
             <div
@@ -127,16 +186,6 @@ export default function HomeArtists({ artists }: Props) {
             <p className="absolute inset-x-0 bottom-0 p-5 text-xl font-bold tracking-tight text-white md:p-8 md:text-3xl">
               {active.name}
             </p>
-
-            <span
-              aria-hidden
-              className="pointer-events-none absolute right-5 top-5 flex h-10 w-10 items-center
-                justify-center bg-koala-gold text-koala-navy opacity-0 translate-y-1
-                transition-all duration-300 group-hover:opacity-100 group-hover:translate-y-0
-                motion-reduce:transition-none md:right-8 md:top-8"
-            >
-              <ArrowRight className="h-5 w-5" />
-            </span>
           </div>
         </Link>
 
@@ -158,6 +207,6 @@ export default function HomeArtists({ artists }: Props) {
           </Link>
         </div>
       </div>
-    </section>
+    </>
   );
 }
