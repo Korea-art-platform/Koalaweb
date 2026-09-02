@@ -3,19 +3,22 @@ import { CheckCircle, Package, MapPin, CreditCard, ChevronRight, Home } from 'lu
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { useAuth } from '@/app/context/AuthContext';
 export default function CheckoutSuccess() {
   const location = useLocation();
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const { isAuthenticated } = useAuth();
   const [orderData, setOrderData] = useState<any>(null);
 
   useEffect(() => {
     if (location.state) {
       setOrderData(location.state);
     } else {
-      navigate('/account/orders');
+      // 비회원에게는 주문 내역이 없다. 로그인 뒤로 보내면 막힌 화면을 만난다.
+      navigate(isAuthenticated ? '/account/orders' : '/order-lookup');
     }
-  }, [location, navigate]);
+  }, [location, navigate, isAuthenticated]);
 
   if (!orderData) {
     return (

@@ -106,7 +106,8 @@ export default function ProductDetail() {
   // 주문서가 담아 둔 것을 전부 결제해 엉뚱한 물건까지 함께 사졌다.
   const handleBuyNow = async () => {
     if (!sku || buying) return;
-    if (!isAuthenticated) { navigate('/login', { state: { from: `/product/${sku.skuCode}` } }); return; }
+    // 로그인을 요구하지 않는다. 비회원도 살 수 있고, 주문서에서 회원 여부에
+    // 따라 알아서 갈린다. 사려는 순간 로그인을 시키면 거기서 그만둔다.
     setBuying(true);
     try {
       navigate('/checkout', { state: { buyNow: { skuCode: sku.skuCode, quantity: 1 } } });

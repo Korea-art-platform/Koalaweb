@@ -5,6 +5,7 @@ import ProtectedRoute from "@/app/components/routers/ProtectedRoute";
 import AccountLayout from "@/app/components/layouts/AccountLayout";
 
 import Home from "@/app/pages/Home";
+import GuestOrderLookup from '@/app/pages/order/GuestOrderLookup';
 const SmartStore = lazy(() => import("@/app/pages/product/SmartStore"));
 const ArtDetail = lazy(() => import("@/app/pages/product/ArtDetail"));
 const ProductDetail = lazy(() => import("@/app/pages/product/Detail"));
@@ -125,15 +126,19 @@ export function AppRoutes() {
         <Route path="/contact" element={<Contact />} />
         <Route path="/help" element={<Help />} />
         <Route path="/returns" element={<Returns />} />
+        {/* 비회원도 살 수 있어야 하는 자리. 로그인 뒤로 숨기면 계정을 만들지
+            않고는 결제할 수 없다. 장바구니는 회원만 쓰므로 그대로 둔다. */}
+        <Route path="/checkout" element={<Checkout />} />
+        <Route path="/checkout/confirm" element={<OrderConfirmation />} />
+        <Route path="/checkout/success" element={<CheckoutSuccess />} />
+        <Route path="/payment" element={<PaymentPage />} />
+        <Route path="/payment/success" element={<PaymentSuccess />} />
+        <Route path="/payment/fail" element={<PaymentFail />} />
+        <Route path="/order-lookup" element={<GuestOrderLookup />} />
+
         <Route element={<ProtectedRoute />}>
           <Route path="/onboarding" element={<Onboarding />} />
           <Route path="/cart" element={<Cart />} />
-          <Route path="/checkout" element={<Checkout />} />
-          <Route path="/checkout/confirm" element={<OrderConfirmation />} />
-          <Route path="/checkout/success" element={<CheckoutSuccess />} />
-          <Route path="/payment" element={<PaymentPage />} />
-          <Route path="/payment/success" element={<PaymentSuccess />} />
-          <Route path="/payment/fail" element={<PaymentFail />} />
           <Route element={<AccountLayout />}>
             <Route path="/account" element={<Account />} />
             <Route path="/account/orders" element={<AccountOrders />} />

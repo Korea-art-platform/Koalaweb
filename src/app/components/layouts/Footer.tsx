@@ -73,6 +73,8 @@ export default function Footer() {
               <ul className="space-y-3">
                 {[
                   { key: 'help', path: '/help' },
+                  // 비회원은 로그인이 없어 여기 말고는 자기 주문을 찾을 길이 없다.
+                  { key: 'orderLookup', path: '/order-lookup', label: '주문 조회' },
                   { key: 'shipping', path: '/shipping' },
                   { key: 'returns', path: '/returns' },
                   { key: 'contact', path: '/contact' },
@@ -81,7 +83,7 @@ export default function Footer() {
                 ].map((link) => (
                   <li key={link.key}>
                     <Link to={link.path} className="text-sm text-gray-500 hover:text-white transition-colors">
-                      {t(`footer.support.links.${link.key}`)}
+                      {(link as { label?: string }).label ?? t(`footer.support.links.${link.key}`)}
                     </Link>
                   </li>
                 ))}

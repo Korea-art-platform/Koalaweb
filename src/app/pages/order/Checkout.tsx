@@ -1,12 +1,13 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router';
 import { ArrowLeft, MapPin, CreditCard, Package, Check, ChevronRight, Search } from 'lucide-react';
-import { createOrder } from '@/api/order';
+import { createOrder, createGuestOrder } from '@/api/order';
 import { getCart } from '@/api/cart';
 import { getSku } from '@/api/sku';
 import { displayPrice } from '@/app/lib/price';
 import { preparePayment } from '@/api/payment';
 import { getMyProfile, getMyAddresses } from '@/api/user';
+import { useAuth } from '@/app/context/AuthContext';
 import { startPayment, isUserCancel, PAY_METHODS, PG_PROVIDER_CODE, type PayMethod } from '@/app/lib/pg';
 import { payMethodIcon } from '@/app/components/common/PayMethodIcons';
 import type { Cart, Sku, UserAddress } from '@/api/types';
@@ -29,6 +30,9 @@ export default function Checkout() {
   // 장바구니를 거치지 않고 이 상품 하나만 사는 경우다. 담아 둔 다른 물건까지
   // 같이 결제되던 것을 막는다.
   const buyNow = (useLocation().state as { buyNow?: BuyNowState } | null)?.buyNow ?? null;
+  // 로그인하지 않았으면 비회원 주문이다. 계정을 만들지 않고도 살 수 있어야 한다.
+  const { isAuthenticated } = useAuth();
+  const isGuest = !isAuthenticated;
 
   const [cart, setCart] = useState<Cart | null>(null);
   const [directSku, setDirectSku] = useState<Sku | null>(null);
@@ -62,6 +66,16 @@ export default function Checkout() {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        // 비회원은 불러올 프로필도 저장된 배송지도 없다. 직접 적는다.
+        if (isGuest) {
+          if (buyNow) {
+            const skuRes = await getSku(buyNow.skuCode);
+            setDirectSku(skuRes?.data?.data ?? null);
+          }
+          setLoading(false);
+          return;
+        }
+
         const profileRes = await getMyProfile();
         const profile = profileRes?.data?.data;
         setProfile(profile);
@@ -203,7 +217,8 @@ export default function Checkout() {
 
     setIsProcessing(true);
     try {
-      const orderRes = await createOrder({
+      const send = isGuest ? createGuestOrder : createOrder;
+      const orderRes = await send({
         ordererName: form.ordererName,
         ordererEmail: form.ordererEmail,
         ordererPhone: form.ordererPhone,
