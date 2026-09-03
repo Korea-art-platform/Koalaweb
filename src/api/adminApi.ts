@@ -99,6 +99,7 @@ export async function createCategory(body: {
   // 코드는 서버가 표시 이름으로 만든다. 화면에서는 보내지 않는다.
   code?: string;
   name: string;
+  nameEn?: string;
   sortOrder?: number;
   taxExempt?: boolean;
 }) {
@@ -108,7 +109,7 @@ export async function createCategory(body: {
 
 export async function updateCategory(
   id: number,
-  body: { name?: string; sortOrder?: number; isActive?: boolean; taxExempt?: boolean }
+  body: { name?: string; nameEn?: string; sortOrder?: number; isActive?: boolean; taxExempt?: boolean }
 ) {
   const res = await adminInstance.patch(`${BASE}/categories/${id}`, body);
   return res.data.data as Category;

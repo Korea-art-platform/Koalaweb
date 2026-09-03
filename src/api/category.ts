@@ -7,6 +7,10 @@ export interface Category {
   code: string;
 
   name: string;
+
+  /** 영문 이름. 홈 섹션 머리말 등에 쓴다. 비어 있으면 한글 이름을 쓴다. */
+  nameEn?: string;
+
   sortOrder: number;
   isActive: boolean;
 

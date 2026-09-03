@@ -19,12 +19,7 @@
       "description": "엄선된 프리미엄 아트 굿즈, 소장 가치 있는 오브제, 그리고 일상 속 예술 작품들을 만나보세요."
     },
     "categories": {
-      "All": "전체",
-      "ART_TOY": "아트 토이",
-      "SCULPTURE": "조각",
-      "CERAMIC": "도자기",
-      "PAINTING": "회화",
-      "GOODS": "아트 굿즈"
+      "All": "전체"
     },
     "product": {
       "limited": "한정판",

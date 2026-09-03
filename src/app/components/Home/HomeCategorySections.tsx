@@ -12,12 +12,14 @@ interface Props {
 
 const MAX_PER_SECTION = 12;
 
-// 어드민에서 한글 이름으로 분류를 만들면 코드가 SUB_2 처럼 순번으로 붙는다.
-// 그대로 라벨에 쓰면 방문자에게 "SUB 2" 라고 보인다. 그럴 땐 이름을 쓴다.
-const GENERATED_CODE = /^(MAIN|SUB)_\d+$/;
-
-const eyebrowOf = (code: string, name: string) =>
-  GENERATED_CODE.test(code) ? name : code.replace(/_/g, ' ');
+// 머리말은 어드민에 등록한 영문 이름을 쓴다.
+//
+// 예전에는 분류 코드를 그대로 썼는데, 코드는 한글 이름을 옮길 수 없을 때
+// SUB_2 처럼 순번이 붙는 내부 값이라 이름을 바꿔도 머리말이 따라오지
+// 않았다. 영문명을 안 넣었으면 한글 이름을 그대로 쓴다 — 코드가 그대로
+// 노출되는 것보다는 낫다.
+const eyebrowOf = (nameEn: string | undefined, name: string) =>
+  nameEn?.trim() ? nameEn.trim().toUpperCase() : name;
 
 export default function HomeCategorySections({ categories, skus }: Props) {
   const { wishlistedCodes, wishlistLoading, handleWishlist } = useWishlistToggle();
@@ -37,7 +39,7 @@ export default function HomeCategorySections({ categories, skus }: Props) {
         <section key={category.id} className="px-4 md:px-12 pt-12 md:pt-24">
           <div className="max-w-[1800px] mx-auto">
             <SectionHeader
-              eyebrow={eyebrowOf(category.code, category.name)}
+              eyebrow={eyebrowOf(category.nameEn, category.name)}
               title={category.name}
               sub={`${items.length}점의 작품`}
               viewAllHref={`/store?category=${category.code}`}

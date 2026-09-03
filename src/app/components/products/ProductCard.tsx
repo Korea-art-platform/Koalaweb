@@ -15,6 +15,7 @@ import { toCdnUrl } from '@/app/lib/imageUrl';
 import type { Sku } from '@/api/types';
 import { notifyCartUpdated } from '@/app/hooks/useCart';
 
+import { useCategories } from '@/app/hooks/useCategories';
 interface ProductCardProps {
   sku: Sku;
   viewMode: 'grid' | 'large';
@@ -45,7 +46,10 @@ export default function ProductCard({
   const layoutId = `product-card-${sku.skuCode}-${instanceId}`;
   const { src: imageUrl, onError: onImageError } = useThumbSrc(sku.primaryImageUrl);
   const price = formatWon(displayPrice(sku));
-  const categoryLabel = t(`store.categories.${sku.genre}`, { defaultValue: sku.genre }) as string;
+  // 분류 이름은 어드민에서 고치는 값이라 DB 것을 쓴다. 번역 파일에 따로
+  // 적어 두면 어드민에서 바꿔도 카드만 옛 이름으로 남아 화면마다 달라진다.
+  const { subLabel } = useCategories();
+  const categoryLabel = subLabel(sku.genre);
 
   const [isOpen, setIsOpen] = useState(false);
   const [adding, setAdding] = useState(false);

@@ -122,6 +122,24 @@ export default function AdminCategoryList() {
     load();
   };
 
+  /**
+   * 영문 이름을 고친다.
+   *
+   * 홈 섹션 머리말이 이 값으로 나간다. 비워 두면 한글 이름을 그대로 쓴다.
+   */
+  const handleEditNameEn = async (c: Category) => {
+    const next = prompt(
+      `"${c.name}" 의 영문 이름을 입력하세요.
+
+홈 화면 섹션 머리말에 대문자로 나갑니다.
+비워 두면 한글 이름을 그대로 씁니다.`,
+      c.nameEn ?? ''
+    );
+    if (next === null) return;
+    await updateCategory(c.id, { nameEn: next.trim() });
+    load();
+  };
+
   const handleToggleTaxExempt = async (c: Category) => {
     const next = !c.taxExempt;
     const 안내 = next
@@ -264,6 +282,16 @@ export default function AdminCategoryList() {
                             </button>
                           )}
                         </div>
+                        <button
+                          onClick={() => handleEditNameEn(c)}
+                          title="홈 섹션 머리말에 쓰이는 영문 이름. 클릭해서 수정합니다."
+                          className={`px-2.5 py-1 text-[11px] font-mono rounded-lg flex-shrink-0
+                            transition-colors hover:bg-gray-200 ${
+                            c.nameEn ? 'bg-gray-100 text-gray-600' : 'bg-transparent text-gray-300'
+                          }`}
+                        >
+                          {c.nameEn ? c.nameEn.toUpperCase() : '영문명 없음'}
+                        </button>
                         <span className="text-xs text-gray-400 flex-shrink-0">
                           상품 {c.usedCount ?? 0}건
                         </span>
