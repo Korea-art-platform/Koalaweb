@@ -80,7 +80,7 @@ export default function SmartStore() {
 
   return (
     <div className="min-h-screen bg-white">
-      <PageMeta title="스마트 스토어" description="엄선된 아트 상품과 소장 가치 있는 작품을 카테고리별로 만나보세요." />
+      <PageMeta title="아티스트 컬렉터블" description="엄선된 아트 상품과 소장 가치 있는 작품을 카테고리별로 만나보세요." />
       <StoreHero />
       <StoreFilter
         categories={categories}
