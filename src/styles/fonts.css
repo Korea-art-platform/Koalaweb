@@ -1,9 +1,25 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+/* 본문 — Inter 는 한글 글자가 없다. 그래서 지금까지 한글은 선언된 글꼴 없이
+   운영체제가 주는 것(윈도우면 맑은 고딕)으로 떨어져 있었다. 기기마다 다르게
+   보인다는 뜻이다. 한글용 글꼴을 함께 걸어 둔다.
+
+   제목 — 미술품을 다루는 화면이라 명조를 쓴다. 홈의 히어로와 작품 섹션에만
+   쓰고, 나머지는 본문 글꼴 그대로다. */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&family=Gowun+Batang:wght@400;700&display=swap');
+
+:root {
+  --font-serif: 'Gowun Batang', 'Nanum Myeongjo', serif;
+}
 
 body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family: 'Inter', 'IBM Plex Sans KR', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   font-feature-settings: 'cv11', 'ss01';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   letter-spacing: -0.01em;
+}
+
+/* 명조를 쓰는 자리. 자간을 조금 조여야 큰 글씨에서 벌어져 보이지 않는다. */
+.font-serif-ko {
+  font-family: var(--font-serif);
+  letter-spacing: -0.02em;
 }

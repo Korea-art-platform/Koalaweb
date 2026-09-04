@@ -79,8 +79,19 @@ export default function Home() {
     ? skus.filter((s) => s.mainCategory === originalCode)
     : [];
   const originalCodes = new Set(originalSkus.map((s) => s.skuCode));
-  const limitedSkus = skus.filter(
-    (s) => !originalCodes.has(s.skuCode) && (s.mainCategory === LIMITED || s.isLimitedEdition),
+
+  // 원작이 아닌 것은 한정판·오픈에디션 한자리에 모은다. 예전에는 한정판만
+  // 따로 걸고 오픈에디션은 소분류 섹션에 흩어져 있어 눈에 띄지 않았다.
+  // 한정판을 앞에 둔다 — 수량이 정해진 쪽이 먼저 보이는 편이 낫다.
+  const editionSkus = skus
+    .filter((s) => !originalCodes.has(s.skuCode) && s.status === 'ACTIVE')
+    .sort((a, b) => {
+      const rank = (s: Sku) => (s.mainCategory === LIMITED || s.isLimitedEdition ? 0 : 1);
+      return rank(a) - rank(b);
+    });
+
+  const limitedSkus = editionSkus.filter(
+    (s) => s.mainCategory === LIMITED || s.isLimitedEdition,
   );
   const heroFeatured = (limitedSkus.length ? limitedSkus : skus)
     .filter((s) => s.status === 'ACTIVE')
@@ -99,7 +110,7 @@ export default function Home() {
 
       <RisingPanel>
         <HomeOriginal skus={originalSkus} loading={loading} categoryCode={originalCode} />
-        <HomeLimitedEdition skus={limitedSkus} loading={loading} />
+        <HomeLimitedEdition skus={editionSkus} loading={loading} limitedCode={LIMITED} />
         <HomeGenreCollections genreCounts={genreCounts} skus={skus} />
         <HomeCategorySections categories={subCategories} skus={skus} />
         <HomeArtists artists={artists} />

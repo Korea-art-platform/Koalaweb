@@ -143,15 +143,17 @@ export default function HomeHero({ banners, featured = [] }: HomeHeroProps) {
           className="flex flex-col md:flex-row md:items-end gap-5 md:gap-8 px-5 md:px-12 pt-5 pb-4 md:pb-5 border-b border-white/12"
           style={{ opacity: animating ? 0.65 : 1, transition: 'opacity .5s' }}
         >
+          {/* 제목은 명조로 둔다. 미술품을 거는 자리라 굵은 고딕보다 어울리고,
+              한 줄로 자르던 것을 두 줄까지 허용해 배너 문구가 잘리지 않게 했다. */}
           <div className="min-w-0 flex-1 text-white">
-            <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mb-1.5 text-[11px] md:text-xs tracking-wide">
-              <span className="font-bold text-koala-gold">{banner?.badge ?? t('home.hero.badge')}</span>
-              {banner?.subtitle && <span className="text-white/65">· {banner.subtitle}</span>}
+            <div className="mb-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] tracking-[0.18em] md:text-xs">
+              <span className="font-medium text-koala-gold">{banner?.badge ?? t('home.hero.badge')}</span>
+              {banner?.subtitle && <span className="tracking-normal text-white/60">· {banner.subtitle}</span>}
             </div>
-            <h1 className="text-2xl md:text-[2rem] font-black tracking-tight leading-tight truncate">
+            <h1 className="font-serif-ko text-[26px] font-bold leading-[1.25] line-clamp-2 md:text-[38px]">
               {banner?.title ?? t('home.hero.defaultTitle')}
             </h1>
-            <p className="hidden md:block text-sm text-white/65 mt-1 truncate">
+            <p className="mt-1.5 hidden text-sm leading-relaxed text-white/60 line-clamp-2 md:block">
               {banner?.description ?? t('home.hero.description')}
             </p>
           </div>
