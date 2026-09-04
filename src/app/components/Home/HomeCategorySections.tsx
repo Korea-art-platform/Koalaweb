@@ -1,7 +1,6 @@
+import { Link } from 'react-router';
 import ProductCard from '@/app/components/products/ProductCard';
-import CarouselArrows from '@/app/components/common/CarouselArrows';
 import { useWishlistToggle } from '@/app/hooks/useWishlistToggle';
-import SectionHeader from './SectionHeader';
 import type { Category } from '@/api/category';
 import type { Sku } from '@/api/types';
 
@@ -10,7 +9,7 @@ interface Props {
   skus: Sku[];
 }
 
-const MAX_PER_SECTION = 12;
+const MAX_PER_SECTION = 8;
 
 // 머리말은 어드민에 등록한 영문 이름을 쓴다.
 //
@@ -36,27 +35,42 @@ export default function HomeCategorySections({ categories, skus }: Props) {
   return (
     <>
       {sections.map(({ category, items }) => (
-        <section key={category.id} className="px-4 md:px-12 pt-12 md:pt-24">
-          <div className="max-w-[1800px] mx-auto">
-            <SectionHeader
-              eyebrow={eyebrowOf(category.nameEn, category.name)}
-              title={category.name}
-              sub={`${items.length}점의 작품`}
-              viewAllHref={`/store?category=${category.code}`}
-            />
-            <CarouselArrows label={category.name}>
+        <section key={category.id} className="mx-auto max-w-[1320px] px-5 pt-16 md:px-10 md:pt-24">
+          <div>
+            <div className="mb-10 flex flex-wrap items-end justify-between gap-3 md:mb-12">
+              <div>
+                <span className="text-[11px] font-medium tracking-[0.2em] text-koala-gold-deep">
+                  {eyebrowOf(category.nameEn, category.name)}
+                </span>
+                <h2 className="font-serif-ko mt-2 text-3xl font-bold text-gray-900 md:text-[34px]">
+                  {category.name}
+                </h2>
+                <p className="mt-1.5 text-sm text-gray-500">{items.length}점의 작품</p>
+              </div>
+              <Link
+                to={`/store?category=${category.code}`}
+                className="border-b border-gray-400 pb-0.5 text-[13px] text-gray-500
+                  transition-colors hover:border-koala-purple hover:text-koala-purple"
+              >
+                전체 보기
+              </Link>
+            </div>
+
+            {/* 캐러셀을 걷어내고 펼친다. 한 분류에 한두 점뿐인 것도 있어
+                화살표를 두면 눌러도 넘어가지 않는 헛버튼이 된다. */}
+            <div className="grid grid-cols-2 gap-6 lg:grid-cols-4 md:gap-8">
               {items.slice(0, MAX_PER_SECTION).map((sku) => (
-                <div key={sku.skuCode} className="w-[260px] md:w-[300px] shrink-0 snap-start">
-                  <ProductCard
-                    sku={sku}
-                    viewMode="grid"
-                    isWishlisted={wishlistedCodes.has(sku.skuCode)}
-                    isWishlistLoading={wishlistLoading.has(sku.skuCode)}
-                    onWishlistClick={handleWishlist}
-                  />
-                </div>
+                <ProductCard
+                  key={sku.skuCode}
+                  sku={sku}
+                  viewMode="grid"
+                  variant="editorial"
+                  isWishlisted={wishlistedCodes.has(sku.skuCode)}
+                  isWishlistLoading={wishlistLoading.has(sku.skuCode)}
+                  onWishlistClick={handleWishlist}
+                />
               ))}
-            </CarouselArrows>
+            </div>
           </div>
         </section>
       ))}

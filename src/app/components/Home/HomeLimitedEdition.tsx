@@ -1,6 +1,6 @@
 import { Link } from 'react-router';
 import { useWishlistToggle } from '@/app/hooks/useWishlistToggle';
-import HomeWorkCard from './HomeWorkCard';
+import ProductCard from '@/app/components/products/ProductCard';
 import type { Sku } from '@/api/types';
 
 interface Props {
@@ -54,12 +54,13 @@ export default function HomeLimitedEdition({ skus, loading, limitedCode }: Props
         ) : (
           <div className="grid grid-cols-2 gap-6 lg:grid-cols-4 md:gap-8">
             {skus.slice(0, 8).map((sku) => (
-              <HomeWorkCard
+              <ProductCard
                 key={sku.skuCode}
                 sku={sku}
                 mark={sku.mainCategory === limitedCode ? '한정판' : '오픈에디션'}
-                tone="purple"
-                large
+                variant="editorial"
+                markTone="purple"
+                viewMode="large"
                 isWishlisted={wishlistedCodes.has(sku.skuCode)}
                 isWishlistLoading={wishlistLoading.has(sku.skuCode)}
                 onWishlistClick={handleWishlist}

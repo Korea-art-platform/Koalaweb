@@ -1,6 +1,6 @@
 import { Link } from 'react-router';
 import { useWishlistToggle } from '@/app/hooks/useWishlistToggle';
-import HomeWorkCard from './HomeWorkCard';
+import ProductCard from '@/app/components/products/ProductCard';
 import type { Sku } from '@/api/types';
 
 interface Props {
@@ -29,12 +29,13 @@ export default function HomeOriginal({ skus, loading, categoryCode }: Props) {
   const rest = skus.slice(2, 6);
 
   const card = (sku: Sku, large: boolean) => (
-    <HomeWorkCard
+    <ProductCard
       key={sku.skuCode}
       sku={sku}
       mark="원작"
-      tone="gold"
-      large={large}
+      variant="editorial"
+      markTone="gold"
+      viewMode={large ? 'large' : 'grid'}
       isWishlisted={wishlistedCodes.has(sku.skuCode)}
       isWishlistLoading={wishlistLoading.has(sku.skuCode)}
       onWishlistClick={handleWishlist}

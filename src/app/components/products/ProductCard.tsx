@@ -19,6 +19,18 @@ import { useCategories } from '@/app/hooks/useCategories';
 interface ProductCardProps {
   sku: Sku;
   viewMode: 'grid' | 'large';
+  /**
+   * 카드 겉모습.
+   *
+   * store  — 사진 위에 글씨를 얹는다. 목록을 훑는 자리라 한 칸이 작다.
+   * editorial — 사진 아래에 글씨를 둔다. 홈처럼 몇 점을 골라 거는 자리.
+   *
+   * 겉모습만 다르고 눌렀을 때 열리는 상세 모달은 같은 것을 쓴다.
+   */
+  variant?: 'store' | 'editorial';
+  /** editorial 에서 등급 표시에 쓴다. */
+  mark?: string;
+  markTone?: 'gold' | 'purple';
   isWishlisted: boolean;
   isWishlistLoading: boolean;
   onWishlistClick: (e: React.MouseEvent, skuCode: string) => void;
@@ -27,6 +39,9 @@ interface ProductCardProps {
 export default function ProductCard({
   sku,
   viewMode,
+  variant = 'store',
+  mark,
+  markTone = 'gold',
   isWishlisted,
   isWishlistLoading,
   onWishlistClick,
@@ -176,8 +191,77 @@ export default function ProductCard({
     </div>
   );
 
-  return (
-    <>
+  /* 홈에 거는 모양 — 사진 아래에 글씨를 둔다. 누르면 같은 모달이 열린다. */
+  const Editorial = (
+    <figure className="group m-0">
+      <motion.div
+        layoutId={layoutId}
+        onClick={() => setIsOpen(true)}
+        whileHover="hover"
+        className={`relative cursor-pointer overflow-hidden bg-gray-100 ${
+          viewMode === 'large' ? 'aspect-square' : 'aspect-[4/5]'
+        }`}
+      >
+        <motion.img
+          layoutId={`image-${layoutId}`}
+          src={imageUrl}
+          onError={onImageError}
+          alt={`${sku.artistName} 작 ${title}`}
+          className="absolute inset-0 h-full w-full object-cover"
+          variants={{ hover: { scale: 1.03 } }}
+          transition={{ duration: 0.5 }}
+        />
+      </motion.div>
+
+      <figcaption className="relative mt-4">
+        {mark && (
+          <span
+            className={`mb-2.5 inline-block px-2 py-0.5 text-[10.5px] font-medium tracking-[0.08em] ${
+              markTone === 'gold'
+                ? 'text-koala-gold-deep ring-1 ring-koala-gold/45'
+                : 'bg-koala-purple/8 text-koala-purple'
+            }`}
+          >
+            {mark}
+          </span>
+        )}
+        <motion.h3
+          layoutId={`title-${layoutId}`}
+          onClick={() => setIsOpen(true)}
+          className="font-serif-ko cursor-pointer text-[17px] font-bold text-gray-900
+            transition-colors hover:text-koala-purple md:text-[19px]"
+        >
+          {title}
+        </motion.h3>
+        <motion.p layoutId={`subtitle-${layoutId}`} className="mt-0.5 text-[13px] text-gray-400">
+          {sku.artistName}
+        </motion.p>
+        <p className="mt-2 text-[15px] font-medium tabular-nums text-gray-900 md:text-base">
+          ₩{price}
+        </p>
+
+        {/* 찜은 사진 위가 아니라 이름 옆에 둔다. 작품을 가리지 않는다. */}
+        <button
+          onClick={(e) => onWishlistClick(e, sku.skuCode)}
+          disabled={isWishlistLoading}
+          aria-label={isWishlisted ? `${title} 찜 해제` : `${title} 찜하기`}
+          aria-pressed={isWishlisted}
+          className={`absolute right-0 p-1.5 transition-colors disabled:cursor-wait
+            focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-koala-purple
+            ${mark ? 'top-7' : 'top-0'}
+            ${isWishlisted ? 'text-koala-gold-deep' : 'text-gray-300 hover:text-koala-purple'}`}
+        >
+          {isWishlistLoading ? (
+            <span className="block h-[17px] w-[17px] animate-spin rounded-full border-2 border-current border-t-transparent" />
+          ) : (
+            <WishBookmark active={isWishlisted} size={17} className="block" />
+          )}
+        </button>
+      </figcaption>
+    </figure>
+  );
+
+  const StoreCard = (
       <motion.div
         layoutId={layoutId}
         onClick={() => setIsOpen(true)}
@@ -222,6 +306,11 @@ export default function ProductCard({
           <p className="text-white font-black tracking-tight mt-1 text-sm md:text-base">₩{price}</p>
         </div>
       </motion.div>
+  );
+
+  return (
+    <>
+      {variant === 'editorial' ? Editorial : StoreCard}
       <AnimatePresence>
         {isOpen && (
           <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
