@@ -1,5 +1,6 @@
 import { Link } from 'react-router';
 import ProductCard from '@/app/components/products/ProductCard';
+import WorkRow, { WorkCell } from './WorkRow';
 import { useWishlistToggle } from '@/app/hooks/useWishlistToggle';
 import type { Category } from '@/api/category';
 import type { Sku } from '@/api/types';
@@ -58,8 +59,9 @@ export default function HomeCategorySections({ categories, skus }: Props) {
 
             {/* 캐러셀을 걷어내고 펼친다. 한 분류에 한두 점뿐인 것도 있어
                 화살표를 두면 눌러도 넘어가지 않는 헛버튼이 된다. */}
-            <div className="grid grid-cols-2 gap-6 lg:grid-cols-4 md:gap-8">
+            <WorkRow>
               {items.slice(0, MAX_PER_SECTION).map((sku) => (
+                <WorkCell key={sku.skuCode}>
                 <ProductCard
                   key={sku.skuCode}
                   sku={sku}
@@ -69,8 +71,9 @@ export default function HomeCategorySections({ categories, skus }: Props) {
                   isWishlistLoading={wishlistLoading.has(sku.skuCode)}
                   onWishlistClick={handleWishlist}
                 />
+                </WorkCell>
               ))}
-            </div>
+            </WorkRow>
           </div>
         </section>
       ))}

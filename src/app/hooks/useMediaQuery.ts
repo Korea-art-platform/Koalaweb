@@ -27,3 +27,8 @@ export function useMediaQuery(query: string) {
 export function useIsDesktop() {
   return useMediaQuery('(min-width: 1024px)');
 }
+
+/** Tailwind 의 md 브레이크포인트와 같은 값. 이 아래에서 작품을 한 줄로 민다. */
+export function useIsWide() {
+  return useMediaQuery('(min-width: 768px)');
+}

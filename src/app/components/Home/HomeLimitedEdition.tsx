@@ -1,6 +1,7 @@
 import { Link } from 'react-router';
 import { useWishlistToggle } from '@/app/hooks/useWishlistToggle';
 import ProductCard from '@/app/components/products/ProductCard';
+import WorkRow, { WorkCell } from './WorkRow';
 import type { Sku } from '@/api/types';
 
 interface Props {
@@ -46,14 +47,17 @@ export default function HomeLimitedEdition({ skus, loading, limitedCode }: Props
         </div>
 
         {loading ? (
-          <div className="grid grid-cols-2 gap-6 lg:grid-cols-4 md:gap-8">
+          <WorkRow>
             {[...Array(4)].map((_, i) => (
-              <div key={i} className="aspect-square animate-pulse bg-gray-200/60" />
+              <WorkCell key={i}>
+                <div className="aspect-square animate-pulse bg-gray-200/60" />
+              </WorkCell>
             ))}
-          </div>
+          </WorkRow>
         ) : (
-          <div className="grid grid-cols-2 gap-6 lg:grid-cols-4 md:gap-8">
+          <WorkRow>
             {skus.slice(0, 8).map((sku) => (
+              <WorkCell key={sku.skuCode}>
               <ProductCard
                 key={sku.skuCode}
                 sku={sku}
@@ -65,8 +69,9 @@ export default function HomeLimitedEdition({ skus, loading, limitedCode }: Props
                 isWishlistLoading={wishlistLoading.has(sku.skuCode)}
                 onWishlistClick={handleWishlist}
               />
+              </WorkCell>
             ))}
-          </div>
+          </WorkRow>
         )}
       </div>
     </section>
