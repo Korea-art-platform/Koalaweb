@@ -178,16 +178,29 @@ export default function HomeHero({ banners, featured = [] }: HomeHeroProps) {
               </div>
             )}
             <div className="flex gap-2.5">
+              {/* 화살표를 글씨 옆에 벗겨 두지 않고 제 자리(원)에 담는다.
+                  올리면 원 안에서만 움직여 버튼 폭이 흔들리지 않는다. */}
               <Link
                 to={banner?.linkUrl ?? '/store'}
-                className="group inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white text-black text-[13px] font-bold hover:bg-white/90 transition-colors whitespace-nowrap"
+                className="group inline-flex items-center gap-2 whitespace-nowrap rounded-full
+                  bg-white py-1.5 pl-5 pr-1.5 text-[13px] font-bold text-black
+                  transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)]
+                  hover:bg-white/95 active:scale-[0.985] motion-reduce:transition-none"
               >
                 {t('home.hero.shopNow')}
-                <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-black/6
+                  transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)]
+                  group-hover:translate-x-0.5 motion-reduce:transition-none">
+                  <ArrowRight className="h-3.5 w-3.5" />
+                </span>
               </Link>
               <Link
                 to="/artist-lab"
-                className="inline-flex items-center px-5 py-2.5 rounded-full border border-white/40 text-white text-[13px] font-bold hover:bg-white/10 hover:border-white/70 transition-colors whitespace-nowrap"
+                className="inline-flex items-center whitespace-nowrap rounded-full border
+                  border-white/40 px-5 py-2.5 text-[13px] font-bold text-white
+                  transition-[background-color,border-color,transform] duration-300
+                  ease-[cubic-bezier(0.32,0.72,0,1)] hover:border-white/70 hover:bg-white/10
+                  active:scale-[0.985] motion-reduce:transition-none"
               >
                 {t('home.hero.learnMore', { defaultValue: '작가 둘러보기' })}
               </Link>
@@ -241,7 +254,7 @@ export default function HomeHero({ banners, featured = [] }: HomeHeroProps) {
 
         <Link
           to="/artist-lab"
-          className="flex items-center justify-between px-5 md:px-7 py-4 md:py-5 text-white bg-gradient-to-r from-koala-purple via-koala-purple-hover to-koala-gold hover:brightness-110 transition-[filter]"
+          className="flex items-center justify-between px-5 md:px-7 py-4 md:py-5 text-white bg-gradient-to-r from-koala-purple to-koala-purple-bright transition-[filter] duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:brightness-[1.12]"
         >
           <span className="text-[13px] md:text-[15px] font-bold">{t('header.menus.lab')}</span>
           <ArrowRight className="w-4 h-4 md:w-[18px] md:h-[18px]" />

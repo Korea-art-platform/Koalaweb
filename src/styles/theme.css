@@ -17,6 +17,10 @@
      ※ koala-navy / koala-red 는 기존 코드 호환용 이름(값은 브랜드 퍼플) */
   --koala-purple: #3E2259;
   --koala-purple-hover: #52306F;
+  /* 주요 버튼 그라데이션의 밝은 쪽. 퍼플 안에서만 움직인다 —
+     골드까지 이으면 중간이 탁한 갈색을 지나고, 끝에서 흰 글씨
+     대비가 2.4:1 로 떨어져 읽히지 않았다. */
+  --koala-purple-bright: #5A3580;
   --koala-purple-light: #856EA6;
   --koala-purple-lighter: #A28EBF;
   --koala-navy: #3E2259;
@@ -105,6 +109,7 @@
   --color-primary-foreground: var(--primary-foreground);
   --color-koala-purple: var(--koala-purple);
   --color-koala-purple-hover: var(--koala-purple-hover);
+  --color-koala-purple-bright: var(--koala-purple-bright);
   --color-koala-purple-light: var(--koala-purple-light);
   --color-koala-purple-lighter: var(--koala-purple-lighter);
   --color-koala-navy: var(--koala-navy);

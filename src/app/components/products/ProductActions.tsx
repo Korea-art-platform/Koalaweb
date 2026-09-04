@@ -48,7 +48,7 @@ export function ProductActions({
       <button
         onClick={onBuyNow}
         disabled={buying || isOutOfStock}
-        className="mt-2.5 w-full py-4 rounded-xl bg-gradient-to-r from-koala-purple via-koala-purple-hover to-koala-gold text-white hover:brightness-110 text-base font-bold transition-[filter,transform] active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed"
+        className="mt-2.5 w-full py-4 rounded-xl bg-gradient-to-r from-koala-purple to-koala-purple-bright text-white text-base font-bold shadow-[inset_0_1px_0_rgba(255,255,255,0.12)] transition-[filter,transform] duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:brightness-[1.12] active:scale-[0.985] disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {isOutOfStock ? t('product.detail.actions.outOfStock')
           : buying ? '주문서로 이동 중...' : '구매하기'}
