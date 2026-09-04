@@ -147,7 +147,7 @@ export default function HomeHero({ banners, featured = [] }: HomeHeroProps) {
               한 줄로 자르던 것을 두 줄까지 허용해 배너 문구가 잘리지 않게 했다. */}
           <div className="min-w-0 flex-1 text-white">
             <div className="mb-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] tracking-[0.18em] md:text-xs">
-              <span className="font-medium text-koala-gold">{banner?.badge ?? t('home.hero.badge')}</span>
+              <span className="font-medium text-koala-purple-lighter">{banner?.badge ?? t('home.hero.badge')}</span>
               {banner?.subtitle && <span className="tracking-normal text-white/60">· {banner.subtitle}</span>}
             </div>
             <h1 className="font-serif-ko text-[26px] font-bold leading-[1.25] line-clamp-2 md:text-[38px]">
@@ -168,7 +168,7 @@ export default function HomeHero({ banners, featured = [] }: HomeHeroProps) {
                     aria-label={`배너 ${i + 1}`}
                     aria-current={i === current ? 'true' : undefined}
                     className={`rounded-full transition-all duration-300 ${
-                      i === current ? 'w-6 h-1.5 bg-koala-gold' : 'w-1.5 h-1.5 bg-white/40 hover:bg-white/75'
+                      i === current ? 'w-6 h-1.5 bg-white' : 'w-1.5 h-1.5 bg-white/40 hover:bg-white/75'
                     }`}
                   />
                 ))}
@@ -215,7 +215,7 @@ export default function HomeHero({ banners, featured = [] }: HomeHeroProps) {
             to={`/product/${pick.skuCode}`}
             className="col-span-2 md:col-span-1 px-5 md:px-7 py-3.5 md:py-5 bg-[#0D0912]/62 border-r border-white/12 hover:bg-[#0D0912]/80 transition-colors"
           >
-            <p className="text-[10px] font-bold tracking-[0.24em] text-koala-gold mb-2">
+            <p className="text-[10px] font-bold tracking-[0.24em] text-koala-purple-lighter mb-2">
               FEATURED · 지금 주목받는 작품
             </p>
             <div className="flex items-center gap-3.5">
@@ -235,7 +235,7 @@ export default function HomeHero({ banners, featured = [] }: HomeHeroProps) {
                   {pick.model ?? pick.name}
                 </p>
               </div>
-              <p className="ml-auto text-sm md:text-[15px] font-black text-koala-gold whitespace-nowrap">
+              <p className="ml-auto text-sm md:text-[15px] font-black text-white whitespace-nowrap">
                 ₩{pickPrice}
               </p>
             </div>

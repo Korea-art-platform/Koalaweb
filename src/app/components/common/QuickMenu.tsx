@@ -34,8 +34,8 @@ export default function QuickMenu() {
   const itemClass =
     `flex items-center gap-3 pl-3 pr-4 h-11 rounded-full bg-white border border-gray-200
      shadow-[0_6px_18px_rgba(0,0,0,.1)] text-sm font-semibold text-gray-700
-     hover:border-koala-gold hover:text-koala-purple transition-colors
-     focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-koala-gold`;
+     hover:border-koala-purple hover:text-koala-purple transition-colors
+     focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-koala-purple`;
 
   const iconClass = 'w-7 h-7 rounded-full bg-koala-navy/5 text-koala-purple flex items-center justify-center';
 
@@ -78,7 +78,7 @@ export default function QuickMenu() {
         className="w-12 h-12 rounded-full bg-white border border-gray-200
           shadow-[0_8px_24px_rgba(62,34,89,.18)] flex items-center justify-center
           transition-transform hover:scale-105 active:scale-95
-          focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-koala-gold"
+          focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-koala-purple"
       >
         {open ? (
           <X className="w-5 h-5 text-gray-500" />

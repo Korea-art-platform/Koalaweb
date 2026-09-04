@@ -61,7 +61,7 @@ export default function Footer() {
                   { key: 'about', path: '/about' }
                 ].map((link) => (
                   <li key={link.key}>
-                    <Link to={link.path} className="text-sm text-gray-500 hover:text-white transition-colors">
+                    <Link to={link.path} className="text-sm text-gray-400 hover:text-white transition-colors">
                       {t(`footer.explore.links.${link.key}`)}
                     </Link>
                   </li>
@@ -82,7 +82,7 @@ export default function Footer() {
                   { key: 'faq', path: '/faq' }
                 ].map((link) => (
                   <li key={link.key}>
-                    <Link to={link.path} className="text-sm text-gray-500 hover:text-white transition-colors">
+                    <Link to={link.path} className="text-sm text-gray-400 hover:text-white transition-colors">
                       {(link as { label?: string }).label ?? t(`footer.support.links.${link.key}`)}
                     </Link>
                   </li>
@@ -103,7 +103,7 @@ export default function Footer() {
             </p>
           </div>
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-xs text-gray-500 order-2 md:order-1">
+            <p className="text-xs text-gray-400 order-2 md:order-1">
               {t('footer.bottom.copyright')}
             </p>
             <div className="flex flex-wrap justify-center items-center gap-x-6 gap-y-2 order-1 md:order-2">
@@ -113,7 +113,7 @@ export default function Footer() {
                 { key: 'youthProtection', path: '/youth-protection' },
                 { key: 'cookies', path: '/cookies' }
               ].map((link) => (
-                <Link key={link.key} to={link.path} className="text-[10px] md:text-xs text-gray-500 hover:text-white transition-colors">
+                <Link key={link.key} to={link.path} className="text-[10px] md:text-xs text-gray-400 hover:text-white transition-colors">
                   {t(`footer.bottom.${link.key}`)}
                 </Link>
               ))}

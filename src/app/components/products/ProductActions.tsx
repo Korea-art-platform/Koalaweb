@@ -36,7 +36,7 @@ export function ProductActions({
         aria-label="찜하기"
         className={`w-[52px] h-[52px] flex items-center justify-center border rounded-xl transition-all active:scale-[0.98] flex-shrink-0 ${
           isWishlisted
-            ? 'border-koala-gold bg-koala-gold/5 text-koala-gold-deep'
+            ? 'border-koala-purple bg-koala-purple/5 text-koala-purple'
             : 'border-gray-200 text-gray-400 hover:bg-gray-50 hover:border-gray-300'
         }`}
       >

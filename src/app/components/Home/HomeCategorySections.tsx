@@ -40,7 +40,7 @@ export default function HomeCategorySections({ categories, skus }: Props) {
           <div>
             <div className="mb-10 flex flex-wrap items-end justify-between gap-3 md:mb-12">
               <div>
-                <span className="text-[11px] font-medium tracking-[0.2em] text-koala-gold-deep">
+                <span className="text-[11px] font-medium tracking-[0.2em] text-koala-purple-light">
                   {eyebrowOf(category.nameEn, category.name)}
                 </span>
                 <h2 className="font-serif-ko mt-2 text-3xl font-bold text-gray-900 md:text-[34px]">

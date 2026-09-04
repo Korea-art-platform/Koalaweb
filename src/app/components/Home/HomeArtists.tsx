@@ -155,7 +155,7 @@ function ArtistPicker({ artists }: Props) {
             {artist.name}
             <span
               aria-hidden
-              className={`absolute inset-x-0 -bottom-px h-0.5 bg-koala-gold-deep
+              className={`absolute inset-x-0 -bottom-px h-0.5 bg-koala-purple
                 transition-opacity duration-300 motion-reduce:transition-none ${
                 i === index ? 'opacity-100' : 'opacity-0'
               }`}

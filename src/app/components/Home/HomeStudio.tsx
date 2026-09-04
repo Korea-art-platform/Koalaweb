@@ -44,7 +44,7 @@ export default function HomeStudio({ banner }: Props) {
                 style={{ background: 'linear-gradient(120deg, #3E2259 0%, #533274 46%, #7c5a86 72%, #b58f4e 100%)' }}
               />
               <div className="relative z-10 flex flex-col gap-4 md:gap-6">
-                <span className="text-[10px] md:text-xs font-bold uppercase tracking-[0.24em] text-koala-gold-deep transition-colors duration-500 group-hover:text-koala-gold-soft">
+                <span className="text-[10px] md:text-xs font-bold uppercase tracking-[0.24em] text-koala-purple-light transition-colors duration-500 group-hover:text-koala-purple-lighter">
                   + 005 — Exhibition
                 </span>
                 <h2 className="text-2xl md:text-4xl lg:text-5xl font-bold tracking-tight text-gray-900 break-keep transition-colors duration-500 group-hover:text-white">

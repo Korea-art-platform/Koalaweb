@@ -46,7 +46,7 @@ export default function StoreFilter({
                   key={code}
                   onClick={() => onSelectMain(code)}
                   className={`relative px-4 py-2 rounded-full text-xs md:text-sm font-bold whitespace-nowrap transition-colors duration-200 ${
-                    active ? 'text-koala-gold' : 'text-gray-500 hover:text-gray-900'
+                    active ? 'text-koala-purple' : 'text-gray-500 hover:text-gray-900'
                   }`}
                 >
                   {active && (

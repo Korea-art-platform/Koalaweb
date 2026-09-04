@@ -175,7 +175,7 @@ export default function ProductCard({
         {categoryLabel}
       </span>
       {sku.isLimitedEdition && (
-        <span className="px-2 py-1 rounded-md bg-koala-gold text-koala-purple text-[9px] md:text-xs font-bold uppercase shadow-sm">
+        <span className="px-2 py-1 rounded-md bg-koala-purple text-white text-[9px] md:text-xs font-bold uppercase shadow-sm">
           {t('store.product.limited') as string}
         </span>
       )}
@@ -218,7 +218,7 @@ export default function ProductCard({
           <span
             className={`mb-2.5 inline-block px-2 py-0.5 text-[10.5px] font-medium tracking-[0.08em] ${
               markTone === 'gold'
-                ? 'text-koala-gold-deep ring-1 ring-koala-gold/45'
+                ? 'text-koala-gold-text ring-1 ring-koala-gold/55'
                 : 'bg-koala-purple/8 text-koala-purple'
             }`}
           >
@@ -249,7 +249,7 @@ export default function ProductCard({
           className={`absolute right-0 p-1.5 transition-colors disabled:cursor-wait
             focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-koala-purple
             ${mark ? 'top-7' : 'top-0'}
-            ${isWishlisted ? 'text-koala-gold-deep' : 'text-gray-300 hover:text-koala-purple'}`}
+            ${isWishlisted ? 'text-koala-purple' : 'text-gray-300 hover:text-koala-purple'}`}
         >
           {isWishlistLoading ? (
             <span className="block h-[17px] w-[17px] animate-spin rounded-full border-2 border-current border-t-transparent" />
@@ -287,7 +287,7 @@ export default function ProductCard({
           aria-label="찜하기"
           whileTap={{ scale: 0.85 }}
           className={`absolute top-2.5 right-2.5 md:top-4 md:right-4 p-2 md:p-2.5 rounded-full bg-white/90 backdrop-blur-sm shadow-sm transition-colors ${
-            isWishlisted ? 'text-koala-gold-deep' : 'text-gray-400 hover:text-koala-purple'
+            isWishlisted ? 'text-koala-purple' : 'text-gray-400 hover:text-koala-purple'
           } ${isWishlistLoading ? 'cursor-wait' : ''}`}
         >
           {isWishlistLoading ? (
@@ -472,7 +472,7 @@ export default function ProductCard({
                       disabled={isWishlistLoading}
                       aria-label="찜하기"
                       className={`flex items-center justify-center gap-1.5 px-4 py-3 rounded-xl border text-sm font-bold transition-colors ${
-                        isWishlisted ? 'border-koala-gold text-koala-gold-deep bg-koala-gold/5' : 'border-gray-200 text-gray-600 hover:border-koala-purple hover:text-koala-purple'
+                        isWishlisted ? 'border-koala-purple text-koala-purple bg-koala-purple/5' : 'border-gray-200 text-gray-600 hover:border-koala-purple hover:text-koala-purple'
                       }`}
                     >
                       <WishBookmark active={isWishlisted} size={15} /> 찜

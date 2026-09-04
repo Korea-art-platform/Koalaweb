@@ -53,7 +53,7 @@ export function ProductInfo({ sku, selectedColor, onColorSelect }: Props) {
         <span className="flex items-center gap-1.5">
           {isOriginal && <OriginalBadge size="md" />}
           {sku.isLimitedEdition && (
-            <span className="text-[10px] font-bold px-2.5 py-1 bg-koala-gold text-koala-purple rounded-full tracking-wide whitespace-nowrap">
+            <span className="text-[10px] font-bold px-2.5 py-1 bg-koala-purple text-white rounded-full tracking-wide whitespace-nowrap">
               {t('product.detail.gallery.limitedEdition')}
             </span>
           )}
