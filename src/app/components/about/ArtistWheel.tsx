@@ -213,7 +213,7 @@ export default function ArtistWheel({ artists }: Props) {
               aria-label={artist.name}
               aria-current={i === active ? 'true' : undefined}
               className={`rounded-full transition-all duration-300 ${
-                i === active ? 'w-6 h-1.5 bg-koala-gold-deep' : 'w-1.5 h-1.5 bg-gray-300 hover:bg-gray-500'
+                i === active ? 'w-6 h-1.5 bg-koala-purple' : 'w-1.5 h-1.5 bg-gray-300 hover:bg-gray-500'
               }`}
             />
           ))}

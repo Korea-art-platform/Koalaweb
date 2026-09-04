@@ -70,7 +70,7 @@ export default function About() {
   const driftImages = artworks.map((s) => s.primaryImageUrl!).slice(0, 6);
 
   return (
-    <main className="bg-white">
+    <main className="bg-background">
       <Helmet>
         <title>회사 소개 — KOALA</title>
         <meta
@@ -90,10 +90,10 @@ export default function About() {
       </section>
 
       {/* ── 세 단계 ─────────────────────────────────────────── */}
-      <section id="scene-tiers" className="px-5 md:px-12 py-28 md:py-40 bg-[#FAF9FB]">
+      <section id="scene-tiers" className="px-5 md:px-12 py-28 md:py-40 bg-[#F7F5FA]">
         <div className="max-w-[1200px] mx-auto">
           <Reveal>
-            <p className="text-[11px] md:text-xs font-bold tracking-[0.28em] uppercase text-koala-gold-deep mb-5">
+            <p className="text-[11px] md:text-xs font-bold tracking-[0.28em] uppercase text-koala-purple-light mb-5">
               What we sell
             </p>
             <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-gray-900 break-keep max-w-3xl leading-[1.3]">
@@ -105,10 +105,25 @@ export default function About() {
           </Reveal>
 
           <div className="mt-14 md:mt-20 grid gap-px bg-gray-200 md:grid-cols-3 border border-gray-200">
-            {TIERS.map((tier, i) => (
-              <Reveal key={tier.no} index={i} className="bg-[#FAF9FB]">
+            {TIERS.map((tier, i) => {
+              /* 세 칸이 같은 색을 입으면 등급을 나눈다는 이 섹션의 말과 화면이
+                 어긋난다. 금색은 첫 칸에만 두고 테두리로 한 번 더 짚는다 —
+                 상품 카드에서 원작만 금색인 규칙이 여기서 설명된다. */
+              const original = i === 0;
+              return (
+              <Reveal
+                key={tier.no}
+                index={i}
+                className={`bg-[#F7F5FA] ${
+                  original ? 'shadow-[inset_0_0_0_1px_rgba(199,161,90,0.55)]' : ''
+                }`}
+              >
                 <div className="h-full p-7 md:p-9">
-                  <span className="block text-[11px] font-bold tracking-[0.22em] text-koala-gold-deep tabular-nums">
+                  <span
+                    className={`block text-[11px] font-bold tracking-[0.22em] tabular-nums ${
+                      original ? 'text-koala-gold-text' : 'text-koala-purple-light'
+                    }`}
+                  >
                     {tier.no}
                   </span>
                   <h3 className="mt-5 text-2xl md:text-3xl font-bold tracking-tight text-gray-900">
@@ -122,7 +137,8 @@ export default function About() {
                   </p>
                 </div>
               </Reveal>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>
@@ -132,7 +148,7 @@ export default function About() {
         <div className="px-5 md:px-12">
           <div className="max-w-[1200px] mx-auto">
             <Reveal>
-              <p className="text-[11px] md:text-xs font-bold tracking-[0.28em] uppercase text-koala-gold-deep mb-5">
+              <p className="text-[11px] md:text-xs font-bold tracking-[0.28em] uppercase text-koala-purple-light mb-5">
                 Artists
               </p>
               <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-gray-900 break-keep leading-[1.3]">

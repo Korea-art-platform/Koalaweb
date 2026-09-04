@@ -70,7 +70,7 @@ export default function SceneNav({ scenes }: Props) {
             <span
               className={`text-[11px] font-bold tracking-[0.18em] uppercase transition-all duration-500 ${
                 on
-                  ? 'opacity-100 text-koala-gold-deep'
+                  ? 'opacity-100 text-koala-purple'
                   : 'opacity-0 -translate-x-1 text-gray-400 group-hover:opacity-100 group-hover:translate-x-0'
               }`}
             >
@@ -79,7 +79,7 @@ export default function SceneNav({ scenes }: Props) {
             <span
               className={`block rounded-full transition-all duration-500 ${
                 on
-                  ? 'w-2.5 h-2.5 bg-koala-gold-deep'
+                  ? 'w-2.5 h-2.5 bg-koala-purple'
                   : 'w-1.5 h-1.5 bg-gray-300 group-hover:bg-gray-500'
               }`}
             />
