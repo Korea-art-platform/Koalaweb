@@ -1,59 +1,22 @@
 import { loadTossPayments, ANONYMOUS } from '@tosspayments/tosspayments-sdk';
 import { loadNicePay, requestNicePay, type NicePayMethod } from '@/app/lib/nicepay';
 import { loadPayple, requestPayple } from '@/app/lib/payple';
+import { ACTIVE_PG, type PayMethod } from '@/app/lib/pgInfo';
+
+export {
+  ACTIVE_PG,
+  EASYPAY_ENABLED,
+  PG_PROVIDER_CODE,
+  PG_DISPLAY_NAME,
+  PAY_METHODS,
+  PAY_METHOD_SENTENCE,
+} from '@/app/lib/pgInfo';
+export type { PgCode, PayMethod, PayMethodOption } from '@/app/lib/pgInfo';
 
 const TOSS_CLIENT_KEY = import.meta.env.VITE_TOSS_CLIENT_KEY as string;
 const NICE_CLIENT_ID = import.meta.env.VITE_NICEPAY_CLIENT_ID as string | undefined;
 const PAYPLE_CLIENT_KEY = import.meta.env.VITE_PAYPLE_CLIENT_KEY as string | undefined;
 const API_BASE = import.meta.env.VITE_API_BASE_URL as string;
-
-export const ACTIVE_PG = ((import.meta.env.VITE_PG as string | undefined) || 'TOSS') as PgCode;
-
-export const EASYPAY_ENABLED =
-  (import.meta.env.VITE_NICE_EASYPAY as string | undefined) === 'true';
-
-export type PgCode = 'TOSS' | 'NICEPAY' | 'PAYPLE';
-
-export const PG_PROVIDER_CODE: PgCode = ACTIVE_PG;
-
-const PG_LABELS: Record<PgCode, string> = {
-  TOSS: '토스페이먼츠',
-  NICEPAY: '나이스페이먼츠',
-  PAYPLE: '페이플',
-};
-
-export const PG_DISPLAY_NAME: string = PG_LABELS[ACTIVE_PG] ?? PG_LABELS.TOSS;
-
-export type PayMethod = 'CARD' | 'TRANSFER' | 'MOBILE_PHONE' | 'TOSSPAY' | 'KAKAOPAY' | 'NAVERPAY';
-
-export interface PayMethodOption {
-  id: PayMethod;
-  label: string;
-  desc: string;
-}
-
-const METHODS_BY_PG: Record<PgCode, PayMethodOption[]> = {
-  TOSS: [
-    { id: 'TOSSPAY',      label: '토스페이', desc: '토스 앱 간편 결제' },
-    { id: 'TRANSFER',     label: '계좌이체', desc: '실시간 계좌이체' },
-  ],
-  NICEPAY: [
-    { id: 'CARD',         label: '신용카드',   desc: '국내 모든 카드' },
-    ...(EASYPAY_ENABLED
-      ? ([
-          { id: 'KAKAOPAY', label: '카카오페이', desc: '카카오페이 간편결제' },
-          { id: 'NAVERPAY', label: '네이버페이', desc: '네이버페이 간편결제' },
-        ] as PayMethodOption[])
-      : []),
-    { id: 'TRANSFER',     label: '계좌이체',   desc: '실시간 계좌이체' },
-    { id: 'MOBILE_PHONE', label: '휴대폰',     desc: '휴대폰 소액결제' },
-  ],
-  PAYPLE: [
-    { id: 'CARD',         label: '신용카드', desc: '국내 모든 카드' },
-  ],
-};
-
-export const PAY_METHODS: PayMethodOption[] = METHODS_BY_PG[ACTIVE_PG] ?? METHODS_BY_PG.TOSS;
 
 const NICE_METHOD: Partial<Record<PayMethod, NicePayMethod>> = {
   CARD: 'card',
