@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router';
+import { PG_DISPLAY_NAME } from '@/app/lib/pgInfo';
 import { ArrowLeft } from 'lucide-react';
 
 export default function Privacy() {
@@ -15,7 +16,7 @@ export default function Privacy() {
         </div>
       </div>
       <div className="max-w-3xl mx-auto px-6 py-8 space-y-8 text-sm text-gray-700 leading-relaxed">
-        <p className="text-xs text-gray-400">최종 업데이트: 2026년 5월 13일</p>
+        <p className="text-xs text-gray-400">최종 업데이트: 2026년 9월 10일</p>
         <p>
           헤론(이하 "회사")이 운영하는 KOALA 서비스는 「개인정보 보호법」,
           「정보통신망 이용촉진 및 정보보호 등에 관한 법률」 등 관련 법령을 준수하며,
@@ -33,7 +34,7 @@ export default function Privacy() {
             <p className="font-medium text-gray-800 mt-2">주문·결제 시 수집 항목</p>
             <ul className="space-y-1 list-disc list-inside text-gray-600">
               <li>배송지 정보 (수령인 성명, 주소, 연락처)</li>
-              <li>결제 정보 (카드 번호 등 결제 수단은 PG사(토스페이먼츠·카카오페이)가 직접 처리, 당사 미보관)</li>
+              <li>결제 정보 (카드 번호 등 결제 수단은 결제대행사 {PG_DISPLAY_NAME}가 직접 처리, 당사 미보관)</li>
             </ul>
             <p className="font-medium text-gray-800 mt-2">소셜 로그인 시 추가 수집</p>
             <ul className="space-y-1 list-disc list-inside text-gray-600">
@@ -93,7 +94,7 @@ export default function Privacy() {
               </thead>
               <tbody className="divide-y divide-gray-100">
                 <tr>
-                  <td className="px-4 py-2 text-gray-600">토스페이먼츠</td>
+                  <td className="px-4 py-2 text-gray-600">{PG_DISPLAY_NAME}</td>
                   <td className="px-4 py-2 text-gray-600">결제 처리</td>
                 </tr>
                 <tr>
@@ -146,7 +147,7 @@ export default function Privacy() {
           </p>
         </section>
         <p className="pt-4 pb-8 text-xs text-gray-400 text-center border-t border-gray-100">
-          본 방침은 2026년 5월 13일부터 시행됩니다.
+          본 방침은 2026년 9월 10일부터 시행됩니다.
         </p>
       </div>
     </div>

@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router';
+import { PG_DISPLAY_NAME, PAY_METHOD_SENTENCE } from '@/app/lib/pgInfo';
 import { ArrowLeft } from 'lucide-react';
 
 export default function Terms() {
@@ -15,7 +16,7 @@ export default function Terms() {
         </div>
       </div>
       <div className="max-w-3xl mx-auto px-6 py-8 space-y-8 text-sm text-gray-700 leading-relaxed">
-        <p className="text-xs text-gray-400">최종 업데이트: 2026년 5월 13일</p>
+        <p className="text-xs text-gray-400">최종 업데이트: 2026년 9월 10일</p>
         <p>
           KOALA(이하 "서비스")를 이용해 주셔서 감사합니다. 본 이용약관은 KOALA가 제공하는
           모든 서비스의 이용 조건 및 절차, 회원과 회사 간의 권리·의무 및 책임사항을 규정합니다.
@@ -78,11 +79,11 @@ export default function Terms() {
           <h2 className="font-semibold text-gray-900">제6조 (구매 및 결제)</h2>
           <p>
             회원은 서비스 내 상품을 선택하고 결제 수단을 통해 구매할 수 있습니다. 결제는
-            토스페이먼츠 및 카카오페이를 통해 처리되며, 「전자상거래 등에서의 소비자보호에
+            결제대행사 {PG_DISPLAY_NAME}를 통해 처리되며, 「전자상거래 등에서의 소비자보호에
             관한 법률」 제17조에 따라 구매일로부터 7일 이내 청약 철회가 가능합니다.
           </p>
           <ul className="space-y-1 list-disc list-inside text-gray-600 mt-2">
-            <li>결제 수단: 신용·체크카드, 카카오페이, 토스페이 등</li>
+            <li>결제 수단: {PAY_METHOD_SENTENCE}</li>
             <li>상품 가격은 부가세를 포함한 금액입니다.</li>
             <li>배송비는 주문 시 별도 표기됩니다.</li>
           </ul>
@@ -130,7 +131,7 @@ export default function Terms() {
           </p>
         </section>
         <p className="pt-4 pb-8 text-xs text-gray-400 text-center border-t border-gray-100">
-          본 약관은 2026년 5월 13일부터 시행됩니다.
+          본 약관은 2026년 9월 10일부터 시행됩니다.
         </p>
       </div>
     </div>

@@ -15,7 +15,7 @@ export default function Cookies() {
         </div>
       </div>
       <div className="max-w-3xl mx-auto px-6 py-8 space-y-8 text-sm text-gray-700 leading-relaxed">
-        <p className="text-xs text-gray-400">최종 업데이트: 2026년 5월 13일</p>
+        <p className="text-xs text-gray-400">최종 업데이트: 2026년 9월 10일</p>
         <p>
           헤론(이하 "회사")이 운영하는 KOALA 서비스는 서비스 제공, 보안 유지 및 사용자 경험 향상을
           위해 쿠키를 사용합니다. 본 정책은 회사가 사용하는 쿠키의 종류와 목적, 관리 방법을 안내합니다.
@@ -93,6 +93,8 @@ export default function Cookies() {
           <p>
             Google Tag Manager(GTM)는 서비스 이용 통계 분석을 위해 쿠키를 사용합니다.
             Google의 데이터 수집 및 처리 정책은 <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:text-black transition-colors">Google 개인정보처리방침</a>을 참고해 주세요.
+            결제 진행 시 결제대행사의 결제창이 자체 쿠키를 사용할 수 있으며, 이는 해당
+            결제대행사의 개인정보처리방침을 따릅니다.
           </p>
         </section>
         <section className="space-y-2">
@@ -103,7 +105,7 @@ export default function Cookies() {
           </div>
         </section>
         <p className="pt-4 pb-8 text-xs text-gray-400 text-center border-t border-gray-100">
-          본 쿠키 정책은 2026년 5월 13일부터 시행됩니다.
+          본 쿠키 정책은 2026년 9월 10일부터 시행됩니다.
         </p>
       </div>
     </div>
