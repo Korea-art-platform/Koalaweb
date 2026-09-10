@@ -3,31 +3,15 @@ import { useTranslation } from 'react-i18next';
 import { useEffect, useRef, useState } from 'react';
 import { motion, useInView, useReducedMotion } from 'framer-motion';
 
-/** 바닥 로고에 쓰는 글자들. 한 자씩 따로 올라온다. */
 const WORDMARK = 'KOREA-ART-LAB'.split('');
 
 export default function Footer() {
   const { t } = useTranslation();
   const reduce = useReducedMotion();
 
-  /**
-   * 바닥 로고가 아래에서 한 자씩 올라온다.
-   *
-   * 감시 대상은 글자가 아니라 줄 전체다. 글자는 처음에 자기 창 아래로 내려가
-   * 있어서, 글자를 직접 감시하면 화면에 들어온 적이 없다고 판정되어 영원히
-   * 안 켜진다.
-   *
-   * 변형 전파(variants)에 기대지 않고 useInView 로 직접 켠다. 중간에 창 역할을
-   * 하는 평범한 span 이 끼어 있어 전파가 닿지 않았다.
-   *
-   * 모션을 줄이도록 설정한 사용자에게는 처음부터 제자리에 둔다.
-   */
   const markRef = useRef<HTMLDivElement>(null);
   const inView = useInView(markRef, { once: true, amount: 0.35 });
 
-  // 안전장치. 화면 진입 감지가 어떤 이유로든 안 되면 글자가 창 아래에 숨은 채
-  // 영영 안 올라온다 — 로고가 통째로 사라지는 셈이다. 몇 초 뒤에는 무조건
-  // 보이게 둔다. 정상이면 이미 올라온 뒤라 눈에 띄는 차이가 없다.
   const [fallback, setFallback] = useState(false);
   useEffect(() => {
     const id = window.setTimeout(() => setFallback(true), 4000);
@@ -50,13 +34,7 @@ export default function Footer() {
 
   return (
     <footer className="relative">
-      {/* 지평선.
-          윗변을 직선으로 두면 본문과 푸터가 뚝 끊긴다. 아주 얕은 호로 두어
-          작품 섹션이 끝나고 내려앉는 것처럼 만든다. 파도가 아니라 지평선이라
-          가운데가 겨우 몇십 px 솟는 정도다.
-
-          호는 푸터 박스 위에 있어야 하므로 overflow-hidden 을 안쪽 상자로
-          옮겼다. 바깥에 두면 호와 서표가 잘린다. */}
+      
       <svg
         aria-hidden
         viewBox="0 0 1440 44"
@@ -69,9 +47,6 @@ export default function Footer() {
         />
       </svg>
 
-      {/* 서표.
-          작품 카드에 쓰는 것과 같은 모티프다. 페이지가 여기서 끝난다는 표시로
-          모서리에 걸어 둔다. 로고와 겹치지 않게 오른쪽에 둔다. */}
       <span
         aria-hidden
         className="pointer-events-none absolute -top-8 right-[8%] z-10 hidden md:block
@@ -102,8 +77,7 @@ export default function Footer() {
       </span>
 
       <div className="relative overflow-hidden bg-[#140b20]">
-        {/* 아래쪽 글로우. 금색이 아니라 퍼플이다 — 금색은 원작 표시에만 쓴다
-            (DESIGN.md). 전에는 여기에 금색 방사가 두 겹 깔려 있었다. */}
+        
         <div
           className="pointer-events-none absolute inset-x-0 bottom-0 h-[380px]"
           style={{
@@ -162,7 +136,7 @@ export default function Footer() {
               <ul className="space-y-3">
                 {[
                   { key: 'help', path: '/help' },
-                  // 비회원은 로그인이 없어 여기 말고는 자기 주문을 찾을 길이 없다.
+                  
                   { key: 'orderLookup', path: '/order-lookup', label: '주문 조회' },
                   { key: 'shipping', path: '/shipping' },
                   { key: 'returns', path: '/returns' },
@@ -180,16 +154,13 @@ export default function Footer() {
             </div>
           </div>
         </div>
-        {/* 마감 로고.
-            푸터 바닥에 마크와 글자를 한 줄로 크게 깐다. 페이지가 여기서
-            끝난다는 표시고, 아래 사업자 정보와 시선을 다투지 않도록 흰색을
-            눌러 뒀다. 글자 사이는 남는 폭에 맞춰 벌어진다. */}
+        
         <div
           ref={markRef}
           aria-hidden
           className="mb-10 flex items-center gap-4 md:gap-6 border-t border-white/10 pt-10"
         >
-          {/* 마크가 먼저 올라오고 글자가 뒤따른다. */}
+          
           <span className="inline-block shrink-0 overflow-hidden">
             <motion.img
               src="/logo-symbol-white.svg"
@@ -206,8 +177,7 @@ export default function Footer() {
           >
             <span className="inline-flex w-full justify-between">
               {WORDMARK.map((ch, i) => (
-                // 글자마다 창을 하나씩 두고 그 안에서 올라오게 한다.
-                // 창이 없으면 글자가 푸터 바깥에서부터 미끄러져 들어와 어색하다.
+                
                 <span key={i} className="inline-block overflow-hidden pb-[0.06em] align-bottom">
                   <motion.span className="inline-block" {...piece(i + 1)}>
                     {ch}
