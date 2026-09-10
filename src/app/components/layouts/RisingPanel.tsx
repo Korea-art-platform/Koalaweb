@@ -10,7 +10,7 @@ export function RisingPanel({ children, className = '' }: Props) {
   return (
     <div
       data-hero-cover
-      className={`relative z-10 bg-white rounded-t-[1.5rem] md:rounded-t-[2.25rem] shadow-[0_-20px_50px_-20px_rgba(13,9,18,0.55)] ${className}`}
+      className={`relative z-10 bg-white md:rounded-t-[2.25rem] shadow-[0_-20px_50px_-20px_rgba(13,9,18,0.55)] ${className}`}
     >
       {children}
     </div>

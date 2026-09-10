@@ -1,6 +1,5 @@
 interface Props {
   children: React.ReactNode;
-  
   columns?: 2 | 4;
 }
 
