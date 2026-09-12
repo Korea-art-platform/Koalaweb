@@ -13,8 +13,7 @@ import HomeHero from '@/app/components/Home/HomeHero';
 import { StickyHero, RisingPanel } from '@/app/components/layouts/RisingPanel';
 import HomeOriginal from '@/app/components/Home/HomeOriginal';
 import HomeLimitedEdition from '@/app/components/Home/HomeLimitedEdition';
-import HomeGenreCollections from '@/app/components/Home/HomeGenreCollections';
-import HomeCategorySections from '@/app/components/Home/HomeCategorySections';
+import HomeCategoryCircles from '@/app/components/Home/HomeCategoryCircles';
 import HomeArtists from '@/app/components/Home/HomeArtists';
 import HomeStudio from '@/app/components/Home/HomeStudio';
 import HomeNotices from '@/app/components/Home/HomeNotices';
@@ -90,13 +89,6 @@ export default function Home() {
       return rank(a) - rank(b);
     });
 
-  const limitedSkus = editionSkus.filter(
-    (s) => s.mainCategory === LIMITED || s.isLimitedEdition,
-  );
-  const heroFeatured = (limitedSkus.length ? limitedSkus : skus)
-    .filter((s) => s.status === 'ACTIVE')
-    .slice(0, 12);
-
   return (
     <main className="bg-koala-navy font-sans">
       <PageMeta title="한국 미술 작품 마켓" description="한국 작가의 원작·한정판·오픈에디션 작품을 만나보세요. 조각·아트토이·굿즈·회화까지, KOALA에서 소장하세요." />
@@ -105,14 +97,19 @@ export default function Home() {
           sticky 는 부모 높이 안에서만 붙으므로 부모는 main 이어야 한다 —
           히어로를 딱 맞는 상자로 감싸면 붙을 여유가 0 이라 아예 붙지 않는다. */}
       <StickyHero>
-        <HomeHero banners={banners} featured={heroFeatured} />
+        <HomeHero banners={banners} loading={loading} />
       </StickyHero>
 
       <RisingPanel>
         <HomeOriginal skus={originalSkus} loading={loading} categoryCode={originalCode} />
         <HomeLimitedEdition skus={editionSkus} loading={loading} limitedCode={LIMITED} />
-        <HomeGenreCollections genreCounts={genreCounts} skus={skus} />
-        <HomeCategorySections categories={subCategories} skus={skus} />
+        <HomeCategoryCircles
+          categories={subCategories}
+          skus={skus}
+          genreCounts={genreCounts}
+          originalCode={originalCode}
+          limitedCode={LIMITED}
+        />
         <HomeArtists artists={artists} />
         <HomeStudio banner={studioBanner} />
         <HomeNotices notices={notices} />

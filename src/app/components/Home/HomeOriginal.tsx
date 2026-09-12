@@ -1,8 +1,8 @@
-import { Link } from 'react-router';
+import { useState } from 'react';
 import { useWishlistToggle } from '@/app/hooks/useWishlistToggle';
-import { useIsWide } from '@/app/hooks/useMediaQuery';
 import ProductCard from '@/app/components/products/ProductCard';
-import WorkRow, { WorkCell } from './WorkRow';
+import SectionHeader from './SectionHeader';
+import { toCdnUrl, toThumbUrl } from '@/app/lib/imageUrl';
 import type { Sku } from '@/api/types';
 
 interface Props {
@@ -12,98 +12,83 @@ interface Props {
   categoryCode: string | null;
 }
 
-/**
- * 원작.
- *
- * 가로 캐러셀을 걷어내고 한 번에 펼친다. 지금 걸린 원작이 여섯 점인데
- * 캐러셀에 담으면 화살표를 눌러야 나머지가 보인다 — 몇 점 안 되는 것을
- * 숨겨 두는 셈이었다.
- *
- * 넓은 화면에서는 앞의 둘을 크게, 나머지를 작게 건다. 같은 크기로 늘어놓는
- * 것보다 무엇을 먼저 보라는 말이 된다.
- *
- * 좁은 화면에서는 그 둘을 하나로 합쳐 한 줄로 민다. 큰 줄과 작은 줄을 그대로
- * 쌓으면 섹션 하나가 화면 두 개 높이가 되어, 아래 섹션까지 내려가기 전에
- * 지친다. 섹션마다 한 줄이면 엄지로 훑어 전체를 지나갈 수 있다.
- */
+// 원작 — 짙은 무대에 한 점씩 크게. 아래 작은 원작을 누르면 무대 위 작품이 바뀐다
 export default function HomeOriginal({ skus, loading, categoryCode }: Props) {
   const { wishlistedCodes, wishlistLoading, handleWishlist } = useWishlistToggle();
-  const isWide = useIsWide();
+  const [active, setActive] = useState(0);
 
   if (!loading && skus.length === 0) return null;
 
   const shown = skus.slice(0, 6);
-  const big = shown.slice(0, 2);
-  const rest = shown.slice(2);
-
-  const card = (sku: Sku, large: boolean) => (
-    <ProductCard
-      key={sku.skuCode}
-      sku={sku}
-      mark="원작"
-      variant="editorial"
-      markTone="gold"
-      viewMode={large ? 'large' : 'grid'}
-      isWishlisted={wishlistedCodes.has(sku.skuCode)}
-      isWishlistLoading={wishlistLoading.has(sku.skuCode)}
-      onWishlistClick={handleWishlist}
-    />
-  );
+  const current = shown.length ? shown[Math.min(active, shown.length - 1)] : null;
 
   return (
-    <section className="mx-auto max-w-[1320px] px-5 pt-16 md:px-10 md:pt-24">
-      <div className="mb-10 flex flex-wrap items-end justify-between gap-3 md:mb-14">
-        <div>
-          <h2 className="font-serif-ko text-3xl font-bold text-gray-900 md:text-[34px]">원작</h2>
-          <p className="mt-2 text-sm text-gray-500 break-keep">
-            작가의 손에서 나온 단 한 점. 다시 만들어지지 않습니다.
-          </p>
-        </div>
-        <Link
-          to={categoryCode ? `/store?main=${categoryCode}` : '/store'}
-          className="border-b border-gray-400 pb-0.5 text-[13px] text-gray-500
-            transition-colors hover:border-koala-purple hover:text-koala-purple"
-        >
-          원작 전체 보기
-        </Link>
-      </div>
+    <section
+      // 히어로 위로 올라오는 판의 맨 위 — 판의 둥근 윗모서리를 같이 쓴다
+      className="md:rounded-t-[2.25rem]"
+      style={{ background: 'radial-gradient(80% 60% at 28% 38%, rgba(90,53,128,0.45) 0%, rgba(29,18,38,0) 70%), #1D1226' }}
+    >
+      {/* 모바일은 한 화면에 담기게 위아래를 줄인다 */}
+      <div className="mx-auto max-w-[1320px] px-5 py-9 md:px-10 md:py-24">
+        <SectionHeader
+          dark
+          eyebrow="001 — Originals"
+          title="원작"
+          sub="작가의 손에서 나온 단 한 점. 다시 만들어지지 않습니다."
+          viewAllHref={categoryCode ? `/store?main=${categoryCode}` : '/store'}
+          viewAllLabel="원작 전체 보기"
+        />
 
-      {loading ? (
-        <WorkRow columns={2}>
-          {[0, 1].map((i) => (
-            <WorkCell key={i} wide>
-              <div className="aspect-square animate-pulse bg-gray-100" />
-            </WorkCell>
-          ))}
-        </WorkRow>
-      ) : isWide ? (
-        <>
-          <div className="mb-12 md:mb-20">
-            <WorkRow columns={2}>
-              {big.map((s) => (
-                <WorkCell key={s.skuCode} wide>
-                  {card(s, true)}
-                </WorkCell>
-              ))}
-            </WorkRow>
+        {loading || !current ? (
+          <div className="grid gap-8 md:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)]">
+            <div className="aspect-square animate-pulse rounded-2xl bg-white/[0.06]" />
           </div>
-          {rest.length > 0 && (
-            <WorkRow>
-              {rest.map((s) => (
-                <WorkCell key={s.skuCode}>{card(s, false)}</WorkCell>
-              ))}
-            </WorkRow>
-          )}
-        </>
-      ) : (
-        <WorkRow>
-          {shown.map((s) => (
-            <WorkCell key={s.skuCode} wide>
-              {card(s, true)}
-            </WorkCell>
-          ))}
-        </WorkRow>
-      )}
+        ) : (
+          <>
+            <div key={current.skuCode} className="animate-in fade-in duration-500 motion-reduce:animate-none">
+              <ProductCard
+                sku={current}
+                variant="stage"
+                viewMode="large"
+                mark="원작"
+                markTone="gold"
+                isWishlisted={wishlistedCodes.has(current.skuCode)}
+                isWishlistLoading={wishlistLoading.has(current.skuCode)}
+                onWishlistClick={handleWishlist}
+              />
+            </div>
+
+            {shown.length > 1 && (
+              <div className="-mx-5 mt-5 flex gap-2.5 overflow-x-auto px-5 no-scrollbar md:mx-0 md:mt-14 md:gap-3 md:px-0">
+                {shown.map((s, i) => (
+                  <button
+                    key={s.skuCode}
+                    type="button"
+                    onClick={() => setActive(i)}
+                    aria-label={`${s.artistName} 작 ${s.model ?? s.name} 보기`}
+                    aria-pressed={s.skuCode === current.skuCode}
+                    className={`h-14 w-14 shrink-0 overflow-hidden rounded-lg bg-[#F4F1F7] md:rounded-xl transition-opacity duration-300
+                      md:h-24 md:w-24 ${s.skuCode === current.skuCode ? 'ring-2 ring-koala-gold' : 'opacity-55 hover:opacity-90'}`}
+                  >
+                    <img
+                      src={toThumbUrl(s.primaryImageUrl) ?? '/placeholder.svg'}
+                      onError={(e) => {
+                        const img = e.currentTarget;
+                        const full = toCdnUrl(s.primaryImageUrl);
+                        if (full && img.src !== full) img.src = full;
+                      }}
+                      alt=""
+                      loading="lazy"
+                      decoding="async"
+                      className="h-full w-full object-contain p-2 mix-blend-multiply"
+                    />
+                  </button>
+                ))}
+              </div>
+            )}
+          </>
+        )}
+      </div>
     </section>
   );
 }

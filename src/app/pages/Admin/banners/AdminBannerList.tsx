@@ -5,7 +5,10 @@ import {
   uploadBannerImage, updateBannerImage,
   type BannerResponse,
 } from '@/api/adminApi';
+import ShowcaseBannerModal from './ShowcaseBannerModal';
+import { stageColor } from '@/app/components/Home/ShowcaseArt';
 
+// MAIN 을 고르면 메인 히어로 폼으로 넘어간다
 const BANNER_TYPES = ['MAIN', 'MAIN_SUB', 'EXHIBITION', 'LOGIN', 'SUB', 'EVENT', 'PROMOTION', 'ARTIST'];
 
 const BANNER_TYPE_LABELS: Record<string, string> = {
@@ -30,7 +33,7 @@ interface BannerForm {
 }
 
 const DEFAULT_FORM: BannerForm = {
-  bannerType: 'MAIN',
+  bannerType: 'MAIN_SUB',
   title: '',
   subtitle: '',
   badge: '',
@@ -71,6 +74,9 @@ export default function AdminBannerList() {
   const [editForm, setEditForm] = useState({ title: '', subtitle: '', badge: '', description: '', linkUrl: '', sortOrder: '0' });
   const [editSubmitting, setEditSubmitting] = useState(false);
   const [editError, setEditError] = useState('');
+
+  // 메인 히어로 등록·수정 — target 이 없으면 새로 등록
+  const [showcase, setShowcase] = useState<{ target: BannerResponse | null } | null>(null);
 
   const load = useCallback(() => {
     setLoading(true);
@@ -189,6 +195,7 @@ export default function AdminBannerList() {
   };
 
   const openEdit = (b: BannerResponse) => {
+    if (b.bannerType === 'MAIN') { setShowcase({ target: b }); return; }
     setEditTarget(b);
     setEditForm({
       title: b.title ?? '',
@@ -218,6 +225,10 @@ export default function AdminBannerList() {
         imageUrl: editTarget.imageUrl,
         mobileImageUrl: editTarget.mobileImageUrl ?? null,
         videoUrl: editTarget.videoUrl ?? null,
+        skuCode: editTarget.skuCode ?? null,
+        effectImageUrl1: editTarget.effectImageUrl1 ?? null,
+        effectImageUrl2: editTarget.effectImageUrl2 ?? null,
+        effectImageUrl3: editTarget.effectImageUrl3 ?? null,
         linkUrl: editForm.linkUrl.trim() || null,
         linkTarget: editTarget.linkTarget ?? null,
         bgColor: editTarget.bgColor ?? null,
@@ -265,7 +276,7 @@ export default function AdminBannerList() {
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-xl font-bold text-gray-900">배너 목록</h1>
         <button
-          onClick={() => { setCreateOpen(true); setFormError(''); resetCreateForm(); }}
+          onClick={() => setShowcase({ target: null })}
           className="px-3 py-2 text-xs bg-koala-navy text-white rounded-lg hover:bg-koala-navy-hover transition-colors"
         >
           + 배너 추가
@@ -283,12 +294,22 @@ export default function AdminBannerList() {
           {banners.map((b) => (
             <div key={b.bannerCode} className="bg-white rounded-xl border border-gray-200 p-4 flex items-center gap-4">
               <button
-                onClick={() => { setReplaceTarget(b); setReplaceFile(null); setReplacePreview(''); }}
+                onClick={() => {
+                  if (b.bannerType === 'MAIN') { setShowcase({ target: b }); return; }
+                  setReplaceTarget(b); setReplaceFile(null); setReplacePreview('');
+                }}
                 className="relative w-28 h-16 flex-shrink-0 group"
                 title="이미지 교체"
               >
                 {b.imageUrl ? (
-                  <img src={b.imageUrl} alt={b.title} className="w-full h-full object-cover rounded-lg bg-gray-100" />
+                  <img
+                    src={b.imageUrl}
+                    alt={b.title}
+                    className={b.bannerType === 'MAIN'
+                      ? 'w-full h-full object-contain rounded-lg'
+                      : 'w-full h-full object-cover rounded-lg bg-gray-100'}
+                    style={b.bannerType === 'MAIN' ? { backgroundColor: stageColor(b.bgColor) } : undefined}
+                  />
                 ) : (
                   <div className="w-full h-full bg-gray-100 rounded-lg flex items-center justify-center">
                     <ImageIcon className="w-5 h-5 text-gray-300" />
@@ -303,6 +324,11 @@ export default function AdminBannerList() {
                   <span className="text-xs font-medium text-gray-400 bg-gray-100 px-1.5 py-0.5 rounded">{b.bannerType}</span>
                   <span className="font-medium text-gray-900 text-sm">{b.title}</span>
                 </div>
+                {b.bannerType === 'MAIN' && (
+                  <p className="text-xs text-gray-500 truncate">
+                    {b.skuCode ? `${b.artistName} · ${b.skuName}` : '연결된 작품이 없습니다 — 수정에서 작품을 골라 주세요'}
+                  </p>
+                )}
                 {b.subtitle && <p className="text-xs text-gray-400 truncate">{b.subtitle}</p>}
                 {b.linkUrl && <p className="text-xs text-gray-300 truncate mt-0.5">{b.linkUrl}</p>}
                 <p className="text-xs text-gray-300 mt-1">순서: {b.sortOrder ?? 0}</p>
@@ -337,7 +363,12 @@ export default function AdminBannerList() {
                 <label className="block text-xs text-gray-500 mb-1.5">배너 타입 *</label>
                 <select
                   value={form.bannerType}
-                  onChange={(e) => setForm((f) => ({ ...f, bannerType: e.target.value }))}
+                  onChange={(e) => {
+                    const v = e.target.value;
+                    // MAIN 은 메인 히어로 폼으로
+                    if (v === 'MAIN') { setCreateOpen(false); setShowcase({ target: null }); return; }
+                    setForm((f) => ({ ...f, bannerType: v }));
+                  }}
                   className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-black/10 bg-white"
                 >
                   {BANNER_TYPES.map((t) => <option key={t} value={t}>{BANNER_TYPE_LABELS[t] ?? t}</option>)}
@@ -727,6 +758,23 @@ export default function AdminBannerList() {
             </div>
           </div>
         </div>
+      )}
+
+      {showcase && (
+        <ShowcaseBannerModal
+          target={showcase.target}
+          typeOptions={BANNER_TYPES.map((t) => ({ value: t, label: BANNER_TYPE_LABELS[t] ?? t }))}
+          onSwitchType={(type) => {
+            if (type === 'MAIN') return;
+            setShowcase(null);
+            resetCreateForm();
+            setForm((f) => ({ ...f, bannerType: type }));
+            setFormError('');
+            setCreateOpen(true);
+          }}
+          onClose={() => setShowcase(null)}
+          onSaved={() => { setShowcase(null); load(); }}
+        />
       )}
     </div>
   );

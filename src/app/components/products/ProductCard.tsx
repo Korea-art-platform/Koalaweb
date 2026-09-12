@@ -16,6 +16,7 @@ import type { Sku } from '@/api/types';
 import { notifyCartUpdated } from '@/app/hooks/useCart';
 
 import { useCategories } from '@/app/hooks/useCategories';
+import { useCategoryTint } from '@/app/hooks/useCategoryTint';
 interface ProductCardProps {
   sku: Sku;
   viewMode: 'grid' | 'large';
@@ -24,10 +25,12 @@ interface ProductCardProps {
    *
    * store  — 사진 위에 글씨를 얹는다. 목록을 훑는 자리라 한 칸이 작다.
    * editorial — 사진 아래에 글씨를 둔다. 홈처럼 몇 점을 골라 거는 자리.
+   * shop — 둥근 카드에 분류 색을 옅게 깐 사진 칸. 홈 에디션 나열.
+   * stage — 원작 무대. 짙은 바탕 위에 한 점을 크게.
    *
    * 겉모습만 다르고 눌렀을 때 열리는 상세 모달은 같은 것을 쓴다.
    */
-  variant?: 'store' | 'editorial';
+  variant?: 'store' | 'editorial' | 'shop' | 'stage';
   /** editorial 에서 등급 표시에 쓴다. */
   mark?: string;
   markTone?: 'gold' | 'purple';
@@ -65,6 +68,12 @@ export default function ProductCard({
   // 적어 두면 어드민에서 바꿔도 카드만 옛 이름으로 남아 화면마다 달라진다.
   const { subLabel } = useCategories();
   const categoryLabel = subLabel(sku.genre);
+  const tintOf = useCategoryTint();
+  // 할인 — 정가 표시가가 지금 표시가보다 크면
+  const nowPrice = displayPrice(sku);
+  const listPrice = sku.displayListPrice;
+  const discounted = nowPrice != null && listPrice != null && listPrice > nowPrice;
+  const discountPct = discounted ? Math.round((1 - nowPrice / listPrice) * 100) : 0;
 
   const [isOpen, setIsOpen] = useState(false);
   const [adding, setAdding] = useState(false);
@@ -308,9 +317,197 @@ export default function ProductCard({
       </motion.div>
   );
 
+  /* 홈 에디션 나열 — 둥근 카드, 분류 색을 옅게 깐 사진 칸. 흰 배경 사진은 곱하기로 녹인다 */
+  const badge = sku.status === 'OUT_OF_STOCK'
+    ? { label: t('store.product.status.soldOut') as string, cls: 'bg-gray-900 text-white' }
+    : discounted
+      ? { label: `${discountPct}%`, cls: 'bg-koala-purple text-white' }
+      : mark
+        ? {
+            label: mark,
+            cls: markTone === 'gold'
+              ? 'bg-white text-koala-gold-text ring-1 ring-koala-gold/60'
+              : sku.isLimitedEdition ? 'bg-koala-purple text-white' : 'bg-white/90 text-koala-purple',
+          }
+        : null;
+
+  const Shop = (
+    <div
+      className="group flex h-full flex-col overflow-hidden rounded-2xl border border-gray-200/80 bg-white
+        transition-shadow duration-300 hover:shadow-[0_18px_40px_-24px_rgba(62,34,89,0.35)]"
+    >
+      <motion.div
+        layoutId={layoutId}
+        onClick={() => setIsOpen(true)}
+        whileHover="hover"
+        className="relative aspect-square cursor-pointer overflow-hidden"
+        style={{ backgroundColor: tintOf(sku.genre) }}
+      >
+        {/* 분류 색 바탕에 사진을 액자처럼 — 사진 배경이 제각각이라 여백을 고르게 둔다 */}
+        <div className="absolute inset-[11%] overflow-hidden shadow-[0_10px_24px_-14px_rgba(62,34,89,0.45)]">
+          <motion.img
+            layoutId={`image-${layoutId}`}
+            src={imageUrl}
+            onError={onImageError}
+            alt={`${sku.artistName} 작 ${title}`}
+            className="h-full w-full object-cover"
+            variants={{ hover: { scale: 1.04 } }}
+            transition={{ duration: 0.5 }}
+          />
+        </div>
+        {badge && (
+          <span className={`absolute right-3 top-3 rounded-full px-2.5 py-1 text-[11px] font-bold ${badge.cls}`}>
+            {badge.label}
+          </span>
+        )}
+      </motion.div>
+
+      <div className="flex flex-1 flex-col px-4 pb-4 pt-3.5 md:px-5 md:pb-5">
+        <motion.h3
+          layoutId={`title-${layoutId}`}
+          onClick={() => setIsOpen(true)}
+          className="cursor-pointer truncate text-[15px] font-bold text-gray-900 transition-colors hover:text-koala-purple"
+        >
+          {title}
+        </motion.h3>
+        <motion.p layoutId={`subtitle-${layoutId}`} className="mt-0.5 truncate text-[13px] text-gray-400">
+          {sku.artistName}
+        </motion.p>
+
+        <div className="mt-auto flex items-end justify-between gap-2 pt-4">
+          <div className="min-w-0">
+            <p className="text-base font-bold tabular-nums text-koala-purple">₩{price}</p>
+            {discounted && (
+              <p className="text-xs tabular-nums text-gray-400 line-through">₩{formatWon(listPrice)}</p>
+            )}
+          </div>
+          <div className="flex shrink-0 items-center gap-1">
+            <button
+              type="button"
+              onClick={(e) => onWishlistClick(e, sku.skuCode)}
+              disabled={isWishlistLoading}
+              aria-label={isWishlisted ? `${title} 찜 해제` : `${title} 찜하기`}
+              aria-pressed={isWishlisted}
+              className={`flex h-9 w-9 items-center justify-center rounded-full transition-colors disabled:cursor-wait
+                focus-visible:outline-2 focus-visible:outline-koala-purple
+                ${isWishlisted ? 'text-koala-purple' : 'text-gray-300 hover:text-koala-purple'}`}
+            >
+              {isWishlistLoading ? (
+                <span className="block h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+              ) : (
+                <WishBookmark active={isWishlisted} size={17} className="block" />
+              )}
+            </button>
+            <button
+              type="button"
+              onClick={handleAddToCart}
+              disabled={adding || sku.status === 'OUT_OF_STOCK'}
+              aria-label={`${title} 장바구니에 담기`}
+              className={`flex h-9 w-9 items-center justify-center rounded-full text-white transition-[filter,background-color]
+                duration-300 hover:brightness-[1.12] disabled:cursor-not-allowed disabled:opacity-40
+                focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-koala-purple
+                ${added ? 'bg-green-600' : 'bg-koala-purple'}`}
+            >
+              {added ? (
+                <Check className="h-4 w-4" />
+              ) : adding ? (
+                <span className="block h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white" />
+              ) : (
+                <ShoppingCart className="h-4 w-4" />
+              )}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+  /* 원작 무대 — 짙은 바탕 위 밝은 전시 칸에 한 점을 크게 */
+  const Stage = (
+    <div className="grid items-center gap-5 md:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] md:gap-14">
+      <motion.div
+        layoutId={layoutId}
+        onClick={() => setIsOpen(true)}
+        whileHover="hover"
+        className="relative aspect-[3/2] cursor-pointer overflow-hidden rounded-2xl bg-[#F4F1F7] max-md:max-h-[30svh] md:aspect-square"
+      >
+        <motion.img
+          layoutId={`image-${layoutId}`}
+          src={imageUrl}
+          onError={onImageError}
+          alt={`${sku.artistName} 작 ${title}`}
+          className="absolute inset-0 h-full w-full object-contain p-5 mix-blend-multiply md:p-12"
+          variants={{ hover: { scale: 1.03 } }}
+          transition={{ duration: 0.5 }}
+        />
+      </motion.div>
+
+      <div>
+        {/* 원작 표시와 작가를 한 줄에 */}
+        <div className="flex items-center gap-2.5">
+          {(isOriginal || (mark && markTone === 'gold')) && <OriginalBadge size="md" />}
+          <motion.p layoutId={`subtitle-${layoutId}`} className="text-sm text-white/60">
+            {sku.artistName}
+          </motion.p>
+        </div>
+        <motion.h3
+          layoutId={`title-${layoutId}`}
+          onClick={() => setIsOpen(true)}
+          className="font-serif-ko mt-2 cursor-pointer text-2xl font-bold text-white break-keep md:mt-4 md:text-[40px]"
+        >
+          {title}
+        </motion.h3>
+        {description && (
+          <p className="mt-6 max-w-md text-sm leading-relaxed text-white/70 break-keep line-clamp-3 max-md:hidden md:text-[15px]">
+            {description}
+          </p>
+        )}
+        <p className="mt-3 text-xl font-medium tabular-nums text-white md:mt-7 md:text-[28px]">₩{price}</p>
+        <div className="mt-4 flex flex-wrap items-center gap-2.5 md:mt-7">
+          <button
+            type="button"
+            onClick={() => setIsOpen(true)}
+            className="group/more inline-flex items-center gap-2 rounded-full bg-white py-2.5 pl-5 pr-4 text-[13px] font-bold
+              text-black transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] active:scale-[0.985]"
+          >
+            자세히 보기
+            <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover/more:translate-x-0.5" />
+          </button>
+          <Link
+            to={detailPath}
+            className="inline-flex items-center rounded-full border border-white/40 px-5 py-2.5 text-[13px] font-bold text-white
+              transition-colors duration-300 hover:border-white/70 hover:bg-white/10"
+          >
+            작품 페이지
+          </Link>
+          <button
+            type="button"
+            onClick={(e) => onWishlistClick(e, sku.skuCode)}
+            disabled={isWishlistLoading}
+            aria-label={isWishlisted ? `${title} 찜 해제` : `${title} 찜하기`}
+            aria-pressed={isWishlisted}
+            className={`flex h-10 w-10 items-center justify-center rounded-full border border-white/25 transition-colors
+              disabled:cursor-wait ${isWishlisted ? 'text-white' : 'text-white/60 hover:text-white'}`}
+          >
+            {isWishlistLoading ? (
+              <span className="block h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+            ) : (
+              <WishBookmark active={isWishlisted} size={16} className="block" />
+            )}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+
+  const body = variant === 'editorial' ? Editorial
+    : variant === 'shop' ? Shop
+      : variant === 'stage' ? Stage
+        : StoreCard;
+
   return (
     <>
-      {variant === 'editorial' ? Editorial : StoreCard}
+      {body}
       <AnimatePresence>
         {isOpen && (
           <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">

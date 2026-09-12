@@ -238,6 +238,18 @@ export interface Banner {
   subtitle?: string;
   badge?: string;
   description?: string;
+  // 메인 히어로 — 작품·표시가·구성 이미지·배경색
+  skuCode?: string;
+  skuName?: string;
+  skuModel?: string;
+  artistCode?: string;
+  artistName?: string;
+  displayPrice?: number;
+  displayListPrice?: number;
+  effectImageUrl1?: string;
+  effectImageUrl2?: string;
+  effectImageUrl3?: string;
+  bgColor?: string;
 }
 
 export interface WishlistItem {
