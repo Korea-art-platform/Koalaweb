@@ -16,7 +16,6 @@ import type { Sku } from '@/api/types';
 import { notifyCartUpdated } from '@/app/hooks/useCart';
 
 import { useCategories } from '@/app/hooks/useCategories';
-import { useCategoryTint } from '@/app/hooks/useCategoryTint';
 interface ProductCardProps {
   sku: Sku;
   viewMode: 'grid' | 'large';
@@ -70,7 +69,6 @@ export default function ProductCard({
   // 적어 두면 어드민에서 바꿔도 카드만 옛 이름으로 남아 화면마다 달라진다.
   const { subLabel } = useCategories();
   const categoryLabel = subLabel(sku.genre);
-  const tintOf = useCategoryTint();
   // 할인 — 정가 표시가가 지금 표시가보다 크면
   const nowPrice = displayPrice(sku);
   const listPrice = sku.displayListPrice;
@@ -342,21 +340,18 @@ export default function ProductCard({
         layoutId={layoutId}
         onClick={() => setIsOpen(true)}
         whileHover="hover"
-        className="relative aspect-square cursor-pointer overflow-hidden"
-        style={{ backgroundColor: tintOf(sku.genre) }}
+        className="relative aspect-square cursor-pointer overflow-hidden bg-white"
       >
-        {/* 분류 색 바탕에 사진을 액자처럼 — 사진 배경이 제각각이라 여백을 고르게 둔다 */}
-        <div className="absolute inset-[11%] overflow-hidden shadow-[0_10px_24px_-14px_rgba(62,34,89,0.45)]">
-          <motion.img
-            layoutId={`image-${layoutId}`}
-            src={imageUrl}
-            onError={onImageError}
-            alt={`${sku.artistName} 작 ${title}`}
-            className="h-full w-full object-cover"
-            variants={{ hover: { scale: 1.04 } }}
-            transition={{ duration: 0.5 }}
-          />
-        </div>
+        {/* 사진만 — 색 바탕에 얹으면 그림 액자처럼 보인다. 자르지 않고 통째로 */}
+        <motion.img
+          layoutId={`image-${layoutId}`}
+          src={imageUrl}
+          onError={onImageError}
+          alt={`${sku.artistName} 작 ${title}`}
+          className="absolute inset-0 h-full w-full object-contain"
+          variants={{ hover: { scale: 1.03 } }}
+          transition={{ duration: 0.5 }}
+        />
         {badge && (
           <span className={`absolute right-3 top-3 rounded-full px-2.5 py-1 text-[11px] font-bold ${badge.cls}`}>
             {badge.label}
