@@ -5,7 +5,7 @@ import { ShoppingCart, Check, ArrowRight, X, ChevronLeft, ChevronRight } from 'l
 import WishBookmark from '@/app/components/common/WishBookmark';
 import OriginalBadge from '@/app/components/common/OriginalBadge';
 import { useOriginalCategoryCode } from '@/app/hooks/useOriginalCategory';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useDragControls } from 'framer-motion';
 import { Link, useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { addCartItem } from '@/api/cart';
@@ -62,6 +62,8 @@ export default function ProductCard({
   // 공유 레이아웃 애니메이션은 그대로 동작한다.
   const instanceId = useId();
   const layoutId = `product-card-${sku.skuCode}-${instanceId}`;
+  // 모바일 팝업 — 손잡이·사진을 잡고 아래로 쓸면 닫힌다
+  const dragControls = useDragControls();
   const { src: imageUrl, onError: onImageError } = useThumbSrc(sku.primaryImageUrl);
   const price = formatWon(displayPrice(sku));
   // 분류 이름은 어드민에서 고치는 값이라 DB 것을 쓴다. 번역 파일에 따로
@@ -510,7 +512,8 @@ export default function ProductCard({
       {body}
       <AnimatePresence>
         {isOpen && (
-          <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
+          <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 pt-24">
+            {/* 헤더 높이만큼 위를 비워 닫기 버튼이 가려지지 않게 */}
             <motion.div
               initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
               onClick={() => setIsOpen(false)}
@@ -518,7 +521,16 @@ export default function ProductCard({
             />
             <motion.div
               layoutId={layoutId}
-              className="relative w-full max-w-4xl md:max-w-6xl lg:max-w-7xl xl:max-w-[1500px] max-h-[85vh] md:max-h-[90vh] md:min-h-[600px] lg:min-h-[700px] bg-white rounded-2xl overflow-hidden border border-gray-100 z-10 flex flex-col md:flex-row shadow-2xl"
+              drag="y"
+              dragListener={false}
+              dragControls={dragControls}
+              dragConstraints={{ top: 0, bottom: 0 }}
+              dragElastic={{ top: 0, bottom: 0.6 }}
+              onDragEnd={(_, info) => {
+                // 100px 넘게 내렸거나 빠르게 튕기면 닫는다
+                if (info.offset.y > 100 || info.velocity.y > 500) setIsOpen(false);
+              }}
+              className="relative w-full max-w-4xl md:max-w-5xl lg:max-w-6xl max-h-[calc(100svh-7rem)] md:min-h-[520px] bg-white rounded-2xl overflow-hidden border border-gray-100 z-10 flex flex-col md:flex-row shadow-2xl"
             >
               <button
                 onClick={() => setIsOpen(false)}
@@ -527,7 +539,17 @@ export default function ProductCard({
               >
                 <X className="w-4 h-4" />
               </button>
-              <div className="group/img relative h-64 w-full shrink-0 overflow-hidden bg-gray-50 md:h-auto md:w-1/2">
+              {/* 모바일 손잡이 */}
+              <div
+                onPointerDown={(e) => dragControls.start(e)}
+                className="flex shrink-0 cursor-grab justify-center bg-gray-50 pt-2.5 pb-1 touch-none md:hidden"
+              >
+                <span className="h-1 w-10 rounded-full bg-gray-300" />
+              </div>
+              <div
+                onPointerDown={(e) => { if (e.pointerType === 'touch') dragControls.start(e); }}
+                className="group/img relative h-64 w-full shrink-0 overflow-hidden bg-gray-50 max-md:touch-none md:h-auto md:w-1/2"
+              >
                 <div
                   className="flex h-full w-full transition-transform duration-500 ease-out"
                   style={{ transform: `translateX(-${imgIndex * 100}%)` }}

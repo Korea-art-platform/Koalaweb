@@ -16,7 +16,7 @@ interface HomeHeroProps {
 }
 
 // 한 작품이 머무는 시간
-const SLIDE_MS = 6000;
+const SLIDE_MS = 4000;
 const SWIPE_THRESHOLD = 50;
 const EASE = [0.22, 0.61, 0.36, 1] as const;
 const INSTAGRAM = 'https://www.instagram.com/koalaobjects/';
@@ -153,7 +153,7 @@ export default function HomeHero({ banners, loading = false }: HomeHeroProps) {
       <div aria-hidden className="pointer-events-none absolute inset-0" style={{ background: STAGE_LIGHT }} />
 
       {isDesktop ? (
-        <DesktopStage slide={slide} next={next} total={total} loading={loading} go={go} art={renderArt(2.6, 1.35, 1)} />
+        <DesktopStage slide={slide} total={total} loading={loading} go={go} art={renderArt(2.6, 1.35, 1)} />
       ) : (
         <MobileStage slide={slide} total={total} loading={loading} go={go} art={renderArt(1, 0.95, 2)} />
       )}
@@ -170,7 +170,7 @@ interface StageProps {
 }
 
 // PC — 왼쪽 문구, 가운데 작품(뒤에 큰 작품명), 오른쪽 가격, 아래 작품명·다음 작품
-function DesktopStage({ slide, next, total, loading, art, go }: StageProps & { next: Banner | null }) {
+function DesktopStage({ slide, total, loading, art, go }: StageProps) {
   const { t } = useTranslation();
   const discounted = slide?.displayPrice != null && slide.displayListPrice != null
     && slide.displayListPrice > slide.displayPrice;
@@ -231,11 +231,12 @@ function DesktopStage({ slide, next, total, loading, art, go }: StageProps & { n
                 ₩{formatWon(slide.displayListPrice)}
               </p>
             )}
+            {slide.material && <p className="mt-3 text-sm text-white/60 break-keep">{slide.material}</p>}
           </Swap>
         )}
       </div>
 
-      {/* 아래 — 인스타그램 · 작품명 · 다음 작품 */}
+      {/* 아래 — 인스타그램 · 작품명 */}
       <div className="relative z-10 col-span-3 grid grid-cols-[1fr_auto_1fr] items-end">
         <a
           href={INSTAGRAM}
@@ -259,7 +260,7 @@ function DesktopStage({ slide, next, total, loading, art, go }: StageProps & { n
             </Swap>
           )}
         </div>
-        <div className="justify-self-end">{next && <NextThumb banner={next} onClick={() => go(1)} />}</div>
+        <div aria-hidden />
       </div>
     </div>
   );
@@ -296,6 +297,7 @@ function MobileStage({ slide, total, loading, art, go }: StageProps) {
                 {fullNameOf(slide)}
               </h1>
               <p className="mt-1 text-[13px] text-white/70">{slide.artistName}</p>
+              {slide.material && <p className="mt-0.5 text-xs text-white/50 break-keep">{slide.material}</p>}
             </Swap>
           ) : loading ? (
             <>
@@ -383,27 +385,5 @@ function HeroButtons({ slide }: { slide: Banner | null }) {
         {t('home.hero.learnMore', { defaultValue: '작가 둘러보기' })}
       </Link>
     </div>
-  );
-}
-
-// 다음 작품 — 오른쪽 아래. 넘기면 새 작품이 이쪽에서 들어온다
-function NextThumb({ banner, onClick }: { banner: Banner; onClick: () => void }) {
-  return (
-    <button type="button" onClick={onClick} aria-label="다음 작품" className="group relative block h-24 w-24">
-      <AnimatePresence initial={false}>
-        <motion.img
-          key={banner.id}
-          src={toCdnUrl(banner.imageUrl)}
-          alt=""
-          draggable={false}
-          className="absolute inset-0 h-full w-full object-contain drop-shadow-[0_8px_12px_rgba(13,9,18,0.4)]
-            transition-[scale] duration-300 group-hover:scale-105"
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.4, ease: EASE }}
-        />
-      </AnimatePresence>
-    </button>
   );
 }

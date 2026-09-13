@@ -246,6 +246,8 @@ export interface Banner {
   artistName?: string;
   displayPrice?: number;
   displayListPrice?: number;
+  /** 작품 소재 */
+  material?: string;
   effectImageUrl1?: string;
   effectImageUrl2?: string;
   effectImageUrl3?: string;
