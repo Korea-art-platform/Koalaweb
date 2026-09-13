@@ -1,15 +1,27 @@
 import instance from './instance';
 
-interface SkuFilter {
+export type SkuOrder = 'RECOMMENDED' | 'NEWEST' | 'PRICE_ASC' | 'PRICE_DESC';
+
+export interface SkuFilter {
     /** 소분류 코드 (조각·아트토이…) */
     genre?: string;
     /** 대분류 코드 (원작·한정판…) */
     mainCategory?: string;
+    /** 작가 코드 */
+    artist?: string;
+    /** 화면 금액(부가세 포함) 기준 */
+    minPrice?: number;
+    maxPrice?: number;
+    order?: SkuOrder;
 }
 
 export const getSkus = (page = 0, size = 20, filter: SkuFilter = {}) =>
     instance.get('/api/v1/skus', {
-        params: { page, size, genre: filter.genre, mainCategory: filter.mainCategory },
+        params: {
+            page, size,
+            genre: filter.genre, mainCategory: filter.mainCategory, artist: filter.artist,
+            minPrice: filter.minPrice, maxPrice: filter.maxPrice, order: filter.order,
+        },
     });
 
 export const getSkusByArtist = (artistCode: string, page = 0, size = 50) =>

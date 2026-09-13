@@ -30,7 +30,9 @@ interface ProductCardProps {
    *
    * 겉모습만 다르고 눌렀을 때 열리는 상세 모달은 같은 것을 쓴다.
    */
-  variant?: 'store' | 'editorial' | 'shop' | 'stage';
+  variant?: 'store' | 'editorial' | 'shop' | 'stage' | 'gallery';
+  /** gallery — 목록 첫 칸에 크게 걸 때 */
+  feature?: boolean;
   /** editorial 에서 등급 표시에 쓴다. */
   mark?: string;
   markTone?: 'gold' | 'purple';
@@ -45,6 +47,7 @@ export default function ProductCard({
   variant = 'store',
   mark,
   markTone = 'gold',
+  feature = false,
   isWishlisted,
   isWishlistLoading,
   onWishlistClick,
@@ -502,10 +505,88 @@ export default function ProductCard({
     </div>
   );
 
+  /* 스토어 목록 모양 — 사진은 가리지 않고, 아래에 이름·작가·소재·가격. 누르면 같은 모달이 열린다 */
+  const Gallery = (
+    <div className="group flex h-full flex-col">
+      <motion.div
+        layoutId={layoutId}
+        onClick={() => setIsOpen(true)}
+        whileHover="hover"
+        className={`relative cursor-pointer overflow-hidden ${feature ? 'aspect-square lg:aspect-auto lg:min-h-[440px] lg:flex-1' : 'aspect-[4/5]'}`}
+        style={{ backgroundColor: tintOf(sku.genre) }}
+      >
+        {/* 분류 색 바탕에 사진을 액자처럼. 작품 사진은 각지게 둔다 */}
+        <div className={`absolute overflow-hidden shadow-[0_10px_24px_-14px_rgba(62,34,89,0.45)] ${feature ? 'inset-[9%]' : 'inset-[11%]'}`}>
+          <motion.img
+            layoutId={`image-${layoutId}`}
+            src={imageUrl}
+            onError={onImageError}
+            alt={`${sku.artistName} 작 ${title}`}
+            loading="lazy"
+            decoding="async"
+            className="h-full w-full object-cover"
+            variants={{ hover: { scale: 1.03 } }}
+            transition={{ duration: 0.5 }}
+          />
+        </div>
+        <div className="absolute left-2.5 top-2.5 flex flex-wrap gap-1.5 md:left-3 md:top-3">
+          {isOriginal && <OriginalBadge />}
+          {sku.isLimitedEdition && (
+            <span className="rounded-full bg-koala-purple px-2.5 py-1 text-[10px] font-semibold text-white md:text-[11px]">
+              {t('store.product.limited') as string}
+            </span>
+          )}
+          <span className="rounded-full bg-white/90 px-2.5 py-1 text-[10px] text-gray-500 md:text-[11px]">{categoryLabel}</span>
+          {sku.status === 'OUT_OF_STOCK' && (
+            <span className="rounded-full bg-gray-900/90 px-2.5 py-1 text-[10px] font-semibold text-white md:text-[11px]">
+              {t('store.product.status.soldOut') as string}
+            </span>
+          )}
+        </div>
+      </motion.div>
+
+      <div className="flex flex-col gap-0.5 pt-3 md:pt-3.5">
+        <div className="flex items-start justify-between gap-2">
+          <motion.h3
+            layoutId={`title-${layoutId}`}
+            onClick={() => setIsOpen(true)}
+            className={`font-serif-ko cursor-pointer font-bold text-gray-900 break-keep line-clamp-2 transition-colors hover:text-koala-purple
+              ${feature ? 'text-xl md:text-2xl' : 'text-[15px] md:text-lg'}`}
+          >
+            {title}
+          </motion.h3>
+          <button
+            type="button"
+            onClick={(e) => onWishlistClick(e, sku.skuCode)}
+            disabled={isWishlistLoading}
+            aria-label={isWishlisted ? `${title} 찜 해제` : `${title} 찜하기`}
+            aria-pressed={isWishlisted}
+            className={`-mr-1.5 -mt-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-full transition-colors disabled:cursor-wait
+              focus-visible:outline-2 focus-visible:outline-koala-purple
+              ${isWishlisted ? 'text-koala-purple' : 'text-gray-300 hover:text-koala-purple'}`}
+          >
+            {isWishlistLoading ? (
+              <span className="block h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+            ) : (
+              <WishBookmark active={isWishlisted} size={16} className="block" />
+            )}
+          </button>
+        </div>
+        <motion.p layoutId={`subtitle-${layoutId}`} className="text-[13px] text-gray-400">{sku.artistName}</motion.p>
+        {sku.material && <p className="text-xs text-gray-500 break-keep line-clamp-1">{sku.material}</p>}
+        <p className={`mt-1.5 font-semibold tabular-nums text-gray-900 ${feature ? 'text-lg md:text-xl' : 'text-[15px] md:text-base'}`}>
+          ₩{price}
+          {discounted && <span className="ml-2 text-xs font-normal text-gray-400 line-through">₩{formatWon(listPrice)}</span>}
+        </p>
+      </div>
+    </div>
+  );
+
   const body = variant === 'editorial' ? Editorial
     : variant === 'shop' ? Shop
       : variant === 'stage' ? Stage
-        : StoreCard;
+        : variant === 'gallery' ? Gallery
+          : StoreCard;
 
   return (
     <>

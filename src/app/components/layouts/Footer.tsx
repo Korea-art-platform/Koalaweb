@@ -1,36 +1,8 @@
 import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
-import { useEffect, useRef, useState } from 'react';
-import { motion, useInView, useReducedMotion } from 'framer-motion';
-
-const WORDMARK = 'KOREA-ART-LAB'.split('');
 
 export default function Footer() {
   const { t } = useTranslation();
-  const reduce = useReducedMotion();
-
-  const markRef = useRef<HTMLDivElement>(null);
-  const inView = useInView(markRef, { once: true, amount: 0.35 });
-
-  const [fallback, setFallback] = useState(false);
-  useEffect(() => {
-    const id = window.setTimeout(() => setFallback(true), 4000);
-    return () => window.clearTimeout(id);
-  }, []);
-  const shown = inView || fallback;
-
-  const piece = (index: number) =>
-    reduce
-      ? {}
-      : {
-          initial: { y: '115%' },
-          animate: shown ? { y: '0%' } : { y: '115%' },
-          transition: {
-            duration: 0.62,
-            delay: 0.1 + index * 0.055,
-            ease: [0.22, 0.61, 0.36, 1] as const,
-          },
-        };
 
   return (
     <footer className="relative">
@@ -155,39 +127,6 @@ export default function Footer() {
           </div>
         </div>
         
-        <div
-          ref={markRef}
-          aria-hidden
-          className="mb-10 flex items-center gap-4 md:gap-6 border-t border-white/10 pt-10"
-        >
-          
-          <span className="inline-block shrink-0 overflow-hidden">
-            <motion.img
-              src="/logo-symbol-white.svg"
-              alt=""
-              className="block opacity-80"
-              style={{ width: 'clamp(2.75rem, 8.4vw, 7rem)', height: 'clamp(2.75rem, 8.4vw, 7rem)' }}
-              {...piece(0)}
-            />
-          </span>
-          <span
-            className="min-w-0 flex-1 whitespace-nowrap text-[clamp(1.5rem,7.2vw,6rem)] font-bold uppercase
-              leading-none text-white/70"
-            style={{ letterSpacing: '0.02em' }}
-          >
-            <span className="inline-flex w-full justify-between">
-              {WORDMARK.map((ch, i) => (
-                
-                <span key={i} className="inline-block overflow-hidden pb-[0.06em] align-bottom">
-                  <motion.span className="inline-block" {...piece(i + 1)}>
-                    {ch}
-                  </motion.span>
-                </span>
-              ))}
-            </span>
-          </span>
-        </div>
-
         <div className="pt-10 border-t border-white/10 space-y-5">
           <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-5 py-4 md:px-6 md:py-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]">
             <p className="text-xs md:text-[13px] text-gray-400 leading-relaxed break-keep">
