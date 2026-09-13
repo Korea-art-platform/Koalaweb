@@ -350,7 +350,7 @@ function RoundButton({ label, onClick, children }: { label: string; onClick: () 
   );
 }
 
-// 쇼핑하기 → 작품 상세, 작가 둘러보기 → 작가 상세
+// 쇼핑하기 → 스토어, 작가 둘러보기 → 작가 상세
 function HeroButtons({ slide }: { slide: Banner | null }) {
   const { t } = useTranslation();
 
@@ -359,7 +359,7 @@ function HeroButtons({ slide }: { slide: Banner | null }) {
       {/* 화살표를 글씨 옆에 벗겨 두지 않고 제 자리(원)에 담는다.
           올리면 원 안에서만 움직여 버튼 폭이 흔들리지 않는다. */}
       <Link
-        to={slide ? `/product/${slide.skuCode}` : '/store'}
+        to="/store"
         className="group inline-flex items-center gap-2 whitespace-nowrap rounded-full
           bg-white py-1.5 pl-5 pr-1.5 text-[13px] font-bold text-black
           transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)]
