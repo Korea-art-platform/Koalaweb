@@ -5,6 +5,7 @@ import StoreHero from '@/app/components/Hero/StoreHero';
 import StoreFilter from '@/app/components/store/StoreFilter';
 import StoreFilterSheet, { type SheetValue } from '@/app/components/store/StoreFilterSheet';
 import StoreProductGrid from '@/app/components/store/StoreProductGrid';
+import StoreOriginalShowcase from '@/app/components/store/StoreOriginalShowcase';
 import { ALL, isOrder, priceRangeOf } from '@/app/components/store/storeOptions';
 import { getSkus, getGenreCounts, getMainCategoryCounts, type SkuFilter } from '@/api/sku';
 import { getArtists } from '@/api/artist';
@@ -107,8 +108,19 @@ export default function SmartStore() {
   const skus = useMemo(() => data?.pages.flatMap((p) => p.content) ?? [], [data]);
   const total = data?.pages[0]?.totalElements ?? 0;
 
-  // 추천순에서 첫 작품이 원작이면 첫 칸에 크게 건다
-  const featureFirst = order === 'RECOMMENDED' && originalCode != null && skus[0]?.mainCategory === originalCode;
+  // 목록 위 원작 줄 — 추천순이고 다른 조건을 안 걸었을 때만(에디션은 전체·원작)
+  const showShowcase = order === 'RECOMMENDED' && originalCode != null
+    && (selectedMain === ALL || selectedMain === originalCode)
+    && selectedCategory === ALL && selectedArtist === ALL && priceBand === ALL;
+  const { data: originals = [] } = useQuery<Sku[]>({
+    queryKey: ['skus', 'store-originals', originalCode],
+    enabled: showShowcase,
+    queryFn: async () => {
+      const res = await getSkus(0, 12, { mainCategory: originalCode ?? undefined, order: 'RECOMMENDED' });
+      return (res.data.data as PageResponse<Sku>).content ?? [];
+    },
+    staleTime: 1000 * 60,
+  });
 
   // 창이 열려 있는 동안 매번 새 객체를 넘기면 고르던 값이 되돌아간다
   const sheetValue = useMemo<SheetValue>(
@@ -141,6 +153,7 @@ export default function SmartStore() {
         onOpenSheet={() => setSheetOpen(true)}
         sheetCount={sheetCount}
       />
+      {showShowcase && originals.length > 0 && <StoreOriginalShowcase works={originals} />}
       <StoreProductGrid
         loading={isLoading}
         skus={skus}
@@ -148,7 +161,6 @@ export default function SmartStore() {
         hasMore={Boolean(hasNextPage)}
         loadingMore={isFetchingNextPage}
         onLoadMore={() => fetchNextPage()}
-        featureFirst={featureFirst}
         artists={artists}
         onPickArtist={pickArtist}
         onReset={() => setSearchParams(new URLSearchParams(), { replace: true })}

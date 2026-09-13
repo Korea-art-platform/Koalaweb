@@ -31,8 +31,6 @@ interface ProductCardProps {
    * 겉모습만 다르고 눌렀을 때 열리는 상세 모달은 같은 것을 쓴다.
    */
   variant?: 'store' | 'editorial' | 'shop' | 'stage' | 'gallery';
-  /** gallery — 목록 첫 칸에 크게 걸 때 */
-  feature?: boolean;
   /** editorial 에서 등급 표시에 쓴다. */
   mark?: string;
   markTone?: 'gold' | 'purple';
@@ -47,7 +45,6 @@ export default function ProductCard({
   variant = 'store',
   mark,
   markTone = 'gold',
-  feature = false,
   isWishlisted,
   isWishlistLoading,
   onWishlistClick,
@@ -505,56 +502,62 @@ export default function ProductCard({
     </div>
   );
 
-  /* 스토어 목록 모양 — 사진은 가리지 않고, 아래에 이름·작가·소재·가격. 누르면 같은 모달이 열린다 */
+  /* 스토어 목록 모양 — 사진은 제 비율 그대로(자르지 않음), 아래에 뱃지·작가·작품명·소재·가격. 누르면 같은 모달이 열린다 */
   const Gallery = (
-    <div className="group flex h-full flex-col">
+    <div className="group">
       <motion.div
         layoutId={layoutId}
         onClick={() => setIsOpen(true)}
         whileHover="hover"
-        className={`relative cursor-pointer overflow-hidden ${feature ? 'aspect-square lg:aspect-auto lg:min-h-[440px] lg:flex-1' : 'aspect-[4/5]'}`}
-        style={{ backgroundColor: tintOf(sku.genre) }}
+        className="relative cursor-pointer overflow-hidden bg-gray-100"
       >
-        {/* 분류 색 바탕에 사진을 액자처럼. 작품 사진은 각지게 둔다 */}
-        <div className={`absolute overflow-hidden shadow-[0_10px_24px_-14px_rgba(62,34,89,0.45)] ${feature ? 'inset-[9%]' : 'inset-[11%]'}`}>
-          <motion.img
-            layoutId={`image-${layoutId}`}
-            src={imageUrl}
-            onError={onImageError}
-            alt={`${sku.artistName} 작 ${title}`}
-            loading="lazy"
-            decoding="async"
-            className="h-full w-full object-cover"
-            variants={{ hover: { scale: 1.03 } }}
-            transition={{ duration: 0.5 }}
-          />
-        </div>
-        <div className="absolute left-2.5 top-2.5 flex flex-wrap gap-1.5 md:left-3 md:top-3">
-          {isOriginal && <OriginalBadge />}
-          {sku.isLimitedEdition && (
-            <span className="rounded-full bg-koala-purple px-2.5 py-1 text-[10px] font-semibold text-white md:text-[11px]">
-              {t('store.product.limited') as string}
-            </span>
-          )}
-          <span className="rounded-full bg-white/90 px-2.5 py-1 text-[10px] text-gray-500 md:text-[11px]">{categoryLabel}</span>
-          {sku.status === 'OUT_OF_STOCK' && (
-            <span className="rounded-full bg-gray-900/90 px-2.5 py-1 text-[10px] font-semibold text-white md:text-[11px]">
-              {t('store.product.status.soldOut') as string}
-            </span>
-          )}
-        </div>
+        <motion.img
+          layoutId={`image-${layoutId}`}
+          src={imageUrl}
+          onError={onImageError}
+          alt={`${sku.artistName} 작 ${title}`}
+          loading="lazy"
+          decoding="async"
+          className="block h-auto min-h-[120px] w-full"
+          variants={{ hover: { scale: 1.02 } }}
+          transition={{ duration: 0.5 }}
+        />
       </motion.div>
 
-      <div className="flex flex-col gap-0.5 pt-3 md:pt-3.5">
-        <div className="flex items-start justify-between gap-2">
+      <div className="flex items-start justify-between gap-2 pt-3 md:pt-3.5">
+        <div className="min-w-0">
+          {(isOriginal || sku.isLimitedEdition || sku.status === 'OUT_OF_STOCK') && (
+            <div className="mb-1.5 flex flex-wrap gap-1.5">
+              {/* 금색은 원작에만 */}
+              {isOriginal && (
+                <span className="border border-[#A5813D] px-1.5 py-0.5 text-[11px] font-medium text-[#876A32]">원작</span>
+              )}
+              {sku.isLimitedEdition && (
+                <span className="border border-koala-purple px-1.5 py-0.5 text-[11px] font-medium text-koala-purple">
+                  {t('store.product.limited') as string}
+                </span>
+              )}
+              {sku.status === 'OUT_OF_STOCK' && (
+                <span className="border border-gray-400 px-1.5 py-0.5 text-[11px] font-medium text-gray-500">
+                  {t('store.product.status.soldOut') as string}
+                </span>
+              )}
+            </div>
+          )}
+          <motion.p layoutId={`subtitle-${layoutId}`} className="text-[15px] text-gray-900 md:text-base">{sku.artistName}</motion.p>
           <motion.h3
             layoutId={`title-${layoutId}`}
             onClick={() => setIsOpen(true)}
-            className={`font-serif-ko cursor-pointer font-bold text-gray-900 break-keep line-clamp-2 transition-colors hover:text-koala-purple
-              ${feature ? 'text-xl md:text-2xl' : 'text-[15px] md:text-lg'}`}
+            className="font-serif-ko cursor-pointer text-[15px] text-gray-500 break-keep line-clamp-2 transition-colors hover:text-koala-purple md:text-base"
           >
             {title}
           </motion.h3>
+          {sku.material && <p className="text-[13px] text-gray-400 break-keep line-clamp-1 md:text-sm">{sku.material}</p>}
+          <p className="mt-1 text-[15px] font-bold tabular-nums text-gray-900 md:text-base">
+            ₩{price}
+            {discounted && <span className="ml-2 text-xs font-normal text-gray-400 line-through">₩{formatWon(listPrice)}</span>}
+          </p>
+        </div>
           <button
             type="button"
             onClick={(e) => onWishlistClick(e, sku.skuCode)}
@@ -571,13 +574,6 @@ export default function ProductCard({
               <WishBookmark active={isWishlisted} size={16} className="block" />
             )}
           </button>
-        </div>
-        <motion.p layoutId={`subtitle-${layoutId}`} className="text-[13px] text-gray-400">{sku.artistName}</motion.p>
-        {sku.material && <p className="text-xs text-gray-500 break-keep line-clamp-1">{sku.material}</p>}
-        <p className={`mt-1.5 font-semibold tabular-nums text-gray-900 ${feature ? 'text-lg md:text-xl' : 'text-[15px] md:text-base'}`}>
-          ₩{price}
-          {discounted && <span className="ml-2 text-xs font-normal text-gray-400 line-through">₩{formatWon(listPrice)}</span>}
-        </p>
       </div>
     </div>
   );

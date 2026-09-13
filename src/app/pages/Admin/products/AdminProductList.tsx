@@ -6,6 +6,7 @@ import { getCategories, type CategoryGroups } from '@/api/category';
 import { downscaleImage } from '@/utils/downscaleImage';
 import { Package, ImagePlus, X, FileSpreadsheet } from 'lucide-react';
 import AdminCsvImportModal from './AdminCsvImportModal';
+import PriceHint from '@/app/components/admin/PriceHint';
 
 const SKU_STATUS_COLOR: Record<string, string> = {
   DRAFT:        'bg-gray-100 text-gray-500',
@@ -320,8 +321,12 @@ export default function AdminProductList() {
                       <div className="text-xs text-gray-400 font-mono mt-0.5">{sku.skuCode}</div>
                     </td>
                     <td className="px-5 py-4 text-gray-600 text-sm">{sku.artistName}</td>
+                    {/* 고객에게 보이고 결제되는 금액(부가세 포함). 아래 작게 공급가액 */}
                     <td className="px-5 py-4 text-gray-700 tabular-nums whitespace-nowrap">
-                      {Number(sku.effectivePrice).toLocaleString()}원
+                      {Number(sku.displayPrice ?? sku.effectivePrice).toLocaleString()}원
+                      {sku.displayPrice != null && Number(sku.displayPrice) !== Number(sku.effectivePrice) && (
+                        <div className="text-xs text-gray-400">공급가 {Number(sku.effectivePrice).toLocaleString()}원</div>
+                      )}
                     </td>
                     <td className="px-5 py-4">
                       <button
@@ -516,6 +521,12 @@ export default function AdminProductList() {
                     className={inputCls} placeholder="1200000" min="0" />
                 </div>
               </div>
+              {/* 넣은 값(공급가액)이 고객에게 얼마로 보이는지 — 과세 분류면 부가세 10% 를 더해 보여 준다 */}
+              <PriceHint
+                listPrice={form.listPrice}
+                salePrice={form.salePrice}
+                taxExempt={categories.main.find((c) => c.code === form.mainCategory)?.taxExempt}
+              />
               <div>
                 <label className="block text-xs text-gray-500 mb-1.5">대표 이미지 <span className="text-red-500">*</span></label>
                 <input
