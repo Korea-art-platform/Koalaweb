@@ -3,6 +3,8 @@ import { Outlet, Route, Routes } from "react-router";
 
 import ProtectedRoute from "@/app/components/routers/ProtectedRoute";
 import AccountLayout from "@/app/components/layouts/AccountLayout";
+import SiteLayout from "@/app/components/layouts/SiteLayout";
+import ScreenShell from "@/app/components/layouts/ScreenShell";
 
 import Home from "@/app/pages/Home";
 import GuestOrderLookup from '@/app/pages/order/GuestOrderLookup';
@@ -95,59 +97,66 @@ export function AppRoutes() {
   return (
     <Suspense fallback={<RouteFallback />}>
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/search" element={<Search />} />
-        <Route path="/smart-store" element={<SmartStore />} />
-        <Route path="/store" element={<SmartStore />} />
-        <Route path="/product/:id" element={<ProductDetail />} />
-        <Route path="/art/:id" element={<ArtDetail />} />
-        <Route path="/product/:id/360" element={<Product360View />} />
-        <Route path="/ar-view" element={<ARView />} />
-        <Route path="/resell" element={<ResellMarket />} />
-        <Route path="/artist-lab" element={<ArtistLab />} />
-        <Route path="/artist/:id" element={<ArtistDetail />} />
-        <Route path="/artist/:id/works" element={<ArtistWorks />} />
-        <Route path="/login" element={<Auth />} />
-        <Route path="/signup" element={<Auth />} />
-        <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="/oauth2/callback" element={<OAuth2Callback />} />
-        <Route path="/terms" element={<Terms />} />
-        <Route path="/privacy" element={<Privacy />} />
-        <Route path="/cookies" element={<Cookies />} />
-        <Route path="/youth-protection" element={<YouthProtection />} />
-        <Route path="/account-deletion" element={<AccountDeletion />} />
-        <Route path="/notice" element={<Notice />} />
-        <Route path="/notice/:noticeCode" element={<NoticeDetail />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/stores" element={<Stores />} />
-        <Route path="/exhibition" element={<Exhibition />} />
-        <Route path="/faq" element={<FAQ />} />
-        <Route path="/shipping" element={<Shipping />} />
-        <Route path="/contact" element={<Contact />} />
-        <Route path="/help" element={<Help />} />
-        <Route path="/returns" element={<Returns />} />
-        {/* 비회원도 살 수 있어야 하는 자리. 로그인 뒤로 숨기면 계정을 만들지
-            않고는 결제할 수 없다. 장바구니는 회원만 쓰므로 그대로 둔다. */}
-        <Route path="/checkout" element={<Checkout />} />
-        <Route path="/checkout/confirm" element={<OrderConfirmation />} />
-        <Route path="/checkout/success" element={<CheckoutSuccess />} />
-        <Route path="/payment" element={<PaymentPage />} />
-        <Route path="/payment/success" element={<PaymentSuccess />} />
-        <Route path="/payment/fail" element={<PaymentFail />} />
-        <Route path="/order-lookup" element={<GuestOrderLookup />} />
+        <Route element={<SiteLayout />}>
+          <Route element={<ScreenShell />}>
+            <Route path="/product/:id/360" element={<Product360View />} />
+            <Route path="/ar-view" element={<ARView />} />
+            <Route path="/checkout/success" element={<CheckoutSuccess />} />
+            <Route path="/payment/success" element={<PaymentSuccess />} />
+            <Route path="/payment/fail" element={<PaymentFail />} />
+            <Route path="*" element={<NotFound />} />
+          </Route>
+          <Route path="/" element={<Home />} />
+          <Route path="/search" element={<Search />} />
+          <Route path="/smart-store" element={<SmartStore />} />
+          <Route path="/store" element={<SmartStore />} />
+          <Route path="/product/:id" element={<ProductDetail />} />
+          <Route path="/art/:id" element={<ArtDetail />} />
+          <Route path="/resell" element={<ResellMarket />} />
+          <Route path="/artist-lab" element={<ArtistLab />} />
+          <Route path="/artist/:id" element={<ArtistDetail />} />
+          <Route path="/artist/:id/works" element={<ArtistWorks />} />
+          <Route path="/login" element={<Auth />} />
+          <Route path="/signup" element={<Auth />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/oauth2/callback" element={<OAuth2Callback />} />
+          <Route path="/terms" element={<Terms />} />
+          <Route path="/privacy" element={<Privacy />} />
+          <Route path="/cookies" element={<Cookies />} />
+          <Route path="/youth-protection" element={<YouthProtection />} />
+          <Route path="/account-deletion" element={<AccountDeletion />} />
+          <Route path="/notice" element={<Notice />} />
+          <Route path="/notice/:noticeCode" element={<NoticeDetail />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/stores" element={<Stores />} />
+          <Route path="/exhibition" element={<Exhibition />} />
+          <Route path="/faq" element={<FAQ />} />
+          <Route path="/shipping" element={<Shipping />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/help" element={<Help />} />
+          <Route path="/returns" element={<Returns />} />
+          {/* 비회원도 살 수 있어야 하는 자리. 로그인 뒤로 숨기면 계정을 만들지
+              않고는 결제할 수 없다. 장바구니는 회원만 쓰므로 그대로 둔다. */}
+          <Route path="/checkout" element={<Checkout />} />
+          <Route path="/checkout/confirm" element={<OrderConfirmation />} />
+          <Route path="/payment" element={<PaymentPage />} />
+          <Route path="/order-lookup" element={<GuestOrderLookup />} />
 
-        <Route element={<ProtectedRoute />}>
-          <Route path="/onboarding" element={<Onboarding />} />
-          <Route path="/cart" element={<Cart />} />
-          <Route element={<AccountLayout />}>
-            <Route path="/account" element={<Account />} />
-            <Route path="/account/orders" element={<AccountOrders />} />
-            <Route path="/account/orders/:orderNo" element={<OrderDetail />} />
-            <Route path="/account/addresses" element={<AccountAddresses />} />
-            <Route path="/account/payment-methods" element={<AccountPaymentMethods />} />
-            <Route path="/account/wishlist" element={<AccountWishlist />} />
-            <Route path="/account/inquiry" element={<AccountInquiry />} />
-            <Route path="/account/settings" element={<AccountSettings />} />
+          <Route element={<ProtectedRoute />}>
+            <Route element={<ScreenShell />}>
+              <Route path="/onboarding" element={<Onboarding />} />
+            </Route>
+            <Route path="/cart" element={<Cart />} />
+            <Route element={<AccountLayout />}>
+              <Route path="/account" element={<Account />} />
+              <Route path="/account/orders" element={<AccountOrders />} />
+              <Route path="/account/orders/:orderNo" element={<OrderDetail />} />
+              <Route path="/account/addresses" element={<AccountAddresses />} />
+              <Route path="/account/payment-methods" element={<AccountPaymentMethods />} />
+              <Route path="/account/wishlist" element={<AccountWishlist />} />
+              <Route path="/account/inquiry" element={<AccountInquiry />} />
+              <Route path="/account/settings" element={<AccountSettings />} />
+            </Route>
           </Route>
         </Route>
         <Route element={<AdminAuthProvider><Outlet /></AdminAuthProvider>}>
@@ -176,7 +185,6 @@ export function AppRoutes() {
             <Route path="/admin/maintenance" element={<AdminMaintenance />} />
           </Route>
         </Route>
-        <Route path="*" element={<NotFound />} />
       </Routes>
     </Suspense>
   );

@@ -16,7 +16,7 @@ export default function NoticeList() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#FAFAFA]">
+    <div className="flex-1">
       <Helmet>
         <title>공지사항 — KOALA</title>
         <meta name="description" content="KOALA 공지사항을 확인하세요." />

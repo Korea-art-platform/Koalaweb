@@ -75,7 +75,7 @@ export default function ArtDetail() {
   ];
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="flex-1">
       <main className="pt-24 pb-24 px-5 md:px-8 max-w-2xl mx-auto w-full">
         <div className="flex items-center justify-between mb-8">
           <button

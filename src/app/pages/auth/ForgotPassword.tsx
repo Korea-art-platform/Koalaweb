@@ -87,7 +87,7 @@ export default function ForgotPassword() {
   };
 
   return (
-    <div className="min-h-screen bg-[#FAFAFA]">
+    <div className="flex-1">
       <div className="pt-24 pb-16 px-8">
         <div className="max-w-md mx-auto">
           <div className="text-center mb-12">

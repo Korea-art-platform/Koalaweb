@@ -50,7 +50,7 @@ export default function Auth() {
   const bgKey = `${isSignup ? 'signup' : 'login'}-${banner?.imageUrl ?? 'fallback'}`;
 
   return (
-    <div className="min-h-screen bg-[#FAFAFA]">
+    <div className="flex-1">
       <PageMeta title="로그인" />
       <div className="lg:flex lg:items-stretch overflow-x-hidden">
         <div

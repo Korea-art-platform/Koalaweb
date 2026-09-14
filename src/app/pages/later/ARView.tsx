@@ -80,7 +80,7 @@ export default function ARView() {
     ?? 'https://image2.1004gundam.com/item_images/explain/1376375896/1484790110.jpg';
 
   return (
-    <div className="min-h-screen bg-white overflow-hidden">
+    <div className="flex-1 overflow-hidden">
 
       {showToast && (
         <div className="fixed bottom-10 left-1/2 -translate-x-1/2 z-[100] animate-in fade-in slide-in-from-bottom-4 duration-300">

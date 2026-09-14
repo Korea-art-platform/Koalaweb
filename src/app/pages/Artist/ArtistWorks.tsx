@@ -16,7 +16,7 @@ export default function ArtistWorks() {
   if (!artist) return <ArtistNotFound />;
 
   return (
-    <div className="min-h-screen bg-white flex flex-col">
+    <div className="flex-1 flex flex-col">
       <main className="flex-1 pt-24 pb-24 px-5 md:px-8 max-w-2xl mx-auto w-full">
         <button
           onClick={() => navigate(`/artist/${id}`)}

@@ -62,7 +62,7 @@ export default function Search() {
   const noResults = hasSearched && skuResults.length === 0 && artistResults.length === 0;
 
   return (
-    <div className="min-h-screen bg-[#FAFAFA]">
+    <div className="flex-1">
       <div className="pt-24 pb-16 px-8">
         <div className="max-w-[1400px] mx-auto">
           <div className="mb-8">

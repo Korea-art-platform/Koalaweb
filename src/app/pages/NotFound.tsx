@@ -12,7 +12,7 @@ export default function NotFound() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-koala-navy flex flex-col overflow-hidden relative">
+    <div className="flex-1 bg-koala-navy flex flex-col overflow-hidden relative">
       <div
         className="absolute top-[-120px] right-[-80px] w-[340px] h-[340px] rounded-full border border-white/5"
         style={{ transition: 'opacity 1.2s ease', opacity: visible ? 1 : 0 }}

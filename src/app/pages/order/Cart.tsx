@@ -25,7 +25,7 @@ export default function Cart() {
   if (loading) return <CartSkeleton />;
 
   return (
-    <div className="min-h-screen bg-[#FAFAFA]">
+    <div className="flex-1">
       <PageMeta title="장바구니" />
       <div className="pt-24 pb-16 px-8">
         <div className="max-w-[1200px] mx-auto">

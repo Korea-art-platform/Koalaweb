@@ -22,7 +22,7 @@ export default function CheckoutSuccess() {
 
   if (!orderData) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-[#FAFAFA]">
+      <div className="flex-1 flex flex-col items-center justify-center">
         <Package className="w-16 h-16 text-gray-200 mb-4" />
         <p className="text-gray-500 mb-8">{t('order.detail.noShippingInfo')}</p>
         <Link to="/" className="px-8 py-3 bg-koala-navy text-white rounded-2xl font-medium">
@@ -35,7 +35,7 @@ export default function CheckoutSuccess() {
   const { orderNo, orderInfo, shippingAddress, paymentMethod } = orderData;
 
   return (
-    <div className="min-h-screen bg-[#FAFAFA]">
+    <div className="flex-1">
       <div className="pt-24 pb-20 px-8">
         <div className="max-w-2xl mx-auto">
           <div className="text-center mb-12">

@@ -31,7 +31,7 @@ export default function PaymentFail() {
     '결제가 취소되었습니다.';
 
   return (
-    <div className="min-h-screen bg-[#FAFAFA] flex items-center justify-center">
+    <div className="flex-1 flex items-center justify-center">
       <div className="text-center p-8 max-w-sm">
         <div className="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-6">
           <span className="text-2xl">✕</span>

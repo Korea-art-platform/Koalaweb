@@ -132,7 +132,7 @@ export default function SmartStore() {
   const { wishlistedCodes, wishlistLoading, handleWishlist } = useWishlistToggle();
 
   return (
-    <div className="min-h-screen">
+    <div className="flex-1">
       <PageMeta title="아티스트 컬렉터블" description="엄선된 아트 상품과 소장 가치 있는 작품을 작가·분류·가격대별로 만나보세요." />
       <StoreHero artistCount={artists.length} total={data ? total : null} />
       <StoreFilter

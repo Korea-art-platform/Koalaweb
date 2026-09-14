@@ -57,7 +57,7 @@ export default function Stores() {
   };
 
   return (
-    <div className="min-h-screen bg-[#FAFAFA]">
+    <div className="flex-1">
       <Helmet>
         <title>입점 매장 — KOALA</title>
         <meta name="description" content="KOALA 작품을 직접 만나보실 수 있는 공식 입점 매장 안내." />

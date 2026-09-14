@@ -5,7 +5,7 @@ export function ArtistNotFound() {
   const { t } = useTranslation();
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="flex-1">
       <div className="pt-32 pb-32 px-6 text-center">
         <div className="max-w-md mx-auto">
           <h1 className="text-2xl font-bold mb-4">{t('artistLab.detail.notFound.title')}</h1>

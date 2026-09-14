@@ -7,7 +7,7 @@ export default function ProtectedRoute() {
 
   if (isAuthenticated === null) {
     return (
-      <div className="min-h-screen bg-[#FAFAFA] flex items-center justify-center">
+      <div className="flex-1 flex items-center justify-center">
         <div className="w-8 h-8 border-2 border-black border-t-transparent rounded-full animate-spin" />
       </div>
     );

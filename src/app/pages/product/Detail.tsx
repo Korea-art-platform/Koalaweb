@@ -203,7 +203,7 @@ export default function ProductDetail() {
   const pageUrl = `https://koala-art.co.kr/products/${sku.skuCode}`;
 
   return (
-    <div className="min-h-screen bg-white relative">
+    <div className="flex-1 relative">
       <Helmet>
         <title>{sku.name} — KOALA</title>
         <meta name="description" content={pageDescription} />

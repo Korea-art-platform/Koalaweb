@@ -145,7 +145,7 @@ export default function Product360View() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-koala-navy flex items-center justify-center">
+      <div className="flex-1 bg-koala-navy flex items-center justify-center">
         <div className="w-8 h-8 border-2 border-white border-t-transparent rounded-full animate-spin" />
       </div>
     );
@@ -153,7 +153,7 @@ export default function Product360View() {
 
   if (!sku || images360.length === 0) {
     return (
-      <div className="min-h-screen bg-koala-navy flex flex-col items-center justify-center text-white">
+      <div className="flex-1 bg-koala-navy flex flex-col items-center justify-center text-white">
         <p className="text-gray-400 mb-6">{t('view360.notFound')}</p>
         <button
           onClick={() => navigate(-1)}
@@ -166,7 +166,7 @@ export default function Product360View() {
   }
 
   return (
-    <div className="min-h-screen bg-koala-navy">
+    <div className="flex-1 bg-koala-navy">
 
       {showToast && (
         <div className="fixed bottom-10 left-1/2 -translate-x-1/2 z-[100]">

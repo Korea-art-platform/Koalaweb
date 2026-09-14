@@ -1,7 +1,7 @@
 
 export function ProductSkeleton() {
   return (
-    <div className="min-h-screen bg-white">
+    <div className="flex-1">
       <div className="pt-28 pb-20 px-8">
         <div className="max-w-5xl mx-auto">
           <div className="h-4 w-24 bg-gray-100 rounded mb-10 animate-pulse" />

@@ -7,7 +7,7 @@ export default function Contact() {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="flex-1">
       <PageMeta title="고객센터" description="1:1 문의와 고객센터 연락처를 안내합니다." />
       <div className="sticky top-0 z-10 bg-white border-b border-gray-100">
         <div className="max-w-3xl mx-auto flex items-center gap-4 px-6 py-4">

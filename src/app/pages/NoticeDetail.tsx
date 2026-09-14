@@ -21,7 +21,7 @@ export default function NoticeDetail() {
   }, [noticeCode]);
 
   return (
-    <div className="min-h-screen bg-[#FAFAFA]">
+    <div className="flex-1">
       <Helmet>
         <title>{notice ? `${notice.title} — KOALA` : '공지사항 — KOALA'}</title>
       </Helmet>

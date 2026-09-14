@@ -15,7 +15,7 @@ export default function FAQ() {
   };
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="flex-1">
       <PageMeta title="자주 묻는 질문" description="주문·결제·배송·교환에 대해 자주 묻는 질문을 모았습니다." />
       <div className="sticky top-0 z-10 bg-white border-b border-gray-100">
         <div className="max-w-3xl mx-auto flex items-center gap-4 px-6 py-4">

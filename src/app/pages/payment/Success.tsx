@@ -91,7 +91,7 @@ export default function PaymentSuccess() {
 
   if (status === 'error') {
     return (
-      <div className="min-h-screen bg-[#FAFAFA] flex items-center justify-center">
+      <div className="flex-1 flex items-center justify-center">
         <div className="text-center p-8 max-w-sm">
           <div className="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-6">
             <span className="text-2xl">✕</span>
@@ -118,7 +118,7 @@ export default function PaymentSuccess() {
   }
 
   return (
-    <div className="min-h-screen bg-[#FAFAFA] flex items-center justify-center">
+    <div className="flex-1 flex items-center justify-center">
       <div className="text-center">
         <div className="w-10 h-10 border-[3px] border-black border-t-transparent rounded-full animate-spin mx-auto mb-5" />
         <p className="font-medium text-gray-800">결제 승인 처리 중</p>

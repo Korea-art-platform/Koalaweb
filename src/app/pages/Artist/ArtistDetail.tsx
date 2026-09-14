@@ -38,7 +38,7 @@ export default function ArtistDetail() {
   const artistUrl = `https://koala-art.co.kr/artists/${artist.artistCode}`;
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="flex-1">
       <Helmet>
         <title>{artist.name} 작가 — KOALA</title>
         <meta name="description" content={artistDescription} />

@@ -21,7 +21,7 @@ export default function ArtistLab() {
   });
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="flex-1">
       <PageMeta title="작가의 연구소" description="한국 현대미술 작가들의 작품 세계와 창작 여정을 소개합니다." />
       <ArtistLabHero />
       <section className="px-6 md:px-8 pb-32">

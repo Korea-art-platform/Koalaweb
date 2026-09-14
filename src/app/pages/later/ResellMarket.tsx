@@ -79,7 +79,7 @@ export default function ResellMarket() {
   const [selectedFilter, setSelectedFilter] = useState('전체');
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="flex-1">
       <section className="pt-32 pb-12 px-8">
         <div className="max-w-[1600px] mx-auto">
           <div className="max-w-2xl">

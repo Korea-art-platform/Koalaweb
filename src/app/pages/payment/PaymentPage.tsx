@@ -58,7 +58,7 @@ export default function PaymentPage() {
   const iconFor = (id: PayMethod, size: number) => payMethodIcon(id, size);
 
   return (
-    <div className="min-h-screen bg-[#FAFAFA]">
+    <div className="flex-1">
       <div className="max-w-[560px] mx-auto pt-16 pb-24 px-4">
         <div className="mb-8">
           <button

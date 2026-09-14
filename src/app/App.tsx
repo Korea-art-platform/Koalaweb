@@ -1,15 +1,12 @@
 import '../locales/i18n';
-import { BrowserRouter, useLocation } from 'react-router';
+import { BrowserRouter } from 'react-router';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { attachCartSync } from '@/app/hooks/useCart';
 import { HelmetProvider } from 'react-helmet-async';
 import { AppRoutes } from './routes.tsx';
 import { ViewModeProvider } from './context/ViewModeContext';
 import { AuthProvider } from './context/AuthContext';
-import Header from './components/layouts/Header';
-import Footer from './components/layouts/Footer';
 import ScrollToTop from './components/common/ScrollToTop';
-import QuickMenu from './components/common/QuickMenu';
 import { useEffect } from 'react';
 import TagManager from 'react-gtm-module';
 
@@ -24,22 +21,6 @@ const queryClient = new QueryClient({
 
 attachCartSync(queryClient);
 
-function Layout() {
-  const location = useLocation();
-  const isAdmin = location.pathname.startsWith('/admin');
-
-  return (
-    <div className="min-h-screen bg-[#FAFAFA] flex flex-col">
-      {!isAdmin && <Header />}
-      <main className="flex-1">
-        <AppRoutes />
-      </main>
-      {!isAdmin && <Footer />}
-      {!isAdmin && <QuickMenu />}
-    </div>
-  );
-}
-
 function App() {
   useEffect(() => {
     const gtmId = import.meta.env.VITE_GTM_ID as string;
@@ -53,7 +34,7 @@ function App() {
           <ScrollToTop />
           <AuthProvider>
             <ViewModeProvider>
-              <Layout />
+              <AppRoutes />
             </ViewModeProvider>
           </AuthProvider>
         </BrowserRouter>
