@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import OriginalBadge from '@/app/components/common/OriginalBadge';
 import { displayPrice, displayListPrice, hasDiscount } from '@/app/lib/price';
 import { useOriginalCategoryCode } from '@/app/hooks/useOriginalCategory';
+import { lowStockCount } from '@/app/lib/lowStock';
 
 interface ColorOption {
   name: string;
@@ -30,6 +31,7 @@ export function ProductInfo({ sku, selectedColor, onColorSelect }: Props) {
   const { t } = useTranslation();
   const originalCode = useOriginalCategoryCode();
   const isOriginal = Boolean(originalCode) && sku.mainCategory === originalCode;
+  const lowStock = lowStockCount(sku, originalCode);
 
   const price = displayPrice(sku);
   const discounted = hasDiscount(sku);
@@ -87,6 +89,12 @@ export function ProductInfo({ sku, selectedColor, onColorSelect }: Props) {
               current: sku.editionNumber,
               total: sku.editionSize,
             })}
+          </p>
+        )}
+
+        {lowStock !== null && (
+          <p className="text-sm font-semibold text-koala-purple mt-2">
+            {t('store.product.status.lowStock', { count: lowStock })}
           </p>
         )}
 

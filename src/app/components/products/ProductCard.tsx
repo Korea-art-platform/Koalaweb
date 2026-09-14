@@ -5,6 +5,7 @@ import { ShoppingCart, Check, ArrowRight, X, ChevronLeft, ChevronRight } from 'l
 import WishBookmark from '@/app/components/common/WishBookmark';
 import OriginalBadge from '@/app/components/common/OriginalBadge';
 import { useOriginalCategoryCode } from '@/app/hooks/useOriginalCategory';
+import { lowStockCount } from '@/app/lib/lowStock';
 import { motion, AnimatePresence, useDragControls } from 'framer-motion';
 import { Link, useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
@@ -52,6 +53,7 @@ export default function ProductCard({
   const navigate = useNavigate();
   const originalCode = useOriginalCategoryCode();
   const isOriginal = Boolean(originalCode) && sku.mainCategory === originalCode;
+  const lowStock = lowStockCount(sku, originalCode);
   const detailPath = `/product/${sku.skuCode}`;
 
   // 같은 상품이 홈의 여러 섹션(한정판·장르별·카테고리)에 동시에 그려진다.
@@ -195,6 +197,11 @@ export default function ProductCard({
           }`}
         >
           {sku.status === 'OUT_OF_STOCK' ? t('store.product.status.soldOut') as string : sku.status}
+        </span>
+      )}
+      {lowStock !== null && (
+        <span className="px-2 py-1 rounded-md bg-white/90 backdrop-blur-sm ring-1 ring-inset ring-koala-purple/30 text-koala-purple text-[9px] md:text-xs font-bold shadow-sm">
+          {t('store.product.status.lowStock', { count: lowStock }) as string}
         </span>
       )}
     </div>
@@ -521,7 +528,7 @@ export default function ProductCard({
 
       <div className="flex items-start justify-between gap-2 pt-3 md:pt-3.5">
         <div className="min-w-0">
-          {(isOriginal || sku.isLimitedEdition || sku.status === 'OUT_OF_STOCK') && (
+          {(isOriginal || sku.isLimitedEdition || sku.status === 'OUT_OF_STOCK' || lowStock !== null) && (
             <div className="mb-1.5 flex flex-wrap gap-1.5">
               {/* 금색은 원작에만 */}
               {isOriginal && (
@@ -535,6 +542,11 @@ export default function ProductCard({
               {sku.status === 'OUT_OF_STOCK' && (
                 <span className="border border-gray-400 px-1.5 py-0.5 text-[11px] font-medium text-gray-500">
                   {t('store.product.status.soldOut') as string}
+                </span>
+              )}
+              {lowStock !== null && (
+                <span className="border border-gray-900 px-1.5 py-0.5 text-[11px] font-medium text-gray-900">
+                  {t('store.product.status.lowStock', { count: lowStock }) as string}
                 </span>
               )}
             </div>

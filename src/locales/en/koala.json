@@ -25,7 +25,8 @@
       "limited": "한정판",
       "status": {
         "available": "판매중",
-        "soldOut": "품절"
+        "soldOut": "품절",
+        "lowStock": "{{count}}개 남음"
       }
     },
     "emptyState": {
