@@ -1,9 +1,7 @@
-import Navigation from '@/app/components/layouts/Header';
 
 export function CartSkeleton() {
   return (
     <div className="min-h-screen bg-[#FAFAFA]">
-      <Navigation />
       <div className="pt-24 pb-16 px-8">
         <div className="max-w-[1200px] mx-auto animate-pulse">
           <div className="h-10 bg-gray-100 rounded w-1/4 mb-4" />

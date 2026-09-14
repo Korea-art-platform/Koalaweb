@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Outlet, useNavigate, useLocation } from 'react-router';
 import { useTranslation } from 'react-i18next';
-import Navigation from '@/app/components/layouts/Header';
 import AccountSidebar from '@/app/components/layouts/AccountSidebar';
 import { getMyProfile } from '@/api/user';
 import { useAuth } from '@/app/context/AuthContext';
@@ -36,7 +35,6 @@ export default function AccountLayout() {
   if (loading) {
     return (
       <div className="min-h-screen bg-[#FAFAFA]">
-        <Navigation />
         <div className="pt-24 pb-16 px-8 animate-pulse">
           <div className="max-w-[1400px] mx-auto grid grid-cols-1 lg:grid-cols-4 gap-8">
             <div className="h-80 bg-white rounded-3xl" />
@@ -49,7 +47,6 @@ export default function AccountLayout() {
 
   return (
     <div className="min-h-screen bg-[#FAFAFA]">
-      <Navigation />
       <div className="pt-24 md:pt-32 pb-16 px-4 md:px-8 lg:px-12">
         <div className="max-w-[1400px] mx-auto">
           <div className="mb-8 md:mb-12">
