@@ -1,11 +1,18 @@
+import { useState } from 'react';
 import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
+import { toThumbUrl } from '@/app/lib/imageUrl';
+
+const FOOTER_ART = toThumbUrl(
+  'https://koala-media-bucket.s3.ap-southeast-2.amazonaws.com/banners/d3693a24c5f842d5818294255552a5e5.png',
+);
 
 export default function Footer() {
   const { t } = useTranslation();
+  const [artVisible, setArtVisible] = useState(true);
 
   return (
-    <footer className="relative">
+    <footer className="relative z-20">
       
       <svg
         aria-hidden
@@ -19,34 +26,21 @@ export default function Footer() {
         />
       </svg>
 
-      <span
-        aria-hidden
-        className="pointer-events-none absolute -top-8 right-[8%] z-10 hidden md:block
-          drop-shadow-[0_8px_16px_rgba(20,11,32,0.42)] [transform:rotate(-7deg)] [transform-origin:50%_7%]"
-      >
-        <svg width="52" height="118" viewBox="0 0 46 104" style={{ overflow: 'visible' }}>
-          <circle cx="23" cy="8" r="5" fill="none" stroke="#c9a45c" strokeWidth="2.2" />
-          <line x1="23" y1="13" x2="23" y2="17" stroke="#c9a45c" strokeWidth="2.2" strokeLinecap="round" />
-          <rect x="8" y="17" width="30" height="80" rx="5" fill="#3e2259" stroke="#c9a45c" strokeWidth="2.2" />
-          <rect x="11.5" y="20.5" width="23" height="73" rx="3" fill="none" stroke="#e6cf98" strokeWidth="0.9" opacity="0.95" />
-          <g stroke="#dcbc7c" strokeWidth="0.65" opacity="0.6">
-            <path d="M11.5 32 H34.5 M11.5 82 H34.5" />
-            <path d="M17 22 V41 M23 22 V41 M29 22 V41" />
-            <path d="M17 73 V92 M23 73 V92 M29 73 V92" />
-          </g>
-          <g stroke="#e6cf98" strokeWidth="1">
-            <path d="M12.5 25.5 H33.5 M12.5 27.2 H33.5" />
-            <path d="M12.5 86.5 H33.5 M12.5 88.2 H33.5" />
-          </g>
-          <g fill="#ead9ad">
-            <circle cx="15" cy="28" r="2.1" />
-            <circle cx="31" cy="33" r="2.1" />
-            <circle cx="16" cy="86" r="2.1" />
-          </g>
-          <circle cx="23" cy="57" r="14" fill="#e6cf98" stroke="#c9a45c" strokeWidth="1.4" />
-          <circle cx="23" cy="57" r="7" fill="#3e2259" />
-        </svg>
-      </span>
+      <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 z-10 hidden lg:block">
+        <div className="relative mx-auto max-w-[1600px] px-8">
+          {artVisible && FOOTER_ART && (
+            <img
+              src={FOOTER_ART}
+              alt=""
+              loading="lazy"
+              decoding="async"
+              onError={() => setArtVisible(false)}
+              className="absolute right-8 top-0 h-[200px] w-[200px] -translate-y-[38%] object-contain
+                drop-shadow-[0_18px_26px_rgba(20,11,32,0.45)] xl:h-[260px] xl:w-[260px]"
+            />
+          )}
+        </div>
+      </div>
 
       <div className="relative overflow-hidden bg-[#140b20]">
         
