@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useRef, KeyboardEvent } from 'react';
 import { romanize } from '@/utils/romanize';
+import { skuDisplayName } from '@/app/lib/skuName';
 import { useParams, useNavigate } from 'react-router';
 import { ArrowLeft, Check, ImagePlus, Trash2, Star } from 'lucide-react';
 import {
@@ -99,9 +100,8 @@ export default function AdminProductDetail() {
 const LIMITED = 'LIMITED';
 
 const NAME_ROWS = [
-  ['model', 'modelEn', '종', '닥쿤이', 'dakkuni'],
-  ['subModelName', 'subModelNameEn', '모델', '호돌이', 'hodori'],
-  ['color', 'colorEn', '색상', '검정', 'black'],
+  ['model', 'modelEn', '종', '해피토마', 'happytoma'],
+  ['subModelName', 'subModelNameEn', '모델', '빨강색 해피토마', 'red happytoma'],
 ] as const;
 
 const MEDIA_ACCEPT = 'image/*,video/mp4,video/quicktime,video/webm';
@@ -178,7 +178,6 @@ function InfoTab({ sku, onSaved }: { sku: any; onSaved: () => void }) {
     for (const [key, label] of [
       ['model', '종'], ['modelEn', '종(영문)'],
       ['subModelName', '모델'], ['subModelNameEn', '모델(영문)'],
-      ['color', '색상'], ['colorEn', '색상(영문)'],
     ] as const) {
       if (!form[key].trim()) { setError(`${label}을(를) 입력해 주세요.`); return; }
     }
@@ -249,10 +248,10 @@ function InfoTab({ sku, onSaved }: { sku: any; onSaved: () => void }) {
         <div className="grid grid-cols-2 gap-3">
           <div>
             <label className="block text-xs text-gray-500 mb-1.5">상품명</label>
-            <input value={[form.model, form.subModelName, form.color].filter(Boolean).join(' ')}
+            <input value={skuDisplayName(form.model, form.subModelName)}
               readOnly disabled
               className={`${inputCls} bg-gray-50 text-gray-500`} />
-            <p className="text-[11px] text-gray-400 mt-1.5">종·모델·색상으로 자동으로 만들어집니다.</p>
+            <p className="text-[11px] text-gray-400 mt-1.5">모델 이름으로 자동으로 만들어집니다. 모델에 종 이름이 없으면 앞에 붙습니다.</p>
           </div>
           <div>
             <label className="block text-xs text-gray-500 mb-1.5">주소(슬러그)</label>
@@ -290,7 +289,7 @@ function InfoTab({ sku, onSaved }: { sku: any; onSaved: () => void }) {
           ))}
 
           <p className="mt-3 text-[11px] leading-relaxed text-gray-400">
-            상품명은 이 세 값으로 자동으로 만들어집니다. 영문은 주소를 만드는 데 쓰입니다.
+            상품명은 모델 이름으로 만들어집니다. 모델에 종 이름이 없으면 앞에 붙습니다. 영문은 주소를 만드는 데 쓰입니다.
           </p>
         </div>
         <div>

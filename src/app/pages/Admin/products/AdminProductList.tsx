@@ -7,6 +7,7 @@ import { downscaleImage } from '@/utils/downscaleImage';
 import { Package, ImagePlus, X, FileSpreadsheet } from 'lucide-react';
 import AdminCsvImportModal from './AdminCsvImportModal';
 import PriceHint from '@/app/components/admin/PriceHint';
+import { skuDisplayName } from '@/app/lib/skuName';
 
 const SKU_STATUS_COLOR: Record<string, string> = {
   DRAFT:        'bg-gray-100 text-gray-500',
@@ -35,8 +36,6 @@ interface CreateForm {
   modelEn: string;
   subModelName: string;
   subModelNameEn: string;
-  color: string;
-  colorEn: string;
 
   description: string;
   mainCategory: string;
@@ -53,14 +52,13 @@ interface CreateForm {
 }
 
 const NAME_ROWS = [
-  ['model', 'modelEn', '종', '닥쿤이', 'dakkuni'],
-  ['subModelName', 'subModelNameEn', '모델', '호돌이', 'hodori'],
-  ['color', 'colorEn', '색상', '검정', 'black'],
+  ['model', 'modelEn', '종', '해피토마', 'happytoma'],
+  ['subModelName', 'subModelNameEn', '모델', '빨강색 해피토마', 'red happytoma'],
 ] as const;
 
 const EMPTY_FORM: CreateForm = {
   artistCode: '',
-  model: '', modelEn: '', subModelName: '', subModelNameEn: '', color: '', colorEn: '',
+  model: '', modelEn: '', subModelName: '', subModelNameEn: '',
   description: '',
   mainCategory: '', genre: '',
   listPrice: '', salePrice: '',
@@ -155,13 +153,12 @@ export default function AdminProductList() {
     const NAMES = [
       ['model', '종'], ['modelEn', '종(영문)'],
       ['subModelName', '모델'], ['subModelNameEn', '모델(영문)'],
-      ['color', '색상'], ['colorEn', '색상(영문)'],
     ] as const;
     for (const [key, label] of NAMES) {
       if (!form[key].trim()) { setFormError(`${label}을(를) 입력해 주세요.`); return; }
     }
     if (!/^[A-Za-z0-9 \-]+$/.test(
-      `${form.modelEn} ${form.subModelNameEn} ${form.colorEn}`
+      `${form.modelEn} ${form.subModelNameEn}`
     )) {
       setFormError('영문 칸에는 영문·숫자·띄어쓰기만 입력해 주세요. 주소(URL)를 만드는 데 쓰입니다.');
       return;
@@ -203,8 +200,6 @@ export default function AdminProductList() {
         modelEn: form.modelEn.trim(),
         subModelName: form.subModelName.trim(),
         subModelNameEn: form.subModelNameEn.trim(),
-        color: form.color.trim(),
-        colorEn: form.colorEn.trim(),
         description: form.description.trim(),
         mainCategory: form.mainCategory,
         genre: form.genre,
@@ -480,7 +475,7 @@ export default function AdminProductList() {
 
                 <p className="mt-3 text-[11px] leading-relaxed text-gray-400">
                   상품명은 <b className="text-gray-500">
-                    {[form.model, form.subModelName, form.color].filter(Boolean).join(' ') || '종 모델 색상'}
+                    {skuDisplayName(form.model, form.subModelName) || '모델 이름'}
                   </b> 으로 자동으로 만들어집니다.
                   주소는 영문으로 만들어지며, 한글 주소는 브라우저에서 알아볼 수 없게 바뀝니다.
                 </p>
