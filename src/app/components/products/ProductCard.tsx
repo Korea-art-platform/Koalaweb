@@ -698,7 +698,7 @@ export default function ProductCard({
                   <dl className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-sm text-gray-500">
                     {subModelName && (
                       <div className="flex gap-1.5">
-                        <dt>세부모델:</dt>
+                        <dt>모델:</dt>
                         <dd className="text-gray-700">{subModelName}</dd>
                       </div>
                     )}

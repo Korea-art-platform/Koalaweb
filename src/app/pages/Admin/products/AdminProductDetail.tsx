@@ -99,8 +99,8 @@ export default function AdminProductDetail() {
 const LIMITED = 'LIMITED';
 
 const NAME_ROWS = [
-  ['model', 'modelEn', '모델', '닥쿤이', 'dakkuni'],
-  ['subModelName', 'subModelNameEn', '세부모델명', '호돌이', 'hodori'],
+  ['model', 'modelEn', '종', '닥쿤이', 'dakkuni'],
+  ['subModelName', 'subModelNameEn', '모델', '호돌이', 'hodori'],
   ['color', 'colorEn', '색상', '검정', 'black'],
 ] as const;
 
@@ -176,8 +176,8 @@ function InfoTab({ sku, onSaved }: { sku: any; onSaved: () => void }) {
 
   const handleSave = async () => {
     for (const [key, label] of [
-      ['model', '모델'], ['modelEn', '모델(영문)'],
-      ['subModelName', '세부모델명'], ['subModelNameEn', '세부모델명(영문)'],
+      ['model', '종'], ['modelEn', '종(영문)'],
+      ['subModelName', '모델'], ['subModelNameEn', '모델(영문)'],
       ['color', '색상'], ['colorEn', '색상(영문)'],
     ] as const) {
       if (!form[key].trim()) { setError(`${label}을(를) 입력해 주세요.`); return; }
@@ -252,7 +252,7 @@ function InfoTab({ sku, onSaved }: { sku: any; onSaved: () => void }) {
             <input value={[form.model, form.subModelName, form.color].filter(Boolean).join(' ')}
               readOnly disabled
               className={`${inputCls} bg-gray-50 text-gray-500`} />
-            <p className="text-[11px] text-gray-400 mt-1.5">모델·세부모델명·색상으로 자동으로 만들어집니다.</p>
+            <p className="text-[11px] text-gray-400 mt-1.5">종·모델·색상으로 자동으로 만들어집니다.</p>
           </div>
           <div>
             <label className="block text-xs text-gray-500 mb-1.5">주소(슬러그)</label>

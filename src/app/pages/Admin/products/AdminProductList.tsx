@@ -53,8 +53,8 @@ interface CreateForm {
 }
 
 const NAME_ROWS = [
-  ['model', 'modelEn', '모델', '닥쿤이', 'dakkuni'],
-  ['subModelName', 'subModelNameEn', '세부모델명', '호돌이', 'hodori'],
+  ['model', 'modelEn', '종', '닥쿤이', 'dakkuni'],
+  ['subModelName', 'subModelNameEn', '모델', '호돌이', 'hodori'],
   ['color', 'colorEn', '색상', '검정', 'black'],
 ] as const;
 
@@ -153,8 +153,8 @@ export default function AdminProductList() {
     if (!form.artistCode) { setFormError('아티스트를 선택해 주세요.'); return; }
 
     const NAMES = [
-      ['model', '모델'], ['modelEn', '모델(영문)'],
-      ['subModelName', '세부모델명'], ['subModelNameEn', '세부모델명(영문)'],
+      ['model', '종'], ['modelEn', '종(영문)'],
+      ['subModelName', '모델'], ['subModelNameEn', '모델(영문)'],
       ['color', '색상'], ['colorEn', '색상(영문)'],
     ] as const;
     for (const [key, label] of NAMES) {
@@ -480,7 +480,7 @@ export default function AdminProductList() {
 
                 <p className="mt-3 text-[11px] leading-relaxed text-gray-400">
                   상품명은 <b className="text-gray-500">
-                    {[form.model, form.subModelName, form.color].filter(Boolean).join(' ') || '모델 세부모델명 색상'}
+                    {[form.model, form.subModelName, form.color].filter(Boolean).join(' ') || '종 모델 색상'}
                   </b> 으로 자동으로 만들어집니다.
                   주소는 영문으로 만들어지며, 한글 주소는 브라우저에서 알아볼 수 없게 바뀝니다.
                 </p>
