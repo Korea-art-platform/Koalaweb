@@ -24,3 +24,20 @@ npm-debug.log*
 # OS
 .DS_Store
 Thumbs.db
+
+# ── 키 자료 · 인증서 (보안 점검 2026-09: 누락분 보강) ──────────────────────
+# 이름만으로도 커밋되면 안 되는 것들. .githooks/pre-commit 과 .gitleaks.toml 이
+# 같은 목록을 보고 커밋/CI 에서 한 번 더 막는다.
+*.jks
+*.keystore
+keystore.properties
+*.pem
+*.p12
+*.pfx
+id_rsa
+id_dsa
+id_ecdsa
+id_ed25519
+
+# Firebase 서비스 계정 키 — 경로와 무관하게 차단
+firebase-service-account.json
