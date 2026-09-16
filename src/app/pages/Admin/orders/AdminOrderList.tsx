@@ -21,16 +21,16 @@ const ORDER_STATUS_COLOR: Record<string, string> = {
   CANCELLED: 'bg-red-50 text-red-600',
 };
 
-type SearchType = 'userId' | 'name' | 'phone';
+type SearchType = 'userId' | 'phone';
 
 export default function AdminOrderList() {
   const [data, setData] = useState<any>(null);
   const [page, setPage] = useState(0);
   const [loading, setLoading] = useState(true);
 
-  const [searchType, setSearchType] = useState<SearchType>('name');
+  const [searchType, setSearchType] = useState<SearchType>('phone');
   const [searchInput, setSearchInput] = useState('');
-  const [appliedSearch, setAppliedSearch] = useState<{ userId?: number; name?: string; phone?: string }>({});
+  const [appliedSearch, setAppliedSearch] = useState<{ userId?: number; phone?: string }>({});
 
   const fetchOrders = useCallback((p: number, search: typeof appliedSearch) => {
     setLoading(true);
@@ -48,7 +48,6 @@ export default function AdminOrderList() {
     if (!val) { handleReset(); return; }
     const search: typeof appliedSearch =
       searchType === 'userId' ? { userId: Number(val) }
-      : searchType === 'name'   ? { name: val }
       : { phone: val };
     setPage(0);
     setAppliedSearch(search);
@@ -78,7 +77,6 @@ export default function AdminOrderList() {
           onChange={(e) => setSearchType(e.target.value as SearchType)}
           className="px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-black/10"
         >
-          <option value="name">주문자명</option>
           <option value="phone">전화번호</option>
           <option value="userId">회원 ID</option>
         </select>
@@ -90,8 +88,7 @@ export default function AdminOrderList() {
             onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
             placeholder={
               searchType === 'userId' ? '회원 ID 입력'
-              : searchType === 'name'   ? '주문자 이름 검색'
-              : '전화번호 검색 (010-...)'
+              : '전화번호 전체 또는 뒷자리 4자리'
             }
             className="flex-1 px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-black/10"
           />

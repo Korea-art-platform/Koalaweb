@@ -22,9 +22,9 @@ export const adminLogout = () =>
 export async function getAdminOrders(
   page = 0,
   size = 20,
-  search?: { userId?: number; name?: string; phone?: string }
+  search?: { userId?: number; phone?: string }
 ) {
-  if (search && (search.name?.trim() || search.phone?.trim() || search.userId != null)) {
+  if (search && (search.phone?.trim() || search.userId != null)) {
     const res = await adminInstance.post(`${BASE}/orders/search`, search, {
       params: { page, size },
     });
