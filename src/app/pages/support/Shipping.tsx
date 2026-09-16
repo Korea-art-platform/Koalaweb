@@ -1,10 +1,15 @@
 import { useNavigate } from 'react-router';
+import { useIsEnglish } from '@/app/lib/lang';
+import ShippingEn from './ShippingEn';
 import { ArrowLeft, Truck, Clock, MapPin, Package } from 'lucide-react';
 import { FREE_SHIPPING_THRESHOLD_TEXT, FREE_SHIPPING_THRESHOLD_AMOUNT_TEXT, SHIPPING_FEE_AMOUNT_TEXT } from '@/app/lib/shipping';
 import PageMeta from '@/app/components/common/PageMeta';
 
 export default function Shipping() {
   const navigate = useNavigate();
+  const english = useIsEnglish();
+
+  if (english) return <ShippingEn />;
 
   return (
     <div className="flex-1">

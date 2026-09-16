@@ -1,9 +1,14 @@
 import { useNavigate } from 'react-router';
+import { useIsEnglish } from '@/app/lib/lang';
+import PrivacyEn from './PrivacyEn';
 import { PG_DISPLAY_NAME } from '@/app/lib/pgInfo';
 import { ArrowLeft } from 'lucide-react';
 
 export default function Privacy() {
   const navigate = useNavigate();
+  const english = useIsEnglish();
+
+  if (english) return <PrivacyEn />;
 
   return (
     <div className="flex-1">

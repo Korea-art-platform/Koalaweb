@@ -1,8 +1,13 @@
 import { useNavigate } from 'react-router';
+import { useIsEnglish } from '@/app/lib/lang';
+import AccountDeletionEn from './AccountDeletionEn';
 import { ArrowLeft } from 'lucide-react';
 
 export default function AccountDeletion() {
   const navigate = useNavigate();
+  const english = useIsEnglish();
+
+  if (english) return <AccountDeletionEn />;
 
   return (
     <div className="flex-1">

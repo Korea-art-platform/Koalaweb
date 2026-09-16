@@ -103,7 +103,7 @@ export default function Footer() {
                 {[
                   { key: 'help', path: '/help' },
                   
-                  { key: 'orderLookup', path: '/order-lookup', label: '주문 조회' },
+                  { key: 'orderLookup', path: '/order-lookup' },
                   { key: 'shipping', path: '/shipping' },
                   { key: 'returns', path: '/returns' },
                   { key: 'contact', path: '/contact' },

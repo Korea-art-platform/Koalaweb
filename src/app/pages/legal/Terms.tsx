@@ -1,9 +1,14 @@
 import { useNavigate } from 'react-router';
+import { useIsEnglish } from '@/app/lib/lang';
+import TermsEn from './TermsEn';
 import { PG_DISPLAY_NAME, PAY_METHOD_SENTENCE } from '@/app/lib/pgInfo';
 import { ArrowLeft } from 'lucide-react';
 
 export default function Terms() {
   const navigate = useNavigate();
+  const english = useIsEnglish();
+
+  if (english) return <TermsEn />;
 
   return (
     <div className="flex-1">

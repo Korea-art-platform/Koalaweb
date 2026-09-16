@@ -1,8 +1,13 @@
 import { useNavigate } from 'react-router';
+import { useIsEnglish } from '@/app/lib/lang';
+import CookiesEn from './CookiesEn';
 import { ArrowLeft } from 'lucide-react';
 
 export default function Cookies() {
   const navigate = useNavigate();
+  const english = useIsEnglish();
+
+  if (english) return <CookiesEn />;
 
   return (
     <div className="flex-1">

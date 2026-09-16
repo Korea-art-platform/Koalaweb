@@ -1,9 +1,14 @@
 import { useNavigate } from 'react-router';
+import { useIsEnglish } from '@/app/lib/lang';
+import ReturnsEn from './ReturnsEn';
 import { ArrowLeft } from 'lucide-react';
 import PageMeta from '@/app/components/common/PageMeta';
 
 export default function Returns() {
   const navigate = useNavigate();
+  const english = useIsEnglish();
+
+  if (english) return <ReturnsEn />;
 
   return (
     <div className="flex-1">

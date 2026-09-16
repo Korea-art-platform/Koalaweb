@@ -1,8 +1,13 @@
 import { useNavigate } from 'react-router';
+import { useIsEnglish } from '@/app/lib/lang';
+import YouthProtectionEn from './YouthProtectionEn';
 import { ArrowLeft } from 'lucide-react';
 
 export default function YouthProtection() {
   const navigate = useNavigate();
+  const english = useIsEnglish();
+
+  if (english) return <YouthProtectionEn />;
 
   return (
     <div className="flex-1">
