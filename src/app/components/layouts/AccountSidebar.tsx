@@ -1,10 +1,8 @@
-import { Link, useNavigate } from 'react-router';
+import { Link } from 'react-router';
 import { User, MapPin, CreditCard, Package, Heart, LogOut, Settings, MessageCircle } from 'lucide-react';
 
 import { useTranslation } from 'react-i18next';
-import { useAuth } from '@/app/context/AuthContext';
-import { logout as logoutApi } from '@/api/auth';
-import { notifyCartUpdated } from '@/app/hooks/useCart';
+import { useLogout } from '@/app/hooks/useLogout';
 
 const menuItems = [
   { icon: User, key: 'account.sidebar.profile', path: '/account' },
@@ -22,21 +20,8 @@ interface Props {
 }
 
 export default function AccountSidebar({ currentPath, user }: Props) {
-  const navigate = useNavigate();
-
   const { t } = useTranslation();
-  const { setAuthenticated } = useAuth();
-
-  const handleLogout = async () => {
-    try {
-      await logoutApi();
-    } catch {
-    } finally {
-      setAuthenticated(false);
-      notifyCartUpdated();
-      navigate('/login');
-    }
-  };
+  const handleLogout = useLogout();
 
   const initials = user?.name
     ? user.name.slice(0, 2).toUpperCase()

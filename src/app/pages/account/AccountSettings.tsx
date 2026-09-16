@@ -1,25 +1,19 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
+import { useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '@/app/context/AuthContext';
-import { logout as logoutApi, withdraw as withdrawApi } from '@/api/auth';
+import { withdraw as withdrawApi } from '@/api/auth';
 import { KeyRound, LogOut, Trash2, ChevronRight } from 'lucide-react';
 import { notifyCartUpdated } from '@/app/hooks/useCart';
+import { useLogout } from '@/app/hooks/useLogout';
 
 export default function AccountSettings() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const { setAuthenticated } = useAuth();
   const [withdrawing, setWithdrawing] = useState(false);
 
-  const handleLogout = async () => {
-    try {
-      await logoutApi();
-    } catch {
-    } finally {
-      setAuthenticated(false);
-      notifyCartUpdated();
-      navigate('/login');
-    }
-  };
+  const handleLogout = useLogout();
 
   const handleWithdraw = async () => {
     if (withdrawing) return;
@@ -32,6 +26,7 @@ export default function AccountSettings() {
       await withdrawApi();
       window.alert('회원 탈퇴가 완료되었습니다.');
       setAuthenticated(false);
+      queryClient.clear();
       notifyCartUpdated();
       navigate('/login');
     } catch {

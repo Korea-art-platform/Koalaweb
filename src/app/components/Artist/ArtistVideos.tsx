@@ -2,32 +2,25 @@ import { useState } from 'react';
 import { Play } from 'lucide-react';
 import { ImageWithFallback } from '@/app/components/fallback/ImageWithFallback';
 import { useTranslation } from 'react-i18next';
-
-function getVideoEmbedUrl(url: string): string | null {
-  if (!url) return null;
-  const youtubeMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\n?#]+)/);
-  if (youtubeMatch) return `https://www.youtube.com/embed/${youtubeMatch[1]}`;
-  const vimeoMatch = url.match(/vimeo\.com\/(\d+)/);
-  if (vimeoMatch) return `https://player.vimeo.com/video/${vimeoMatch[1]}`;
-  if (url.endsWith('.mp4') || url.endsWith('.webm')) return url;
-  return null;
-}
+import { videoEmbedUrl, directVideoUrl } from '@/app/lib/videoEmbed';
 
 function VideoPlayer({ url, thumbnail, title }: { url: string; thumbnail?: string; title?: string }) {
   const [playing, setPlaying] = useState(false);
-  const embedUrl = getVideoEmbedUrl(url);
-  const isDirectVideo = url.endsWith('.mp4') || url.endsWith('.webm');
+  const embedUrl = videoEmbedUrl(url);
+  const directUrl = embedUrl ? null : directVideoUrl(url);
+  const isDirectVideo = directUrl !== null;
+  const playSrc = embedUrl ?? directUrl;
 
-  if (!embedUrl) return null;
+  if (!playSrc) return null;
 
   return (
     <div className="relative overflow-hidden rounded-[2rem] bg-gray-900 aspect-video group shadow-2xl">
       {playing ? (
         isDirectVideo ? (
-          <video src={embedUrl} controls autoPlay className="w-full h-full object-cover" />
+          <video src={playSrc} controls autoPlay className="w-full h-full object-cover" />
         ) : (
           <iframe
-            src={`${embedUrl}?autoplay=1`}
+            src={`${playSrc}?autoplay=1`}
             className="w-full h-full"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen

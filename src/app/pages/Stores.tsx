@@ -4,6 +4,7 @@ import { motion, AnimatePresence, useReducedMotion, type PanInfo } from 'framer-
 import { MapPin, Phone, Mail, Store as StoreIcon, ArrowUpRight, Instagram, ChevronRight, Search, X } from 'lucide-react';
 import { getStores, type StoreItem } from '@/api/store';
 import CornerBookmark from '@/app/components/common/CornerBookmark';
+import { safeHttpUrl } from '@/app/lib/safeUrl';
 
 const cityOf = (addr?: string) => (addr?.trim().split(/\s+/)[0]) || '기타';
 
@@ -241,6 +242,8 @@ export default function Stores() {
 function StoreDetail({ store: s, reduce }: { store: StoreItem; reduce: boolean }) {
   const dy = reduce ? 0 : 1;
   const item = { hidden: { opacity: 0, y: 10 * dy }, show: { opacity: 1, y: 0 } };
+  const snsHref = safeHttpUrl(s.snsUrl);
+  const mapHref = safeHttpUrl(s.mapUrl);
   return (
     <div className="flex flex-col">
       {s.imageUrl ? (
@@ -269,9 +272,9 @@ function StoreDetail({ store: s, reduce }: { store: StoreItem; reduce: boolean }
         <motion.div variants={item} className="flex items-start justify-between gap-4">
           <h2 className="text-xl md:text-2xl font-bold text-gray-900">{s.name}</h2>
           <div className="flex items-center gap-2 shrink-0">
-            {s.snsUrl && (
+            {snsHref && (
               <a
-                href={s.snsUrl}
+                href={snsHref}
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="SNS"
@@ -280,9 +283,9 @@ function StoreDetail({ store: s, reduce }: { store: StoreItem; reduce: boolean }
                 <Instagram className="w-4 h-4" />
               </a>
             )}
-            {s.mapUrl && (
+            {mapHref && (
               <a
-                href={s.mapUrl}
+                href={mapHref}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-koala-purple text-white text-xs md:text-sm font-bold hover:bg-koala-purple-hover transition-colors"

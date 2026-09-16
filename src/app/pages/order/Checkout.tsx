@@ -248,7 +248,11 @@ export default function Checkout() {
       });
       const order = orderRes.data.data;
 
-      await preparePayment(order.orderNo, PG_PROVIDER_CODE, selectedMethod);
+      const prepared = await preparePayment(order.orderNo, PG_PROVIDER_CODE, selectedMethod);
+      const chargeAmount = Number(prepared.data?.data?.amount);
+      if (!Number.isFinite(chargeAmount) || chargeAmount <= 0) {
+        throw new Error('결제 금액을 확인하지 못했습니다. 잠시 후 다시 시도해 주세요.');
+      }
 
       const orderName = cartItems.length > 0
         ? `${cartItems[0].skuName}${cartItems.length > 1 ? ` 외 ${cartItems.length - 1}건` : ''}`
@@ -257,7 +261,7 @@ export default function Checkout() {
       await startPayment({
         method: selectedMethod,
         orderNo: order.orderNo,
-        amount: total,
+        amount: chargeAmount,
         orderName,
         customerKey: profile?.id ? `user_${profile.id}` : undefined,
         customerName: form.ordererName || undefined,

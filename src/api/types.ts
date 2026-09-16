@@ -227,6 +227,14 @@ export type PaymentProvider = 'TOSS' | 'NICEPAY' | 'PAYPLE';
 export type PaymentMethodType =
   | 'CARD' | 'TRANSFER' | 'MOBILE_PHONE' | 'TOSSPAY' | 'VBANK' | 'KAKAOPAY' | 'NAVERPAY';
 
+export interface PreparePaymentResponse {
+  paymentNo: string;
+  orderNo: string;
+  amount: number;
+  provider: string;
+  method: string;
+}
+
 export type BannerType = 'MAIN' | 'MAIN_SUB' | string;
 
 export interface Banner {

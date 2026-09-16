@@ -24,9 +24,13 @@ export async function getAdminOrders(
   size = 20,
   search?: { userId?: number; name?: string; phone?: string }
 ) {
-  const res = await adminInstance.get(`${BASE}/orders`, {
-    params: { page, size, ...search },
-  });
+  if (search && (search.name?.trim() || search.phone?.trim() || search.userId != null)) {
+    const res = await adminInstance.post(`${BASE}/orders/search`, search, {
+      params: { page, size },
+    });
+    return res.data.data;
+  }
+  const res = await adminInstance.get(`${BASE}/orders`, { params: { page, size } });
   return res.data.data;
 }
 

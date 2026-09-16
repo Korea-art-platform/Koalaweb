@@ -6,20 +6,22 @@ import {
 import { ViewModeProvider } from '@/app/context/ViewModeContext';
 import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { CART_QUERY_KEY, notifyCartUpdated } from '@/app/hooks/useCart';
+import { CART_QUERY_KEY } from '@/app/hooks/useCart';
 import { getCart } from '@/api/cart';
 import { getArtists } from '@/api/artist';
 import type { Cart, Artist, PageResponse } from '@/api/types';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/app/context/AuthContext';
-import { logout as logoutApi } from '@/api/auth';
+import LanguageToggle from '@/app/components/layouts/LanguageToggle';
+import { useLogout } from '@/app/hooks/useLogout';
 
 export function Header() {
   const { t } = useTranslation();
   const location = useLocation();
   const navigate = useNavigate();
 
-  const { setAuthenticated, isAuthenticated } = useAuth();
+  const { isAuthenticated } = useAuth();
+  const handleLogout = useLogout();
   const [isHeroActive, setIsHeroActive] = useState(false);
   const [isHeroDark, setIsHeroDark] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -177,9 +179,10 @@ export function Header() {
               })}
             </div>
             <div className="flex items-center gap-4 md:gap-6">
+              <LanguageToggle className={`z-[120] ${isMenuOpen ? 'text-black' : iconClass}`} />
               <button
                 onClick={() => { setIsMenuOpen(false); navigate('/search'); }}
-                aria-label="검색"
+                aria-label={t('header.aria.search')}
                 className={`z-[120] ${iconButtonClass} ${isMenuOpen ? 'text-black' : iconClass}`}
               >
                 <Search className="w-5 h-5" />
@@ -187,7 +190,7 @@ export function Header() {
               <Link
                 to="/cart"
                 onClick={() => setIsMenuOpen(false)}
-                aria-label="장바구니"
+                aria-label={t('header.aria.cart')}
                 className={`z-[120] ${iconButtonClass} ${isMenuOpen ? 'text-black' : iconClass} ${isPop ? 'scale-110' : ''}`}
               >
                 <ShoppingCart className="w-5 h-5" />
@@ -202,14 +205,14 @@ export function Header() {
               </Link>
               <button
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
-                aria-label="메뉴"
+                aria-label={t('header.aria.menu')}
                 className={`lg:hidden z-[120] ${iconButtonClass} ${isMenuOpen ? 'text-black' : iconClass}`}
               >
                 {isMenuOpen ? <X className="w-7 h-7" /> : <Menu className="w-7 h-7" />}
               </button>
               <Link
                 to="/account/orders"
-                aria-label="마이페이지"
+                aria-label={t('header.aria.myPage')}
                 className={`hidden lg:block ${iconButtonClass} ${iconClass}`}
               >
                 <User className="w-5 h-5" />
@@ -237,7 +240,7 @@ export function Header() {
               <div className={`border-t border-gray-100 pt-6 flex flex-col gap-4 transition-all duration-500 ${isMenuOpen ? 'opacity-100' : 'opacity-0'}`}
                 style={{ transitionDelay: `${menus.length * 50 + 50}ms` }}
               >
-                <p className="text-xs text-gray-400 tracking-widest uppercase font-semibold">작가</p>
+                <p className="text-xs text-gray-400 tracking-widest uppercase font-semibold">{t('header.aria.artists')}</p>
                 {artists.map((artist, index) => (
                   <Link
                     key={artist.artistCode}
@@ -273,12 +276,7 @@ export function Header() {
                 className="w-full flex items-center justify-between py-4 px-2 -mx-2 active:bg-red-50 rounded-lg transition-colors group"
                 onClick={async () => {
                   setIsMenuOpen(false);
-                  try { await logoutApi(); } catch {  }
-                  finally {
-                    setAuthenticated(false);
-                    notifyCartUpdated();
-                    navigate('/login');
-                  }
+                  await handleLogout();
                 }}
               >
                 <div className="flex items-center gap-4">

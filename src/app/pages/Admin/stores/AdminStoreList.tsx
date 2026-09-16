@@ -6,6 +6,7 @@ import {
   type PartnerStore, type StoreInput,
 } from '@/api/adminApi';
 import { openAddressSearch } from '@/app/lib/daumPostcode';
+import { safeHttpUrl } from '@/app/lib/safeUrl';
 
 const EMPTY: StoreInput = {
   name: '', zipCode: '', address: '', addressDetail: '',
@@ -110,6 +111,14 @@ export default function AdminStoreList() {
     if (!form.name.trim()) { setError('매장명은 필수입니다.'); return; }
     if (!form.address.trim()) { setError('주소는 필수입니다. 주소 검색으로 입력해 주세요.'); return; }
     if (!form.phone.trim()) { setError('연락처는 필수입니다.'); return; }
+    if (form.snsUrl?.trim() && !safeHttpUrl(form.snsUrl)) {
+      setError('SNS 링크는 http:// 또는 https:// 로 시작하는 주소여야 합니다.');
+      return;
+    }
+    if (form.mapUrl?.trim() && !safeHttpUrl(form.mapUrl)) {
+      setError('위치 링크는 http:// 또는 https:// 로 시작하는 주소여야 합니다.');
+      return;
+    }
     setError('');
     setSubmitting(true);
     try {
