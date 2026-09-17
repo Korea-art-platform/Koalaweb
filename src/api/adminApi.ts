@@ -1,5 +1,6 @@
 import adminInstance from './adminInstance';
 import type { Category, CategoryGroups } from './category';
+import type { PopupDisplayType, PopupLanguage, PopupPlacement } from './types';
 
 const BASE = '/admin/api/v1';
 
@@ -824,4 +825,68 @@ export async function backfillImageDerivatives(
     params: { prefix, limit, ...(nextToken ? { nextToken } : {}) },
   });
   return res.data.data as ImageBackfillResult;
+}
+
+export interface PopupRequest {
+  title: string;
+  active: boolean;
+  showDismiss: boolean;
+  language: PopupLanguage;
+  displayType: PopupDisplayType;
+  imageUrl: string | null;
+  body: string | null;
+  showLinkButton: boolean;
+  placement: PopupPlacement;
+  landingUrl: string | null;
+  sortOrder?: number;
+}
+
+export interface PopupResponse extends PopupRequest {
+  popupCode: string;
+  sortOrder?: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export async function getAdminPopups(): Promise<PopupResponse[]> {
+  const res = await adminInstance.get(`${BASE}/popups`);
+  return res.data.data as PopupResponse[];
+}
+
+export async function getAdminPopup(popupCode: string): Promise<PopupResponse> {
+  const res = await adminInstance.get(`${BASE}/popups/${popupCode}`);
+  return res.data.data as PopupResponse;
+}
+
+export async function createPopup(body: PopupRequest): Promise<PopupResponse> {
+  const res = await adminInstance.post(`${BASE}/popups`, body);
+  return res.data.data as PopupResponse;
+}
+
+export async function updatePopup(popupCode: string, body: PopupRequest): Promise<PopupResponse> {
+  const res = await adminInstance.put(`${BASE}/popups/${popupCode}`, body);
+  return res.data.data as PopupResponse;
+}
+
+export async function activatePopup(popupCode: string) {
+  await adminInstance.patch(`${BASE}/popups/${popupCode}/activate`);
+}
+
+export async function deactivatePopup(popupCode: string) {
+  await adminInstance.patch(`${BASE}/popups/${popupCode}/deactivate`);
+}
+
+export async function deletePopup(popupCode: string) {
+  await adminInstance.delete(`${BASE}/popups/${popupCode}`);
+}
+
+export async function uploadPopupImage(file: File): Promise<string> {
+  const formData = new FormData();
+  formData.append('file', file);
+  const res = await adminInstance.post<{ data: { imageUrl: string } }>(
+    `${BASE}/popups/upload-image`,
+    formData,
+    { headers: { 'Content-Type': undefined } }
+  );
+  return res.data.data.imageUrl;
 }

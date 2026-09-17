@@ -3,6 +3,7 @@ import { Outlet } from 'react-router';
 import Header from '@/app/components/layouts/Header';
 import Footer from '@/app/components/layouts/Footer';
 import QuickMenu from '@/app/components/common/QuickMenu';
+import PopupLayer from '@/app/components/common/PopupLayer';
 
 export default function SiteLayout() {
   return (
@@ -15,6 +16,7 @@ export default function SiteLayout() {
       </main>
       <Footer />
       <QuickMenu />
+      <PopupLayer />
     </div>
   );
 }

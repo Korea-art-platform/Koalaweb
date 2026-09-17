@@ -673,5 +673,10 @@
       "removeConfirm": "장바구니에서 해당 상품을 삭제하시겠습니까?",
       "clearConfirm": "장바구니를 모두 비우시겠습니까?"
     }
+  },
+  "popup": {
+    "close": "닫기",
+    "hideToday": "오늘 하루 보지 않기",
+    "viewMore": "자세히 보기"
   }
 }

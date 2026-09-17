@@ -673,5 +673,10 @@
       "removeConfirm": "Remove this item from your cart?",
       "clearConfirm": "Empty your cart?"
     }
+  },
+  "popup": {
+    "close": "Close",
+    "hideToday": "Don't show again today",
+    "viewMore": "Learn more"
   }
 }

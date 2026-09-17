@@ -77,6 +77,8 @@ const AdminArtistList = lazy(() => import("@/app/pages/Admin/artists/AdminArtist
 const AdminArtistDetail = lazy(() => import("@/app/pages/Admin/artists/AdminArtistDetail"));
 const AdminReviewList = lazy(() => import("@/app/pages/Admin/reviews/AdminReviewList"));
 const AdminBannerList = lazy(() => import("@/app/pages/Admin/banners/AdminBannerList"));
+const AdminPopupList = lazy(() => import("@/app/pages/Admin/popups/AdminPopupList"));
+const AdminPopupForm = lazy(() => import("@/app/pages/Admin/popups/AdminPopupForm"));
 const AdminUserList = lazy(() => import("@/app/pages/Admin/users/AdminUserList"));
 const AdminUserDetail = lazy(() => import("@/app/pages/Admin/users/AdminUserDetail"));
 const AdminReturnList = lazy(() => import("@/app/pages/Admin/returns/AdminReturnList"));
@@ -172,6 +174,9 @@ export function AppRoutes() {
             <Route path="/admin/artists/:artistCode" element={<AdminArtistDetail />} />
             <Route path="/admin/reviews" element={<AdminReviewList />} />
             <Route path="/admin/banners" element={<AdminBannerList />} />
+            <Route path="/admin/popups" element={<AdminPopupList />} />
+            <Route path="/admin/popups/new" element={<AdminPopupForm />} />
+            <Route path="/admin/popups/:popupCode" element={<AdminPopupForm />} />
             <Route path="/admin/users" element={<AdminUserList />} />
             <Route path="/admin/users/:userId" element={<AdminUserDetail />} />
             <Route path="/admin/returns" element={<AdminReturnList />} />

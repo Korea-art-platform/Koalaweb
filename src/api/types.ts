@@ -270,3 +270,18 @@ export interface WishlistItem {
   salePrice?: number;
   artistName: string;
 }
+
+export type PopupDisplayType = 'IMAGE' | 'TEMPLATE';
+export type PopupPlacement = 'HOME' | 'ALL';
+export type PopupLanguage = 'ko' | 'en';
+
+export interface PublicPopup {
+  popupCode: string;
+  title: string;
+  displayType: PopupDisplayType;
+  imageUrl: string | null;
+  body: string | null;
+  showDismiss: boolean;
+  showLinkButton: boolean;
+  landingUrl: string | null;
+}
