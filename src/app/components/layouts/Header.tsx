@@ -1,7 +1,7 @@
 import { Link, useLocation, useNavigate } from 'react-router';
 import {
   ShoppingCart, User, Menu, X, Search,
-  ChevronRight, LogOut, Settings, Bell, Headset
+  ChevronRight, LogOut, Settings, Bell, Headset, Globe
 } from 'lucide-react';
 import { ViewModeProvider } from '@/app/context/ViewModeContext';
 import { useEffect, useState } from 'react';
@@ -12,7 +12,7 @@ import { getArtists } from '@/api/artist';
 import type { Cart, Artist, PageResponse } from '@/api/types';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/app/context/AuthContext';
-import LanguageToggle from '@/app/components/layouts/LanguageToggle';
+import LanguageToggle, { LanguageChoice } from '@/app/components/layouts/LanguageToggle';
 import { useLogout } from '@/app/hooks/useLogout';
 
 export function Header() {
@@ -141,12 +141,12 @@ export function Header() {
             <Link
               to="/"
               onClick={() => setIsMenuOpen(false)}
-              className="z-[120] group"
+              className="z-[120] group min-w-0 shrink"
             >
               <img
                 src={!isMenuOpen && onDark ? '/logo-white.svg' : '/logo.svg'}
                 alt="KOALA"
-                className="h-12 w-auto transition-opacity duration-200 group-hover:opacity-75"
+                className="h-10 min-[360px]:h-12 w-auto max-w-full object-contain object-left transition-opacity duration-200 group-hover:opacity-75"
               />
             </Link>
             <div className="hidden lg:flex items-center gap-8">
@@ -178,8 +178,8 @@ export function Header() {
                 );
               })}
             </div>
-            <div className="flex items-center gap-4 md:gap-6">
-              <LanguageToggle className={`z-[120] ${isMenuOpen ? 'text-black' : iconClass}`} />
+            <div className="flex shrink-0 items-center gap-4 md:gap-6">
+              <LanguageToggle className={`hidden lg:block ${iconClass}`} />
               <button
                 onClick={() => { setIsMenuOpen(false); navigate('/search'); }}
                 aria-label={t('header.aria.search')}
@@ -256,6 +256,14 @@ export function Header() {
             )}
           </div>
           <div className={`border-t border-gray-100 pt-6 space-y-1 transition-all duration-700 delay-150 ${isMenuOpen ? 'opacity-100' : 'opacity-0'}`}>
+            <div className="flex items-center justify-between gap-3 py-3 px-2 -mx-2">
+              <div className="flex min-w-0 items-center gap-4">
+                <Globe className="w-5 h-5 shrink-0 text-gray-400" />
+                <span className="truncate text-lg font-medium text-gray-700">{t('header.language.label')}</span>
+              </div>
+              <LanguageChoice className="shrink-0" />
+            </div>
+
             {subMenus.map((item) => (
               <Link
                 key={item.key}
