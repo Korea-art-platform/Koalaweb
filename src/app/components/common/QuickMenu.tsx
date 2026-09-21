@@ -1,10 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
-import { Link } from 'react-router';
+import { Link, useLocation } from 'react-router';
 import { AnimatePresence, motion } from 'framer-motion';
 import { MessageCircle, Phone, X } from 'lucide-react';
 import { usePastHero } from '@/app/components/layouts/RisingPanel';
 
+const HIDE_PATH = /^\/(checkout|payment)(\/|$)/;
+
 export default function QuickMenu() {
+  const { pathname } = useLocation();
   const [open, setOpen] = useState(false);
   const wrapRef = useRef<HTMLDivElement>(null);
 
@@ -38,6 +41,8 @@ export default function QuickMenu() {
      focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-koala-purple`;
 
   const iconClass = 'w-7 h-7 rounded-full bg-koala-navy/5 text-koala-purple flex items-center justify-center';
+
+  if (HIDE_PATH.test(pathname)) return null;
 
   return (
     <div

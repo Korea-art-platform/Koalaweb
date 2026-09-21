@@ -688,9 +688,17 @@ export default function ProductCard({
                 <motion.p layoutId={`subtitle-${layoutId}`} className="text-koala-red text-xs font-bold tracking-wide uppercase mb-2">
                   {sku.artistName}
                 </motion.p>
-                <motion.h3 layoutId={`title-${layoutId}`} className="text-2xl sm:text-3xl font-bold tracking-tight text-gray-900">
-                  {title}
-                </motion.h3>
+                <div className="flex items-start justify-between gap-3">
+                  <motion.h3 layoutId={`title-${layoutId}`} className="text-2xl sm:text-3xl font-bold tracking-tight text-gray-900">
+                    {title}
+                  </motion.h3>
+                  <Link
+                    to={detailPath}
+                    className="mt-1.5 inline-flex shrink-0 items-center gap-1 rounded-lg border border-gray-200 bg-white px-2.5 py-1.5 text-[11px] font-bold text-gray-500 shadow-[0_1px_2px_rgba(0,0,0,0.06)] transition-colors hover:border-gray-900 hover:text-gray-900"
+                  >
+                    자세히 보기 <ArrowRight className="w-3 h-3" />
+                  </Link>
+                </div>
                 {species && species !== title && (
                   <dl className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-sm text-gray-500">
                     <div className="flex gap-1.5">
@@ -703,11 +711,11 @@ export default function ProductCard({
                   initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0 }} transition={{ delay: 0.15 }}
                   className="mt-4 grow"
                 >
-                  <p className="text-2xl font-black tracking-tight text-gray-900 mb-4">₩{price}</p>
-                  <div className="mb-4">{Badges}</div>
+                  <p className="text-2xl font-black tracking-tight text-gray-900 mb-3">₩{price}</p>
+                  <div className="mb-3">{Badges}</div>
 
                   {(description || specs.length > 0) && (
-                    <Accordion type="single" collapsible defaultValue="desc" className="mb-6 border-t border-gray-100">
+                    <Accordion type="single" collapsible defaultValue="desc" className="mb-4 border-t border-gray-100">
                       {description && (
                         <AccordionItem value="desc">
                           <AccordionTrigger className="text-gray-900">작품 설명</AccordionTrigger>
@@ -734,12 +742,13 @@ export default function ProductCard({
                     </Accordion>
                   )}
 
+                  <div className="sticky bottom-0 -mx-6 mt-3 bg-white/95 px-6 pb-1 pt-3 backdrop-blur sm:-mx-8 sm:px-8 lg:static lg:mx-0 lg:bg-transparent lg:px-0 lg:pt-0 lg:backdrop-blur-none">
                   <div className="flex flex-wrap gap-2">
                     <motion.button
                       onClick={handleAddToCart}
                       disabled={adding}
                       whileTap={{ scale: 0.96 }}
-                      className={`relative flex-1 min-w-[130px] flex items-center justify-center py-3 rounded-xl text-sm font-bold overflow-hidden transition-colors duration-300 disabled:opacity-90 ${
+                      className={`relative flex-1 min-w-[120px] flex items-center justify-center py-2.5 rounded-lg text-sm font-bold overflow-hidden shadow-[0_1px_2px_rgba(0,0,0,0.12)] transition-colors duration-300 disabled:opacity-90 ${
                         added ? 'bg-green-600 text-white' : 'bg-koala-navy text-white hover:bg-koala-navy-hover'
                       }`}
                     >
@@ -763,29 +772,24 @@ export default function ProductCard({
                       onClick={(e) => onWishlistClick(e, sku.skuCode)}
                       disabled={isWishlistLoading}
                       aria-label="찜하기"
-                      className={`flex items-center justify-center gap-1.5 px-4 py-3 rounded-xl border text-sm font-bold transition-colors ${
+                      className={`flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-lg border text-sm font-bold shadow-[0_1px_2px_rgba(0,0,0,0.06)] transition-colors ${
                         isWishlisted ? 'border-koala-purple text-koala-purple bg-koala-purple/5' : 'border-gray-200 text-gray-600 hover:border-koala-purple hover:text-koala-purple'
                       }`}
                     >
                       <WishBookmark active={isWishlisted} size={15} /> 찜
                     </button>
-                    <Link
-                      to={detailPath}
-                      className="flex items-center justify-center gap-1 px-4 py-3 rounded-xl border border-gray-200 text-sm font-bold text-gray-600 hover:border-gray-900 hover:text-gray-900 transition-colors"
-                    >
-                      자세히 보기 <ArrowRight className="w-4 h-4" />
-                    </Link>
                   </div>
 
                   <button
                     onClick={handleBuyNow}
                     disabled={buying || sku.status === 'OUT_OF_STOCK'}
-                    className="mt-2.5 w-full py-4 rounded-xl bg-gradient-to-r from-koala-purple to-koala-purple-bright text-white text-base font-bold shadow-[inset_0_1px_0_rgba(255,255,255,0.12)] transition-[filter,transform] duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:brightness-[1.12] active:scale-[0.985] disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="mt-2.5 w-full py-3 rounded-lg bg-koala-purple text-white text-[15px] font-bold shadow-[0_2px_6px_rgba(62,34,89,0.28)] transition-[filter,transform] duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:brightness-[1.1] active:scale-[0.985] disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {sku.status === 'OUT_OF_STOCK'
                       ? '품절'
                       : buying ? '주문서로 이동 중...' : '구매하기'}
                   </button>
+                  </div>
                 </motion.div>
               </div>
             </motion.div>

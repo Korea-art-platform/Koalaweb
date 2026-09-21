@@ -49,6 +49,21 @@ export default function Checkout() {
     setAgreed({ purchase: next, privacy: next, terms: next });
   };
   const [showAddressSearch, setShowAddressSearch] = useState(false);
+  const [showTermsDetail, setShowTermsDetail] = useState(false);
+  const [editOrderer, setEditOrderer] = useState(true);
+  const [editShipping, setEditShipping] = useState(true);
+  const [showItems, setShowItems] = useState(false);
+  const [showMethodSheet, setShowMethodSheet] = useState(false);
+  const [isNarrow, setIsNarrow] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === 'undefined' || !window.matchMedia) return;
+    const query = window.matchMedia('(max-width: 1023px)');
+    const sync = () => setIsNarrow(query.matches);
+    sync();
+    query.addEventListener('change', sync);
+    return () => query.removeEventListener('change', sync);
+  }, []);
   const postcodeContainerRef = useRef<HTMLDivElement>(null);
 
   const [form, setForm] = useState({
@@ -96,6 +111,7 @@ export default function Checkout() {
           ordererEmail: profile?.email || '',
           ordererPhone: profile?.phone || '',
         }));
+        if (profile?.name && profile?.email && profile?.phone) setEditOrderer(false);
 
         const defaultAddress = userAddresses.find((addr) => addr?.isDefault);
         if (defaultAddress) {
@@ -107,6 +123,9 @@ export default function Checkout() {
             address1: defaultAddress?.address1 || '',
             address2: defaultAddress?.address2 || '',
           }));
+          if (defaultAddress?.recipientName && defaultAddress?.recipientPhone && defaultAddress?.zipCode) {
+            setEditShipping(false);
+          }
         } else {
           setForm((prev) => ({
             ...prev,
@@ -158,6 +177,13 @@ export default function Checkout() {
     : (cart?.taxAmount != null && cart.taxAmount === 0 && cartItems.length > 0);
   const shipping = calcShipping(subtotal, cartItems.length);
   const total = subtotal + shipping;
+  const canPay = cartItems.length > 0 && !!selectedMethod && allAgreed && !isProcessing;
+  const ordererFilled = !!(form.ordererName && form.ordererEmail && form.ordererPhone);
+  const shippingFilled = !!(form.recipientName && form.recipientPhone && form.zipCode && form.address1);
+  const foldOrderer = isNarrow && ordererFilled && !editOrderer;
+  const foldShipping = isNarrow && shippingFilled && !editShipping;
+  const foldItems = isNarrow && !showItems && cartItems.length > 0;
+  const selectedMethodLabel = paymentMethods.find((m) => m.id === selectedMethod)?.label ?? '';
 
   const handleFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -302,7 +328,7 @@ export default function Checkout() {
 
   return (
     <div className="flex-1">
-      <div className="pt-24 pb-20 px-8">
+      <div className="pt-24 pb-32 px-4 sm:px-8 lg:pb-20">
         <div className="max-w-[1300px] mx-auto">
           <button
             onClick={() => navigate('/cart')}
@@ -311,21 +337,35 @@ export default function Checkout() {
             <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
             장바구니로 돌아가기
           </button>
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-            <div className="lg:col-span-2 space-y-8">
-              <h1 className="text-3xl font-medium tracking-tight">주문 및 결제</h1>
-              <section className="bg-white rounded-[32px] p-8 shadow-sm border border-gray-100">
-                <h2 className="text-xl font-medium flex items-center gap-2 mb-6">
-                  <MapPin className="w-5 h-5 text-gray-400" /> 주문자 정보
-                </h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 sm:gap-10">
+            <div className="lg:col-span-2 space-y-4 sm:space-y-8">
+              <h1 className="text-2xl sm:text-3xl font-medium tracking-tight">주문 및 결제</h1>
+              <section className="bg-white rounded-3xl sm:rounded-[32px] p-5 sm:p-8 shadow-sm border border-gray-100">
+                <div className="flex items-center justify-between gap-3 mb-4 sm:mb-6">
+                  <h2 className="text-lg sm:text-xl font-medium flex items-center gap-2 shrink-0">
+                    <MapPin className="w-5 h-5 text-gray-400" /> 주문자 정보
+                  </h2>
+                  {foldOrderer && (
+                    <button type="button" onClick={() => setEditOrderer(true)} className="shrink-0 text-sm font-medium text-koala-navy">
+                      수정
+                    </button>
+                  )}
+                </div>
+                {foldOrderer ? (
+                  <div className="space-y-1 text-sm text-gray-500">
+                    <p className="font-medium text-gray-900">{form.ordererName}</p>
+                    <p>{form.ordererPhone}</p>
+                    <p className="truncate">{form.ordererEmail}</p>
+                  </div>
+                ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
                   {[
                     { name: 'ordererName', label: '이름', placeholder: '홍길동' },
                     { name: 'ordererEmail', label: '이메일', placeholder: 'your@email.com' },
                     { name: 'ordererPhone', label: '전화번호', placeholder: '01012345678' },
                   ].map((field) => (
                     <div key={field.name} className={field.name === 'ordererEmail' ? 'md:col-span-2' : ''}>
-                      <label className="block text-sm text-gray-500 mb-2">{field.label}</label>
+                      <label className="block text-sm text-gray-500 mb-1.5">{field.label}</label>
                       <input
                         name={field.name}
                         value={(form as any)[field.name]}
@@ -336,13 +376,19 @@ export default function Checkout() {
                     </div>
                   ))}
                 </div>
+                )}
               </section>
-              <section className="bg-white rounded-[32px] p-8 shadow-sm border border-gray-100">
-                <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-xl font-medium flex items-center gap-2">
+              <section className="bg-white rounded-3xl sm:rounded-[32px] p-5 sm:p-8 shadow-sm border border-gray-100">
+                <div className="flex items-center justify-between gap-3 mb-4 sm:mb-6">
+                  <h2 className="text-lg sm:text-xl font-medium flex items-center gap-2 shrink-0">
                     <MapPin className="w-5 h-5 text-gray-400" /> 배송 정보
                   </h2>
-                  {addresses.length > 0 && (
+                  {foldShipping && (
+                    <button type="button" onClick={() => setEditShipping(true)} className="shrink-0 text-sm font-medium text-koala-navy">
+                      변경
+                    </button>
+                  )}
+                  {!foldShipping && addresses.length > 0 && (
                     <select
                       onChange={(e) => {
                         const selected = addresses.find((addr: any) => addr.id === Number(e.target.value));
@@ -357,7 +403,7 @@ export default function Checkout() {
                           }));
                         }
                       }}
-                      className="px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 text-sm focus:outline-none focus:border-gray-300"
+                      className="min-w-0 max-w-[55%] px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 text-sm focus:outline-none focus:border-gray-300"
                     >
                       <option value="">저장된 배송지 선택</option>
                       {addresses.map((addr) => (
@@ -368,13 +414,20 @@ export default function Checkout() {
                     </select>
                   )}
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {foldShipping ? (
+                  <div className="space-y-1 text-sm text-gray-500">
+                    <p className="font-medium text-gray-900">{form.recipientName} · {form.recipientPhone}</p>
+                    <p className="break-keep">({form.zipCode}) {form.address1} {form.address2}</p>
+                    {form.deliveryRequest && <p className="text-gray-400">{form.deliveryRequest}</p>}
+                  </div>
+                ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
                   {[
                     { name: 'recipientName', label: '수령인', placeholder: '홍길동' },
                     { name: 'recipientPhone', label: '수령인 전화번호', placeholder: '01012345678' },
                   ].map((field: any) => (
                     <div key={field.name} className={field.colSpan ? 'md:col-span-2' : ''}>
-                      <label className="block text-sm text-gray-500 mb-2">{field.label}</label>
+                      <label className="block text-sm text-gray-500 mb-1.5">{field.label}</label>
                       <input
                         name={field.name}
                         value={(form as any)[field.name]}
@@ -386,7 +439,7 @@ export default function Checkout() {
                   ))}
 
                   <div className="md:col-span-2">
-                    <label className="block text-sm text-gray-500 mb-2">우편번호</label>
+                    <label className="block text-sm text-gray-500 mb-1.5">우편번호</label>
                     <div className="flex gap-3">
                       <input
                         name="zipCode"
@@ -394,19 +447,19 @@ export default function Checkout() {
                         onChange={handleFormChange}
                         placeholder="06234"
                         readOnly
-                        className="flex-1 px-4 py-3 bg-gray-50 rounded-xl border border-transparent text-sm text-gray-500"
+                        className="min-w-0 flex-1 px-4 py-3 bg-gray-50 rounded-xl border border-transparent text-sm text-gray-500"
                       />
                       <button
                         type="button"
                         onClick={handleAddressSearch}
-                        className="px-5 py-3 bg-koala-navy text-white rounded-xl hover:bg-koala-navy-hover transition-colors font-medium text-sm flex items-center gap-2 whitespace-nowrap"
+                        className="shrink-0 px-4 sm:px-5 py-3 bg-koala-navy text-white rounded-xl hover:bg-koala-navy-hover transition-colors font-medium text-sm flex items-center gap-2 whitespace-nowrap"
                       >
                         <Search className="w-4 h-4" /> 찾기
                       </button>
                     </div>
                   </div>
                   <div className="md:col-span-2">
-                    <label className="block text-sm text-gray-500 mb-2">주소</label>
+                    <label className="block text-sm text-gray-500 mb-1.5">주소</label>
                     <input
                       name="address1"
                       value={form.address1}
@@ -417,7 +470,7 @@ export default function Checkout() {
                     />
                   </div>
                   <div className="md:col-span-2">
-                    <label className="block text-sm text-gray-500 mb-2">상세 주소</label>
+                    <label className="block text-sm text-gray-500 mb-1.5">상세 주소</label>
                     <input
                       name="address2"
                       value={form.address2}
@@ -427,7 +480,7 @@ export default function Checkout() {
                     />
                   </div>
                   <div className="md:col-span-2">
-                    <label className="block text-sm text-gray-500 mb-2">배송 요청사항</label>
+                    <label className="block text-sm text-gray-500 mb-1.5">배송 요청사항</label>
                     <input
                       name="deliveryRequest"
                       value={form.deliveryRequest}
@@ -437,11 +490,27 @@ export default function Checkout() {
                     />
                   </div>
                 </div>
+                )}
               </section>
-              <section className="bg-white rounded-[32px] p-8 shadow-sm border border-gray-100">
-                <h2 className="text-xl font-medium flex items-center gap-2 mb-6">
-                  <Package className="w-5 h-5 text-gray-400" /> 주문 상품 ({cartItems.length})
-                </h2>
+              <section className="bg-white rounded-3xl sm:rounded-[32px] p-5 sm:p-8 shadow-sm border border-gray-100">
+                <div className="flex items-center justify-between gap-3 mb-4 sm:mb-6">
+                  <h2 className="text-lg sm:text-xl font-medium flex items-center gap-2 shrink-0">
+                    <Package className="w-5 h-5 text-gray-400" /> 주문 상품 ({cartItems.length})
+                  </h2>
+                  {isNarrow && cartItems.length > 0 && (
+                    <button type="button" onClick={() => setShowItems((prev) => !prev)} className="shrink-0 text-sm font-medium text-koala-navy">
+                      {showItems ? '접기' : '보기'}
+                    </button>
+                  )}
+                </div>
+                {foldItems ? (
+                  <div className="flex items-center justify-between gap-3 text-sm">
+                    <span className="truncate font-medium text-gray-900">
+                      {cartItems[0].skuName}{cartItems.length > 1 ? ` 외 ${cartItems.length - 1}건` : ''}
+                    </span>
+                    <span className="shrink-0 font-bold text-gray-900">₩{subtotal.toLocaleString()}</span>
+                  </div>
+                ) : (
                 <div className="space-y-4">
                   {cartItems.map((item) => (
                     <div key={item.id} className="flex gap-4 p-4 bg-gray-50 rounded-2xl items-center">
@@ -460,11 +529,36 @@ export default function Checkout() {
                     </div>
                   ))}
                 </div>
+                )}
               </section>
-              <section className="bg-white rounded-[32px] p-8 shadow-sm border border-gray-100">
-                <h2 className="text-xl font-medium flex items-center gap-2 mb-6">
-                  <CreditCard className="w-5 h-5 text-gray-400" /> 결제 수단
-                </h2>
+              <section className="bg-white rounded-3xl sm:rounded-[32px] p-5 sm:p-8 shadow-sm border border-gray-100">
+                <div className="flex items-center justify-between gap-3 mb-4 sm:mb-6">
+                  <h2 className="text-lg sm:text-xl font-medium flex items-center gap-2 shrink-0">
+                    <CreditCard className="w-5 h-5 text-gray-400" /> 결제 수단
+                  </h2>
+                  {isNarrow && selectedMethod && (
+                    <button type="button" onClick={() => setShowMethodSheet(true)} className="shrink-0 text-sm font-medium text-koala-navy">
+                      변경
+                    </button>
+                  )}
+                </div>
+                {isNarrow ? (
+                  selectedMethod ? (
+                    <div className="flex items-center gap-3 rounded-2xl border border-gray-900 px-4 py-3">
+                      {iconFor(selectedMethod)}
+                      <span className="text-sm font-bold text-gray-900">{selectedMethodLabel}</span>
+                      <Check className="ml-auto w-4 h-4 text-gray-900" />
+                    </div>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => setShowMethodSheet(true)}
+                      className="w-full rounded-2xl border-2 border-dashed border-gray-200 py-4 text-sm font-bold text-gray-500"
+                    >
+                      결제 수단 고르기
+                    </button>
+                  )
+                ) : (
                 <div className="grid grid-cols-2 gap-4">
                   {paymentMethods.map((method) => (
                     <button
@@ -490,12 +584,13 @@ export default function Checkout() {
                     </button>
                   ))}
                 </div>
+                )}
               </section>
             </div>
             <div className="lg:col-span-1">
-              <div className="bg-white rounded-[32px] p-8 shadow-sm border border-gray-100 sticky top-28">
-                <h2 className="text-xl font-medium mb-8">최종 주문 합계</h2>
-                <div className="space-y-4 mb-8">
+              <div className="bg-white rounded-3xl sm:rounded-[32px] p-5 sm:p-8 shadow-sm border border-gray-100 lg:sticky lg:top-28">
+                <h2 className="text-lg sm:text-xl font-medium mb-5 sm:mb-8">최종 주문 합계</h2>
+                <div className="space-y-3 sm:space-y-4 mb-5 sm:mb-8">
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-500">상품 금액</span>
                     <span className="font-medium text-gray-900">₩{subtotal.toLocaleString()}</span>
@@ -506,7 +601,7 @@ export default function Checkout() {
                       {shipping === 0 ? '무료' : `₩${shipping.toLocaleString()}`}
                     </span>
                   </div>
-                  <div className="pt-6 border-t border-gray-100">
+                  <div className="pt-5 sm:pt-6 border-t border-gray-100">
                     <div className="flex justify-between items-end mb-2">
                       <span className="font-bold text-gray-900">최종 결제 금액</span>
                       <span className="text-3xl font-black text-black tracking-tighter">
@@ -518,7 +613,7 @@ export default function Checkout() {
                     </p>
                   </div>
                 </div>
-                <div className="mb-5 border border-gray-100 rounded-2xl overflow-hidden">
+                <div id="terms-card" className="mb-5 border border-gray-100 rounded-2xl overflow-hidden scroll-mt-28">
                   <button
                     type="button"
                     onClick={toggleAll}
@@ -529,7 +624,14 @@ export default function Checkout() {
                     </span>
                     <span className="text-sm font-bold text-gray-900">아래 약관에 모두 동의합니다</span>
                   </button>
-                  <div className="divide-y divide-gray-100">
+                  <button
+                    type="button"
+                    onClick={() => setShowTermsDetail((prev) => !prev)}
+                    className="w-full px-5 py-2.5 text-xs text-gray-400 border-t border-gray-100 sm:hidden"
+                  >
+                    {showTermsDetail ? '항목 접기' : '항목별로 보기'}
+                  </button>
+                  <div className={`divide-y divide-gray-100 ${showTermsDetail ? '' : 'hidden sm:block'}`}>
                     {[
                       { key: 'purchase' as const, label: '구매조건 확인 및 결제진행에 동의합니다', href: '/returns' },
                       { key: 'privacy'  as const, label: '개인정보 수집·이용에 동의합니다',        href: '/privacy' },
@@ -555,8 +657,8 @@ export default function Checkout() {
                 </div>
                 <button
                   onClick={handleOrder}
-                  disabled={cartItems.length === 0 || !selectedMethod || !allAgreed || isProcessing}
-                  className={`w-full py-5 rounded-2xl font-bold flex items-center justify-center gap-2 transition-all shadow-lg ${cartItems.length > 0 && selectedMethod && allAgreed && !isProcessing
+                  disabled={!canPay}
+                  className={`hidden lg:flex w-full py-5 rounded-2xl font-bold items-center justify-center gap-2 transition-all shadow-lg ${canPay
                       ? 'bg-koala-red text-white hover:bg-koala-red-hover shadow-black/10 active:scale-[0.98]'
                       : 'bg-gray-100 text-gray-300 cursor-not-allowed shadow-none'
                     }`}
@@ -570,7 +672,7 @@ export default function Checkout() {
                     <>결제하기 <ChevronRight className="w-4 h-4" /></>
                   )}
                 </button>
-                <div className="mt-6 p-4 bg-gray-50 rounded-2xl">
+                <div className="mt-5 hidden sm:block p-4 bg-gray-50 rounded-2xl">
                   <p className="text-[10px] text-gray-400 leading-relaxed text-center">
                     보안 결제 시스템으로 고객님의 정보는 암호화되어 안전하게 보호됩니다.
                   </p>
@@ -579,6 +681,84 @@ export default function Checkout() {
             </div>
           </div>
         </div>
+      </div>
+
+      {showMethodSheet && (
+        <div
+          className="fixed inset-0 z-50 flex items-end bg-black/45 lg:hidden"
+          onClick={() => setShowMethodSheet(false)}
+        >
+          <div
+            className="w-full rounded-t-3xl bg-white px-4 pb-[max(16px,env(safe-area-inset-bottom))] pt-3"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="mx-auto mb-3 h-1 w-9 rounded-full bg-gray-200" />
+            <p className="mb-3 text-base font-bold text-gray-900">결제 수단</p>
+            <div className="space-y-2">
+              {paymentMethods.map((method) => (
+                <button
+                  key={method.id}
+                  type="button"
+                  onClick={() => { setSelectedMethod(method.id); setShowMethodSheet(false); }}
+                  className={`flex w-full items-center gap-3 rounded-xl border px-4 py-3 text-left transition-colors ${
+                    selectedMethod === method.id ? 'border-gray-900 bg-gray-50' : 'border-gray-100'
+                  }`}
+                >
+                  {iconFor(method.id)}
+                  <span className="text-sm font-bold text-gray-900">{method.label}</span>
+                  <span className="ml-auto text-xs text-gray-400">{method.desc}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-gray-100 bg-white/95 px-4 pt-3 pb-[max(12px,env(safe-area-inset-bottom))] backdrop-blur lg:hidden">
+        <div className="mb-2 flex items-center gap-2">
+          <button
+            type="button"
+            onClick={toggleAll}
+            aria-pressed={allAgreed}
+            className={`flex h-5 w-5 shrink-0 items-center justify-center rounded border-2 transition-colors ${
+              allAgreed ? 'bg-koala-navy border-black' : 'border-gray-300'
+            }`}
+          >
+            {allAgreed && <Check className="w-3 h-3 text-white" />}
+          </button>
+          <span className="text-xs text-gray-600">구매조건·개인정보·이용약관 동의</span>
+          <button
+            type="button"
+            onClick={() => {
+              setShowTermsDetail(true);
+              document.getElementById('terms-card')?.scrollIntoView({ block: 'center' });
+            }}
+            className="ml-auto text-xs text-gray-400 underline-offset-2 hover:underline"
+          >
+            보기
+          </button>
+        </div>
+        <div className="mb-2 flex items-center justify-between">
+          <span className="text-xs text-gray-500">최종 결제 금액</span>
+          <span className="text-xl font-black tracking-tight">₩{total.toLocaleString()}</span>
+        </div>
+        <button
+          onClick={handleOrder}
+          disabled={!canPay}
+          className={`flex w-full items-center justify-center gap-2 rounded-2xl py-4 font-bold transition-all ${canPay
+              ? 'bg-koala-red text-white active:scale-[0.98]'
+              : 'bg-gray-100 text-gray-300'
+            }`}
+        >
+          {isProcessing ? (
+            <>
+              <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+              결제 진행 중...
+            </>
+          ) : (
+            <>결제하기 <ChevronRight className="w-4 h-4" /></>
+          )}
+        </button>
       </div>
 
       {showAddressSearch && (
