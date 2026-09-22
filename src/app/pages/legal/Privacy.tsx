@@ -3,6 +3,7 @@ import { useIsEnglish } from '@/app/lib/lang';
 import PrivacyEn from './PrivacyEn';
 import { PG_DISPLAY_NAME } from '@/app/lib/pgInfo';
 import { ArrowLeft } from 'lucide-react';
+import PageMeta from '@/app/components/common/PageMeta';
 
 export default function Privacy() {
   const navigate = useNavigate();
@@ -11,7 +12,8 @@ export default function Privacy() {
   if (english) return <PrivacyEn />;
 
   return (
-    <div className="flex-1">
+    <div className="flex-1 pt-20">
+      <PageMeta title="개인정보처리방침" description="KOALA가 수집하는 개인정보 항목과 보유 기간, 처리 위탁, 이용자의 권리를 안내합니다." />
       <div className="sticky top-20 z-10 bg-white border-b border-gray-100">
         <div className="max-w-3xl mx-auto flex items-center gap-4 px-6 py-4">
           <button onClick={() => navigate(-1)} className="text-gray-700 hover:text-black transition-colors">

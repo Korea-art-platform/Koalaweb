@@ -62,6 +62,13 @@
       "menu": "메뉴",
       "myPage": "마이페이지",
       "artists": "작가"
+    },
+    "accountMenu": {
+      "account": "내 정보",
+      "orders": "주문 내역",
+      "orderLookup": "주문 조회",
+      "login": "로그인",
+      "menu": "내 계정 메뉴"
     }
   },
   "footer": {

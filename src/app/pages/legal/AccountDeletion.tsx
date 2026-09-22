@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router';
 import { useIsEnglish } from '@/app/lib/lang';
 import AccountDeletionEn from './AccountDeletionEn';
 import { ArrowLeft } from 'lucide-react';
+import PageMeta from '@/app/components/common/PageMeta';
 
 export default function AccountDeletion() {
   const navigate = useNavigate();
@@ -10,7 +11,8 @@ export default function AccountDeletion() {
   if (english) return <AccountDeletionEn />;
 
   return (
-    <div className="flex-1">
+    <div className="flex-1 pt-20">
+      <PageMeta title="회원 탈퇴 안내" description="KOALA 회원 탈퇴 절차와 탈퇴 시 처리되는 정보를 안내합니다." />
       <div className="sticky top-20 z-10 bg-white border-b border-gray-100">
         <div className="max-w-3xl mx-auto flex items-center gap-4 px-6 py-4">
           <button onClick={() => navigate(-1)} className="text-gray-700 hover:text-black transition-colors">

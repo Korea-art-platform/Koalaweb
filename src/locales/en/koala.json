@@ -62,6 +62,13 @@
       "menu": "Menu",
       "myPage": "My page",
       "artists": "Artists"
+    },
+    "accountMenu": {
+      "account": "My info",
+      "orders": "Order history",
+      "orderLookup": "Order lookup",
+      "login": "Log in",
+      "menu": "Account menu"
     }
   },
   "footer": {

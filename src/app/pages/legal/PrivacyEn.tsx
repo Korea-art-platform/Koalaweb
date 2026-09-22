@@ -2,12 +2,14 @@ import { useNavigate } from 'react-router';
 import { PG_DISPLAY_NAME } from '@/app/lib/pgInfo';
 import { ArrowLeft } from 'lucide-react';
 import TranslationNotice from '@/app/components/common/TranslationNotice';
+import PageMeta from '@/app/components/common/PageMeta';
 
 export default function PrivacyEn() {
   const navigate = useNavigate();
 
   return (
-    <div className="flex-1">
+    <div className="flex-1 pt-20">
+      <PageMeta title="Privacy Policy" description="What personal data KOALA collects, how long it is kept, who processes it, and your rights." />
       <div className="sticky top-20 z-10 bg-white border-b border-gray-100">
         <div className="max-w-3xl mx-auto flex items-center gap-4 px-6 py-4">
           <button onClick={() => navigate(-1)} className="text-gray-700 hover:text-black transition-colors">

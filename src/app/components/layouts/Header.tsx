@@ -1,7 +1,7 @@
 import { Link, useLocation, useNavigate } from 'react-router';
 import {
   ShoppingCart, User, Menu, X, Search,
-  ChevronRight, LogOut, Settings, Bell, Headset, Globe
+  ChevronRight, Settings, Bell, Headset, Globe, ChevronDown
 } from 'lucide-react';
 import { ViewModeProvider } from '@/app/context/ViewModeContext';
 import { useEffect, useState } from 'react';
@@ -13,7 +13,7 @@ import type { Cart, Artist, PageResponse } from '@/api/types';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/app/context/AuthContext';
 import LanguageToggle, { LanguageChoice } from '@/app/components/layouts/LanguageToggle';
-import { useLogout } from '@/app/hooks/useLogout';
+import AccountMenu, { useAccountItems } from '@/app/components/layouts/AccountMenu';
 
 export function Header() {
   const { t } = useTranslation();
@@ -21,15 +21,16 @@ export function Header() {
   const navigate = useNavigate();
 
   const { isAuthenticated } = useAuth();
-  const handleLogout = useLogout();
   const [isHeroActive, setIsHeroActive] = useState(false);
   const [isHeroDark, setIsHeroDark] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   useEffect(() => {
     document.body.classList.toggle('menu-open', isMenuOpen);
+    if (!isMenuOpen) setIsAccountOpen(false);
   }, [isMenuOpen]);
   const [isPop, setIsPop] = useState(false);
+  const [isAccountOpen, setIsAccountOpen] = useState(false);
 
   const { data: artists = [] } = useQuery<Artist[]>({
     queryKey: ['artists', 'header'],
@@ -127,6 +128,8 @@ export function Header() {
     { key: 'stores', path: '/stores' },
   ];
 
+  const accountItems = useAccountItems(() => setIsMenuOpen(false));
+
   const subMenus = [
     { key: 'notice', path: '/notice', icon: Bell },
     { key: 'customerService', path: '/contact', icon: Headset },
@@ -210,13 +213,9 @@ export function Header() {
               >
                 {isMenuOpen ? <X className="w-7 h-7" /> : <Menu className="w-7 h-7" />}
               </button>
-              <Link
-                to="/account/orders"
-                aria-label={t('header.aria.myPage')}
-                className={`hidden lg:block ${iconButtonClass} ${iconClass}`}
-              >
-                <User className="w-5 h-5" />
-              </Link>
+              <div className={`hidden lg:block ${iconClass}`}>
+                <AccountMenu className={iconButtonClass} />
+              </div>
             </div>
           </div>
         </div>
@@ -279,34 +278,52 @@ export function Header() {
               </Link>
             ))}
 
-            {isAuthenticated && (
-              <button
-                className="w-full flex items-center justify-between py-4 px-2 -mx-2 active:bg-red-50 rounded-lg transition-colors group"
-                onClick={async () => {
-                  setIsMenuOpen(false);
-                  await handleLogout();
-                }}
-              >
-                <div className="flex items-center gap-4">
-                  <LogOut className="w-5 h-5 text-red-400" />
-                  <span className="text-lg font-medium text-red-500">{t('header.logout')}</span>
+          </div>
+          <div className="mt-8 overflow-hidden rounded-2xl bg-zinc-900 text-white shadow-xl shadow-zinc-200">
+            <button
+              type="button"
+              onClick={() => setIsAccountOpen((prev) => !prev)}
+              aria-expanded={isAccountOpen}
+              className="flex w-full items-center justify-between p-5 text-left active:bg-zinc-800"
+            >
+              <div className="flex items-center gap-3">
+                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white/10">
+                  <User className="h-4 w-4 text-white" />
                 </div>
-              </button>
+                <span className="text-lg font-bold">{t('header.myPage')}</span>
+              </div>
+              <ChevronDown className={`h-5 w-5 text-white/40 transition-transform ${isAccountOpen ? 'rotate-180' : ''}`} />
+            </button>
+
+            {isAccountOpen && (
+              <div className="border-t border-white/10 pb-2">
+                {accountItems.map((item) => {
+                  const rowClass = `flex w-full items-center gap-3 px-5 py-3.5 text-left text-base font-medium ${
+                    item.danger ? 'text-red-300 active:bg-red-500/10' : 'text-white/90 active:bg-white/5'
+                  }`;
+                  return item.to ? (
+                    <Link key={item.key} to={item.to} className={rowClass} onClick={() => setIsMenuOpen(false)}>
+                      <item.icon className="h-4 w-4 opacity-60" />
+                      {item.label}
+                    </Link>
+                  ) : (
+                    <button
+                      key={item.key}
+                      type="button"
+                      className={rowClass}
+                      onClick={async () => {
+                        setIsMenuOpen(false);
+                        await item.onClick?.();
+                      }}
+                    >
+                      <item.icon className="h-4 w-4 opacity-60" />
+                      {item.label}
+                    </button>
+                  );
+                })}
+              </div>
             )}
           </div>
-          <Link
-            to="/account/orders"
-            className="mt-8 flex items-center justify-between bg-zinc-900 text-white p-5 rounded-2xl active:scale-95 transition-all shadow-xl shadow-zinc-200"
-            onClick={() => setIsMenuOpen(false)}
-          >
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center">
-                <User className="w-4 h-4 text-white" />
-              </div>
-              <span className="font-bold text-lg">{t('header.myPage')}</span>
-            </div>
-            <ChevronRight className="w-5 h-5 text-white/40" />
-          </Link>
         </div>
       </div>
     </>
