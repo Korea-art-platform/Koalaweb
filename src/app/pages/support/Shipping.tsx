@@ -12,9 +12,9 @@ export default function Shipping() {
   if (english) return <ShippingEn />;
 
   return (
-    <div className="flex-1">
+    <div className="flex-1 pt-20">
       <PageMeta title="배송 정보" />
-      <div className="sticky top-0 z-10 bg-white border-b border-gray-100">
+      <div className="sticky top-20 z-10 bg-white border-b border-gray-100">
         <div className="max-w-3xl mx-auto flex items-center gap-4 px-6 py-4">
           <button onClick={() => navigate(-1)} className="text-gray-700 hover:text-black transition-colors">
             <ArrowLeft className="w-5 h-5" />

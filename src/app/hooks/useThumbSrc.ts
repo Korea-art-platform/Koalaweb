@@ -16,5 +16,10 @@ export function useThumbSrc(url?: string | null, placeholder = '/placeholder.svg
 
   const onError = () => setSrc((prev) => (prev !== original ? original : placeholder));
 
-  return { src, onError };
+  // 폰에서는 축소본, 큰 화면에서는 원본을 받게 한다. 한쪽만 물리면
+  // 폰에서 과하게 크거나 데스크톱에서 흐리게 늘어난다.
+  const responsive = src === thumb && thumb !== original;
+  const srcSet = responsive ? `${thumb} 480w, ${original} 1600w` : undefined;
+
+  return { src, srcSet, onError };
 }

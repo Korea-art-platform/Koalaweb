@@ -100,11 +100,11 @@ export default function Account() {
       </div>
       <div className="grid grid-cols-2 gap-6 mt-8">
         <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 text-center">
-          <p className="text-3xl font-light mb-2">{statsLoading ? '–' : stats.orders}</p>
+          <p className="text-3xl font-normal mb-2">{statsLoading ? '–' : stats.orders}</p>
           <p className="text-xs text-gray-400">{t('account.profile.stats.totalOrders')}</p>
         </div>
         <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 text-center">
-          <p className="text-3xl font-light mb-2">{statsLoading ? '–' : stats.wishlist}</p>
+          <p className="text-3xl font-normal mb-2">{statsLoading ? '–' : stats.wishlist}</p>
           <p className="text-xs text-gray-400">{t('account.profile.stats.wishlistItems')}</p>
         </div>
       </div>

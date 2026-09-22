@@ -65,7 +65,7 @@ export default function ProductCard({
   const layoutId = `product-card-${sku.skuCode}-${instanceId}`;
   // 모바일 팝업 — 손잡이·사진을 잡고 아래로 쓸면 닫힌다
   const dragControls = useDragControls();
-  const { src: imageUrl, onError: onImageError } = useThumbSrc(sku.primaryImageUrl);
+  const { src: imageUrl, srcSet: imageSrcSet, onError: onImageError } = useThumbSrc(sku.primaryImageUrl);
   const price = formatWon(displayPrice(sku));
   // 분류 이름은 어드민에서 고치는 값이라 DB 것을 쓴다. 번역 파일에 따로
   // 적어 두면 어드민에서 바꿔도 카드만 옛 이름으로 남아 화면마다 달라진다.
@@ -218,6 +218,8 @@ export default function ProductCard({
         <motion.img
           layoutId={`image-${layoutId}`}
           src={imageUrl}
+          srcSet={imageSrcSet}
+          sizes="(max-width: 767px) 50vw, (max-width: 1279px) 33vw, 420px"
           onError={onImageError}
           alt={`${sku.artistName} 작 ${title}`}
           className="absolute inset-0 h-full w-full object-cover"
@@ -286,6 +288,8 @@ export default function ProductCard({
         <motion.img
           layoutId={`image-${layoutId}`}
           src={imageUrl}
+          srcSet={imageSrcSet}
+          sizes="(max-width: 767px) 50vw, (max-width: 1279px) 33vw, 420px"
           onError={onImageError}
           alt={sku.name}
           className="absolute inset-0 h-full w-full object-cover"
@@ -350,6 +354,8 @@ export default function ProductCard({
         <motion.img
           layoutId={`image-${layoutId}`}
           src={imageUrl}
+          srcSet={imageSrcSet}
+          sizes="(max-width: 767px) 50vw, (max-width: 1279px) 33vw, 420px"
           onError={onImageError}
           alt={`${sku.artistName} 작 ${title}`}
           className="absolute inset-0 h-full w-full object-contain"
@@ -435,6 +441,8 @@ export default function ProductCard({
         <motion.img
           layoutId={`image-${layoutId}`}
           src={imageUrl}
+          srcSet={imageSrcSet}
+          sizes="(max-width: 767px) 50vw, (max-width: 1279px) 33vw, 420px"
           onError={onImageError}
           alt={`${sku.artistName} 작 ${title}`}
           className="absolute inset-0 h-full w-full object-contain p-5 mix-blend-multiply md:p-12"
@@ -513,6 +521,8 @@ export default function ProductCard({
         <motion.img
           layoutId={`image-${layoutId}`}
           src={imageUrl}
+          srcSet={imageSrcSet}
+          sizes="(max-width: 767px) 50vw, (max-width: 1279px) 33vw, 420px"
           onError={onImageError}
           alt={`${sku.artistName} 작 ${title}`}
           loading="lazy"

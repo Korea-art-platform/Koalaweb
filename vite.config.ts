@@ -29,6 +29,19 @@ export default defineConfig(({ command }) => ({
       }),
     ] : []),
   ],
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (!id.includes('node_modules')) return;
+          if (/[\/]node_modules[\/](react|react-dom|scheduler|react-router)[\/]/.test(id)) return 'vendor-react';
+          if (id.includes('framer-motion') || id.includes('motion-dom') || id.includes('motion-utils')) return 'vendor-motion';
+          if (id.includes('@tanstack')) return 'vendor-query';
+        },
+      },
+    },
+  },
+
   esbuild: {
     drop: command === 'build' ? ['console', 'debugger'] : [],
   },

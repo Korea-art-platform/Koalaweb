@@ -4,8 +4,6 @@
 
    제목 — 미술품을 다루는 화면이라 명조를 쓴다. 홈의 히어로와 작품 섹션에만
    쓰고, 나머지는 본문 글꼴 그대로다. */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&family=Gowun+Batang:wght@400;700&family=Black+Han+Sans&display=swap');
-
 :root {
   --font-serif: 'Gowun Batang', 'Nanum Myeongjo', serif;
 }

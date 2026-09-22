@@ -23,6 +23,9 @@ export const createGuestOrder = (data: CreateOrderRequest) =>
 export const lookupGuestOrder = (orderNo: string, phone: string) =>
     instance.post('/api/v1/orders/guest/lookup', { orderNo, phone });
 
+export const listGuestOrders = (email: string, phone: string) =>
+    instance.post('/api/v1/orders/guest/orders', { email, phone });
+
 export const cancelOrder = (orderNo: string) =>
     instance.post(`/api/v1/orders/${orderNo}/cancel`);
 

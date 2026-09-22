@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { motion, type Variants } from 'framer-motion';
-import { toCdnUrl } from '@/app/lib/imageUrl';
+import { toCdnUrl, toThumbUrl } from '@/app/lib/imageUrl';
 
 // 무대 조명 — 배경색 위에 얹는다. 히어로와 어드민 미리보기가 같이 쓴다
 export const STAGE_LIGHT =
@@ -86,6 +86,7 @@ export default function ShowcaseArt({
   imageUrl, effects, alt, name, nameWidth = 0.95, nameLines = 1, animate = false, dir = 1, reach = 1,
 }: ShowcaseArtProps) {
   const main = toCdnUrl(imageUrl);
+  const mainThumb = toThumbUrl(imageUrl);
   const moves = useMemo(() => ({
     main: travel(50 * reach, 26 * reach, 0),
     slots: SLOTS.map((s) => travel(s.x * reach, s.y * reach, s.delay)),
@@ -110,11 +111,20 @@ export default function ShowcaseArt({
         <motion.div className="absolute left-[12%] top-[12%] z-10 h-[76%] w-[76%]" {...move(moves.main)}>
           {/* 바닥 그림자 */}
           <div aria-hidden className="absolute inset-x-[20%] bottom-[-2%] h-[8%] rounded-[50%] bg-[rgba(13,9,18,0.38)] blur-[12px]" />
-          <img src={main} alt={alt} draggable={false} decoding="async" className="relative h-full w-full object-contain" />
+          <img
+            src={main}
+            srcSet={mainThumb && mainThumb !== main ? `${mainThumb} 480w, ${main} 1600w` : undefined}
+            sizes="(max-width: 767px) 60vw, 40vw"
+            alt={alt}
+            draggable={false}
+            decoding="async"
+            fetchPriority="high"
+            className="relative h-full w-full object-contain"
+          />
         </motion.div>
       )}
       {SLOTS.map((slot, i) => {
-        const src = toCdnUrl(effects[i]);
+        const src = toThumbUrl(effects[i]);
         if (!src) return null;
         return (
           <motion.div
@@ -128,6 +138,7 @@ export default function ShowcaseArt({
               alt=""
               draggable={false}
               decoding="async"
+              loading="lazy"
               className="h-full w-full object-contain drop-shadow-[0_8px_14px_rgba(13,9,18,0.4)]"
             />
           </motion.div>
