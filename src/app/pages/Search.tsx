@@ -8,6 +8,7 @@ import { getArtists } from '@/api/artist';
 import { ImageWithFallback } from '@/app/components/fallback/ImageWithFallback';
 
 import { displayPrice, formatWon } from '@/app/lib/price';
+import PageMeta from '@/app/components/common/PageMeta';
 const trendingSearches = ['리미티드 에디션', '아트 토이', '조각', '회화', '도자기'];
 
 export default function Search() {
@@ -63,6 +64,7 @@ export default function Search() {
 
   return (
     <div className="flex-1">
+      <PageMeta title="작품 검색" description="작가 이름이나 작품명으로 KOALA의 원작·한정판·오픈에디션을 찾아보세요." />
       <div className="pt-24 pb-16 px-8">
         <div className="max-w-[1400px] mx-auto">
           <div className="mb-8">

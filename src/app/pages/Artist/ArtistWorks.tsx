@@ -5,6 +5,7 @@ import { useArtistSkus } from '@/app/hooks/useArtistSkus';
 import { ArtistDetailSkeleton, ArtistNotFound } from '@/app/components/Artist';
 import { displayPrice, formatWon } from '@/app/lib/price';
 import { ImageWithFallback } from '@/app/components/fallback/ImageWithFallback';
+import PageMeta from '@/app/components/common/PageMeta';
 
 export default function ArtistWorks() {
   const { id } = useParams();
@@ -17,6 +18,10 @@ export default function ArtistWorks() {
 
   return (
     <div className="flex-1 flex flex-col">
+      <PageMeta
+        title={`${artist.name} 작품`}
+        description={`${artist.name} 작가의 작품을 모아 봅니다. KOALA에서 원작과 에디션을 만나보세요.`}
+      />
       <main className="flex-1 pt-24 pb-24 px-5 md:px-8 max-w-2xl mx-auto w-full">
         <button
           onClick={() => navigate(`/artist/${id}`)}

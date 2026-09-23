@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router';
 import { useEffect, useState } from 'react';
 import { ArrowLeft, Search } from 'lucide-react';
+import PageMeta from '@/app/components/common/PageMeta';
 
 export default function NotFound() {
   const navigate = useNavigate();
@@ -13,6 +14,7 @@ export default function NotFound() {
 
   return (
     <div className="flex-1 bg-koala-navy flex flex-col overflow-hidden relative">
+      <PageMeta title="찾을 수 없는 페이지" description="요청하신 주소의 페이지가 없습니다. KOALA 홈에서 작품을 둘러보세요." />
       <div
         className="absolute top-[-120px] right-[-80px] w-[340px] h-[340px] rounded-full border border-white/5"
         style={{ transition: 'opacity 1.2s ease', opacity: visible ? 1 : 0 }}

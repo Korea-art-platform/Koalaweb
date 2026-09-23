@@ -34,7 +34,7 @@ export default function ArtistDetail() {
   const artistDescription = artist.description
     ? artist.description.slice(0, 155) + (artist.description.length > 155 ? '…' : '')
     : `${artist.name} 작가의 작품을 KOALA에서 만나보세요.`;
-  const artistImage = artist.profileImageUrl ?? 'https://koala-art.co.kr/og-image.svg';
+  const artistImage = artist.profileImageUrl ?? 'https://koala-art.co.kr/og-image.png';
   const artistUrl = `https://koala-art.co.kr/artists/${artist.artistCode}`;
 
   return (

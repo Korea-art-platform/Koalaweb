@@ -9,6 +9,7 @@ import { ImageWithFallback } from '@/app/components/fallback/ImageWithFallback';
 import { ImageLightbox } from '@/app/components/common/ImageLightbox';
 import { useIsDesktop } from '@/app/hooks/useMediaQuery';
 import type { Artist, Banner, PageResponse } from '@/api/types';
+import PageMeta from '@/app/components/common/PageMeta';
 
 const ROLE = 'EXHIBITION';
 
@@ -62,6 +63,7 @@ export default function Exhibition() {
 
   return (
     <main className="bg-[#0d0812] text-white">
+      <PageMeta title={title} description={`${subtitle} — KOALA가 소개하는 작가의 전시를 온라인으로 둘러보세요.`} />
       <Entrance title={title} subtitle={subtitle} cover={intro?.imageUrl} />
       <Preface note={note} />
 
