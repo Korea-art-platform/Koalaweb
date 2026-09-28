@@ -71,17 +71,17 @@ export default function ArtistRow({ artist, index }: ArtistRowProps) {
 
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-1">
             <Link
-              to={`/artist/${artist.artistCode}`}
+              to={`/artist/${artist.artistCode}/works`}
               className="inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-koala-navy text-white rounded-full hover:bg-koala-navy-hover transition-all font-medium text-sm"
             >
-              {t('artistLab.row.viewProfile') as string}
+              {t('artistLab.row.startCollecting') as string}
               <ArrowRight className="w-4 h-4" />
             </Link>
             <Link
               to={`/artist/${artist.artistCode}`}
               className="inline-flex items-center justify-center gap-2 px-6 py-3.5 border border-gray-200 rounded-full hover:bg-gray-50 transition-all font-medium text-sm"
             >
-              {t('artistLab.row.startCollecting') as string}
+              {t('artistLab.row.viewProfile') as string}
             </Link>
           </div>
 
