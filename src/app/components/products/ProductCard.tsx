@@ -17,6 +17,7 @@ import type { Sku } from '@/api/types';
 import { notifyCartUpdated } from '@/app/hooks/useCart';
 
 import { useCategories } from '@/app/hooks/useCategories';
+import { sizeText, weightText } from '@/app/lib/skuSpec';
 interface ProductCardProps {
   sku: Sku;
   viewMode: 'grid' | 'large';
@@ -120,11 +121,10 @@ export default function ProductCard({
   const description = d.description ?? sku.description;
   const specs: { label: string; value: string }[] = [];
   if (d.material) specs.push({ label: '소재', value: d.material });
-  if (d.widthCm || d.heightCm || d.depthCm) {
-    const dims = [d.widthCm, d.heightCm, d.depthCm].filter((v) => v != null).join(' × ');
-    specs.push({ label: '크기', value: `${dims} cm` });
-  }
-  if (d.weightKg) specs.push({ label: '무게', value: `${d.weightKg} kg` });
+  const size = sizeText(d.widthCm, (d as any).depthCm, d.heightCm);
+  if (size) specs.push({ label: '크기', value: size });
+  const weight = weightText((d as any).weightG, d.weightKg);
+  if (weight) specs.push({ label: '무게', value: weight });
   if (sku.isLimitedEdition && d.editionSize) {
     specs.push({ label: '에디션', value: d.editionNumber ? `No. ${d.editionNumber} / ${d.editionSize}` : `${d.editionSize} 한정` });
   }

@@ -7,6 +7,7 @@ import { getSku } from '@/api/sku';
 import { addCartItem } from '@/api/cart';
 import type { Sku } from '@/api/types';
 import { notifyCartUpdated } from '@/app/hooks/useCart';
+import { sizeText, weightText } from '@/app/lib/skuSpec';
 
 export default function Product360View() {
   const { t } = useTranslation();
@@ -303,19 +304,16 @@ export default function Product360View() {
                 <span className="text-white/60">{t('view360.category')}</span>
                 <span>{sku.genre}</span>
               </div>
-              {sku.widthCm && (
+              {sizeText(sku.widthCm, sku.depthCm, sku.heightCm) && (
                 <div className="flex justify-between">
                   <span className="text-white/60">{t('product.detail.info.size')}</span>
-                  <span>
-                    {sku.widthCm}×{sku.heightCm}
-                    {sku.depthCm ? `×${sku.depthCm}` : ''}cm
-                  </span>
+                  <span>{sizeText(sku.widthCm, sku.depthCm, sku.heightCm)}</span>
                 </div>
               )}
-              {sku.weightKg && (
+              {weightText((sku as any).weightG, sku.weightKg) && (
                 <div className="flex justify-between">
                   <span className="text-white/60">{t('product.detail.info.weight')}</span>
-                  <span>{sku.weightKg}kg</span>
+                  <span>{weightText((sku as any).weightG, sku.weightKg)}</span>
                 </div>
               )}
               {sku.isLimitedEdition && (

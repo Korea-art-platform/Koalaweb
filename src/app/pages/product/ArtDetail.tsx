@@ -17,6 +17,7 @@ import {
 } from '@/app/components/ArtDetail';
 import { ShareButton } from '@/app/components/common/ShareButton';
 import { useCategories } from '@/app/hooks/useCategories';
+import { sizeText, weightText } from '@/app/lib/skuSpec';
 
 export default function ArtDetail() {
   const { id } = useParams();
@@ -69,8 +70,8 @@ export default function ArtDetail() {
   const artInfoItems = [
     { label: '아트 종류', value: subLabel(sku.genre) || '-' },
     { label: '소재',     value: sku.material || '-' },
-    { label: '크기',     value: sku.widthCm ? `${sku.widthCm}cm × ${sku.heightCm}cm` : '-' },
-    { label: '무게',     value: sku.weightKg ? `${sku.weightKg}kg` : '-' },
+    { label: '크기',     value: sizeText(sku.widthCm, (sku as any).depthCm, sku.heightCm) ?? '-' },
+    { label: '무게',     value: weightText((sku as any).weightG, sku.weightKg) ?? '-' },
     { label: '배달비용', value: SHIPPING_FEE_TEXT },
   ];
 

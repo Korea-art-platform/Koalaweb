@@ -8,6 +8,7 @@ import { getSku } from '@/api/sku';
 import { addCartItem } from '@/api/cart';
 import type { Sku } from '@/api/types';
 import { notifyCartUpdated } from '@/app/hooks/useCart';
+import { sizeText } from '@/app/lib/skuSpec';
 
 export default function ARView() {
   const { t } = useTranslation();
@@ -161,7 +162,7 @@ export default function ARView() {
                     <p className="text-sm text-gray-500 font-medium">{sku.artistName} {t('ar.artistSuffix')}</p>
                   </div>
                   <div className="pt-6 border-t border-gray-100 space-y-4 text-xs">
-                    {sku.widthCm && (<div className="flex justify-between"><span className="text-gray-400">{t('ar.size')}</span><span className="font-bold text-gray-900">{sku.widthCm}×{sku.heightCm}{sku.depthCm ? `×${sku.depthCm}` : ''}cm</span></div>)}
+                    {sizeText(sku.widthCm, sku.depthCm, sku.heightCm) && (<div className="flex justify-between"><span className="text-gray-400">{t('ar.size')}</span><span className="font-bold text-gray-900">{sizeText(sku.widthCm, sku.depthCm, sku.heightCm)}</span></div>)}
                     {sku.isLimitedEdition && (<div className="flex justify-between"><span className="text-gray-400">{t('ar.edition')}</span><span className="font-bold text-gray-900">{sku.editionNumber} / {sku.editionSize}</span></div>)}
                     <div className="flex justify-between"><span className="text-gray-400">{t('ar.price')}</span><span className="font-bold text-gray-900">₩{formatWon(displayPrice(sku))}</span></div>
                   </div>

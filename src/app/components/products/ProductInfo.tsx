@@ -4,6 +4,7 @@ import OriginalBadge from '@/app/components/common/OriginalBadge';
 import { displayPrice, displayListPrice, hasDiscount } from '@/app/lib/price';
 import { useOriginalCategoryCode } from '@/app/hooks/useOriginalCategory';
 import { lowStockCount } from '@/app/lib/lowStock';
+import { sizeText, weightText } from '@/app/lib/skuSpec';
 
 interface ColorOption {
   name: string;
@@ -40,6 +41,9 @@ export function ProductInfo({ sku, selectedColor, onColorSelect }: Props) {
     val ? val.toLocaleString() : t('product.detail.info.priceOnRequest');
 
   const colorOptions: ColorOption[] = sku.colorOptions ?? [];
+
+  const size = sizeText(sku.widthCm, sku.depthCm, sku.heightCm);
+  const weight = weightText((sku as any).weightG, sku.weightKg);
 
   const badges: BadgeItem[] = (() => {
     try { return sku.badges ? JSON.parse(sku.badges) : []; }
@@ -139,21 +143,18 @@ export function ProductInfo({ sku, selectedColor, onColorSelect }: Props) {
         <p className="text-sm text-gray-600 leading-relaxed mb-5">{sku.description}</p>
       )}
 
-      {(sku.widthCm || sku.weightKg) && (
+      {(size || weight) && (
         <div className="grid grid-cols-[auto_1fr] gap-x-6 gap-y-2.5 text-sm">
-          {sku.widthCm && (
+          {size && (
             <>
               <span className="text-gray-400 whitespace-nowrap">{t('product.detail.info.size')}</span>
-              <span className="font-medium text-gray-700">
-                {sku.widthCm}cm × {sku.heightCm}cm
-                {sku.depthCm && ` × ${sku.depthCm}cm`}
-              </span>
+              <span className="font-medium text-gray-700">{size}</span>
             </>
           )}
-          {sku.weightKg && (
+          {weight && (
             <>
               <span className="text-gray-400">{t('product.detail.info.weight')}</span>
-              <span className="font-medium text-gray-700">{sku.weightKg}kg</span>
+              <span className="font-medium text-gray-700">{weight}</span>
             </>
           )}
         </div>

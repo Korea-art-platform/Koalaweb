@@ -23,6 +23,7 @@ import {
 import ProductDetailPage from '@/app/components/products/ProductDetailPage';
 import { ArtImages, ArtMaterial, ArtPackaging, ArtArtist, ArtInfo, ArtQnA, SHIPPING_FEE_TEXT } from '@/app/components/ArtDetail';
 import TrendingArtists from '@/app/components/Artist/TrendingArtists';
+import { sizeText, weightText } from '@/app/lib/skuSpec';
 
 export default function ProductDetail() {
   const { id } = useParams();
@@ -287,8 +288,8 @@ export default function ProductDetail() {
             <ArtInfo
               items={[
                 { label: '소재', value: sku.material ?? '-' },
-                { label: '크기', value: (sku as any).widthCm ? `${(sku as any).widthCm}cm × ${(sku as any).heightCm}cm` : '-' },
-                { label: '무게', value: (sku as any).weightKg ? `${(sku as any).weightKg}kg` : '-' },
+                { label: '크기', value: sizeText((sku as any).widthCm, (sku as any).depthCm, (sku as any).heightCm) ?? '-' },
+                { label: '무게', value: weightText((sku as any).weightG, (sku as any).weightKg) ?? '-' },
                 { label: '배달비용', value: SHIPPING_FEE_TEXT },
               ]}
             />
