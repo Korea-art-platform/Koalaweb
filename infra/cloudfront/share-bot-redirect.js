@@ -19,7 +19,19 @@ function handler(event) {
         agent.indexOf('skypeuripreview') >= 0 ||
         agent.indexOf('linkedinbot') >= 0 ||
         agent.indexOf('pinterest') >= 0 ||
-        agent.indexOf('embedly') >= 0;
+        agent.indexOf('embedly') >= 0 ||
+        // 생성형 검색 크롤러 — 자바스크립트를 실행하지 않아 빈 껍데기만 읽어 간다
+        agent.indexOf('gptbot') >= 0 ||
+        agent.indexOf('oai-searchbot') >= 0 ||
+        agent.indexOf('chatgpt-user') >= 0 ||
+        agent.indexOf('claudebot') >= 0 ||
+        agent.indexOf('claude-web') >= 0 ||
+        agent.indexOf('anthropic-ai') >= 0 ||
+        agent.indexOf('perplexitybot') >= 0 ||
+        agent.indexOf('perplexity-user') >= 0 ||
+        agent.indexOf('ccbot') >= 0 ||
+        agent.indexOf('google-extended') >= 0 ||
+        agent.indexOf('applebot-extended') >= 0;
 
     if (!isPreviewBot) {
         return request;

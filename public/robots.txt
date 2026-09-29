@@ -9,5 +9,7 @@ Disallow: /cart
 Disallow: /order
 Disallow: /payment
 Disallow: /api/
+Allow: /api/v1/sitemap.xml
+Allow: /api/v1/share/
 
-Sitemap: https://koala-art.co.kr/sitemap.xml
+Sitemap: https://koala-art.co.kr/api/v1/sitemap.xml

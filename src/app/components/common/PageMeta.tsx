@@ -1,6 +1,8 @@
 import { Helmet } from 'react-helmet-async';
 
 interface Props {
+  /** 검색엔진·생성형 크롤러가 읽는 구조화 데이터(JSON-LD) */
+  jsonLd?: Record<string, unknown>;
   /** 페이지 이름. "— KOALA" 는 자동으로 붙는다. */
   title: string;
   /** 검색 결과에서 제목 아래 보이는 설명. 없으면 index.html 기본값을 쓴다. */
@@ -17,11 +19,16 @@ interface Props {
  * 꼬리표("— KOALA")를 여기서 붙여 형식을 한 곳에서 맞춘다. 페이지마다 손으로
  * 적으면 누구는 "| KOALA", 누구는 "— KOALA" 로 갈린다.
  */
-export default function PageMeta({ title, description }: Props) {
+export default function PageMeta({ title, description, jsonLd }: Props) {
   return (
     <Helmet>
       <title>{title} — KOALA</title>
       {description && <meta name="description" content={description} />}
+      {jsonLd && (
+        <script type="application/ld+json">
+          {JSON.stringify(jsonLd).replace(/</g, '\u003c')}
+        </script>
+      )}
     </Helmet>
   );
 }

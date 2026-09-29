@@ -6,6 +6,9 @@
 그래서 **봇 요청만** 백엔드의 미리보기 자리로 돌린다. 백엔드가 그 작품·작가의 제목과 이미지를
 박은 HTML 을 돌려주고, 사람이 그 주소로 들어오면 원래 화면으로 보낸다.
 
+생성형 검색 크롤러(GPTBot·ClaudeBot·PerplexityBot 등)도 같은 이유로 빈 껍데기만 읽어 간다.
+같이 돌려보낸다.
+
 - 봇 판별과 돌리기: `share-bot-redirect.js` (CloudFront Function, viewer request)
 - 미리보기 HTML: `ShareMetaController` (`/api/v1/share/...`)
 

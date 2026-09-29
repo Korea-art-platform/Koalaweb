@@ -44,6 +44,38 @@
     <!-- Canonical -->
     <link rel="canonical" href="https://koala-art.co.kr" />
 
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "Organization",
+            "@id": "https://koala-art.co.kr/#organization",
+            "name": "KOALA",
+            "alternateName": "Korea Art Lab",
+            "legalName": "주식회사 헤론",
+            "url": "https://koala-art.co.kr",
+            "logo": "https://koala-art.co.kr/og-image.png",
+            "email": "koala-art@heron.kr",
+            "sameAs": ["https://www.instagram.com/koalaobjects/"]
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://koala-art.co.kr/#website",
+            "url": "https://koala-art.co.kr",
+            "name": "KOALA",
+            "inLanguage": "ko-KR",
+            "publisher": { "@id": "https://koala-art.co.kr/#organization" },
+            "potentialAction": {
+              "@type": "SearchAction",
+              "target": "https://koala-art.co.kr/search?q={search_term_string}",
+              "query-input": "required name=search_term_string"
+            }
+          }
+        ]
+      }
+    </script>
+
     <!-- Kakao SDK -->
     <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.2/kakao.min.js"
       integrity="sha384-TiCUE00h649CAMonG018J2ujOgDKW/kVWlChEuu4jK2vxfAAD0eZxzCKakxg55G4"

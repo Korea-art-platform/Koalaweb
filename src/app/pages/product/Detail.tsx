@@ -201,7 +201,29 @@ export default function ProductDetail() {
     ? sku.description.slice(0, 155) + (sku.description.length > 155 ? '…' : '')
     : `${sku.name} — KOALA에서 만나는 한국 작가의 작품`;
   const pageImage = sku.primaryImageUrl ?? 'https://koala-art.co.kr/og-image.png';
-  const pageUrl = `https://koala-art.co.kr/products/${sku.skuCode}`;
+  const pageUrl = `https://koala-art.co.kr/product/${sku.skuCode}`;
+  const productJsonLd: Record<string, unknown> = {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    name: sku.name,
+    url: pageUrl,
+    sku: sku.skuCode,
+    image: pageImage,
+    description: pageDescription,
+    ...(sku.artistName ? { brand: { '@type': 'Brand', name: sku.artistName } } : {}),
+    ...(sku.salePrice != null ? {
+      offers: {
+        '@type': 'Offer',
+        priceCurrency: 'KRW',
+        price: String(sku.salePrice),
+        availability: sku.status === 'ACTIVE'
+          ? 'https://schema.org/InStock'
+          : 'https://schema.org/OutOfStock',
+        url: pageUrl,
+        seller: { '@type': 'Organization', name: '주식회사 헤론' },
+      },
+    } : {}),
+  };
 
   return (
     <div className="flex-1 relative">
@@ -220,6 +242,9 @@ export default function ProductDetail() {
         <meta name="twitter:title" content={`${sku.name} — KOALA`} />
         <meta name="twitter:description" content={pageDescription} />
         <meta name="twitter:image" content={pageImage} />
+        <script type="application/ld+json">
+          {JSON.stringify(productJsonLd).replace(/</g, '\u003c')}
+        </script>
       </Helmet>
       <ProductToast
         show={showToast}
