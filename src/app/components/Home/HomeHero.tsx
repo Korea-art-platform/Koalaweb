@@ -153,7 +153,9 @@ export default function HomeHero({ banners, loading = false }: HomeHeroProps) {
       />
       <div aria-hidden className="pointer-events-none absolute inset-0" style={{ background: STAGE_LIGHT }} />
 
-      {isDesktop ? (
+      {slide?.layoutMode === 'FULL' ? (
+        <FullStage slide={slide} total={total} go={go} isDesktop={isDesktop} />
+      ) : isDesktop ? (
         <DesktopStage slide={slide} total={total} loading={loading} go={go} art={renderArt(2.6, 1.35, 1)} />
       ) : (
         <MobileStage slide={slide} total={total} loading={loading} go={go} art={renderArt(1, 0.95, 2)} />
@@ -350,6 +352,54 @@ function RoundButton({ label, onClick, children }: { label: string; onClick: () 
     >
       {children}
     </button>
+  );
+}
+
+/**
+ * 디자인이 끝난 배너 한 장을 그대로 거는 자리.
+ *
+ * 글자와 배치가 이미 이미지 안에 있으므로 화면은 덧그리지 않는다. 작품 연결은 살아 있어
+ * 가격과 버튼은 그대로 쓴다.
+ */
+function FullStage({ slide, total, go, isDesktop }: {
+  slide: Banner; total: number; go: (step: 1 | -1) => void; isDesktop: boolean;
+}) {
+  const source = !isDesktop && slide.mobileImageUrl ? slide.mobileImageUrl : slide.imageUrl;
+  const discounted = slide.displayPrice != null && slide.displayListPrice != null
+    && slide.displayListPrice > slide.displayPrice;
+
+  return (
+    <div className="relative h-full w-full">
+      <img
+        src={toCdnUrl(source) ?? ''}
+        alt={slide.title || fullNameOf(slide)}
+        className="absolute inset-0 h-full w-full object-cover"
+        fetchPriority="high"
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 bottom-0 h-2/5 bg-gradient-to-t from-black/55 to-transparent"
+      />
+
+      {total > 1 && (
+        <div className="absolute left-6 top-28 z-10 flex gap-2 md:left-12">
+          <RoundButton label="이전 작품" onClick={() => go(-1)}><ArrowLeft className="h-4 w-4" /></RoundButton>
+          <RoundButton label="다음 작품" onClick={() => go(1)}><ArrowRight className="h-4 w-4" /></RoundButton>
+        </div>
+      )}
+
+      <div className="absolute inset-x-0 bottom-0 z-10 flex flex-col gap-3 px-6 pb-9 md:px-12">
+        {slide.displayPrice != null && (
+          <p className="flex items-baseline gap-2 text-white">
+            <span className="text-xl font-black tracking-tight">₩{formatWon(slide.displayPrice)}</span>
+            {discounted && (
+              <span className="text-sm text-white/50 line-through">₩{formatWon(slide.displayListPrice)}</span>
+            )}
+          </p>
+        )}
+        <HeroButtons slide={slide} />
+      </div>
+    </div>
   );
 }
 

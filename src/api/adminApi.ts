@@ -389,10 +389,12 @@ export async function createBanner(body: {
   linkTarget?: string;
   sortOrder?: number;
   skuCode?: string;
+  mobileImageUrl?: string;
   effectImageUrl1?: string;
   effectImageUrl2?: string;
   effectImageUrl3?: string;
   titleImageUrl?: string | null;
+  layoutMode?: string | null;
   bgColor?: string;
 }) {
   const res = await adminInstance.post(`${BASE}/banners`, body);
@@ -666,6 +668,7 @@ export interface BannerResponse {
   effectImageUrl2?: string;
   effectImageUrl3?: string;
   titleImageUrl?: string | null;
+  layoutMode?: string | null;
   linkUrl?: string;
   linkTarget?: string;
   bgColor?: string;

@@ -260,6 +260,8 @@ export interface Banner {
   effectImageUrl2?: string;
   effectImageUrl3?: string;
   titleImageUrl?: string | null;
+  layoutMode?: string | null;
+  mobileImageUrl?: string | null;
   bgColor?: string;
 }
 

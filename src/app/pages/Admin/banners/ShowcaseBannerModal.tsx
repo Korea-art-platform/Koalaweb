@@ -28,6 +28,15 @@ const SLOT_LABELS = [
   '작품명 이미지 · 뒤에 크게 깔림 (선택)',
 ];
 
+// 완성 이미지로 걸 때 쓰는 칸. 조립할 때 쓰는 칸과 번호가 겹치지 않게 뒤에 둔다
+const FULL_SLOT_LABELS: Record<number, string> = {
+  0: '배너 이미지 · PC *',
+  5: '배너 이미지 · 모바일 (선택)',
+};
+
+const COMPOSED_SLOTS = [0, 1, 2, 3, 4];
+const FULL_SLOTS = [0, 5];
+
 const STATUS_LABELS: Record<string, string> = {
   DRAFT: '미공개',
   OUT_OF_STOCK: '품절',
@@ -45,8 +54,11 @@ export default function ShowcaseBannerModal({ target, typeOptions, onSwitchType,
   const [description, setDescription] = useState(target?.description ?? '');
   const [slots, setSlots] = useState<Slot[]>(() =>
     [target?.imageUrl, target?.effectImageUrl1, target?.effectImageUrl2, target?.effectImageUrl3,
-     target?.titleImageUrl]
+     target?.titleImageUrl, target?.mobileImageUrl]
       .map((url) => ({ file: null, preview: url ?? '', url: url ?? '' })),
+  );
+  const [layoutMode, setLayoutMode] = useState<'COMPOSED' | 'FULL'>(
+    target?.layoutMode === 'FULL' ? 'FULL' : 'COMPOSED',
   );
   const [bgColor, setBgColor] = useState(stageColor(target?.bgColor).toLowerCase());
   const [sortOrder, setSortOrder] = useState(String(target?.sortOrder ?? 0));
@@ -103,6 +115,7 @@ export default function ShowcaseBannerModal({ target, typeOptions, onSwitchType,
     setError('');
     setSaving(true);
     try {
+      const full = layoutMode === 'FULL';
       // 새로 고른 파일만 업로드
       const urls = await Promise.all(
         slots.map((s) => (s.file ? uploadBannerImage(s.file) : Promise.resolve(s.url))),
@@ -119,13 +132,14 @@ export default function ShowcaseBannerModal({ target, typeOptions, onSwitchType,
           badge: target.badge ?? null,
           description: sub || null,
           imageUrl: urls[0],
-          mobileImageUrl: target.mobileImageUrl ?? null,
+          mobileImageUrl: urls[5] || null,
           videoUrl: target.videoUrl ?? null,
           skuCode,
-          effectImageUrl1: urls[1] || null,
-          effectImageUrl2: urls[2] || null,
-          effectImageUrl3: urls[3] || null,
-          titleImageUrl: urls[4] || null,
+          effectImageUrl1: full ? null : urls[1] || null,
+          effectImageUrl2: full ? null : urls[2] || null,
+          effectImageUrl3: full ? null : urls[3] || null,
+          titleImageUrl: full ? null : urls[4] || null,
+          layoutMode,
           linkUrl: target.linkUrl ?? null,
           linkTarget: target.linkTarget ?? null,
           bgColor,
@@ -141,10 +155,12 @@ export default function ShowcaseBannerModal({ target, typeOptions, onSwitchType,
           description: sub || undefined,
           imageUrl: urls[0],
           skuCode,
-          effectImageUrl1: urls[1] || undefined,
-          effectImageUrl2: urls[2] || undefined,
-          effectImageUrl3: urls[3] || undefined,
-          titleImageUrl: urls[4] || undefined,
+          mobileImageUrl: urls[5] || undefined,
+          effectImageUrl1: full ? undefined : urls[1] || undefined,
+          effectImageUrl2: full ? undefined : urls[2] || undefined,
+          effectImageUrl3: full ? undefined : urls[3] || undefined,
+          titleImageUrl: full ? undefined : urls[4] || undefined,
+          layoutMode,
           bgColor,
           sortOrder: sort,
         });
@@ -165,6 +181,28 @@ export default function ShowcaseBannerModal({ target, typeOptions, onSwitchType,
           이미지는 배경 없는 PNG 로 올려 주세요. 구성 이미지는 비워 두면 그 자리가 비어 있습니다.
           작품명 이미지를 올리면 뒤에 깔리는 글자 대신 그 이미지가 쓰입니다 — 비우면 작품 이름을 글자로 그립니다.
         </p>
+
+        <div className="mb-5 flex flex-col gap-2 rounded-lg border border-gray-200 p-3 sm:flex-row sm:gap-5">
+          {([
+            ['COMPOSED', '세부 수정', '작품 누끼와 구성 이미지를 화면이 조립합니다'],
+            ['FULL', '전체 이미지', '디자인이 끝난 배너 한 장을 그대로 겁니다'],
+          ] as const).map(([value, label, hint]) => (
+            <label key={value} className="flex flex-1 cursor-pointer items-start gap-2.5">
+              <input
+                type="radio"
+                name="layoutMode"
+                value={value}
+                checked={layoutMode === value}
+                onChange={() => setLayoutMode(value)}
+                className="mt-0.5 h-4 w-4 accent-koala-navy"
+              />
+              <span>
+                <span className="block text-sm font-medium text-gray-900">{label}</span>
+                <span className="block text-xs text-gray-400">{hint}</span>
+              </span>
+            </label>
+          ))}
+        </div>
 
         <div className="grid gap-6 md:grid-cols-[minmax(0,1fr)_260px]">
           <div className="space-y-3">
@@ -229,7 +267,9 @@ export default function ShowcaseBannerModal({ target, typeOptions, onSwitchType,
               />
             </div>
 
-            {SLOT_LABELS.map((label, i) => (
+            {(layoutMode === 'FULL' ? FULL_SLOTS : COMPOSED_SLOTS).map((i) => {
+              const label = layoutMode === 'FULL' ? FULL_SLOT_LABELS[i] : SLOT_LABELS[i];
+              return (
               <div key={label}>
                 <label className="block text-xs text-gray-500 mb-1.5">{label}</label>
                 <input
@@ -268,7 +308,8 @@ export default function ShowcaseBannerModal({ target, typeOptions, onSwitchType,
                   </button>
                 )}
               </div>
-            ))}
+              );
+            })}
 
             <div className="grid grid-cols-2 gap-3">
               <div>
