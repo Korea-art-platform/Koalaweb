@@ -392,6 +392,7 @@ export async function createBanner(body: {
   effectImageUrl1?: string;
   effectImageUrl2?: string;
   effectImageUrl3?: string;
+  titleImageUrl?: string | null;
   bgColor?: string;
 }) {
   const res = await adminInstance.post(`${BASE}/banners`, body);
@@ -664,6 +665,7 @@ export interface BannerResponse {
   effectImageUrl1?: string;
   effectImageUrl2?: string;
   effectImageUrl3?: string;
+  titleImageUrl?: string | null;
   linkUrl?: string;
   linkTarget?: string;
   bgColor?: string;

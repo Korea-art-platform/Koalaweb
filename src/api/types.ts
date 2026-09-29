@@ -259,6 +259,7 @@ export interface Banner {
   effectImageUrl1?: string;
   effectImageUrl2?: string;
   effectImageUrl3?: string;
+  titleImageUrl?: string | null;
   bgColor?: string;
 }
 

@@ -25,6 +25,7 @@ const SLOT_LABELS = [
   '구성 이미지 1 · 오른쪽 위 (선택)',
   '구성 이미지 2 · 오른쪽 아래 (선택)',
   '구성 이미지 3 · 왼쪽 아래 (선택)',
+  '작품명 이미지 · 뒤에 크게 깔림 (선택)',
 ];
 
 const STATUS_LABELS: Record<string, string> = {
@@ -43,7 +44,8 @@ export default function ShowcaseBannerModal({ target, typeOptions, onSwitchType,
   const [title, setTitle] = useState(target?.title ?? '');
   const [description, setDescription] = useState(target?.description ?? '');
   const [slots, setSlots] = useState<Slot[]>(() =>
-    [target?.imageUrl, target?.effectImageUrl1, target?.effectImageUrl2, target?.effectImageUrl3]
+    [target?.imageUrl, target?.effectImageUrl1, target?.effectImageUrl2, target?.effectImageUrl3,
+     target?.titleImageUrl]
       .map((url) => ({ file: null, preview: url ?? '', url: url ?? '' })),
   );
   const [bgColor, setBgColor] = useState(stageColor(target?.bgColor).toLowerCase());
@@ -123,6 +125,7 @@ export default function ShowcaseBannerModal({ target, typeOptions, onSwitchType,
           effectImageUrl1: urls[1] || null,
           effectImageUrl2: urls[2] || null,
           effectImageUrl3: urls[3] || null,
+          titleImageUrl: urls[4] || null,
           linkUrl: target.linkUrl ?? null,
           linkTarget: target.linkTarget ?? null,
           bgColor,
@@ -141,6 +144,7 @@ export default function ShowcaseBannerModal({ target, typeOptions, onSwitchType,
           effectImageUrl1: urls[1] || undefined,
           effectImageUrl2: urls[2] || undefined,
           effectImageUrl3: urls[3] || undefined,
+          titleImageUrl: urls[4] || undefined,
           bgColor,
           sortOrder: sort,
         });
@@ -159,6 +163,7 @@ export default function ShowcaseBannerModal({ target, typeOptions, onSwitchType,
         <h2 className="font-semibold text-gray-900 mb-1">{target ? '메인 히어로 수정' : '배너 추가'}</h2>
         <p className="text-xs text-gray-400 mb-5">
           이미지는 배경 없는 PNG 로 올려 주세요. 구성 이미지는 비워 두면 그 자리가 비어 있습니다.
+          작품명 이미지를 올리면 뒤에 깔리는 글자 대신 그 이미지가 쓰입니다 — 비우면 작품 이름을 글자로 그립니다.
         </p>
 
         <div className="grid gap-6 md:grid-cols-[minmax(0,1fr)_260px]">
@@ -306,6 +311,7 @@ export default function ShowcaseBannerModal({ target, typeOptions, onSwitchType,
                     effects={[slots[1].preview, slots[2].preview, slots[3].preview]}
                     alt="미리보기"
                     name={sku?.name ?? (target?.skuCode === skuCode ? target?.skuName : undefined)}
+                    titleImageUrl={slots[4]?.preview}
                   />
                 ) : (
                   <div className="flex aspect-square items-center justify-center text-xs text-white/60">

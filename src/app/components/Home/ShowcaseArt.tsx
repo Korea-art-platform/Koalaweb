@@ -76,6 +76,8 @@ interface ShowcaseArtProps {
   name?: string | null;
   nameWidth?: number;
   nameLines?: 1 | 2;
+  // 직접 만든 작품명 이미지. 있으면 글자 대신 이 이미지를 깐다
+  titleImageUrl?: string | null;
   // 히어로에서만 — 넘길 때 움직임. reach 는 이동 거리 배수
   animate?: boolean;
   dir?: number;
@@ -83,7 +85,8 @@ interface ShowcaseArtProps {
 }
 
 export default function ShowcaseArt({
-  imageUrl, effects, alt, name, nameWidth = 0.95, nameLines = 1, animate = false, dir = 1, reach = 1,
+  imageUrl, effects, alt, name, nameWidth = 0.95, nameLines = 1, titleImageUrl,
+  animate = false, dir = 1, reach = 1,
 }: ShowcaseArtProps) {
   const main = toCdnUrl(imageUrl);
   const mainThumb = toThumbUrl(imageUrl);
@@ -92,10 +95,23 @@ export default function ShowcaseArt({
     slots: SLOTS.map((s) => travel(s.x * reach, s.y * reach, s.delay)),
   }), [reach]);
   const move = (variants: Variants) => (animate ? { variants, custom: dir } : {});
-  const fit = name ? fitName(name, nameWidth, nameLines === 2) : null;
+  const titleImage = toCdnUrl(titleImageUrl);
+  const fit = !titleImage && name ? fitName(name, nameWidth, nameLines === 2) : null;
 
   return (
     <div className="relative aspect-square w-full [container-type:inline-size]">
+      {titleImage && (
+        <motion.img
+          aria-hidden
+          src={titleImage}
+          alt=""
+          draggable={false}
+          decoding="async"
+          className="pointer-events-none absolute left-1/2 top-[44%] z-0 max-w-none -translate-x-1/2 -translate-y-1/2 select-none"
+          style={{ width: `${nameWidth * 100}cqw` }}
+          {...(animate ? { variants: NAME } : {})}
+        />
+      )}
       {fit && (
         <motion.span
           aria-hidden

@@ -110,6 +110,7 @@ export default function HomeHero({ banners, loading = false }: HomeHeroProps) {
             effects={effectsOf(slide)}
             alt={`${slide.artistName ?? ''} 작 ${fullNameOf(slide)}`}
             name={fullNameOf(slide)}
+            titleImageUrl={slide.titleImageUrl}
             nameWidth={nameWidth}
             nameLines={nameLines}
             animate={!reduce}
