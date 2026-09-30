@@ -11,6 +11,7 @@ import { safeHttpUrl } from '@/app/lib/safeUrl';
 const EMPTY: StoreInput = {
   name: '', zipCode: '', address: '', addressDetail: '',
   phone: '', phone2: '', email: '', description: '', mapUrl: '', snsUrl: '', imageUrl: '', sortOrder: 0,
+  nameEn: '', addressEn: '', descriptionEn: '',
 };
 
 export default function AdminStoreList() {
@@ -80,6 +81,7 @@ export default function AdminStoreList() {
       addressDetail: s.addressDetail ?? '', phone: s.phone, phone2: s.phone2 ?? '',
       email: s.email ?? '', description: s.description ?? '', mapUrl: s.mapUrl ?? '',
       snsUrl: s.snsUrl ?? '', imageUrl: s.imageUrl ?? '', sortOrder: s.sortOrder,
+      nameEn: s.nameEn ?? '', addressEn: s.addressEn ?? '', descriptionEn: s.descriptionEn ?? '',
     });
     setEditTarget(s);
     setError('');
@@ -122,8 +124,14 @@ export default function AdminStoreList() {
     setError('');
     setSubmitting(true);
     try {
-      if (editTarget) await updateStore(editTarget.storeCode, form);
-      else await createStore(form);
+      const body = {
+        ...form,
+        nameEn: form.nameEn?.trim() ?? '',
+        addressEn: form.addressEn?.trim() ?? '',
+        descriptionEn: form.descriptionEn?.trim() ?? '',
+      };
+      if (editTarget) await updateStore(editTarget.storeCode, body);
+      else await createStore(body);
       setOpen(false);
       load();
     } catch {
@@ -265,6 +273,10 @@ export default function AdminStoreList() {
                 <input value={form.name} onChange={(e) => set({ name: e.target.value })}
                   className={inputCls} placeholder="예) KOALA 강남점" />
               </Field>
+              <Field label="매장명 (영문, 선택)">
+                <input value={form.nameEn} onChange={(e) => set({ nameEn: e.target.value })}
+                  className={inputCls} placeholder="e.g. KOALA Gangnam" />
+              </Field>
 
               <div>
                 <label className="block text-xs text-gray-500 mb-1.5">주소 *</label>
@@ -280,6 +292,9 @@ export default function AdminStoreList() {
                   className={`${inputCls} bg-gray-50 mt-2`} />
                 <input value={form.addressDetail} onChange={(e) => set({ addressDetail: e.target.value })}
                   placeholder="상세주소 (동/호수 등)" className={`${inputCls} mt-2`} />
+                <input value={form.addressEn} onChange={(e) => set({ addressEn: e.target.value })}
+                  placeholder="영문 주소 한 줄 (선택) — 예) 44 Insadong-gil, Jongno-gu, Seoul"
+                  className={`${inputCls} mt-2`} />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
@@ -306,6 +321,11 @@ export default function AdminStoreList() {
               <Field label="사업장 소개글">
                 <textarea value={form.description} onChange={(e) => set({ description: e.target.value })}
                   rows={4} className={`${inputCls} resize-y`} placeholder="매장 소개를 입력하세요..." />
+              </Field>
+              <Field label="사업장 소개글 (영문, 선택)">
+                <textarea value={form.descriptionEn} onChange={(e) => set({ descriptionEn: e.target.value })}
+                  rows={4} className={`${inputCls} resize-y`} placeholder="Store introduction in English" />
+                <p className="mt-1 text-[11px] text-gray-400">영문 칸은 영어 화면에서 보여 줍니다. 비우면 한글이 그대로 나옵니다.</p>
               </Field>
 
               <Field label="네이버 플레이스 / 위치 링크 URL">

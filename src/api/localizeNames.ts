@@ -13,7 +13,30 @@ const SKU_FIELDS: [string, string, string][] = [
   ['color', 'colorEn', 'colorKo'],
 ];
 
+const TEXT_FIELDS = [
+  'description', 'artistNote', 'content', 'title',
+  'material', 'materialDescription', 'packagingTitle', 'packagingDescription',
+];
+
+function swapField(node: Node, field: string) {
+  const en = `${field}En`;
+  if (hasText(node[en]) && typeof node[field] === 'string') {
+    node[`${field}Ko`] = node[field];
+    node[field] = node[en];
+  }
+}
+
 function swap(node: Node) {
+  for (const field of TEXT_FIELDS) swapField(node, field);
+  if (typeof node.storeCode === 'string') {
+    swapField(node, 'name');
+    if (hasText(node.addressEn) && typeof node.address === 'string') {
+      node.addressKo = node.address;
+      node.address = node.addressEn;
+      node.addressDetailKo = node.addressDetail;
+      node.addressDetail = '';
+    }
+  }
   if (typeof node.skuCode === 'string') {
     for (const [field, en, ko] of SKU_FIELDS) {
       if (hasText(node[en]) && typeof node[field] === 'string') {

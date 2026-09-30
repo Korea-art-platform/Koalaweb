@@ -11,10 +11,12 @@ import { stripHtml, isHtmlEmpty } from '@/app/lib/html';
 interface NoticeForm {
   title: string;
   content: string;
+  titleEn: string;
+  contentEn: string;
   isPinned: boolean;
 }
 
-const DEFAULT_FORM: NoticeForm = { title: '', content: '', isPinned: false };
+const DEFAULT_FORM: NoticeForm = { title: '', content: '', titleEn: '', contentEn: '', isPinned: false };
 
 export default function AdminNoticeList() {
   const [notices, setNotices] = useState<NoticeResponse[]>([]);
@@ -40,7 +42,7 @@ export default function AdminNoticeList() {
   };
 
   const openEdit = (n: NoticeResponse) => {
-    setForm({ title: n.title, content: n.content, isPinned: n.isPinned });
+    setForm({ title: n.title, content: n.content, titleEn: n.titleEn ?? '', contentEn: n.contentEn ?? '', isPinned: n.isPinned });
     setFormError('');
     setEditTarget(n);
     setCreateOpen(true);
@@ -52,10 +54,15 @@ export default function AdminNoticeList() {
     setFormError('');
     setSubmitting(true);
     try {
+      const body = {
+        ...form,
+        titleEn: form.titleEn.trim(),
+        contentEn: isHtmlEmpty(form.contentEn) ? '' : form.contentEn,
+      };
       if (editTarget) {
-        await updateNotice(editTarget.noticeCode, form);
+        await updateNotice(editTarget.noticeCode, body);
       } else {
-        await createNotice(form);
+        await createNotice(body);
       }
       setCreateOpen(false);
       load();
@@ -170,6 +177,25 @@ export default function AdminNoticeList() {
                 />
                 <p className="mt-1.5 text-[11px] text-gray-400">
                   이미지·굵게·제목·목록·링크를 툴바로 넣을 수 있습니다. 이미지는 버튼으로 업로드하세요.
+                </p>
+              </div>
+              <div>
+                <label className="block text-xs text-gray-500 mb-1.5">제목 (영문, 선택)</label>
+                <input
+                  value={form.titleEn}
+                  onChange={(e) => setForm((f) => ({ ...f, titleEn: e.target.value }))}
+                  className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-black/10"
+                  placeholder="Notice title in English"
+                />
+              </div>
+              <div>
+                <label className="block text-xs text-gray-500 mb-1.5">내용 (영문, 선택)</label>
+                <RichTextEditor
+                  value={form.contentEn}
+                  onChange={(html) => setForm((f) => ({ ...f, contentEn: html }))}
+                />
+                <p className="mt-1.5 text-[11px] text-gray-400">
+                  영문 칸은 영어 화면에서 보여 줍니다. 비우면 한글이 그대로 나옵니다.
                 </p>
               </div>
               <label className="flex items-center gap-2 cursor-pointer">

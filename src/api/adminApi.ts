@@ -168,6 +168,8 @@ export async function createArtist(body: {
   description?: string;
   artistNote?: string;
   profileImageUrl?: string;
+  descriptionEn?: string;
+  artistNoteEn?: string;
 }) {
   const res = await adminInstance.post(`${BASE}/artists`, body);
   return res.data.data;
@@ -180,6 +182,8 @@ export async function updateArtist(artistCode: string, body: {
   description?: string;
   artistNote?: string;
   profileImageUrl?: string;
+  descriptionEn?: string;
+  artistNoteEn?: string;
 }) {
   const res = await adminInstance.put(`${BASE}/artists/${artistCode}`, body);
   return res.data.data;
@@ -236,6 +240,7 @@ export async function addArtistCareer(artistCode: string, body: {
   category: string;
   year: number | null;
   content: string;
+  contentEn?: string;
   sortOrder?: number;
 }) {
   const res = await adminInstance.post(`${BASE}/artists/${artistCode}/careers`, body);
@@ -246,6 +251,7 @@ export async function updateArtistCareer(artistCode: string, careerId: number, b
   category: string;
   year: number | null;
   content: string;
+  contentEn?: string;
   sortOrder?: number;
 }) {
   const res = await adminInstance.put(`${BASE}/artists/${artistCode}/careers/${careerId}`, body);
@@ -444,6 +450,9 @@ export interface PartnerStore {
   mapUrl?: string;
   snsUrl?: string;
   imageUrl?: string;
+  nameEn?: string | null;
+  addressEn?: string | null;
+  descriptionEn?: string | null;
   isActive: boolean;
   sortOrder: number;
   createdAt: string;
@@ -463,6 +472,9 @@ export interface StoreInput {
   snsUrl?: string;
   imageUrl?: string;
   sortOrder?: number;
+  nameEn?: string;
+  addressEn?: string;
+  descriptionEn?: string;
 }
 
 export async function getAdminStores(): Promise<PartnerStore[]> {
@@ -603,6 +615,7 @@ export interface ArtistCareerResponse {
   category: '학력' | '개인전' | '그룹전' | '수상' | '소장' | '방송' | '그 외';
   year: number | null;
   content: string;
+  contentEn?: string | null;
   sortOrder: number;
 }
 
@@ -629,6 +642,8 @@ export interface ArtistDetailResponse {
   artistCode: string;
   name: string;
   nameEn?: string | null;
+  descriptionEn?: string | null;
+  artistNoteEn?: string | null;
   slug: string;
   description?: string;
   artistNote?: string;
@@ -688,6 +703,8 @@ export interface NoticeResponse {
   noticeCode: string;
   title: string;
   content: string;
+  titleEn?: string | null;
+  contentEn?: string | null;
   isPinned: boolean;
   isActive: boolean;
   createdByAdminName?: string;
@@ -700,12 +717,12 @@ export async function getAdminNotices() {
   return res.data.data as NoticeResponse[];
 }
 
-export async function createNotice(body: { title: string; content: string; isPinned?: boolean }) {
+export async function createNotice(body: { title: string; content: string; isPinned?: boolean; titleEn?: string; contentEn?: string }) {
   const res = await adminInstance.post(`${BASE}/notices`, body);
   return res.data.data as NoticeResponse;
 }
 
-export async function updateNotice(noticeCode: string, body: { title: string; content: string; isPinned?: boolean }) {
+export async function updateNotice(noticeCode: string, body: { title: string; content: string; isPinned?: boolean; titleEn?: string; contentEn?: string }) {
   const res = await adminInstance.put(`${BASE}/notices/${noticeCode}`, body);
   return res.data.data as NoticeResponse;
 }

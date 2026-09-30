@@ -30,7 +30,7 @@ export default function Stores() {
   const regions = useMemo(() => {
     const seen: string[] = [];
     for (const s of stores) {
-      const c = cityOf(s.address);
+      const c = cityOf((s as StoreItem & { addressKo?: string }).addressKo ?? s.address);
       if (!seen.includes(c)) seen.push(c);
     }
     return [ALL, ...seen];
@@ -39,7 +39,7 @@ export default function Stores() {
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     return stores.filter((s) => {
-      const inRegion = region === ALL || cityOf(s.address) === region;
+      const inRegion = region === ALL || cityOf((s as StoreItem & { addressKo?: string }).addressKo ?? s.address) === region;
       const inQuery = q === '' || `${s.name} ${s.address} ${s.addressDetail ?? ''}`.toLowerCase().includes(q);
       return inRegion && inQuery;
     });

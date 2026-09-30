@@ -145,6 +145,11 @@ function InfoTab({ sku, onSaved }: { sku: any; onSaved: () => void }) {
     materialDescription: sku.materialDescription ?? '',
     packagingTitle: sku.packagingTitle ?? '',
     packagingDescription: sku.packagingDescription ?? '',
+    descriptionEn: sku.descriptionEn ?? '',
+    materialEn: sku.materialEn ?? '',
+    materialDescriptionEn: sku.materialDescriptionEn ?? '',
+    packagingTitleEn: sku.packagingTitleEn ?? '',
+    packagingDescriptionEn: sku.packagingDescriptionEn ?? '',
     listPrice: String(sku.listPrice ?? ''),
     salePrice: sku.salePrice ? String(sku.salePrice) : '',
     editionSize: sku.editionSize ? String(sku.editionSize) : '',
@@ -219,6 +224,11 @@ function InfoTab({ sku, onSaved }: { sku: any; onSaved: () => void }) {
         materialDescription: form.materialDescription.trim() || undefined,
         packagingTitle: form.packagingTitle.trim() || undefined,
         packagingDescription: form.packagingDescription.trim() || undefined,
+        descriptionEn: form.descriptionEn.trim(),
+        materialEn: form.materialEn.trim(),
+        materialDescriptionEn: form.materialDescriptionEn.trim(),
+        packagingTitleEn: form.packagingTitleEn.trim(),
+        packagingDescriptionEn: form.packagingDescriptionEn.trim(),
         listPrice: Number(form.listPrice),
         salePrice: Number(form.salePrice),
         primaryImageUrl: sku.primaryImageUrl,
@@ -370,6 +380,21 @@ function InfoTab({ sku, onSaved }: { sku: any; onSaved: () => void }) {
             />
           </div>
         </div>
+        <details className="rounded-lg border border-gray-200 px-4 py-3" open={Boolean(form.materialEn || form.materialDescriptionEn || form.packagingTitleEn || form.packagingDescriptionEn)}>
+          <summary className="cursor-pointer text-xs font-semibold text-gray-500">재질·포장 영문 (영어 화면용, 선택)</summary>
+          <div className="mt-3 space-y-3">
+            <input value={form.materialEn} onChange={(e) => setF({ materialEn: e.target.value })}
+              className={inputCls} placeholder="Material — e.g. Ceramic" />
+            <textarea value={form.materialDescriptionEn} onChange={(e) => setF({ materialDescriptionEn: e.target.value })}
+              rows={3} className={`${inputCls} resize-none`} placeholder="Material details in English" />
+            <div className="grid grid-cols-2 gap-3">
+              <input value={form.packagingTitleEn} onChange={(e) => setF({ packagingTitleEn: e.target.value })}
+                className={inputCls} placeholder="Packaging title" />
+              <input value={form.packagingDescriptionEn} onChange={(e) => setF({ packagingDescriptionEn: e.target.value })}
+                className={inputCls} placeholder="Packaging description" />
+            </div>
+          </div>
+        </details>
         <div className="grid grid-cols-2 gap-3">
           <div>
             <label className="block text-xs text-gray-500 mb-1.5">정가 (원, 부가세 별도) *</label>
@@ -395,6 +420,12 @@ function InfoTab({ sku, onSaved }: { sku: any; onSaved: () => void }) {
           <label className="block text-xs text-gray-500 mb-1.5">작품 설명</label>
           <textarea value={form.description} onChange={(e) => setF({ description: e.target.value })}
             rows={5} className={`${inputCls} resize-none`} />
+        </div>
+        <div>
+          <label className="block text-xs text-gray-500 mb-1.5">작품 설명 (영문, 선택)</label>
+          <textarea value={form.descriptionEn} onChange={(e) => setF({ descriptionEn: e.target.value })}
+            rows={5} className={`${inputCls} resize-none`} placeholder="Description in English" />
+          <p className="mt-1 text-[11px] text-gray-400">영문 칸은 영어 화면에서 보여 줍니다. 비우면 한글이 그대로 나옵니다.</p>
         </div>
 
         {isLimited && (

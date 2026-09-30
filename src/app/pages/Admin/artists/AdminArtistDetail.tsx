@@ -145,7 +145,9 @@ function InfoTab({
     nameEn: artist.nameEn ?? '',
     slug: artist.slug,
     description: artist.description ?? '',
+    descriptionEn: artist.descriptionEn ?? '',
     artistNote: artist.artistNote ?? '',
+    artistNoteEn: artist.artistNoteEn ?? '',
     profileImageUrl: artist.profileImageUrl ?? '',
   });
   const [saving, setSaving] = useState(false);
@@ -167,6 +169,8 @@ function InfoTab({
         description: form.description.trim() || undefined,
         artistNote: form.artistNote.trim() || undefined,
         profileImageUrl: form.profileImageUrl.trim() || undefined,
+        descriptionEn: form.descriptionEn.trim(),
+        artistNoteEn: form.artistNoteEn.trim(),
       });
       setSuccess(true);
       setTimeout(() => setSuccess(false), 2000);
@@ -224,6 +228,15 @@ function InfoTab({
           placeholder="작가 소개 (간략)"
         />
       </Field>
+      <Field label="작가 소개 (영문)">
+        <textarea
+          value={form.descriptionEn}
+          onChange={(e) => setForm((f) => ({ ...f, descriptionEn: e.target.value }))}
+          rows={4}
+          className={`${inputCls} resize-none`}
+          placeholder="Short artist bio in English"
+        />
+      </Field>
       <Field label="작가 노트">
         <textarea
           value={form.artistNote}
@@ -232,6 +245,16 @@ function InfoTab({
           className={`${inputCls} resize-none`}
           placeholder="작가가 직접 쓴 노트, 창작 철학 등"
         />
+      </Field>
+      <Field label="작가 노트 (영문)">
+        <textarea
+          value={form.artistNoteEn}
+          onChange={(e) => setForm((f) => ({ ...f, artistNoteEn: e.target.value }))}
+          rows={6}
+          className={`${inputCls} resize-none`}
+          placeholder="Artist's note in English"
+        />
+        <p className="mt-1 text-[11px] text-gray-400">영문 칸은 영어 화면에서 보여 줍니다. 비우면 한글이 그대로 나옵니다.</p>
       </Field>
 
       {error && <p className="text-xs text-red-500">{error}</p>}
@@ -585,12 +608,12 @@ function CareerTab({
   onChanged: () => void;
 }) {
   const [adding, setAdding] = useState(false);
-  const [addForm, setAddForm] = useState<{ category: string; year: number | null; content: string }>({ category: '학력', year: new Date().getFullYear(), content: '' });
+  const [addForm, setAddForm] = useState<{ category: string; year: number | null; content: string; contentEn: string }>({ category: '학력', year: new Date().getFullYear(), content: '', contentEn: '' });
   const [addError, setAddError] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
   const [editId, setEditId] = useState<number | null>(null);
-  const [editForm, setEditForm] = useState<{ category: string; year: number | null; content: string }>({ category: '학력', year: null, content: '' });
+  const [editForm, setEditForm] = useState<{ category: string; year: number | null; content: string; contentEn: string }>({ category: '학력', year: null, content: '', contentEn: '' });
 
   const [deleting, setDeleting] = useState<number | null>(null);
 
@@ -608,9 +631,10 @@ function CareerTab({
         category: addForm.category,
         year: addForm.year,
         content: addForm.content.trim(),
+        contentEn: addForm.contentEn.trim() || undefined,
       });
       setAdding(false);
-      setAddForm({ category: '학력', year: new Date().getFullYear(), content: '' } as { category: string; year: number | null; content: string });
+      setAddForm({ category: '학력', year: new Date().getFullYear(), content: '', contentEn: '' } as { category: string; year: number | null; content: string; contentEn: string });
       onChanged();
     } catch {
       setAddError('추가에 실패했습니다.');
@@ -627,6 +651,7 @@ function CareerTab({
         category: editForm.category,
         year: editForm.year,
         content: editForm.content.trim(),
+        contentEn: editForm.contentEn.trim(),
       });
       setEditId(null);
       onChanged();
@@ -700,6 +725,17 @@ function CareerTab({
               placeholder="홍익대학교 서양화과 졸업"
             />
           </div>
+          <div className="mb-3">
+            <label className="block text-xs text-gray-500 mb-1">내용 (영문, 선택)</label>
+            <textarea
+              value={addForm.contentEn}
+              onChange={(e) => setAddForm((f) => ({ ...f, contentEn: e.target.value }))}
+              className={`${inputCls} resize-none`}
+              rows={2}
+              maxLength={1000}
+              placeholder="BFA in Painting, Hongik University"
+            />
+          </div>
           {addError && <p className="text-xs text-red-500 mb-2">{addError}</p>}
           <div className="flex gap-2">
             <button
@@ -751,6 +787,12 @@ function CareerTab({
                       onChange={(e) => setEditForm((f) => ({ ...f, content: e.target.value }))}
                       className="flex-1 text-xs border border-gray-200 rounded px-2 py-1 focus:outline-none min-w-[200px]"
                     />
+                    <input
+                      value={editForm.contentEn}
+                      onChange={(e) => setEditForm((f) => ({ ...f, contentEn: e.target.value }))}
+                      placeholder="영문 (선택)"
+                      className="basis-full text-xs border border-gray-200 rounded px-2 py-1 focus:outline-none"
+                    />
                     <button
                       onClick={() => handleEditSave(c.id)}
                       disabled={submitting}
@@ -765,9 +807,12 @@ function CareerTab({
                 ) : (
                   <div key={c.id} className="flex items-center gap-3 bg-white rounded-lg px-3 py-2.5 border border-gray-100 hover:border-gray-200 group">
                     <span className="text-xs font-mono text-gray-400 w-10 shrink-0">{c.year ?? '–'}</span>
-                    <span className="flex-1 text-sm text-gray-700">{c.content}</span>
+                    <span className="flex-1 text-sm text-gray-700">
+                      {c.content}
+                      {c.contentEn && <span className="block text-xs text-gray-400">{c.contentEn}</span>}
+                    </span>
                     <button
-                      onClick={() => { setEditId(c.id); setEditForm({ category: c.category, year: c.year ?? null, content: c.content }); }}
+                      onClick={() => { setEditId(c.id); setEditForm({ category: c.category, year: c.year ?? null, content: c.content, contentEn: c.contentEn ?? '' }); }}
                       className="opacity-0 group-hover:opacity-100 text-gray-400 hover:text-gray-700 transition-opacity"
                     >
                       <Pencil className="w-3.5 h-3.5" />

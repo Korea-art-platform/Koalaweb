@@ -43,6 +43,27 @@ describe('localizeNames', () => {
     expect(data.sku).toMatchObject({ name: 'Birds', artistName: 'Park Junsang', artistNameKo: '박준상' });
   });
 
+  it('영어일 때 소개·약력·공지·매장·상품 설명을 영문으로 바꾼다', () => {
+    const data = {
+      artist: {
+        artistCode: 'P1', name: '박준상', description: '조형 작가', descriptionEn: 'Sculptor',
+        artistNote: '노트', artistNoteEn: null,
+        careerList: [{ id: 1, content: '국민대 학사', contentEn: 'BFA, Kookmin University' }],
+      },
+      notice: { noticeCode: 'N1', title: '정식 오픈', titleEn: 'Grand opening', content: '<p>본문</p>', contentEn: '' },
+      store: { storeCode: 'S1', name: '거안', nameEn: 'Geoan', address: '서울 종로구', addressDetail: '2층', addressEn: '44 Insadong-gil, Seoul' },
+      sku: { skuCode: 'A', name: '버즈', material: '세라믹', materialEn: 'Ceramic', packagingTitle: '포장', packagingTitleEn: 'Packaging' },
+    };
+
+    localizeNames(data, true);
+
+    expect(data.artist).toMatchObject({ description: 'Sculptor', artistNote: '노트' });
+    expect(data.artist.careerList[0].content).toBe('BFA, Kookmin University');
+    expect(data.notice).toMatchObject({ title: 'Grand opening', content: '<p>본문</p>' });
+    expect(data.store).toMatchObject({ name: 'Geoan', address: '44 Insadong-gil, Seoul', addressDetail: '' });
+    expect(data.sku).toMatchObject({ material: 'Ceramic', packagingTitle: 'Packaging' });
+  });
+
   it('영문명이 공백이면 한글명을 유지한다', () => {
     const sku = { skuCode: 'A', name: '해피토마', nameEn: '  ' };
     localizeNames(sku, true);
