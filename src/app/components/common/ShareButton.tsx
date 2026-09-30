@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { Share2, Link2, Check } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface ShareButtonProps {
   title: string;
@@ -9,6 +10,7 @@ interface ShareButtonProps {
 }
 
 export function ShareButton({ title, description, imageUrl, url }: ShareButtonProps) {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const [copied, setCopied] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -36,7 +38,7 @@ export function ShareButton({ title, description, imageUrl, url }: ShareButtonPr
       },
       buttons: [
         {
-          title: '작품 보기',
+          title: t('widgets.share.defaultTitle'),
           link: { mobileWebUrl: shareUrl, webUrl: shareUrl },
         },
       ],
@@ -65,7 +67,7 @@ export function ShareButton({ title, description, imageUrl, url }: ShareButtonPr
         className="inline-flex items-center gap-2 px-5 py-2 rounded-full border border-gray-300 text-gray-700 text-sm font-semibold hover:border-black hover:text-black transition-all"
       >
         <Share2 className="w-4 h-4" />
-        공유
+        {t('widgets.share.button')}
       </button>
 
       {open && (
@@ -77,7 +79,7 @@ export function ShareButton({ title, description, imageUrl, url }: ShareButtonPr
             <div className="w-5 h-5 rounded bg-[#FEE500] flex items-center justify-center flex-shrink-0">
               <span className="text-[#3C1E1E] text-[9px] font-black">K</span>
             </div>
-            카카오톡
+            {t('widgets.share.kakao')}
           </button>
           <button
             onClick={shareX}
@@ -93,14 +95,14 @@ export function ShareButton({ title, description, imageUrl, url }: ShareButtonPr
             className="w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors text-sm border-t border-gray-50"
           >
             <Link2 className="w-4 h-4 text-gray-400 flex-shrink-0" />
-            링크 복사
+            {t('widgets.share.copy')}
           </button>
         </div>
       )}
 
       {copied && (
         <div className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-koala-navy text-white text-sm px-5 py-2.5 rounded-full z-50 pointer-events-none shadow-lg">
-          링크가 복사됐습니다 ✓
+          {t('widgets.share.copied')}
         </div>
       )}
     </div>

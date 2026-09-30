@@ -120,13 +120,13 @@ export default function ProductCard({
 
   const description = d.description ?? sku.description;
   const specs: { label: string; value: string }[] = [];
-  if (d.material) specs.push({ label: '소재', value: d.material });
+  if (d.material) specs.push({ label: t('product.card.material'), value: d.material });
   const size = sizeText(d.widthCm, (d as any).depthCm, d.heightCm);
-  if (size) specs.push({ label: '크기', value: size });
+  if (size) specs.push({ label: t('product.card.size'), value: size });
   const weight = weightText((d as any).weightG, d.weightKg);
-  if (weight) specs.push({ label: '무게', value: weight });
+  if (weight) specs.push({ label: t('product.card.weight'), value: weight });
   if (sku.isLimitedEdition && d.editionSize) {
-    specs.push({ label: '에디션', value: d.editionNumber ? `No. ${d.editionNumber} / ${d.editionSize}` : `${d.editionSize} 한정` });
+    specs.push({ label: t('product.card.edition'), value: d.editionNumber ? `No. ${d.editionNumber} / ${d.editionSize}` : t('product.card.editionLimit', { size: d.editionSize }) });
   }
 
   const handleAddToCart = async (e: React.MouseEvent) => {
@@ -221,7 +221,7 @@ export default function ProductCard({
           srcSet={imageSrcSet}
           sizes="(max-width: 767px) 50vw, (max-width: 1279px) 33vw, 420px"
           onError={onImageError}
-          alt={`${sku.artistName} 작 ${title}`}
+          alt={t('product.card.byArtist', { artist: sku.artistName, title })}
           className="absolute inset-0 h-full w-full object-cover"
           variants={{ hover: { scale: 1.03 } }}
           transition={{ duration: 0.5 }}
@@ -259,7 +259,7 @@ export default function ProductCard({
         <button
           onClick={(e) => onWishlistClick(e, sku.skuCode)}
           disabled={isWishlistLoading}
-          aria-label={isWishlisted ? `${title} 찜 해제` : `${title} 찜하기`}
+          aria-label={isWishlisted ? t('product.card.wishRemove', { title }) : t('product.card.wishAdd', { title })}
           aria-pressed={isWishlisted}
           className={`absolute right-0 p-1.5 transition-colors disabled:cursor-wait
             focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-koala-purple
@@ -301,7 +301,7 @@ export default function ProductCard({
         <motion.button
           onClick={(e) => onWishlistClick(e, sku.skuCode)}
           disabled={isWishlistLoading}
-          aria-label="찜하기"
+          aria-label={t('product.card.wish')}
           whileTap={{ scale: 0.85 }}
           className={`absolute top-2.5 right-2.5 md:top-4 md:right-4 p-2 md:p-2.5 rounded-full bg-white/90 backdrop-blur-sm shadow-sm transition-colors ${
             isWishlisted ? 'text-koala-purple' : 'text-gray-400 hover:text-koala-purple'
@@ -357,7 +357,7 @@ export default function ProductCard({
           srcSet={imageSrcSet}
           sizes="(max-width: 767px) 50vw, (max-width: 1279px) 33vw, 420px"
           onError={onImageError}
-          alt={`${sku.artistName} 작 ${title}`}
+          alt={t('product.card.byArtist', { artist: sku.artistName, title })}
           className="absolute inset-0 h-full w-full object-contain"
           variants={{ hover: { scale: 1.03 } }}
           transition={{ duration: 0.5 }}
@@ -393,7 +393,7 @@ export default function ProductCard({
               type="button"
               onClick={(e) => onWishlistClick(e, sku.skuCode)}
               disabled={isWishlistLoading}
-              aria-label={isWishlisted ? `${title} 찜 해제` : `${title} 찜하기`}
+              aria-label={isWishlisted ? t('product.card.wishRemove', { title }) : t('product.card.wishAdd', { title })}
               aria-pressed={isWishlisted}
               className={`flex h-9 w-9 items-center justify-center rounded-full transition-colors disabled:cursor-wait
                 focus-visible:outline-2 focus-visible:outline-koala-purple
@@ -409,7 +409,7 @@ export default function ProductCard({
               type="button"
               onClick={handleAddToCart}
               disabled={adding || sku.status === 'OUT_OF_STOCK'}
-              aria-label={`${title} 장바구니에 담기`}
+              aria-label={t('product.card.addToCartLabel', { title })}
               className={`flex h-9 w-9 items-center justify-center rounded-full text-white transition-[filter,background-color]
                 duration-300 hover:brightness-[1.12] disabled:cursor-not-allowed disabled:opacity-40
                 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-koala-purple
@@ -444,7 +444,7 @@ export default function ProductCard({
           srcSet={imageSrcSet}
           sizes="(max-width: 767px) 50vw, (max-width: 1279px) 33vw, 420px"
           onError={onImageError}
-          alt={`${sku.artistName} 작 ${title}`}
+          alt={t('product.card.byArtist', { artist: sku.artistName, title })}
           className="absolute inset-0 h-full w-full object-contain p-5 mix-blend-multiply md:p-12"
           variants={{ hover: { scale: 1.03 } }}
           transition={{ duration: 0.5 }}
@@ -479,7 +479,7 @@ export default function ProductCard({
             className="group/more inline-flex items-center gap-2 rounded-full bg-white py-2.5 pl-5 pr-4 text-[13px] font-bold
               text-black transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] active:scale-[0.985]"
           >
-            자세히 보기
+            {t('product.card.details')}
             <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover/more:translate-x-0.5" />
           </button>
           <Link
@@ -487,13 +487,13 @@ export default function ProductCard({
             className="inline-flex items-center rounded-full border border-white/40 px-5 py-2.5 text-[13px] font-bold text-white
               transition-colors duration-300 hover:border-white/70 hover:bg-white/10"
           >
-            작품 페이지
+            {t('product.card.productPage')}
           </Link>
           <button
             type="button"
             onClick={(e) => onWishlistClick(e, sku.skuCode)}
             disabled={isWishlistLoading}
-            aria-label={isWishlisted ? `${title} 찜 해제` : `${title} 찜하기`}
+            aria-label={isWishlisted ? t('product.card.wishRemove', { title }) : t('product.card.wishAdd', { title })}
             aria-pressed={isWishlisted}
             className={`flex h-10 w-10 items-center justify-center rounded-full border border-white/25 transition-colors
               disabled:cursor-wait ${isWishlisted ? 'text-white' : 'text-white/60 hover:text-white'}`}
@@ -524,7 +524,7 @@ export default function ProductCard({
           srcSet={imageSrcSet}
           sizes="(max-width: 767px) 50vw, (max-width: 1279px) 33vw, 420px"
           onError={onImageError}
-          alt={`${sku.artistName} 작 ${title}`}
+          alt={t('product.card.byArtist', { artist: sku.artistName, title })}
           loading="lazy"
           decoding="async"
           className="block h-auto min-h-[120px] w-full"
@@ -539,7 +539,7 @@ export default function ProductCard({
             <div className="mb-1.5 flex flex-wrap gap-1.5">
               {/* 금색은 원작에만 */}
               {isOriginal && (
-                <span className="border border-[#A5813D] px-1.5 py-0.5 text-[11px] font-medium text-[#876A32]">원작</span>
+                <span className="border border-[#A5813D] px-1.5 py-0.5 text-[11px] font-medium text-[#876A32]">{t('common.marks.original')}</span>
               )}
               {sku.isLimitedEdition && (
                 <span className="border border-koala-purple px-1.5 py-0.5 text-[11px] font-medium text-koala-purple">
@@ -576,7 +576,7 @@ export default function ProductCard({
             type="button"
             onClick={(e) => onWishlistClick(e, sku.skuCode)}
             disabled={isWishlistLoading}
-            aria-label={isWishlisted ? `${title} 찜 해제` : `${title} 찜하기`}
+            aria-label={isWishlisted ? t('product.card.wishRemove', { title }) : t('product.card.wishAdd', { title })}
             aria-pressed={isWishlisted}
             className={`-mr-1.5 -mt-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-full transition-colors disabled:cursor-wait
               focus-visible:outline-2 focus-visible:outline-koala-purple
@@ -625,7 +625,7 @@ export default function ProductCard({
             >
               <button
                 onClick={() => setIsOpen(false)}
-                aria-label="닫기"
+                aria-label={t('common.close')}
                 className="absolute top-4 right-4 z-20 flex h-8 w-8 items-center justify-center bg-white/70 hover:bg-white rounded-full border border-gray-200 text-gray-700 transition-colors backdrop-blur-sm"
               >
                 <X className="w-4 h-4" />
@@ -667,14 +667,14 @@ export default function ProductCard({
                   <>
                     <button
                       onClick={(e) => { e.stopPropagation(); paginate(-1); }}
-                      aria-label="이전 이미지"
+                      aria-label={t('product.card.prevImage')}
                       className="absolute left-2 top-1/2 -translate-y-1/2 hidden md:flex h-8 w-8 items-center justify-center rounded-full bg-white/80 hover:bg-white shadow-sm text-gray-700 opacity-0 group-hover/img:opacity-100 transition-opacity"
                     >
                       <ChevronLeft className="w-4 h-4" />
                     </button>
                     <button
                       onClick={(e) => { e.stopPropagation(); paginate(1); }}
-                      aria-label="다음 이미지"
+                      aria-label={t('product.card.nextImage')}
                       className="absolute right-2 top-1/2 -translate-y-1/2 hidden md:flex h-8 w-8 items-center justify-center rounded-full bg-white/80 hover:bg-white shadow-sm text-gray-700 opacity-0 group-hover/img:opacity-100 transition-opacity"
                     >
                       <ChevronRight className="w-4 h-4" />
@@ -684,7 +684,7 @@ export default function ProductCard({
                         <button
                           key={i}
                           onClick={(e) => { e.stopPropagation(); setImgIndex(i); }}
-                          aria-label={`${i + 1}번 이미지`}
+                          aria-label={t('product.card.imageN', { n: i + 1 })}
                           className={`rounded-full transition-all duration-300 ${
                             i === imgIndex ? 'w-5 h-1.5 bg-koala-purple' : 'w-1.5 h-1.5 bg-gray-400/60 hover:bg-gray-500'
                           }`}
@@ -706,13 +706,13 @@ export default function ProductCard({
                     to={detailPath}
                     className="mt-1.5 inline-flex shrink-0 items-center gap-1 rounded-lg border border-gray-200 bg-white px-2.5 py-1.5 text-[11px] font-bold text-gray-500 shadow-[0_1px_2px_rgba(0,0,0,0.06)] transition-colors hover:border-gray-900 hover:text-gray-900"
                   >
-                    자세히 보기 <ArrowRight className="w-3 h-3" />
+                    {t('product.card.details')} <ArrowRight className="w-3 h-3" />
                   </Link>
                 </div>
                 {species && species !== title && (
                   <dl className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-sm text-gray-500">
                     <div className="flex gap-1.5">
-                      <dt>종:</dt>
+                      <dt>{t('product.card.species')}</dt>
                       <dd className="text-gray-700">{species}</dd>
                     </div>
                   </dl>
@@ -728,7 +728,7 @@ export default function ProductCard({
                     <Accordion type="single" collapsible defaultValue="desc" className="mb-4 border-t border-gray-100">
                       {description && (
                         <AccordionItem value="desc">
-                          <AccordionTrigger className="text-gray-900">작품 설명</AccordionTrigger>
+                          <AccordionTrigger className="text-gray-900">{t('product.card.description')}</AccordionTrigger>
                           <AccordionContent className="text-gray-500 leading-relaxed break-keep">
                             {description}
                           </AccordionContent>
@@ -736,7 +736,7 @@ export default function ProductCard({
                       )}
                       {specs.length > 0 && (
                         <AccordionItem value="specs">
-                          <AccordionTrigger className="text-gray-900">규격 정보</AccordionTrigger>
+                          <AccordionTrigger className="text-gray-900">{t('product.card.specs')}</AccordionTrigger>
                           <AccordionContent>
                             <dl className="space-y-1.5">
                               {specs.map((s) => (
@@ -765,15 +765,15 @@ export default function ProductCard({
                       <AnimatePresence mode="wait" initial={false}>
                         {added ? (
                           <motion.span key="added" initial={{ y: 14, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: -14, opacity: 0 }} transition={{ duration: 0.18 }} className="flex items-center gap-1.5">
-                            <Check className="w-4 h-4" /> 담겼어요
+                            <Check className="w-4 h-4" /> {t('product.card.added')}
                           </motion.span>
                         ) : adding ? (
                           <motion.span key="loading" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }} className="flex items-center gap-1.5">
-                            <span className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" /> 담는 중
+                            <span className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" /> {t('product.card.adding')}
                           </motion.span>
                         ) : (
                           <motion.span key="idle" initial={{ y: 14, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: -14, opacity: 0 }} transition={{ duration: 0.18 }} className="flex items-center gap-1.5">
-                            <ShoppingCart className="w-4 h-4" /> 장바구니
+                            <ShoppingCart className="w-4 h-4" /> {t('product.card.cart')}
                           </motion.span>
                         )}
                       </AnimatePresence>
@@ -781,12 +781,12 @@ export default function ProductCard({
                     <button
                       onClick={(e) => onWishlistClick(e, sku.skuCode)}
                       disabled={isWishlistLoading}
-                      aria-label="찜하기"
+                      aria-label={t('product.card.wish')}
                       className={`flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-lg border text-sm font-bold shadow-[0_1px_2px_rgba(0,0,0,0.06)] transition-colors ${
                         isWishlisted ? 'border-koala-purple text-koala-purple bg-koala-purple/5' : 'border-gray-200 text-gray-600 hover:border-koala-purple hover:text-koala-purple'
                       }`}
                     >
-                      <WishBookmark active={isWishlisted} size={15} /> 찜
+                      <WishBookmark active={isWishlisted} size={15} /> {t('product.card.wishShort')}
                     </button>
                   </div>
 
@@ -796,8 +796,8 @@ export default function ProductCard({
                     className="mt-2.5 w-full py-3 rounded-lg bg-koala-purple text-white text-[15px] font-bold shadow-[0_2px_6px_rgba(62,34,89,0.28)] transition-[filter,transform] duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:brightness-[1.1] active:scale-[0.985] disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {sku.status === 'OUT_OF_STOCK'
-                      ? '품절'
-                      : buying ? '주문서로 이동 중...' : '구매하기'}
+                      ? t('product.card.soldOut')
+                      : buying ? t('product.card.buying') : t('product.card.buy')}
                   </button>
                   </div>
                 </motion.div>

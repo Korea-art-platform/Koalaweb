@@ -33,7 +33,7 @@ export function ProductActions({
       </button>
       <button
         onClick={onWishlist}
-        aria-label="찜하기"
+        aria-label={t('product.card.wish')}
         className={`w-[52px] h-[52px] flex items-center justify-center border rounded-xl transition-all active:scale-[0.98] flex-shrink-0 ${
           isWishlisted
             ? 'border-koala-purple bg-koala-purple/5 text-koala-purple'
@@ -51,7 +51,7 @@ export function ProductActions({
         className="mt-2.5 w-full py-4 rounded-xl bg-gradient-to-r from-koala-purple to-koala-purple-bright text-white text-base font-bold shadow-[inset_0_1px_0_rgba(255,255,255,0.12)] transition-[filter,transform] duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:brightness-[1.12] active:scale-[0.985] disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {isOutOfStock ? t('product.detail.actions.outOfStock')
-          : buying ? '주문서로 이동 중...' : '구매하기'}
+          : buying ? t('product.card.buying') : t('product.card.buy')}
       </button>
     )}
     </div>

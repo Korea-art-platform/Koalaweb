@@ -1,5 +1,6 @@
 import { Link } from 'react-router';
 import { ArrowRight } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface SectionHeaderProps {
   eyebrow: string;
@@ -20,9 +21,10 @@ export default function SectionHeader({
   title,
   sub,
   viewAllHref,
-  viewAllLabel = '전체보기',
+  viewAllLabel,
   dark = false,
 }: SectionHeaderProps) {
+  const { t } = useTranslation();
   return (
     <div className="mb-6 md:mb-10 flex flex-wrap items-end justify-between gap-3">
       {/* 설명이 길어도 전체보기 링크가 아랫줄로 밀리지 않게 글 칸이 줄어든다 */}
@@ -50,7 +52,7 @@ export default function SectionHeader({
               : 'border-gray-900 text-gray-900 hover:text-koala-purple hover:border-koala-purple'
           }`}
         >
-          {viewAllLabel} <ArrowRight className="w-4 h-4" />
+          {viewAllLabel ?? t('common.viewAll')} <ArrowRight className="w-4 h-4" />
         </Link>
       )}
     </div>

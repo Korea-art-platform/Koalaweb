@@ -2,14 +2,19 @@ import { useState } from 'react';
 import { Link } from 'react-router';
 import { ArrowRight, ChevronDown } from 'lucide-react';
 import SectionHeader from './SectionHeader';
-import { HOME_FAQS } from '@/data/faq';
+import { homeFaqsFor } from '@/data/faq';
+import { useIsEnglish } from '@/app/lib/lang';
 import type { NoticeItem } from '@/api/notice';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
   notices: NoticeItem[];
 }
 
 export default function HomeNotices({ notices }: Props) {
+  const { t, i18n } = useTranslation();
+  const english = useIsEnglish();
+  const faqs = homeFaqsFor(english);
   const [openIndex, setOpenIndex] = useState<number | null>(0);
   const hasNotices = notices.length > 0;
 
@@ -18,19 +23,19 @@ export default function HomeNotices({ notices }: Props) {
       <div className="max-w-[1800px] mx-auto">
         <SectionHeader
           eyebrow="006 — News & Help"
-          title="공지사항 · 자주 묻는 질문"
-          sub="새로운 소식과 자주 문의주시는 내용을 모았습니다"
+          title={t('home.sections.news.title')}
+          sub={t('home.sections.news.sub')}
         />
         <div className={hasNotices ? 'grid lg:grid-cols-2 gap-10 lg:gap-16' : 'max-w-3xl'}>
           {hasNotices && (
           <div>
             <div className="flex items-center justify-between mb-3">
-              <h3 className="text-sm md:text-base font-bold text-gray-900">공지사항</h3>
+              <h3 className="text-sm md:text-base font-bold text-gray-900">{t('home.sections.news.notices')}</h3>
               <Link
                 to="/notice"
                 className="text-xs font-bold text-gray-400 hover:text-koala-purple transition-colors"
               >
-                전체보기 +
+                {t('common.viewAllPlus')}
               </Link>
             </div>
 
@@ -42,12 +47,12 @@ export default function HomeNotices({ notices }: Props) {
                     className="group grid grid-cols-[auto_1fr_auto] items-center gap-3 md:gap-5 border-b border-gray-200 py-4 hover:bg-gray-50 transition-colors"
                   >
                     <span className="text-[11px] font-bold tabular-nums text-gray-400 whitespace-nowrap">
-                      {new Date(n.createdAt).toLocaleDateString('ko-KR', { year: '2-digit', month: '2-digit', day: '2-digit' })}
+                      {new Date(n.createdAt).toLocaleDateString(i18n.language?.startsWith('en') ? 'en-US' : 'ko-KR', { year: '2-digit', month: '2-digit', day: '2-digit' })}
                     </span>
                     <span className="flex items-center gap-2 min-w-0">
                       {n.isPinned && (
                         <span className="shrink-0 px-1.5 py-0.5 rounded bg-koala-purple text-white text-[9px] font-bold">
-                          중요
+                          {t('common.pinned')}
                         </span>
                       )}
                       <span className="text-sm md:text-base font-bold text-gray-900 truncate group-hover:text-koala-purple transition-colors">
@@ -62,16 +67,16 @@ export default function HomeNotices({ notices }: Props) {
           )}
           <div>
             <div className="flex items-center justify-between mb-3">
-              <h3 className="text-sm md:text-base font-bold text-gray-900">자주 묻는 질문</h3>
+              <h3 className="text-sm md:text-base font-bold text-gray-900">{t('home.sections.news.faq')}</h3>
               <Link
                 to="/faq"
                 className="text-xs font-bold text-gray-400 hover:text-koala-purple transition-colors"
               >
-                전체보기 +
+                {t('common.viewAllPlus')}
               </Link>
             </div>
             <div className="flex flex-col border-t border-gray-200">
-              {HOME_FAQS.map((item, i) => {
+              {faqs.map((item, i) => {
                 const isOpen = openIndex === i;
                 return (
                   <div key={item.q} className="border-b border-gray-200">

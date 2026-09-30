@@ -4,6 +4,7 @@ import ProductCard from '@/app/components/products/ProductCard';
 import SectionHeader from './SectionHeader';
 import { toCdnUrl, toThumbUrl } from '@/app/lib/imageUrl';
 import type { Sku } from '@/api/types';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
   skus: Sku[];
@@ -14,6 +15,7 @@ interface Props {
 
 // 원작 — 짙은 무대에 한 점씩 크게. 아래 작은 원작을 누르면 무대 위 작품이 바뀐다
 export default function HomeOriginal({ skus, loading, categoryCode }: Props) {
+  const { t } = useTranslation();
   const { wishlistedCodes, wishlistLoading, handleWishlist } = useWishlistToggle();
   const [active, setActive] = useState(0);
 
@@ -33,10 +35,10 @@ export default function HomeOriginal({ skus, loading, categoryCode }: Props) {
         <SectionHeader
           dark
           eyebrow="001 — Originals"
-          title="원작"
-          sub="작가의 손에서 나온 단 한 점. 다시 만들어지지 않습니다."
+          title={t('home.sections.original.title')}
+          sub={t('home.sections.original.sub')}
           viewAllHref={categoryCode ? `/store?main=${categoryCode}` : '/store'}
-          viewAllLabel="원작 전체 보기"
+          viewAllLabel={t('home.sections.original.viewAll')}
         />
 
         {loading || !current ? (
@@ -50,7 +52,7 @@ export default function HomeOriginal({ skus, loading, categoryCode }: Props) {
                 sku={current}
                 variant="stage"
                 viewMode="large"
-                mark="원작"
+                mark={t('common.marks.original')}
                 markTone="gold"
                 isWishlisted={wishlistedCodes.has(current.skuCode)}
                 isWishlistLoading={wishlistLoading.has(current.skuCode)}
@@ -65,7 +67,7 @@ export default function HomeOriginal({ skus, loading, categoryCode }: Props) {
                     key={s.skuCode}
                     type="button"
                     onClick={() => setActive(i)}
-                    aria-label={`${s.artistName} 작 ${s.model ?? s.name} 보기`}
+                    aria-label={t('home.sections.original.pick', { artist: s.artistName, name: s.model ?? s.name })}
                     aria-pressed={s.skuCode === current.skuCode}
                     className={`h-14 w-14 shrink-0 overflow-hidden rounded-lg bg-[#F4F1F7] md:rounded-xl transition-opacity duration-300
                       md:h-24 md:w-24 ${s.skuCode === current.skuCode ? 'ring-2 ring-koala-gold' : 'opacity-55 hover:opacity-90'}`}

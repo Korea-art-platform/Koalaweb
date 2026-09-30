@@ -2,13 +2,16 @@ import { useState } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import { ImageWithFallback } from '@/app/components/fallback/ImageWithFallback';
 import { ImageLightbox } from '@/app/components/common/ImageLightbox';
+import { useTranslation } from 'react-i18next';
 
 interface ArtImagesProps {
   images?: string[];
   title?: string;
 }
 
-export function ArtImages({ images, title = '작품' }: ArtImagesProps) {
+export function ArtImages({ images, title: titleProp }: ArtImagesProps) {
+  const { t } = useTranslation();
+  const title = titleProp ?? t('art.images.defaultTitle');
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
   if (!images || images.length === 0) return null;
@@ -20,7 +23,7 @@ export function ArtImages({ images, title = '작품' }: ArtImagesProps) {
   return (
     <>
       <section className="mb-16">
-        <h2 className="text-xl font-bold text-gray-400 mb-5">작품 - 상세</h2>
+        <h2 className="text-xl font-bold text-gray-400 mb-5">{t('art.images.heading')}</h2>
 
         {images.length === 1 && (
           <div

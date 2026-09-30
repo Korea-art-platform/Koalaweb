@@ -4,12 +4,14 @@ import { useQuery } from '@tanstack/react-query';
 import { getArtists } from '@/api/artist';
 import { ImageWithFallback } from '@/app/components/fallback/ImageWithFallback';
 import type { Artist, PageResponse } from '@/api/types';
+import { useTranslation } from 'react-i18next';
 
 interface TrendingArtistsProps {
   excludeArtistCode?: string;
 }
 
 export default function TrendingArtists({ excludeArtistCode }: TrendingArtistsProps) {
+  const { t } = useTranslation();
   const { data: artists = [] } = useQuery<Artist[]>({
     queryKey: ['artists', 'trending'],
     queryFn: async () => {
@@ -30,13 +32,13 @@ export default function TrendingArtists({ excludeArtistCode }: TrendingArtistsPr
     <section className="mt-20 border-t border-gray-100 pt-16">
       <div className="flex items-center justify-between mb-8">
         <h2 className="text-base font-semibold text-gray-900 flex items-center gap-2">
-          <span className="text-gray-400">→</span> 인기 작가
+          <span className="text-gray-400">→</span> {t('artistPage.trending.title')}
         </h2>
         <Link
           to="/artist-lab"
           className="flex items-center gap-1 text-xs text-gray-400 hover:text-black transition-colors"
         >
-          작가 전체보기
+          {t('artistPage.trending.viewAll')}
           <ArrowRight className="w-3.5 h-3.5" />
         </Link>
       </div>

@@ -2,6 +2,7 @@ import ProductCard from '@/app/components/products/ProductCard';
 import StoreArtistSpotlight from './StoreArtistSpotlight';
 import { useIsDesktop, useIsWide } from '@/app/hooks/useMediaQuery';
 import type { Artist, Sku } from '@/api/types';
+import { useTranslation } from 'react-i18next';
 
 /** 작가 조명을 끼울 자리 — 여덟 점 뒤. 작품이 그보다 적으면 맨 끝 */
 const SPOT_AFTER = 8;
@@ -28,6 +29,7 @@ export default function StoreProductGrid({
   loading, skus, total, hasMore, loadingMore, onLoadMore,
   artists, onPickArtist, onReset, wishlistedCodes, wishlistLoading, onWishlistClick,
 }: StoreProductGridProps) {
+  const { t } = useTranslation();
   const isDesktop = useIsDesktop();
   const isWide = useIsWide();
   const columns = isDesktop ? 4 : isWide ? 3 : 2;
@@ -50,14 +52,14 @@ export default function StoreProductGrid({
     return (
       <section className="mx-auto max-w-[1320px] px-5 pt-8 pb-24 md:px-10">
         <div className="border border-dashed border-gray-200 bg-[#F7F5FA] px-6 py-16 text-center">
-          <h2 className="text-lg font-bold text-gray-900">이 조건에 맞는 작품이 없습니다</h2>
-          <p className="mt-2 text-sm text-gray-500 break-keep">가격대나 분류를 넓히면 더 많은 작품을 볼 수 있습니다.</p>
+          <h2 className="text-lg font-bold text-gray-900">{t('store.grid.emptyTitle')}</h2>
+          <p className="mt-2 text-sm text-gray-500 break-keep">{t('store.grid.emptyBody')}</p>
           <button
             type="button"
             onClick={onReset}
             className="mt-6 rounded-xl border border-gray-200 bg-white px-6 py-3 text-sm font-semibold text-gray-900 hover:border-gray-300"
           >
-            조건 모두 풀기
+            {t('store.grid.clearAll')}
           </button>
         </div>
       </section>
@@ -94,7 +96,7 @@ export default function StoreProductGrid({
         <div className="relative h-0.5 w-44 bg-gray-200" aria-hidden>
           <div className="absolute inset-y-0 left-0 bg-koala-purple" style={{ width: `${total ? (skus.length / total) * 100 : 0}%` }} />
         </div>
-        <p className="text-[13px] tabular-nums text-gray-400">{total}점 중 {skus.length}점을 봤습니다</p>
+        <p className="text-[13px] tabular-nums text-gray-400">{t('store.grid.progress', { total, shown: skus.length })}</p>
         {hasMore && (
           <button
             type="button"
@@ -103,7 +105,7 @@ export default function StoreProductGrid({
             className="mt-1 rounded-xl border border-gray-200 bg-white px-7 py-3 text-sm font-semibold text-gray-900 transition-colors
               hover:border-gray-300 disabled:cursor-wait disabled:opacity-60 focus-visible:outline-2 focus-visible:outline-koala-purple"
           >
-            {loadingMore ? '불러오는 중' : '작품 더 보기'}
+            {loadingMore ? t('store.grid.loading') : t('store.grid.more')}
           </button>
         )}
       </div>

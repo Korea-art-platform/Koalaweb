@@ -1,11 +1,15 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import { ArrowLeft, ChevronDown } from 'lucide-react';
-import { FAQS } from '@/data/faq';
+import { faqsFor } from '@/data/faq';
+import { useIsEnglish } from '@/app/lib/lang';
 import PageMeta from '@/app/components/common/PageMeta';
+import { useTranslation } from 'react-i18next';
 
 export default function FAQ() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
+  const faqs = faqsFor(useIsEnglish());
   const [activeCategory, setActiveCategory] = useState(0);
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
@@ -16,22 +20,22 @@ export default function FAQ() {
 
   return (
     <div className="flex-1 pt-20">
-      <PageMeta title="자주 묻는 질문" description="주문·결제·배송·교환에 대해 자주 묻는 질문을 모았습니다." />
+      <PageMeta title={t('support.faq.title')} description={t('support.faq.metaDescription')} />
       <div className="sticky top-20 z-10 bg-white border-b border-gray-100">
         <div className="max-w-3xl mx-auto flex items-center gap-4 px-6 py-4">
           <button onClick={() => navigate(-1)} className="text-gray-700 hover:text-black transition-colors">
             <ArrowLeft className="w-5 h-5" />
           </button>
-          <h1 className="text-base font-semibold tracking-tight text-gray-900">자주 묻는 질문</h1>
+          <h1 className="text-base font-semibold tracking-tight text-gray-900">{t('support.faq.title')}</h1>
         </div>
       </div>
       <div className="max-w-3xl mx-auto px-6 py-8">
         <p className="text-sm text-gray-500 mb-8">
-          궁금한 점을 빠르게 해결해 드립니다. 원하는 답변을 찾지 못하셨다면{' '}
-          <a href="/contact" className="text-black underline underline-offset-2">고객센터</a>로 문의해 주세요.
+          {t('support.faq.introBefore')}
+          <a href="/contact" className="text-black underline underline-offset-2">{t('support.faq.introLink')}</a>{t('support.faq.introAfter')}
         </p>
         <div className="flex gap-2 flex-wrap mb-8">
-          {FAQS.map((cat, i) => (
+          {faqs.map((cat, i) => (
             <button
               key={i}
               onClick={() => handleCategoryChange(i)}
@@ -46,7 +50,7 @@ export default function FAQ() {
           ))}
         </div>
         <div className="divide-y divide-gray-100">
-          {FAQS[activeCategory].items.map((item, i) => (
+          {(faqs[activeCategory] ?? faqs[0]).items.map((item, i) => (
             <div key={i}>
               <button
                 onClick={() => setOpenIndex(openIndex === i ? null : i)}
@@ -68,13 +72,13 @@ export default function FAQ() {
           ))}
         </div>
         <div className="mt-12 p-6 bg-gray-50 rounded-2xl text-center">
-          <p className="text-sm font-semibold text-gray-900 mb-1">원하는 답변을 찾지 못하셨나요?</p>
-          <p className="text-xs text-gray-500 mb-4">평일 10:00 - 18:00, 고객센터에서 도움드립니다.</p>
+          <p className="text-sm font-semibold text-gray-900 mb-1">{t('support.faq.moreTitle')}</p>
+          <p className="text-xs text-gray-500 mb-4">{t('support.faq.moreHours')}</p>
           <a
             href="/contact"
             className="inline-block px-6 py-3 bg-koala-navy text-white text-xs font-bold rounded-xl hover:bg-koala-navy-hover transition-colors"
           >
-            1:1 문의하기
+            {t('support.faq.moreCta')}
           </a>
         </div>
       </div>

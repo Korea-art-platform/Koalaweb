@@ -4,6 +4,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/app/components/ui/accordion';
+import { useTranslation } from 'react-i18next';
 
 export interface QnAItem {
   id: string;
@@ -17,19 +18,20 @@ interface ArtQnAProps {
 }
 
 export function ArtQnA({ items = [], contactEmail = 'koala-art@heron.kr' }: ArtQnAProps) {
+  const { t } = useTranslation();
   return (
     <section className="mb-16">
       <h3 className="text-lg font-semibold mb-1">QnA</h3>
       <p className="text-xs text-gray-400 mb-4">
-        궁금한 점은{' '}
+        {t('art.qna.before')}
         <a href={`mailto:${contactEmail}`} className="underline hover:text-black transition-colors">
           {contactEmail}
         </a>
-        로 문의 주세요
+        {t('art.qna.after')}
       </p>
       {items.length === 0 ? (
         <div className="border-t border-gray-200 py-8 text-center text-sm text-gray-400">
-          아직 등록된 문의가 없습니다. 궁금한 점은 위 이메일로 문의해 주세요.
+          {t('art.qna.empty')}
         </div>
       ) : (
       <Accordion type="single" collapsible className="border-t border-gray-200">

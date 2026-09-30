@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 
 interface ImageLightboxProps {
   images: string[];
@@ -16,6 +17,7 @@ const slideVariants = {
 };
 
 export function ImageLightbox({ images, initialIndex = 0, title = '', onClose }: ImageLightboxProps) {
+  const { t } = useTranslation();
   const [[index, direction], setState] = useState<[number, number]>([initialIndex, 0]);
 
   const paginate = (dir: number) =>
@@ -51,7 +53,7 @@ export function ImageLightbox({ images, initialIndex = 0, title = '', onClose }:
       <button
         className="absolute top-4 right-4 z-20 bg-white/10 hover:bg-white/20 rounded-full p-2.5 transition-colors"
         onClick={onClose}
-        aria-label="닫기"
+        aria-label={t('common.close')}
       >
         <X className="w-5 h-5 text-white" />
       </button>
@@ -67,14 +69,14 @@ export function ImageLightbox({ images, initialIndex = 0, title = '', onClose }:
           <button
             className="absolute left-3 md:left-6 z-20 hidden md:flex bg-white/10 hover:bg-white/20 rounded-full p-2.5 transition-colors"
             onClick={(e) => { e.stopPropagation(); paginate(-1); }}
-            aria-label="이전"
+            aria-label={t('common.prev')}
           >
             <ChevronLeft className="w-6 h-6 text-white" />
           </button>
           <button
             className="absolute right-3 md:right-6 z-20 hidden md:flex bg-white/10 hover:bg-white/20 rounded-full p-2.5 transition-colors"
             onClick={(e) => { e.stopPropagation(); paginate(1); }}
-            aria-label="다음"
+            aria-label={t('common.next')}
           >
             <ChevronRight className="w-6 h-6 text-white" />
           </button>
@@ -92,7 +94,7 @@ export function ImageLightbox({ images, initialIndex = 0, title = '', onClose }:
           <motion.img
             key={index}
             src={images[index]}
-            alt={title ? `${title} ${index + 1}` : `이미지 ${index + 1}`}
+            alt={title ? `${title} ${index + 1}` : t('common.imageN', { n: index + 1 })}
             className="absolute max-w-full max-h-full object-contain select-none touch-pan-y"
             draggable={false}
             custom={direction}
@@ -119,7 +121,7 @@ export function ImageLightbox({ images, initialIndex = 0, title = '', onClose }:
             <button
               key={i}
               onClick={() => goTo(i)}
-              aria-label={`${i + 1}번 이미지`}
+              aria-label={t('product.card.imageN', { n: i + 1 })}
               className={`w-10 h-10 rounded-lg overflow-hidden border-2 transition-all duration-150 flex-shrink-0 ${
                 i === index ? 'border-white opacity-100' : 'border-white/20 opacity-40 hover:opacity-70'
               }`}

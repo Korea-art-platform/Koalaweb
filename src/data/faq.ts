@@ -1,4 +1,8 @@
-import { FREE_SHIPPING_THRESHOLD_TEXT, SHIPPING_FEE_AMOUNT_TEXT } from '@/app/lib/shipping';
+import {
+  FREE_SHIPPING_THRESHOLD_AMOUNT_TEXT, FREE_SHIPPING_THRESHOLD_TEXT, SHIPPING_FEE_AMOUNT_TEXT,
+} from '@/app/lib/shipping';
+import { PAY_METHOD_SENTENCE, PG_DISPLAY_NAME } from '@/app/lib/pgInfo';
+
 export interface FaqItem {
   q: string;
   a: string;
@@ -15,11 +19,11 @@ export const FAQS: FaqCategory[] = [
     items: [
       {
         q: '어떤 결제 수단을 지원하나요?',
-        a: '토스페이, 카카오페이, 네이버페이, 페이코, 삼성페이, 신용/체크카드를 지원합니다. 모든 결제는 토스페이먼츠의 PCI-DSS 인증 보안 시스템으로 처리됩니다.',
+        a: `${PAY_METHOD_SENTENCE}를 지원합니다. 결제는 ${PG_DISPLAY_NAME}의 보안 결제창에서 처리되며, 카드 정보는 KOALA에 저장되지 않습니다.`,
       },
       {
         q: '주문 후 취소는 언제까지 가능한가요?',
-        a: '상품 준비 시작(PREPARING) 전까지 마이페이지 > 주문 내역에서 직접 취소하실 수 있습니다. 배송이 시작된 이후에는 교환/반품 절차를 이용해 주세요.',
+        a: '상품 준비 시작 전까지 마이페이지 > 주문 내역에서 직접 취소하실 수 있습니다. 배송이 시작된 이후에는 교환/반품 절차를 이용해 주세요.',
       },
       {
         q: '세금계산서 또는 현금영수증 발급이 가능한가요?',
@@ -70,7 +74,7 @@ export const FAQS: FaqCategory[] = [
       },
       {
         q: '회원 탈퇴는 어떻게 하나요?',
-        a: '마이페이지 > 프로필 설정 하단에서 탈퇴 신청이 가능합니다. 탈퇴 시 보유 포인트 및 위시리스트 데이터는 복구되지 않으며, 진행 중인 주문이 있는 경우 탈퇴가 제한됩니다.',
+        a: '마이페이지 > 설정에서 탈퇴 신청이 가능합니다. 탈퇴 시 위시리스트 등 계정 데이터는 복구되지 않으며, 진행 중인 주문이 있는 경우 탈퇴가 제한됩니다.',
       },
     ],
   },
@@ -79,27 +83,118 @@ export const FAQS: FaqCategory[] = [
     items: [
       {
         q: '작품의 진품 여부는 어떻게 확인하나요?',
-        a: 'KOALA에 등록된 모든 작품은 작가 직접 등록 또는 KOALA 큐레이팀의 검증을 거칩니다. 한정판 에디션의 경우 작가 서명 및 에디션 번호가 포함된 진품 보증서가 함께 제공됩니다.',
+        a: 'KOALA의 모든 작품은 KOALA가 작가와 직접 계약해 제작하거나 확보한 뒤 등록합니다. 한정판 에디션에는 작가 서명과 에디션 번호가 담긴 진품 보증서가 함께 제공됩니다.',
       },
       {
         q: '한정판(Limited Edition)이란 무엇인가요?',
-        a: '작가가 직접 제작 수량을 한정하여 발행한 에디션 작품입니다. 각 작품마다 고유 에디션 번호(예: 5/50)가 부여되며, 수량 소진 후에는 재입고되지 않습니다.',
+        a: '작가와 협의해 제작 수량을 한정한 에디션 작품입니다. 각 작품마다 고유 에디션 번호(예: 5/50)가 부여되며, 수량 소진 후에는 재입고되지 않습니다.',
       },
       {
-        q: 'KOALA에 작가로 등록하고 싶습니다.',
-        a: '파트너십 문의 페이지 또는 koala-art@heron.kr로 포트폴리오와 함께 연락 주시면 검토 후 안내드리겠습니다.',
+        q: 'KOALA와 함께 작업하고 싶은 작가입니다.',
+        a: 'koala-art@heron.kr로 포트폴리오와 함께 연락 주시면 검토 후 안내드리겠습니다.',
       },
     ],
   },
 ];
 
-const HOME_FAQ_QUESTIONS = [
-  '배송은 얼마나 걸리나요?',
-  '배송비는 얼마인가요?',
-  '교환 및 반품 신청은 어떻게 하나요?',
-  '환불은 언제 처리되나요?',
+export const FAQS_EN: FaqCategory[] = [
+  {
+    label: 'Orders & payment',
+    items: [
+      {
+        q: 'Which payment methods do you accept?',
+        a: 'Credit and debit cards, Kakao Pay, Naver Pay, bank transfer, and mobile phone billing. Payments are processed in a secure checkout window run by our payment provider, and KOALA never stores your card details.',
+      },
+      {
+        q: 'Until when can I cancel an order?',
+        a: 'You can cancel it yourself under My page > Orders until we start preparing it. Once it has shipped, please use the exchange and return process instead.',
+      },
+      {
+        q: 'Can I get a cash receipt or tax invoice?',
+        a: 'Cash receipts are available on request after payment — email koala-art@heron.kr. For business tax invoices, please contact us directly.',
+      },
+    ],
+  },
+  {
+    label: 'Delivery',
+    items: [
+      {
+        q: 'How long does delivery take?',
+        a: 'Orders ship within 1–2 business days of payment and usually arrive 2–3 days after that. Limited editions and specially packed items can take up to 5–7 days.',
+      },
+      {
+        q: 'How much is shipping?',
+        a: `Shipping is free on orders of ₩${FREE_SHIPPING_THRESHOLD_AMOUNT_TEXT} or more. Below that, a shipping fee of ₩${SHIPPING_FEE_AMOUNT_TEXT} applies. Jeju and remote islands may add ₩3,000–5,000.`,
+      },
+      {
+        q: 'Do you ship internationally?',
+        a: 'We currently ship within Korea only. International shipping is in preparation, and we will announce it on the Notices page when it opens.',
+      },
+    ],
+  },
+  {
+    label: 'Exchanges & returns',
+    items: [
+      {
+        q: 'How do I request an exchange or return?',
+        a: 'Within 7 days of delivery, request it under My page > Orders or email koala-art@heron.kr. We will check the item and guide you through the next steps.',
+      },
+      {
+        q: 'When will I get my refund?',
+        a: 'Refunds are issued to your original payment method within 3–5 business days after we receive and inspect the returned item. Card refunds may take longer depending on your card issuer.',
+      },
+      {
+        q: 'When are exchanges or returns not possible?',
+        a: 'When more than 7 days have passed since delivery, the item was damaged by the customer, the packaging was opened or the item shows signs of use, or a limited edition number has been damaged.',
+      },
+    ],
+  },
+  {
+    label: 'Account',
+    items: [
+      {
+        q: 'Can I use a social login and a regular account together?',
+        a: 'Social and regular accounts are managed separately, even if they share an email address. Contact us if you need them merged.',
+      },
+      {
+        q: 'How do I delete my account?',
+        a: 'You can request it under My page > Settings. Account data such as your wishlist cannot be recovered, and you cannot delete your account while an order is in progress.',
+      },
+    ],
+  },
+  {
+    label: 'Works & artists',
+    items: [
+      {
+        q: 'How do I know a work is authentic?',
+        a: 'Every work on KOALA is produced or acquired by KOALA under a direct agreement with the artist before it is listed. Limited editions come with a certificate of authenticity bearing the artist\'s signature and edition number.',
+      },
+      {
+        q: 'What is a limited edition?',
+        a: 'A work produced in a fixed quantity agreed with the artist. Each piece carries its own edition number (for example, 5/50), and it is not restocked once sold out.',
+      },
+      {
+        q: 'I am an artist and would like to work with KOALA.',
+        a: 'Send your portfolio to koala-art@heron.kr and we will get back to you after reviewing it.',
+      },
+    ],
+  },
 ];
 
-export const HOME_FAQS: FaqItem[] = HOME_FAQ_QUESTIONS
-  .map((q) => FAQS.flatMap((c) => c.items).find((item) => item.q === q))
-  .filter((item): item is FaqItem => item != null);
+const HOME_FAQ_POSITIONS: [number, number][] = [[1, 0], [1, 1], [2, 0], [2, 1]];
+
+function pick(source: FaqCategory[]): FaqItem[] {
+  return HOME_FAQ_POSITIONS
+    .map(([category, item]) => source[category]?.items[item])
+    .filter((item): item is FaqItem => item != null);
+}
+
+export function faqsFor(english: boolean): FaqCategory[] {
+  return english ? FAQS_EN : FAQS;
+}
+
+export function homeFaqsFor(english: boolean): FaqItem[] {
+  return pick(faqsFor(english));
+}
+
+export const HOME_FAQS: FaqItem[] = pick(FAQS);

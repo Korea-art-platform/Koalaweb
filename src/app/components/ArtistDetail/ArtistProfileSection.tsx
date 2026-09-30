@@ -4,6 +4,7 @@ import { Bell, BellOff } from 'lucide-react';
 import { ImageWithFallback } from '@/app/components/fallback/ImageWithFallback';
 import { followArtist, unfollowArtist } from '@/api/artist';
 import { ShareButton } from '@/app/components/common/ShareButton';
+import { useTranslation } from 'react-i18next';
 
 interface ArtistProfileSectionProps {
   name: string;
@@ -22,6 +23,7 @@ export function ArtistProfileSection({
   followCount = 0,
   isFollowing: initialFollowing = false,
 }: ArtistProfileSectionProps) {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [isFollowing, setIsFollowing] = useState(initialFollowing);
   const [count, setCount] = useState(followCount);
@@ -52,7 +54,7 @@ export function ArtistProfileSection({
 
   return (
     <section className="mb-16">
-      <p className="text-xs text-gray-400 tracking-widest uppercase mb-6">작가 - ARTIST</p>
+      <p className="text-xs text-gray-400 tracking-widest uppercase mb-6">{t('artistPage.profile.heading')}</p>
       <div className="flex flex-col md:flex-row gap-8 items-start">
         <div className="w-full md:w-64 flex-shrink-0 aspect-[3/4] bg-gray-100 overflow-hidden">
           <ImageWithFallback
@@ -64,7 +66,7 @@ export function ArtistProfileSection({
         <div className="flex flex-col justify-center gap-4">
           <h3 className="text-2xl font-bold">{name}</h3>
           <p className="text-sm text-gray-500 leading-relaxed break-keep">
-            {description ?? '작가에 대한 설명'}
+            {description ?? t('art.artist.defaultDescription')}
           </p>
 
           {artistCode && (
@@ -79,11 +81,11 @@ export function ArtistProfileSection({
                 }`}
               >
                 {isFollowing ? <BellOff className="w-4 h-4" /> : <Bell className="w-4 h-4" />}
-                {isFollowing ? '팔로잉' : '팔로우'}
+                {isFollowing ? t('artistPage.profile.following') : t('artistPage.profile.follow')}
               </button>
-              <span className="text-sm text-gray-400">{count.toLocaleString()}명</span>
+              <span className="text-sm text-gray-400">{t('artistPage.profile.followers', { count: count.toLocaleString() as unknown as number })}</span>
               <ShareButton
-                title={`${name} — KOALA 작가`}
+                title={t('artistPage.profile.shareTitle', { name })}
                 description={description}
                 imageUrl={profileImageUrl}
               />

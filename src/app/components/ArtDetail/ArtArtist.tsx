@@ -1,5 +1,6 @@
 import { Link } from 'react-router';
 import { ImageWithFallback } from '@/app/components/fallback/ImageWithFallback';
+import { useTranslation } from 'react-i18next';
 
 interface ArtArtistProps {
   artistCode?: string;
@@ -10,10 +11,13 @@ interface ArtArtistProps {
 
 export function ArtArtist({
   artistCode,
-  artistName = '작가 이름',
-  artistDescription = '작가에 대한 설명',
+  artistName: artistNameProp,
+  artistDescription: artistDescriptionProp,
   artistImageUrl,
 }: ArtArtistProps) {
+  const { t } = useTranslation();
+  const artistName = artistNameProp ?? t('art.artist.defaultName');
+  const artistDescription = artistDescriptionProp ?? t('art.artist.defaultDescription');
   const inner = (
     <div className="flex flex-col md:flex-row gap-8 items-start">
       <div className="w-full md:w-56 flex-shrink-0 aspect-[3/4] bg-gray-100 overflow-hidden">
@@ -32,7 +36,7 @@ export function ArtArtist({
 
   return (
     <section className="mb-16">
-      <h2 className="text-xl font-bold text-gray-400 mb-6">작가 - ARTIST</h2>
+      <h2 className="text-xl font-bold text-gray-400 mb-6">{t('art.artist.heading')}</h2>
       {artistCode ? (
         <Link to={`/artist/${artistCode}`} className="block hover:opacity-90 transition-opacity">
           {inner}

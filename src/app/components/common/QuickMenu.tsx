@@ -3,10 +3,12 @@ import { Link, useLocation } from 'react-router';
 import { AnimatePresence, motion } from 'framer-motion';
 import { MessageCircle, Phone, X } from 'lucide-react';
 import { usePastHero } from '@/app/components/layouts/RisingPanel';
+import { useTranslation } from 'react-i18next';
 
 const HIDE_PATH = /^\/(checkout|payment)(\/|$)/;
 
 export default function QuickMenu() {
+  const { t } = useTranslation();
   const { pathname } = useLocation();
   const [open, setOpen] = useState(false);
   const wrapRef = useRef<HTMLDivElement>(null);
@@ -64,11 +66,11 @@ export default function QuickMenu() {
           >
             <Link to="/account/inquiry" className={itemClass} onClick={() => setOpen(false)}>
               <span className={iconClass}><MessageCircle className="w-4 h-4" /></span>
-              1:1 문의
+              {t('widgets.quickMenu.inquiry')}
             </Link>
             <a href="tel:18332817" className={itemClass} onClick={() => setOpen(false)}>
               <span className={iconClass}><Phone className="w-4 h-4" /></span>
-              전화 상담
+              {t('widgets.quickMenu.call')}
             </a>
           </motion.div>
         )}
@@ -79,7 +81,7 @@ export default function QuickMenu() {
         onClick={() => setOpen((v) => !v)}
         tabIndex={past ? 0 : -1}
         aria-expanded={open}
-        aria-label={open ? '고객지원 닫기' : '고객지원 열기'}
+        aria-label={open ? t('widgets.quickMenu.close') : t('widgets.quickMenu.open')}
         className="w-12 h-12 rounded-full bg-white border border-gray-200
           shadow-[0_8px_24px_rgba(62,34,89,.18)] flex items-center justify-center
           transition-transform hover:scale-105 active:scale-95

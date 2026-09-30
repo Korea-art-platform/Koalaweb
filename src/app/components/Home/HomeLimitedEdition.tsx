@@ -3,6 +3,7 @@ import ProductCard from '@/app/components/products/ProductCard';
 import SectionHeader from './SectionHeader';
 import WorkRow, { WorkCell } from './WorkRow';
 import type { Sku } from '@/api/types';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
   skus: Sku[];
@@ -13,6 +14,7 @@ interface Props {
 
 // 한정판 · 오픈에디션 — 둥근 카드로 나열. 누르면 상세 팝업
 export default function HomeLimitedEdition({ skus, loading, limitedCode }: Props) {
+  const { t } = useTranslation();
   const { wishlistedCodes, wishlistLoading, handleWishlist } = useWishlistToggle();
 
   if (!loading && skus.length === 0) return null;
@@ -22,8 +24,8 @@ export default function HomeLimitedEdition({ skus, loading, limitedCode }: Props
       <div className="mx-auto max-w-[1320px] px-5 py-16 md:px-10 md:py-24">
         <SectionHeader
           eyebrow="002 — Editions"
-          title="한정판 · 오픈에디션"
-          sub="같은 작가의 작업을 조금 더 가까이"
+          title={t('home.sections.editions.title')}
+          sub={t('home.sections.editions.sub')}
           viewAllHref="/store"
         />
 
@@ -43,7 +45,7 @@ export default function HomeLimitedEdition({ skus, loading, limitedCode }: Props
                   sku={sku}
                   variant="shop"
                   viewMode="grid"
-                  mark={sku.mainCategory === limitedCode ? '한정판' : '오픈에디션'}
+                  mark={sku.mainCategory === limitedCode ? t('common.marks.limited') : t('common.marks.openEdition')}
                   markTone="purple"
                   isWishlisted={wishlistedCodes.has(sku.skuCode)}
                   isWishlistLoading={wishlistLoading.has(sku.skuCode)}

@@ -2,6 +2,7 @@ import { useRef, useState, useEffect } from 'react';
 import { Link } from 'react-router';
 import { ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
 import { ImageWithFallback } from '@/app/components/fallback/ImageWithFallback';
+import { useTranslation } from 'react-i18next';
 
 export interface WorkItem {
   id: string;
@@ -16,6 +17,7 @@ interface ArtistWorksCarouselProps {
 }
 
 export function ArtistWorksCarousel({ works, artistId }: ArtistWorksCarouselProps) {
+  const { t } = useTranslation();
   if (!works || works.length === 0) return null;
   const scrollRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
@@ -48,13 +50,13 @@ export function ArtistWorksCarousel({ works, artistId }: ArtistWorksCarouselProp
   return (
     <section className="mb-16">
       <div className="flex items-center justify-between mb-6">
-        <h3 className="text-xl font-bold">작가의 작품 - Works</h3>
+        <h3 className="text-xl font-bold">{t('artistPage.works.title')}</h3>
         <Link
           to={allWorksUrl}
           className="flex items-center gap-1 text-sm text-gray-400 hover:text-black transition-colors"
         >
           <ArrowRight className="w-5 h-5" />
-          <span className="text-xs">전체보기</span>
+          <span className="text-xs">{t('common.viewAll')}</span>
         </Link>
       </div>
       <div className="relative">
@@ -97,7 +99,7 @@ export function ArtistWorksCarousel({ works, artistId }: ArtistWorksCarouselProp
               </div>
               <p className="text-sm font-medium truncate">{work.title}</p>
               {work.price != null && (
-                <p className="text-sm text-gray-400">{work.price.toLocaleString()}원</p>
+                <p className="text-sm text-gray-400">{t('artistPage.works.price', { price: work.price.toLocaleString() })}</p>
               )}
             </Link>
           ))}

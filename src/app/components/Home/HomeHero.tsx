@@ -29,6 +29,7 @@ const effectsOf = (b: Banner) => [b.effectImageUrl1, b.effectImageUrl2, b.effect
 const fullNameOf = (b: Banner) => b.skuName || b.skuModel || b.title || '';
 
 export default function HomeHero({ banners, loading = false }: HomeHeroProps) {
+  const { t } = useTranslation();
   const reduce = useReducedMotion();
   const isDesktop = useIsDesktop();
 
@@ -108,7 +109,7 @@ export default function HomeHero({ banners, loading = false }: HomeHeroProps) {
           <ShowcaseArt
             imageUrl={slide.imageUrl}
             effects={effectsOf(slide)}
-            alt={`${slide.artistName ?? ''} 작 ${fullNameOf(slide)}`}
+            alt={t('home.hero.imageAlt', { artist: slide.artistName ?? '', name: fullNameOf(slide) })}
             name={fullNameOf(slide)}
             titleImageUrl={slide.titleImageUrl}
             nameWidth={nameWidth}
@@ -135,7 +136,7 @@ export default function HomeHero({ banners, loading = false }: HomeHeroProps) {
       ref={heroRef}
       data-hero="dark"
       aria-roledescription="carousel"
-      aria-label="대표 작품"
+      aria-label={t('home.hero.carousel')}
       className="relative koala-stage overflow-hidden bg-koala-navy"
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
@@ -187,8 +188,8 @@ function DesktopStage({ slide, total, loading, art, go }: StageProps) {
       <div className="relative z-10 flex min-w-0 flex-col justify-center">
         {total > 1 && (
           <div className="mb-8 flex gap-2">
-            <RoundButton label="이전 작품" onClick={() => go(-1)}><ArrowLeft className="h-4 w-4" /></RoundButton>
-            <RoundButton label="다음 작품" onClick={() => go(1)}><ArrowRight className="h-4 w-4" /></RoundButton>
+            <RoundButton label={t('home.hero.prev')} onClick={() => go(-1)}><ArrowLeft className="h-4 w-4" /></RoundButton>
+            <RoundButton label={t('home.hero.next')} onClick={() => go(1)}><ArrowRight className="h-4 w-4" /></RoundButton>
           </div>
         )}
         {slide ? (
@@ -277,7 +278,7 @@ function MobileStage({ slide, total, loading, art, go }: StageProps) {
     <div className="relative mx-auto flex h-full max-w-[1320px] flex-col justify-center px-3 pt-24 pb-8 md:px-8">
       <div className="grid grid-cols-[44px_minmax(0,1fr)_44px] items-center gap-2 md:gap-4">
         {total > 1 ? (
-          <RoundButton label="이전 작품" onClick={() => go(-1)}><ArrowLeft className="h-4 w-4" /></RoundButton>
+          <RoundButton label={t('home.hero.prev')} onClick={() => go(-1)}><ArrowLeft className="h-4 w-4" /></RoundButton>
         ) : <div aria-hidden />}
 
         {/* 넘어가는 동안에도 좌우 화살표를 덮지 않게 가로만 자른다 */}
@@ -288,7 +289,7 @@ function MobileStage({ slide, total, loading, art, go }: StageProps) {
         </div>
 
         {total > 1 ? (
-          <RoundButton label="다음 작품" onClick={() => go(1)}><ArrowRight className="h-4 w-4" /></RoundButton>
+          <RoundButton label={t('home.hero.next')} onClick={() => go(1)}><ArrowRight className="h-4 w-4" /></RoundButton>
         ) : <div aria-hidden />}
       </div>
 
@@ -364,6 +365,7 @@ function RoundButton({ label, onClick, children }: { label: string; onClick: () 
 function FullStage({ slide, total, go, isDesktop }: {
   slide: Banner; total: number; go: (step: 1 | -1) => void; isDesktop: boolean;
 }) {
+  const { t } = useTranslation();
   const source = !isDesktop && slide.mobileImageUrl ? slide.mobileImageUrl : slide.imageUrl;
   const discounted = slide.displayPrice != null && slide.displayListPrice != null
     && slide.displayListPrice > slide.displayPrice;
@@ -383,8 +385,8 @@ function FullStage({ slide, total, go, isDesktop }: {
 
       {total > 1 && (
         <div className="absolute left-6 top-28 z-10 flex gap-2 md:left-12">
-          <RoundButton label="이전 작품" onClick={() => go(-1)}><ArrowLeft className="h-4 w-4" /></RoundButton>
-          <RoundButton label="다음 작품" onClick={() => go(1)}><ArrowRight className="h-4 w-4" /></RoundButton>
+          <RoundButton label={t('home.hero.prev')} onClick={() => go(-1)}><ArrowLeft className="h-4 w-4" /></RoundButton>
+          <RoundButton label={t('home.hero.next')} onClick={() => go(1)}><ArrowRight className="h-4 w-4" /></RoundButton>
         </div>
       )}
 

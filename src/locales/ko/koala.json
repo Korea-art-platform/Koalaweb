@@ -10,13 +10,26 @@
     "video": {
       "defaultTitle": "스튜디오 인터뷰 영상",
       "clickToPlay": "클릭하여 재생"
-    }
+    },
+    "viewAll": "전체보기",
+    "viewAllPlus": "전체보기 +",
+    "pinned": "중요",
+    "marks": {
+      "original": "원작",
+      "limited": "한정판",
+      "openEdition": "오픈에디션"
+    },
+    "imageN": "이미지 {{n}}"
   },
   "store": {
     "hero": {
       "badge": "아티스트 컬렉터블",
       "title": "소장할 수 있는 예술",
-      "description": "엄선된 프리미엄 아트 굿즈, 소장 가치 있는 오브제, 그리고 일상 속 예술 작품들을 만나보세요."
+      "description": "엄선된 프리미엄 아트 굿즈, 소장 가치 있는 오브제, 그리고 일상 속 예술 작품들을 만나보세요.",
+      "artistsLabel": "작가",
+      "artistCount": "{{count}}명",
+      "worksLabel": "작품",
+      "workCount": "{{count}}점"
     },
     "categories": {
       "All": "전체"
@@ -32,6 +45,59 @@
     "emptyState": {
       "title": "해당 작품이 없습니다.",
       "description": "다른 필터를 선택해 보세요."
+    },
+    "spotlight": {
+      "role": "작가 소개",
+      "position": "작가 소개 {{n}} / {{total}}",
+      "artistPhoto": "{{name}} 작가",
+      "workBy": "{{artist}} 작 {{name}}",
+      "onlyThisArtist": "{{name}} 작품만 보기",
+      "viewArtist": "{{name}} 작가 보기",
+      "prev": "이전 작가",
+      "next": "다음 작가"
+    },
+    "originals": {
+      "role": "원작 소개",
+      "position": "원작 {{n}} / {{total}}",
+      "details": "작품 자세히 보기",
+      "view": "{{name}} 보기",
+      "prev": "이전 원작",
+      "next": "다음 원작"
+    },
+    "grid": {
+      "emptyTitle": "이 조건에 맞는 작품이 없습니다",
+      "emptyBody": "가격대나 분류를 넓히면 더 많은 작품을 볼 수 있습니다.",
+      "clearAll": "조건 모두 풀기",
+      "progress": "{{total}}점 중 {{shown}}점을 봤습니다",
+      "loading": "불러오는 중",
+      "more": "작품 더 보기"
+    },
+    "meta": {
+      "description": "엄선된 아트 상품과 소장 가치 있는 작품을 작가·분류·가격대별로 만나보세요."
+    },
+    "filter": {
+      "byArtist": "작가로 고르기",
+      "edition": "에디션",
+      "category": "분류",
+      "priceLabel": "가격대",
+      "priceAll": "가격대 전체",
+      "sortLabel": "정렬",
+      "filter": "거르기",
+      "reset": "초기화",
+      "all": "전체",
+      "showResults": "작품 보기",
+      "price": {
+        "u100k": "10만 원 이하",
+        "100k-500k": "10~50만 원",
+        "500k-2m": "50~200만 원",
+        "2m": "200만 원 이상"
+      },
+      "order": {
+        "RECOMMENDED": "추천순",
+        "NEWEST": "새로 들어온 순",
+        "PRICE_ASC": "가격 낮은 순",
+        "PRICE_DESC": "가격 높은 순"
+      }
     }
   },
   "header": {
@@ -124,7 +190,11 @@
       "defaultSubtitle": "지금 당신의 손에",
       "description": "한국의 아름다운 예술작품들을 디지털과 물리적 형태로 만나보세요. 전통과 현대가 어우러진 독특한 컬렉션을 선사합니다.",
       "shopNow": "쇼핑하기",
-      "learnMore": "작가 둘러보기"
+      "learnMore": "작가 둘러보기",
+      "carousel": "대표 작품",
+      "prev": "이전 작품",
+      "next": "다음 작품",
+      "imageAlt": "{{artist}} 작 {{name}}"
     },
     "categories": {
       "title": "카테고리",
@@ -157,6 +227,45 @@
       "description": "아티스트와 컬렉터, 디지털과 피지컬을 잇는 가장 매끄러운 아트 에코시스템. 당신의 일상에 스며드는 예술의 힘을 KOALA와 함께 경험하세요.",
       "exploreArtist": "작가 탐색하기",
       "tryAR": "AR 뷰어 체험하기"
+    },
+    "sections": {
+      "original": {
+        "title": "원작",
+        "sub": "작가의 손에서 나온 단 한 점. 다시 만들어지지 않습니다.",
+        "viewAll": "원작 전체 보기",
+        "pick": "{{artist}} 작 {{name}} 보기"
+      },
+      "editions": {
+        "title": "한정판 · 오픈에디션",
+        "sub": "같은 작가의 작업을 조금 더 가까이"
+      },
+      "all": {
+        "title": "전체 작품",
+        "sub": "분류를 누르면 그 분류 작품만 모아 봅니다",
+        "viewInStore": "스토어에서 보기",
+        "viewCategoryInStore": "{{name}} 스토어에서 보기",
+        "pickCategory": "분류 고르기",
+        "everything": "전체",
+        "count": "{{count}}점"
+      },
+      "artists": {
+        "title": "작가",
+        "sub": "작품을 만드는 사람들",
+        "comingSoon": "작가 소개가 곧 올라옵니다.",
+        "pick": "작가 선택",
+        "page": "작가 페이지"
+      },
+      "exhibition": {
+        "title": "작가의 전시",
+        "description": "작가들이 걸어온 전시의 순간들을 모았습니다. 한 사람씩 천천히 만나 보세요.",
+        "cta": "전시 보러가기"
+      },
+      "news": {
+        "title": "공지사항 · 자주 묻는 질문",
+        "sub": "새로운 소식과 자주 문의주시는 내용을 모았습니다",
+        "notices": "공지사항",
+        "faq": "자주 묻는 질문"
+      }
     }
   },
   "artistLab": {
@@ -596,6 +705,41 @@
         "addToCart": "장바구니 담기",
         "buyNow": "바로 구매하기"
       }
+    },
+    "card": {
+      "material": "소재",
+      "size": "크기",
+      "weight": "무게",
+      "edition": "에디션",
+      "editionLimit": "{{size}} 한정",
+      "byArtist": "{{artist}} 작 {{title}}",
+      "wishAdd": "{{title}} 찜하기",
+      "wishRemove": "{{title}} 찜 해제",
+      "wish": "찜하기",
+      "wishShort": "찜",
+      "addToCartLabel": "{{title}} 장바구니에 담기",
+      "details": "자세히 보기",
+      "productPage": "작품 페이지",
+      "prevImage": "이전 이미지",
+      "nextImage": "다음 이미지",
+      "imageN": "{{n}}번 이미지",
+      "species": "종:",
+      "description": "작품 설명",
+      "specs": "규격 정보",
+      "added": "담겼어요",
+      "adding": "담는 중",
+      "cart": "장바구니",
+      "soldOut": "품절",
+      "buying": "주문서로 이동 중...",
+      "buy": "구매하기",
+      "almostGone": "품절 직전!",
+      "detailImage": "상품 상세 설명"
+    },
+    "info": {
+      "genre": "아트 종류",
+      "shipping": "배달비용",
+      "shippingSummary": "{{fee}}원 ({{thresholdAmount}}원 이상 무료 · 제주/도서산간 추가)",
+      "back": "뒤로가기"
     }
   },
   "search": {
@@ -685,5 +829,105 @@
     "close": "닫기",
     "hideToday": "오늘 하루 보지 않기",
     "viewMore": "자세히 보기"
+  },
+  "support": {
+    "faq": {
+      "title": "자주 묻는 질문",
+      "metaDescription": "주문·결제·배송·교환에 대해 자주 묻는 질문을 모았습니다.",
+      "introBefore": "궁금한 점을 빠르게 해결해 드립니다. 원하는 답변을 찾지 못하셨다면 ",
+      "introLink": "고객센터",
+      "introAfter": "로 문의해 주세요.",
+      "moreTitle": "원하는 답변을 찾지 못하셨나요?",
+      "moreHours": "평일 10:00 - 18:00, 고객센터에서 도움드립니다.",
+      "moreCta": "1:1 문의하기"
+    }
+  },
+  "art": {
+    "artist": {
+      "heading": "작가 - ARTIST",
+      "defaultName": "작가 이름",
+      "defaultDescription": "작가에 대한 설명"
+    },
+    "header": {
+      "breadcrumb": "작품 소개"
+    },
+    "worldView": {
+      "title": "작가의 세계관",
+      "desc": "작가의 세계관 소개",
+      "breadcrumb": "작가 소개"
+    },
+    "images": {
+      "defaultTitle": "작품",
+      "heading": "작품 - 상세"
+    },
+    "info": {
+      "heading": "작품 소개"
+    },
+    "material": {
+      "heading": "재질 / 소재",
+      "alt": "{{title}} 소재 {{n}}",
+      "caption": "설명문",
+      "lightbox": "{{title}} 소재"
+    },
+    "packaging": {
+      "heading": "포장 사진",
+      "alt": "{{title}} 포장 {{n}}",
+      "lightbox": "{{title}} 포장"
+    },
+    "qna": {
+      "before": "궁금한 점은 ",
+      "after": "로 문의 주세요",
+      "empty": "아직 등록된 문의가 없습니다. 궁금한 점은 위 이메일로 문의해 주세요."
+    }
+  },
+  "artistPage": {
+    "trending": {
+      "title": "인기 작가",
+      "viewAll": "작가 전체보기"
+    },
+    "career": {
+      "title": "약력",
+      "categories": {
+        "education": "학력",
+        "solo": "개인전",
+        "group": "그룹전",
+        "other": "그 외"
+      }
+    },
+    "hands": {
+      "title": "작가의 손",
+      "description": "도구가 아닌\n순서 글쓰기",
+      "alt": "작가의 손 {{n}}"
+    },
+    "profile": {
+      "heading": "작가 - ARTIST",
+      "following": "팔로잉",
+      "follow": "팔로우",
+      "followers": "{{count}}명",
+      "shareTitle": "{{name}} — KOALA 작가"
+    },
+    "studio": {
+      "title": "작업실 Studio",
+      "alt": "{{name}} 작업실 {{n}}"
+    },
+    "works": {
+      "title": "작가의 작품 - Works",
+      "price": "{{price}}원"
+    }
+  },
+  "widgets": {
+    "quickMenu": {
+      "inquiry": "1:1 문의",
+      "call": "전화 상담",
+      "close": "고객지원 닫기",
+      "open": "고객지원 열기"
+    },
+    "share": {
+      "defaultTitle": "작품 보기",
+      "button": "공유",
+      "kakao": "카카오톡",
+      "copy": "링크 복사",
+      "copied": "링크가 복사됐습니다 ✓"
+    }
   }
 }

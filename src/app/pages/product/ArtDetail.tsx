@@ -13,13 +13,15 @@ import {
   ArtArtist,
   ArtInfo,
   ArtQnA,
-  SHIPPING_FEE_TEXT,
 } from '@/app/components/ArtDetail';
 import { ShareButton } from '@/app/components/common/ShareButton';
 import { useCategories } from '@/app/hooks/useCategories';
 import { sizeText, weightText } from '@/app/lib/skuSpec';
+import { useTranslation } from 'react-i18next';
+import { FREE_SHIPPING_THRESHOLD_AMOUNT_TEXT, SHIPPING_FEE_AMOUNT_TEXT } from '@/app/lib/shipping';
 
 export default function ArtDetail() {
+  const { t } = useTranslation();
   const { id } = useParams();
   const navigate = useNavigate();
   const { subLabel } = useCategories();
@@ -68,11 +70,11 @@ export default function ArtDetail() {
     .map((m) => m.fileUrl) ?? [];
 
   const artInfoItems = [
-    { label: '아트 종류', value: subLabel(sku.genre) || '-' },
-    { label: '소재',     value: sku.material || '-' },
-    { label: '크기',     value: sizeText(sku.widthCm, (sku as any).depthCm, sku.heightCm) ?? '-' },
-    { label: '무게',     value: weightText((sku as any).weightG, sku.weightKg) ?? '-' },
-    { label: '배달비용', value: SHIPPING_FEE_TEXT },
+    { label: t('product.info.genre'), value: subLabel(sku.genre) || '-' },
+    { label: t('product.card.material'), value: sku.material || '-' },
+    { label: t('product.card.size'), value: sizeText(sku.widthCm, (sku as any).depthCm, sku.heightCm) ?? '-' },
+    { label: t('product.card.weight'), value: weightText((sku as any).weightG, sku.weightKg) ?? '-' },
+    { label: t('product.info.shipping'), value: t('product.info.shippingSummary', { fee: SHIPPING_FEE_AMOUNT_TEXT, thresholdAmount: FREE_SHIPPING_THRESHOLD_AMOUNT_TEXT }) },
   ];
 
   return (
@@ -84,7 +86,7 @@ export default function ArtDetail() {
             className="inline-flex items-center gap-2 text-sm text-gray-400 hover:text-black transition-colors group"
           >
             <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
-            뒤로가기
+            {t('product.info.back')}
           </button>
           <ShareButton
             title={sku.name}
@@ -93,7 +95,7 @@ export default function ArtDetail() {
           />
         </div>
         <ArtDetailHeader
-          breadcrumb="작품 소개"
+          breadcrumb={t('art.header.breadcrumb')}
           worldViewTitle={sku.name}
           worldViewDesc={sku.description ?? ''}
         />

@@ -21,7 +21,8 @@ import {
 } from '@/app/components/products';
 
 import ProductDetailPage from '@/app/components/products/ProductDetailPage';
-import { ArtImages, ArtMaterial, ArtPackaging, ArtArtist, ArtInfo, ArtQnA, SHIPPING_FEE_TEXT } from '@/app/components/ArtDetail';
+import { ArtImages, ArtMaterial, ArtPackaging, ArtArtist, ArtInfo, ArtQnA } from '@/app/components/ArtDetail';
+import { FREE_SHIPPING_THRESHOLD_AMOUNT_TEXT, SHIPPING_FEE_AMOUNT_TEXT } from '@/app/lib/shipping';
 import TrendingArtists from '@/app/components/Artist/TrendingArtists';
 import { sizeText, weightText } from '@/app/lib/skuSpec';
 
@@ -312,10 +313,10 @@ export default function ProductDetail() {
             />
             <ArtInfo
               items={[
-                { label: '소재', value: sku.material ?? '-' },
-                { label: '크기', value: sizeText((sku as any).widthCm, (sku as any).depthCm, (sku as any).heightCm) ?? '-' },
-                { label: '무게', value: weightText((sku as any).weightG, (sku as any).weightKg) ?? '-' },
-                { label: '배달비용', value: SHIPPING_FEE_TEXT },
+                { label: t('product.card.material'), value: sku.material ?? '-' },
+                { label: t('product.card.size'), value: sizeText((sku as any).widthCm, (sku as any).depthCm, (sku as any).heightCm) ?? '-' },
+                { label: t('product.card.weight'), value: weightText((sku as any).weightG, (sku as any).weightKg) ?? '-' },
+                { label: t('product.info.shipping'), value: t('product.info.shippingSummary', { fee: SHIPPING_FEE_AMOUNT_TEXT, thresholdAmount: FREE_SHIPPING_THRESHOLD_AMOUNT_TEXT }) },
               ]}
             />
             <ArtQnA />

@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next';
+
 interface ArtistWorldViewProps {
   worldViewTitle?: string;
   worldViewDesc?: string;
@@ -6,11 +8,15 @@ interface ArtistWorldViewProps {
 }
 
 export function ArtistWorldView({
-  worldViewTitle = '작가의 세계관',
-  worldViewDesc = '작가의 세계관 소개',
-  breadcrumb = '작가 소개',
+  worldViewTitle: worldViewTitleProp,
+  worldViewDesc: worldViewDescProp,
+  breadcrumb: breadcrumbProp,
   subBreadcrumb,
 }: ArtistWorldViewProps) {
+  const { t } = useTranslation();
+  const worldViewTitle = worldViewTitleProp ?? t('art.worldView.title');
+  const worldViewDesc = worldViewDescProp ?? t('art.worldView.desc');
+  const breadcrumb = breadcrumbProp ?? t('art.worldView.breadcrumb');
   return (
     <div className="mb-10">
       <p className="text-xs text-gray-400 mb-1">

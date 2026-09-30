@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next';
+
 interface ArtDetailHeaderProps {
   breadcrumb?: string;
   subBreadcrumb?: string;
@@ -6,11 +8,15 @@ interface ArtDetailHeaderProps {
 }
 
 export function ArtDetailHeader({
-  breadcrumb = '작품 소개',
+  breadcrumb: breadcrumbProp,
   subBreadcrumb,
-  worldViewTitle = '작가의 세계관',
-  worldViewDesc = '작가의 세계관 소개',
+  worldViewTitle: worldViewTitleProp,
+  worldViewDesc: worldViewDescProp,
 }: ArtDetailHeaderProps) {
+  const { t } = useTranslation();
+  const breadcrumb = breadcrumbProp ?? t('art.header.breadcrumb');
+  const worldViewTitle = worldViewTitleProp ?? t('art.worldView.title');
+  const worldViewDesc = worldViewDescProp ?? t('art.worldView.desc');
   return (
     <div className="mb-10">
       <p className="text-xs text-gray-400 mb-1">

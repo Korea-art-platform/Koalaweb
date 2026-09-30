@@ -1,4 +1,5 @@
 import { ImageWithFallback } from '@/app/components/fallback/ImageWithFallback';
+import { useTranslation } from 'react-i18next';
 
 interface ArtistHandsProps {
   title?: string;
@@ -7,10 +8,13 @@ interface ArtistHandsProps {
 }
 
 export function ArtistHands({
-  title = '작가의 손',
-  description = '도구가 아닌\n순서 글쓰기',
+  title: titleProp,
+  description: descriptionProp,
   images,
 }: ArtistHandsProps) {
+  const { t } = useTranslation();
+  const title = titleProp ?? t('artistPage.hands.title');
+  const description = descriptionProp ?? t('artistPage.hands.description');
   if (!images || images.length === 0) return null;
   const imgs = images;
 
@@ -29,7 +33,7 @@ export function ArtistHands({
             >
               <ImageWithFallback
                 src={src}
-                alt={`작가의 손 ${idx + 1}`}
+                alt={t('artistPage.hands.alt', { n: idx + 1 })}
                 className="w-full h-full object-cover"
               />
             </div>

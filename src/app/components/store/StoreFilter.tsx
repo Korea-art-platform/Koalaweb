@@ -51,7 +51,7 @@ export default function StoreFilter(props: StoreFilterProps) {
       {artists.length > 0 && (
         <div
           role="group"
-          aria-label="작가로 고르기"
+          aria-label={t('store.filter.byArtist')}
           className="mx-auto flex max-w-[1320px] snap-x gap-4 overflow-x-auto scroll-px-5 px-5 pb-6 no-scrollbar md:gap-6 md:px-10 md:pb-8"
         >
           <ArtistButton label={allLabel} active={selectedArtist === ALL} onClick={() => onSelectArtist(ALL)} />
@@ -71,7 +71,7 @@ export default function StoreFilter(props: StoreFilterProps) {
       <div className="sticky top-20 z-30 border-y border-gray-200 bg-[#FBFAFC]/92 backdrop-blur-md">
         <div className="mx-auto flex max-w-[1320px] items-center gap-3 px-5 py-2.5 md:px-10 lg:gap-5 lg:py-3.5">
           {/* 에디션 탭 — 원작만 금색 글씨 */}
-          <div role="tablist" aria-label="에디션" className="flex min-w-0 flex-1 gap-1 overflow-x-auto rounded-full bg-gray-100 p-1 no-scrollbar lg:flex-none">
+          <div role="tablist" aria-label={t('store.filter.edition')} className="flex min-w-0 flex-1 gap-1 overflow-x-auto rounded-full bg-gray-100 p-1 no-scrollbar lg:flex-none">
             {mainCategories.map((code) => {
               const active = selectedMain === code;
               const gold = code === originalCode;
@@ -105,7 +105,7 @@ export default function StoreFilter(props: StoreFilterProps) {
 
           {isDesktop ? (
             <>
-              <div role="group" aria-label="분류" className="flex min-w-0 flex-1 flex-wrap gap-2">
+              <div role="group" aria-label={t('store.filter.category')} className="flex min-w-0 flex-1 flex-wrap gap-2">
                 {categories.map((code) => {
                   const active = selectedCategory === code;
                   return (
@@ -124,16 +124,16 @@ export default function StoreFilter(props: StoreFilterProps) {
               </div>
               <div className="flex shrink-0 items-center gap-2">
                 <SelectBox
-                  label="가격대"
+                  label={t('store.filter.priceLabel')}
                   value={priceBand}
                   onChange={onSelectPrice}
-                  options={[{ key: ALL, label: '가격대 전체' }, ...PRICE_BANDS]}
+                  options={[{ key: ALL, label: t('store.filter.priceAll') }, ...PRICE_BANDS.map((b) => ({ key: b.key, label: t(`store.filter.price.${b.key}`) }))]}
                 />
                 <SelectBox
-                  label="정렬"
+                  label={t('store.filter.sortLabel')}
                   value={order}
                   onChange={(v) => onSelectOrder(v as SkuOrder)}
-                  options={ORDERS}
+                  options={ORDERS.map((o) => ({ key: o.key, label: t(`store.filter.order.${o.key}`) }))}
                 />
               </div>
             </>
@@ -145,7 +145,7 @@ export default function StoreFilter(props: StoreFilterProps) {
                 focus-visible:outline-2 focus-visible:outline-koala-purple"
             >
               <SlidersHorizontal className="h-3.5 w-3.5" />
-              거르기
+              {t('store.filter.filter')}
               {sheetCount > 0 && (
                 <span className="rounded-full bg-koala-purple px-1.5 text-[10px] tabular-nums text-white">{sheetCount}</span>
               )}

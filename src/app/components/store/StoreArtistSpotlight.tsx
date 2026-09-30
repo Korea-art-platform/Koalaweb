@@ -5,6 +5,7 @@ import { ArrowLeft, ArrowRight } from 'lucide-react';
 import { useIsDesktop } from '@/app/hooks/useMediaQuery';
 import { ImageWithFallback } from '@/app/components/fallback/ImageWithFallback';
 import type { Artist, Sku } from '@/api/types';
+import { useTranslation } from 'react-i18next';
 
 const SPOT_MS = 4000;
 const SWIPE = 45;
@@ -19,6 +20,7 @@ interface Props {
 
 // 목록 사이 작가 조명 — PC 는 4초마다 넘기고, 모바일은 손으로 민다
 export default function StoreArtistSpotlight({ artists, skus, onPickArtist }: Props) {
+  const { t } = useTranslation();
   const reduce = useReducedMotion();
   const isDesktop = useIsDesktop();
   const ref = useRef<HTMLElement>(null);
@@ -47,8 +49,8 @@ export default function StoreArtistSpotlight({ artists, skus, onPickArtist }: Pr
   return (
     <section
       ref={ref}
-      aria-roledescription="작가 소개"
-      aria-label={`작가 소개 ${current + 1} / ${total}`}
+      aria-roledescription={t('store.spotlight.role')}
+      aria-label={t('store.spotlight.position', { n: current + 1, total })}
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
       onFocus={() => setPaused(true)}
@@ -73,7 +75,7 @@ export default function StoreArtistSpotlight({ artists, skus, onPickArtist }: Pr
         >
           <div className="aspect-[4/3] overflow-hidden bg-[#E9E2EF] md:aspect-square">
             {photo ? (
-              <ImageWithFallback thumb src={photo} alt={`${artist.name} 작가`} className="h-full w-full object-cover" />
+              <ImageWithFallback thumb src={photo} alt={t('store.spotlight.artistPhoto', { name: artist.name })} className="h-full w-full object-cover" />
             ) : (
               <div className="flex h-full items-center justify-center">
                 <img src="/logo-symbol.svg" alt="" className="h-1/4 w-1/4 opacity-50" />
@@ -95,7 +97,7 @@ export default function StoreArtistSpotlight({ artists, skus, onPickArtist }: Pr
                     key={w.skuCode}
                     to={`/product/${w.skuCode}`}
                     className="block w-[72px] overflow-hidden bg-white md:w-[84px]"
-                    aria-label={`${artist.name} 작 ${w.model ?? w.name}`}
+                    aria-label={t('store.spotlight.workBy', { artist: artist.name, name: w.model ?? w.name })}
                   >
                     <ImageWithFallback thumb src={w.primaryImageUrl ?? ''} alt="" className="aspect-[4/5] h-full w-full object-cover" />
                   </Link>
@@ -107,7 +109,7 @@ export default function StoreArtistSpotlight({ artists, skus, onPickArtist }: Pr
               onClick={() => onPickArtist(artist.artistCode)}
               className="mt-4 border-b border-gray-400 pb-0.5 text-[13px] text-gray-900 transition-colors hover:border-koala-purple hover:text-koala-purple"
             >
-              {artist.name} 작품만 보기
+              {t('store.spotlight.onlyThisArtist', { name: artist.name })}
             </button>
           </div>
         </motion.div>
@@ -121,7 +123,7 @@ export default function StoreArtistSpotlight({ artists, skus, onPickArtist }: Pr
                 key={a.artistCode}
                 type="button"
                 onClick={() => setIndex(i)}
-                aria-label={`${a.name} 작가 보기`}
+                aria-label={t('store.spotlight.viewArtist', { name: a.name })}
                 aria-current={i === current}
                 className={`h-1.5 rounded-full transition-[width,background-color] duration-300
                   ${i === current ? 'w-5 bg-koala-purple' : 'w-1.5 bg-gray-300 hover:bg-gray-400'}`}
@@ -129,11 +131,11 @@ export default function StoreArtistSpotlight({ artists, skus, onPickArtist }: Pr
             ))}
           </div>
           <div className="flex gap-2">
-            <button type="button" onClick={() => go(-1)} aria-label="이전 작가"
+            <button type="button" onClick={() => go(-1)} aria-label={t('store.spotlight.prev')}
               className="flex h-9 w-9 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-600 hover:text-gray-900">
               <ArrowLeft className="h-4 w-4" />
             </button>
-            <button type="button" onClick={() => go(1)} aria-label="다음 작가"
+            <button type="button" onClick={() => go(1)} aria-label={t('store.spotlight.next')}
               className="flex h-9 w-9 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-600 hover:text-gray-900">
               <ArrowRight className="h-4 w-4" />
             </button>

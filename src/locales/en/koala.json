@@ -10,13 +10,26 @@
     "video": {
       "defaultTitle": "Studio interview",
       "clickToPlay": "Click to play"
-    }
+    },
+    "viewAll": "View all",
+    "viewAllPlus": "View all +",
+    "pinned": "Pinned",
+    "marks": {
+      "original": "Original",
+      "limited": "Limited",
+      "openEdition": "Open edition"
+    },
+    "imageN": "Image {{n}}"
   },
   "store": {
     "hero": {
       "badge": "Artist Collectibles",
       "title": "Art you can own",
-      "description": "Discover curated art objects, collectible pieces, and artworks made for everyday life."
+      "description": "Discover curated art objects, collectible pieces, and artworks made for everyday life.",
+      "artistsLabel": "Artists",
+      "artistCount": "{{count}}",
+      "worksLabel": "Works",
+      "workCount": "{{count}}"
     },
     "categories": {
       "All": "All"
@@ -32,6 +45,59 @@
     "emptyState": {
       "title": "No works match your filters.",
       "description": "Try a different filter."
+    },
+    "spotlight": {
+      "role": "Artist spotlight",
+      "position": "Artist {{n}} of {{total}}",
+      "artistPhoto": "{{name}}",
+      "workBy": "{{name}} by {{artist}}",
+      "onlyThisArtist": "See only {{name}}'s works",
+      "viewArtist": "View {{name}}",
+      "prev": "Previous artist",
+      "next": "Next artist"
+    },
+    "originals": {
+      "role": "Original works",
+      "position": "Original {{n}} of {{total}}",
+      "details": "View details",
+      "view": "View {{name}}",
+      "prev": "Previous original",
+      "next": "Next original"
+    },
+    "grid": {
+      "emptyTitle": "No works match these filters",
+      "emptyBody": "Widen the price range or categories to see more.",
+      "clearAll": "Clear all filters",
+      "progress": "Showing {{shown}} of {{total}}",
+      "loading": "Loading",
+      "more": "Load more"
+    },
+    "meta": {
+      "description": "Browse curated art objects and collectible works by artist, category, and price."
+    },
+    "filter": {
+      "byArtist": "Filter by artist",
+      "edition": "Edition",
+      "category": "Category",
+      "priceLabel": "Price",
+      "priceAll": "Any price",
+      "sortLabel": "Sort",
+      "filter": "Filter",
+      "reset": "Reset",
+      "all": "All",
+      "showResults": "Show works",
+      "price": {
+        "u100k": "Under ₩100,000",
+        "100k-500k": "₩100,000–500,000",
+        "500k-2m": "₩500,000–2,000,000",
+        "2m": "Over ₩2,000,000"
+      },
+      "order": {
+        "RECOMMENDED": "Recommended",
+        "NEWEST": "Newest",
+        "PRICE_ASC": "Price: low to high",
+        "PRICE_DESC": "Price: high to low"
+      }
     }
   },
   "header": {
@@ -124,7 +190,11 @@
       "defaultSubtitle": "in your hands",
       "description": "Meet Korean artworks in digital and physical form, in a collection where tradition meets the contemporary.",
       "shopNow": "Shop now",
-      "learnMore": "Browse artists"
+      "learnMore": "Browse artists",
+      "carousel": "Featured works",
+      "prev": "Previous work",
+      "next": "Next work",
+      "imageAlt": "{{name}} by {{artist}}"
     },
     "categories": {
       "title": "Categories",
@@ -157,6 +227,45 @@
       "description": "An art ecosystem that connects artists and collectors, digital and physical. Experience the quiet power of art in everyday life with KOALA.",
       "exploreArtist": "Explore artists",
       "tryAR": "Try the AR viewer"
+    },
+    "sections": {
+      "original": {
+        "title": "Originals",
+        "sub": "One of a kind, straight from the artist. Never made again.",
+        "viewAll": "View all originals",
+        "pick": "View {{name}} by {{artist}}"
+      },
+      "editions": {
+        "title": "Limited & open editions",
+        "sub": "Closer to the artists' work"
+      },
+      "all": {
+        "title": "All works",
+        "sub": "Tap a category to see only its works",
+        "viewInStore": "View in store",
+        "viewCategoryInStore": "View {{name}} in store",
+        "pickCategory": "Choose a category",
+        "everything": "All",
+        "count": "{{count}} works"
+      },
+      "artists": {
+        "title": "Artists",
+        "sub": "The people behind the work",
+        "comingSoon": "Artist introduction coming soon.",
+        "pick": "Choose an artist",
+        "page": "Artist page"
+      },
+      "exhibition": {
+        "title": "Exhibitions",
+        "description": "Moments from our artists' exhibitions. Take your time with each one.",
+        "cta": "See the exhibition"
+      },
+      "news": {
+        "title": "News & FAQ",
+        "sub": "Latest news and answers to common questions",
+        "notices": "Notices",
+        "faq": "FAQ"
+      }
     }
   },
   "artistLab": {
@@ -596,6 +705,41 @@
         "addToCart": "Add to cart",
         "buyNow": "Buy now"
       }
+    },
+    "card": {
+      "material": "Material",
+      "size": "Size",
+      "weight": "Weight",
+      "edition": "Edition",
+      "editionLimit": "Limited to {{size}}",
+      "byArtist": "{{title}} by {{artist}}",
+      "wishAdd": "Save {{title}}",
+      "wishRemove": "Remove {{title}} from saved",
+      "wish": "Save",
+      "wishShort": "Save",
+      "addToCartLabel": "Add {{title}} to cart",
+      "details": "View details",
+      "productPage": "Product page",
+      "prevImage": "Previous image",
+      "nextImage": "Next image",
+      "imageN": "Image {{n}}",
+      "species": "Series:",
+      "description": "Description",
+      "specs": "Specifications",
+      "added": "Added",
+      "adding": "Adding",
+      "cart": "Cart",
+      "soldOut": "Sold out",
+      "buying": "Going to checkout…",
+      "buy": "Buy now",
+      "almostGone": "Almost gone!",
+      "detailImage": "Product details"
+    },
+    "info": {
+      "genre": "Type",
+      "shipping": "Shipping",
+      "shippingSummary": "₩{{fee}} (free over ₩{{thresholdAmount}}; extra for Jeju and remote islands)",
+      "back": "Back"
     }
   },
   "search": {
@@ -685,5 +829,105 @@
     "close": "Close",
     "hideToday": "Don't show again today",
     "viewMore": "Learn more"
+  },
+  "support": {
+    "faq": {
+      "title": "FAQ",
+      "metaDescription": "Answers to common questions about orders, payment, delivery, and returns.",
+      "introBefore": "Find quick answers here. If you can't find what you need, ",
+      "introLink": "contact support",
+      "introAfter": ".",
+      "moreTitle": "Didn't find your answer?",
+      "moreHours": "Our support team is available weekdays 10:00–18:00 KST.",
+      "moreCta": "Contact us"
+    }
+  },
+  "art": {
+    "artist": {
+      "heading": "Artist",
+      "defaultName": "Artist",
+      "defaultDescription": "About the artist"
+    },
+    "header": {
+      "breadcrumb": "About the work"
+    },
+    "worldView": {
+      "title": "The artist's world",
+      "desc": "About the artist's world",
+      "breadcrumb": "About the artist"
+    },
+    "images": {
+      "defaultTitle": "Work",
+      "heading": "Details"
+    },
+    "info": {
+      "heading": "About the work"
+    },
+    "material": {
+      "heading": "Materials",
+      "alt": "{{title}} material {{n}}",
+      "caption": "Notes",
+      "lightbox": "{{title}} materials"
+    },
+    "packaging": {
+      "heading": "Packaging",
+      "alt": "{{title}} packaging {{n}}",
+      "lightbox": "{{title}} packaging"
+    },
+    "qna": {
+      "before": "Questions? Email ",
+      "after": ".",
+      "empty": "No questions yet. Email us at the address above."
+    }
+  },
+  "artistPage": {
+    "trending": {
+      "title": "Popular artists",
+      "viewAll": "All artists"
+    },
+    "career": {
+      "title": "Career",
+      "categories": {
+        "education": "Education",
+        "solo": "Solo exhibitions",
+        "group": "Group exhibitions",
+        "other": "Other"
+      }
+    },
+    "hands": {
+      "title": "The artist's hands",
+      "description": "Not tools —\na way of working, in order",
+      "alt": "The artist's hands {{n}}"
+    },
+    "profile": {
+      "heading": "Artist",
+      "following": "Following",
+      "follow": "Follow",
+      "followers": "{{count}}",
+      "shareTitle": "{{name}} — KOALA artist"
+    },
+    "studio": {
+      "title": "Studio",
+      "alt": "{{name}}'s studio {{n}}"
+    },
+    "works": {
+      "title": "Works",
+      "price": "₩{{price}}"
+    }
+  },
+  "widgets": {
+    "quickMenu": {
+      "inquiry": "Contact us",
+      "call": "Call us",
+      "close": "Close support",
+      "open": "Open support"
+    },
+    "share": {
+      "defaultTitle": "View the work",
+      "button": "Share",
+      "kakao": "KakaoTalk",
+      "copy": "Copy link",
+      "copied": "Link copied ✓"
+    }
   }
 }

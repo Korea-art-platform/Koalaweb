@@ -2,15 +2,16 @@ import { Link } from 'react-router';
 import { ArrowRight } from 'lucide-react';
 import type { Banner } from '@/api/types';
 import BannerMedia from '@/app/components/common/BannerMedia';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
   banner: Banner | null;
 }
 
 export default function HomeStudio({ banner }: Props) {
-  const title = '작가의 전시';
-  const description =
-    '작가들이 걸어온 전시의 순간들을 모았습니다. 한 사람씩 천천히 만나 보세요.';
+  const { t } = useTranslation();
+  const title = t('home.sections.exhibition.title');
+  const description = t('home.sections.exhibition.description');
   const linkUrl = '/exhibition';
   const imageUrl = banner?.imageUrl ?? null;
   const videoUrl = banner?.videoUrl ?? null;
@@ -54,7 +55,7 @@ export default function HomeStudio({ banner }: Props) {
                   {description}
                 </p>
                 <span className="mt-2 self-start inline-flex items-center gap-2 px-7 py-3.5 rounded-full bg-koala-purple text-white text-sm font-bold transition-colors duration-500 group-hover:bg-white group-hover:text-koala-purple">
-                  전시 보러가기
+                  {t('home.sections.exhibition.cta')}
                   <ArrowRight className="w-4 h-4 transition-transform duration-500 group-hover:translate-x-1" />
                 </span>
               </div>

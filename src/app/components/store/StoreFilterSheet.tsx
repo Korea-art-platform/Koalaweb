@@ -43,7 +43,7 @@ export default function StoreFilterSheet({ open, onClose, categories, value, onA
   return (
     <AnimatePresence>
       {open && (
-        <div className="fixed inset-0 z-[60]" role="dialog" aria-modal="true" aria-label="거르기">
+        <div className="fixed inset-0 z-[60]" role="dialog" aria-modal="true" aria-label={t('store.filter.filter')}>
           <motion.div
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
             onClick={onClose}
@@ -71,13 +71,13 @@ export default function StoreFilterSheet({ open, onClose, categories, value, onA
             </div>
 
             <div className="flex items-baseline justify-between">
-              <h2 className="text-base font-bold text-gray-900">거르기</h2>
+              <h2 className="text-base font-bold text-gray-900">{t('store.filter.filter')}</h2>
               <button type="button" onClick={() => setDraft(RESET)} className="text-xs text-gray-400 hover:text-gray-900">
-                초기화
+                {t('store.filter.reset')}
               </button>
             </div>
 
-            <Group label="분류">
+            <Group label={t('store.filter.category')}>
               {categories.map((code) => (
                 <Chip key={code} active={draft.category === code} onClick={() => setDraft({ ...draft, category: code })}>
                   {code === ALL ? allLabel : subLabel(code)}
@@ -85,19 +85,19 @@ export default function StoreFilterSheet({ open, onClose, categories, value, onA
               ))}
             </Group>
 
-            <Group label="가격대">
-              <Chip active={draft.price === ALL} onClick={() => setDraft({ ...draft, price: ALL })}>전체</Chip>
+            <Group label={t('store.filter.priceLabel')}>
+              <Chip active={draft.price === ALL} onClick={() => setDraft({ ...draft, price: ALL })}>{t('store.filter.all')}</Chip>
               {PRICE_BANDS.map((b) => (
                 <Chip key={b.key} active={draft.price === b.key} onClick={() => setDraft({ ...draft, price: b.key })}>
-                  {b.label}
+                  {t(`store.filter.price.${b.key}`)}
                 </Chip>
               ))}
             </Group>
 
-            <Group label="정렬">
+            <Group label={t('store.filter.sortLabel')}>
               {ORDERS.map((o) => (
                 <Chip key={o.key} active={draft.order === o.key} onClick={() => setDraft({ ...draft, order: o.key })}>
-                  {o.label}
+                  {t(`store.filter.order.${o.key}`)}
                 </Chip>
               ))}
             </Group>
@@ -108,7 +108,7 @@ export default function StoreFilterSheet({ open, onClose, categories, value, onA
                 onClick={onClose}
                 className="rounded-xl border border-gray-200 py-3.5 text-sm font-bold text-gray-900"
               >
-                닫기
+                {t('common.close')}
               </button>
               <button
                 type="button"
@@ -116,7 +116,7 @@ export default function StoreFilterSheet({ open, onClose, categories, value, onA
                 className="rounded-xl bg-gradient-to-r from-koala-purple to-koala-purple-bright py-3.5 text-sm font-bold text-white
                   shadow-[inset_0_1px_0_rgba(255,255,255,0.12)] active:scale-[0.985]"
               >
-                작품 보기
+                {t('store.filter.showResults')}
               </button>
             </div>
           </motion.div>

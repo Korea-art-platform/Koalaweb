@@ -5,6 +5,7 @@ import SectionHeader from './SectionHeader';
 import { ImageWithFallback } from '@/app/components/fallback/ImageWithFallback';
 import { useIsDesktop } from '@/app/hooks/useMediaQuery';
 import type { Artist } from '@/api/types';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
   artists: Artist[];
@@ -20,6 +21,7 @@ interface Props {
  * 사진을 전부 내려받는다.
  */
 export default function HomeArtists({ artists }: Props) {
+  const { t } = useTranslation();
   const isDesktop = useIsDesktop();
 
   if (artists.length === 0) return null;
@@ -28,8 +30,8 @@ export default function HomeArtists({ artists }: Props) {
     <section className="mx-auto max-w-[1600px] px-6 py-16 md:px-12 md:py-24">
       <SectionHeader
         eyebrow="004 — Artists"
-        title="작가"
-        sub="작품을 만드는 사람들"
+        title={t('home.sections.artists.title')}
+        sub={t('home.sections.artists.sub')}
         viewAllHref="/artist-lab"
       />
       {isDesktop ? <ArtistGrid artists={artists} /> : <ArtistPicker artists={artists} />}
@@ -38,6 +40,7 @@ export default function HomeArtists({ artists }: Props) {
 }
 
 function ArtistGrid({ artists }: Props) {
+  const { t } = useTranslation();
   return (
     <div className="grid grid-cols-5 gap-x-6 gap-y-8">
       {artists.map((artist) => (
@@ -75,7 +78,7 @@ function ArtistGrid({ artists }: Props) {
                 group-hover:max-h-64 group-hover:opacity-100
                 group-focus-visible:max-h-64 group-focus-visible:opacity-100
                 motion-reduce:transition-none">
-                {artist.description?.trim() || '작가 소개가 곧 올라옵니다.'}
+                {artist.description?.trim() || t('home.sections.artists.comingSoon')}
               </p>
             </div>
           </div>
@@ -86,6 +89,7 @@ function ArtistGrid({ artists }: Props) {
 }
 
 function ArtistPicker({ artists }: Props) {
+  const { t } = useTranslation();
   const [index, setIndex] = useState(0);
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const mounted = useRef(false);
@@ -131,7 +135,7 @@ function ArtistPicker({ artists }: Props) {
           더 있다는 표시가 되어, 따로 화살표를 두지 않아도 된다. */}
       <div
         role="tablist"
-        aria-label="작가 선택"
+        aria-label={t('home.sections.artists.pick')}
         onKeyDown={handleKeyDown}
         className="-mx-6 flex gap-5 overflow-x-auto border-b border-gray-200 px-6 no-scrollbar md:-mx-12 md:gap-8 md:px-12"
       >
@@ -202,7 +206,7 @@ function ArtistPicker({ artists }: Props) {
               자르는 목적은 요약이 아니라, 나중에 훨씬 긴 글이 들어왔을 때
               이 구간이 끝없이 늘어나지 않게 막아 두는 것이다. */}
           <p className="max-w-[68ch] whitespace-pre-line break-keep text-sm leading-relaxed text-gray-500 line-clamp-5 md:text-base md:line-clamp-4">
-            {active.description?.trim() || '작가 소개가 곧 올라옵니다.'}
+            {active.description?.trim() || t('home.sections.artists.comingSoon')}
           </p>
 
           <Link
@@ -211,7 +215,7 @@ function ArtistPicker({ artists }: Props) {
               text-xs font-bold text-gray-900 transition-colors hover:border-koala-purple
               hover:text-koala-purple motion-reduce:transition-none md:text-sm"
           >
-            작가 페이지 <ArrowRight className="h-4 w-4" />
+            {t('home.sections.artists.page')} <ArrowRight className="h-4 w-4" />
           </Link>
         </div>
       </div>

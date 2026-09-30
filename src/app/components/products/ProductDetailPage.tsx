@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react';
 import { getSku } from '@/api/sku';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
   skuCode: string;
 }
 
 export default function ProductDetailPage({ skuCode }: Props) {
+    const { t } = useTranslation();
     const [detailImage, setDetailImage] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
 
@@ -32,7 +34,7 @@ export default function ProductDetailPage({ skuCode }: Props) {
         <div className="w-full">
             <img
              src={detailImage}
-             alt="상품 상세 설명"
+             alt={t('product.card.detailImage')}
              className="w-full object-contain" />
         </div>
     )

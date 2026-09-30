@@ -26,9 +26,9 @@ export default function StoreHero({ artistCount, total }: StoreHeroProps) {
         </div>
         {(artistCount > 0 || total != null) && (
           <p className="text-[13px] text-gray-500 md:text-right">
-            {artistCount > 0 && <>작가 <b className="font-semibold text-gray-900">{artistCount}명</b></>}
+            {artistCount > 0 && <>{t('store.hero.artistsLabel')} <b className="font-semibold text-gray-900">{t('store.hero.artistCount', { count: artistCount })}</b></>}
             {artistCount > 0 && total != null && <span className="mx-2 text-gray-300">·</span>}
-            {total != null && <>작품 <b className="font-semibold tabular-nums text-gray-900">{total}점</b></>}
+            {total != null && <>{t('store.hero.worksLabel')} <b className="font-semibold tabular-nums text-gray-900">{t('store.hero.workCount', { count: total })}</b></>}
           </p>
         )}
       </div>

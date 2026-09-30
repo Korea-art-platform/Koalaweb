@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { ImageWithFallback } from '@/app/components/fallback/ImageWithFallback';
 import { ImageLightbox } from '@/app/components/common/ImageLightbox';
+import { useTranslation } from 'react-i18next';
 
 interface ArtMaterialProps {
   images: string[];
@@ -8,7 +9,9 @@ interface ArtMaterialProps {
   title?: string;
 }
 
-export function ArtMaterial({ images, description, title = '작품' }: ArtMaterialProps) {
+export function ArtMaterial({ images, description, title: titleProp }: ArtMaterialProps) {
+  const { t } = useTranslation();
+  const title = titleProp ?? t('art.images.defaultTitle');
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
   if (images.length === 0 && !description) return null;
@@ -21,7 +24,7 @@ export function ArtMaterial({ images, description, title = '작품' }: ArtMateri
   return (
     <>
       <section className="mb-16">
-        <h2 className="text-xl font-bold text-gray-400 mb-5">재질 / 소재</h2>
+        <h2 className="text-xl font-bold text-gray-400 mb-5">{t('art.material.heading')}</h2>
         <div className="grid grid-cols-2 gap-3">
           <div className="flex flex-col gap-2">
             <div className="grid grid-cols-2 gap-2">
@@ -30,7 +33,7 @@ export function ArtMaterial({ images, description, title = '작품' }: ArtMateri
                   className="aspect-square bg-gray-100 overflow-hidden cursor-zoom-in"
                   onClick={() => setLightboxIndex(0)}
                 >
-                  <ImageWithFallback src={first} alt={`${title} 소재 1`} className={imgClass} />
+                  <ImageWithFallback src={first} alt={t('art.material.alt', { title, n: 1 })} className={imgClass} />
                 </div>
               )}
               {second && (
@@ -38,7 +41,7 @@ export function ArtMaterial({ images, description, title = '작품' }: ArtMateri
                   className="aspect-square bg-gray-100 overflow-hidden cursor-zoom-in"
                   onClick={() => setLightboxIndex(1)}
                 >
-                  <ImageWithFallback src={second} alt={`${title} 소재 2`} className={imgClass} />
+                  <ImageWithFallback src={second} alt={t('art.material.alt', { title, n: 2 })} className={imgClass} />
                 </div>
               )}
             </div>
@@ -47,14 +50,14 @@ export function ArtMaterial({ images, description, title = '작품' }: ArtMateri
                 className="w-full aspect-[2/1] bg-gray-100 overflow-hidden cursor-zoom-in"
                 onClick={() => setLightboxIndex(2)}
               >
-                <ImageWithFallback src={third} alt={`${title} 소재 3`} className={imgClass} />
+                <ImageWithFallback src={third} alt={t('art.material.alt', { title, n: 3 })} className={imgClass} />
               </div>
             )}
           </div>
           <div className="flex flex-col justify-start gap-2 pl-1">
             {description && (
               <>
-                <p className="text-xs font-semibold text-gray-500">설명문</p>
+                <p className="text-xs font-semibold text-gray-500">{t('art.material.caption')}</p>
                 <p className="text-sm text-gray-600 leading-relaxed whitespace-pre-wrap">
                   {description}
                 </p>
@@ -69,7 +72,7 @@ export function ArtMaterial({ images, description, title = '작품' }: ArtMateri
             className="w-full aspect-square bg-gray-100 overflow-hidden mt-2 cursor-zoom-in"
             onClick={() => setLightboxIndex(idx + 3)}
           >
-            <ImageWithFallback src={src} alt={`${title} 소재 ${idx + 4}`} className={imgClass} />
+            <ImageWithFallback src={src} alt={t('art.material.alt', { title, n: idx + 4 })} className={imgClass} />
           </div>
         ))}
       </section>
@@ -78,7 +81,7 @@ export function ArtMaterial({ images, description, title = '작품' }: ArtMateri
         <ImageLightbox
           images={images}
           initialIndex={lightboxIndex}
-          title={`${title} 소재`}
+          title={t('art.material.lightbox', { title })}
           onClose={() => setLightboxIndex(null)}
         />
       )}

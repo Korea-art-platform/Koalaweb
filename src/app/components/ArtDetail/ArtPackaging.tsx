@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { ImageWithFallback } from '@/app/components/fallback/ImageWithFallback';
 import { ImageLightbox } from '@/app/components/common/ImageLightbox';
+import { useTranslation } from 'react-i18next';
 
 interface ArtPackagingProps {
   images: string[];
@@ -13,8 +14,10 @@ export function ArtPackaging({
   images,
   packagingTitle,
   packagingDescription,
-  title = '작품',
+  title: titleProp,
 }: ArtPackagingProps) {
+  const { t } = useTranslation();
+  const title = titleProp ?? t('art.images.defaultTitle');
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
   if (images.length === 0 && !packagingTitle && !packagingDescription) return null;
@@ -27,7 +30,7 @@ export function ArtPackaging({
   return (
     <>
       <section className="mb-16">
-        <h2 className="text-xl font-bold text-gray-400 mb-5">포장 사진</h2>
+        <h2 className="text-xl font-bold text-gray-400 mb-5">{t('art.packaging.heading')}</h2>
         <div className="grid grid-cols-2 gap-3">
           <div className="flex flex-col gap-2">
             <div className="grid grid-cols-2 gap-2">
@@ -36,7 +39,7 @@ export function ArtPackaging({
                   className="aspect-square bg-gray-100 overflow-hidden cursor-zoom-in"
                   onClick={() => setLightboxIndex(0)}
                 >
-                  <ImageWithFallback src={first} alt={`${title} 포장 1`} className={imgClass} />
+                  <ImageWithFallback src={first} alt={t('art.packaging.alt', { title, n: 1 })} className={imgClass} />
                 </div>
               )}
               {second && (
@@ -44,7 +47,7 @@ export function ArtPackaging({
                   className="aspect-square bg-gray-100 overflow-hidden cursor-zoom-in"
                   onClick={() => setLightboxIndex(1)}
                 >
-                  <ImageWithFallback src={second} alt={`${title} 포장 2`} className={imgClass} />
+                  <ImageWithFallback src={second} alt={t('art.packaging.alt', { title, n: 2 })} className={imgClass} />
                 </div>
               )}
             </div>
@@ -54,7 +57,7 @@ export function ArtPackaging({
                 className="w-full aspect-[2/1] bg-gray-100 overflow-hidden cursor-zoom-in"
                 onClick={() => setLightboxIndex(2)}
               >
-                <ImageWithFallback src={third} alt={`${title} 포장 3`} className={imgClass} />
+                <ImageWithFallback src={third} alt={t('art.packaging.alt', { title, n: 3 })} className={imgClass} />
               </div>
             )}
           </div>
@@ -76,7 +79,7 @@ export function ArtPackaging({
             className="w-full aspect-square bg-gray-100 overflow-hidden mt-2 cursor-zoom-in"
             onClick={() => setLightboxIndex(idx + 3)}
           >
-            <ImageWithFallback src={src} alt={`${title} 포장 ${idx + 4}`} className={imgClass} />
+            <ImageWithFallback src={src} alt={t('art.packaging.alt', { title, n: idx + 4 })} className={imgClass} />
           </div>
         ))}
       </section>
@@ -85,7 +88,7 @@ export function ArtPackaging({
         <ImageLightbox
           images={images}
           initialIndex={lightboxIndex}
-          title={`${title} 포장`}
+          title={t('art.packaging.lightbox', { title })}
           onClose={() => setLightboxIndex(null)}
         />
       )}

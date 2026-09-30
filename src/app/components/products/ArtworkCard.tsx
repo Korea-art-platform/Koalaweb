@@ -2,6 +2,7 @@ import { Link } from 'react-router';
 import { Sparkles } from 'lucide-react';
 import WishBookmark from '@/app/components/common/WishBookmark';
 import { ImageWithFallback } from '@/app/components/fallback/ImageWithFallback';
+import { useTranslation } from 'react-i18next';
 
 interface ArtworkCardProps {
   id: string;
@@ -24,6 +25,7 @@ export default function ArtworkCard({
   isAICurated,
   size = 'medium',
 }: ArtworkCardProps) {
+  const { t } = useTranslation();
   const heights = {
     large: 'h-[600px]',
     medium: 'h-[450px]',
@@ -45,11 +47,11 @@ export default function ArtworkCard({
           {isAICurated && (
             <div className="absolute top-4 left-4 flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/90 backdrop-blur-sm">
               <Sparkles className="w-3.5 h-3.5 text-purple-500" />
-              <span className="text-xs">품절 직전!</span>
+              <span className="text-xs">{t('product.card.almostGone')}</span>
             </div>
           )}
 
-          <button aria-label="찜하기" className="absolute top-4 right-4 p-2.5 rounded-full bg-white/90 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:bg-white text-gray-500">
+          <button aria-label={t('product.card.wish')} className="absolute top-4 right-4 p-2.5 rounded-full bg-white/90 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:bg-white text-gray-500">
             <WishBookmark active={false} size={17} />
           </button>
         </div>

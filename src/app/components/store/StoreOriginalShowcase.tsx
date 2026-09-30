@@ -6,6 +6,7 @@ import { useIsDesktop } from '@/app/hooks/useMediaQuery';
 import { ImageWithFallback } from '@/app/components/fallback/ImageWithFallback';
 import { displayPrice, formatWon } from '@/app/lib/price';
 import type { Sku } from '@/api/types';
+import { useTranslation } from 'react-i18next';
 
 const SHOW_MS = 4000;
 const SWIPE = 45;
@@ -13,6 +14,7 @@ const EASE = [0.22, 0.61, 0.36, 1] as const;
 
 // 목록 위 원작 한 점 — PC 는 4초마다 다음 원작으로, 모바일은 손으로 민다
 export default function StoreOriginalShowcase({ works }: { works: Sku[] }) {
+  const { t } = useTranslation();
   const reduce = useReducedMotion();
   const isDesktop = useIsDesktop();
   const ref = useRef<HTMLElement>(null);
@@ -41,8 +43,8 @@ export default function StoreOriginalShowcase({ works }: { works: Sku[] }) {
   return (
     <section
       ref={ref}
-      aria-roledescription="원작 소개"
-      aria-label={`원작 ${current + 1} / ${total}`}
+      aria-roledescription={t('store.originals.role')}
+      aria-label={t('store.originals.position', { n: current + 1, total })}
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
       onFocus={() => setPaused(true)}
@@ -71,7 +73,7 @@ export default function StoreOriginalShowcase({ works }: { works: Sku[] }) {
               <Link to={`/product/${sku.skuCode}`} className="block h-full w-full">
                 <ImageWithFallback
                   src={sku.primaryImageUrl ?? ''}
-                  alt={`${sku.artistName} 작 ${title}`}
+                  alt={t('product.card.byArtist', { artist: sku.artistName, title })}
                   className="h-full w-full object-contain"
                 />
               </Link>
@@ -99,7 +101,7 @@ export default function StoreOriginalShowcase({ works }: { works: Sku[] }) {
               to={`/product/${sku.skuCode}`}
               className="mt-5 inline-block border-b border-gray-400 pb-0.5 text-[13px] text-gray-900 transition-colors hover:border-koala-purple hover:text-koala-purple"
             >
-              작품 자세히 보기
+              {t('store.originals.details')}
             </Link>
           </motion.div>
         </AnimatePresence>
@@ -113,7 +115,7 @@ export default function StoreOriginalShowcase({ works }: { works: Sku[] }) {
                 key={w.skuCode}
                 type="button"
                 onClick={() => setIndex(i)}
-                aria-label={`${w.model ?? w.name} 보기`}
+                aria-label={t('store.originals.view', { name: w.model ?? w.name })}
                 aria-current={i === current}
                 className={`h-1.5 rounded-full transition-[width,background-color] duration-300
                   ${i === current ? 'w-5 bg-koala-purple' : 'w-1.5 bg-gray-300 hover:bg-gray-400'}`}
@@ -121,11 +123,11 @@ export default function StoreOriginalShowcase({ works }: { works: Sku[] }) {
             ))}
           </div>
           <div className="flex gap-2">
-            <button type="button" onClick={() => go(-1)} aria-label="이전 원작"
+            <button type="button" onClick={() => go(-1)} aria-label={t('store.originals.prev')}
               className="flex h-9 w-9 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-600 hover:text-gray-900">
               <ArrowLeft className="h-4 w-4" />
             </button>
-            <button type="button" onClick={() => go(1)} aria-label="다음 원작"
+            <button type="button" onClick={() => go(1)} aria-label={t('store.originals.next')}
               className="flex h-9 w-9 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-600 hover:text-gray-900">
               <ArrowRight className="h-4 w-4" />
             </button>

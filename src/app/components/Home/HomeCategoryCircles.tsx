@@ -7,6 +7,7 @@ import WorkRow, { WorkCell } from './WorkRow';
 import { toCdnUrl, toThumbUrl } from '@/app/lib/imageUrl';
 import type { Category } from '@/api/category';
 import type { Sku } from '@/api/types';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
   categories: Category[];
@@ -19,6 +20,7 @@ interface Props {
 
 // 분류 + 전체 작품 — 분류 원을 누르면 그 분류 작품만 아래에 나열한다
 export default function HomeCategoryCircles({ categories, skus, genreCounts, originalCode, limitedCode }: Props) {
+  const { t } = useTranslation();
   const tintOf = useCategoryTint();
   const { wishlistedCodes, wishlistLoading, handleWishlist } = useWishlistToggle();
   const [selected, setSelected] = useState<string | null>(null);
@@ -38,29 +40,29 @@ export default function HomeCategoryCircles({ categories, skus, genreCounts, ori
   const selectedName = categories.find((c) => c.code === selected)?.name;
 
   const markOf = (sku: Sku) => {
-    if (originalCode && sku.mainCategory === originalCode) return { mark: '원작', tone: 'gold' as const };
-    return { mark: sku.mainCategory === limitedCode ? '한정판' : '오픈에디션', tone: 'purple' as const };
+    if (originalCode && sku.mainCategory === originalCode) return { mark: t('common.marks.original'), tone: 'gold' as const };
+    return { mark: sku.mainCategory === limitedCode ? t('common.marks.limited') : t('common.marks.openEdition'), tone: 'purple' as const };
   };
 
   return (
     <section className="mx-auto max-w-[1320px] px-5 py-16 md:px-10 md:py-24">
       <SectionHeader
         eyebrow="003 — All Works"
-        title="전체 작품"
-        sub="분류를 누르면 그 분류 작품만 모아 봅니다"
+        title={t('home.sections.all.title')}
+        sub={t('home.sections.all.sub')}
         viewAllHref={selected ? `/store?category=${selected}` : '/store'}
-        viewAllLabel={selectedName ? `${selectedName} 스토어에서 보기` : '스토어에서 보기'}
+        viewAllLabel={selectedName ? t('home.sections.all.viewCategoryInStore', { name: selectedName }) : t('home.sections.all.viewInStore')}
       />
 
       {/* 분류 원 — 좁은 화면은 옆으로 민다 */}
       <div
         role="group"
-        aria-label="분류 고르기"
+        aria-label={t('home.sections.all.pickCategory')}
         className={`-mx-5 flex snap-x snap-mandatory scroll-px-5 gap-5 overflow-x-auto px-5 py-1 no-scrollbar
           md:mx-0 md:gap-8 md:px-0 ${circles.length <= 5 ? 'lg:justify-center lg:gap-12' : ''}`}
       >
         <CircleButton
-          label="전체"
+          label={t('home.sections.all.everything')}
           count={skus.length}
           active={!selected}
           tint="#ECE8F4"
@@ -116,6 +118,7 @@ interface CircleButtonProps {
 
 // 바깥 테는 분류 색, 안은 작품 사진. 고른 분류는 보라 테
 function CircleButton({ label, count, active, tint, image, onClick }: CircleButtonProps) {
+  const { t } = useTranslation();
   return (
     <button
       type="button"
@@ -154,7 +157,7 @@ function CircleButton({ label, count, active, tint, image, onClick }: CircleButt
       <span className={`mt-2.5 text-[13px] font-bold break-keep md:text-sm ${active ? 'text-koala-purple' : 'text-gray-900'}`}>
         {label}
       </span>
-      <span className="mt-0.5 text-xs text-gray-400">{count}점</span>
+      <span className="mt-0.5 text-xs text-gray-400">{t('home.sections.all.count', { count })}</span>
     </button>
   );
 }

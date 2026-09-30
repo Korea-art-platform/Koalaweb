@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 interface Props {
   /** 카드 위에 얹는 작은 칩(sm)과 상세·섹션에서 쓰는 큰 칩(md) */
   size?: 'sm' | 'md';
@@ -14,6 +15,7 @@ interface Props {
  * 테두리, 비스듬히 지나가는 광택을 더해 그보다 위라는 것을 나타낸다.
  */
 export default function OriginalBadge({ size = 'sm', className = '' }: Props) {
+  const { t } = useTranslation();
   const pad = size === 'sm'
     ? 'px-2 py-1 text-[9px] md:text-xs gap-1'
     : 'px-2.5 py-1.5 text-xs md:text-sm gap-1.5';
@@ -29,7 +31,7 @@ export default function OriginalBadge({ size = 'sm', className = '' }: Props) {
         className="pointer-events-none absolute inset-0 bg-[linear-gradient(105deg,transparent_38%,rgba(239,224,196,0.28)_50%,transparent_62%)]"
       />
       <span aria-hidden className="relative block h-1 w-1 rounded-full bg-koala-gold" />
-      <span className="relative">원작</span>
+      <span className="relative">{t('common.marks.original')}</span>
     </span>
   );
 }
