@@ -16,7 +16,8 @@ import LanguageToggle, { LanguageChoice } from '@/app/components/layouts/Languag
 import AccountMenu, { useAccountItems } from '@/app/components/layouts/AccountMenu';
 
 export function Header() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const artistLinkShow = i18n.language?.startsWith('en') ? '2xl:inline' : 'xl:inline';
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -144,7 +145,7 @@ export function Header() {
             <Link
               to="/"
               onClick={() => setIsMenuOpen(false)}
-              className="z-[120] group min-w-0 shrink"
+              className="z-[120] group min-w-0 shrink lg:shrink-0"
             >
               <img
                 src={!isMenuOpen && onDark ? '/logo-white.svg' : '/logo.svg'}
@@ -164,7 +165,7 @@ export function Header() {
               })}
 
               {artists.length > 0 && (
-                <span className={`hidden xl:inline text-xs ${onDark ? 'text-white/20' : 'text-gray-200'}`}>|</span>
+                <span className={`hidden ${artistLinkShow} text-xs ${onDark ? 'text-white/20' : 'text-gray-200'}`}>|</span>
               )}
 
               {artists.map((artist) => {
@@ -173,7 +174,7 @@ export function Header() {
                   <Link
                     key={artist.artistCode}
                     to={`/artist/${artist.artistCode}`}
-                    className={`hidden xl:inline ${navLinkClass(active)}`}
+                    className={`hidden ${artistLinkShow} ${navLinkClass(active)}`}
                   >
                     {artist.name}
                     <span className={navUnderlineClass(active)} />

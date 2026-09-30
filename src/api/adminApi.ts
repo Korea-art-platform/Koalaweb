@@ -163,6 +163,7 @@ export async function getAdminArtist(artistCode: string) {
 
 export async function createArtist(body: {
   name: string;
+  nameEn?: string;
   slug: string;
   description?: string;
   artistNote?: string;
@@ -174,6 +175,7 @@ export async function createArtist(body: {
 
 export async function updateArtist(artistCode: string, body: {
   name: string;
+  nameEn?: string;
   slug: string;
   description?: string;
   artistNote?: string;
@@ -626,6 +628,7 @@ export interface ArtistDetailResponse {
   id: number;
   artistCode: string;
   name: string;
+  nameEn?: string | null;
   slug: string;
   description?: string;
   artistNote?: string;

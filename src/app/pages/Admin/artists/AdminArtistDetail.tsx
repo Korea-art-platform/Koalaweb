@@ -142,6 +142,7 @@ function InfoTab({
 }) {
   const [form, setForm] = useState({
     name: artist.name,
+    nameEn: artist.nameEn ?? '',
     slug: artist.slug,
     description: artist.description ?? '',
     artistNote: artist.artistNote ?? '',
@@ -161,6 +162,7 @@ function InfoTab({
     try {
       await updateArtist(artist.artistCode, {
         name: form.name.trim(),
+        nameEn: form.nameEn.trim(),
         slug: form.slug.trim(),
         description: form.description.trim() || undefined,
         artistNote: form.artistNote.trim() || undefined,
@@ -184,6 +186,15 @@ function InfoTab({
           onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
           className={inputCls}
         />
+      </Field>
+      <Field label="영문 이름">
+        <input
+          value={form.nameEn}
+          onChange={(e) => setForm((f) => ({ ...f, nameEn: e.target.value }))}
+          className={inputCls}
+          placeholder="Hong Gildong"
+        />
+        <p className="mt-1 text-[11px] text-gray-400">영어 화면에서 이 이름을 보여 줍니다. 비우면 한글 이름이 그대로 나옵니다.</p>
       </Field>
       <Field label="슬러그 *">
         <input

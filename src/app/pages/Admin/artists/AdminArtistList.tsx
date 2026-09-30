@@ -5,6 +5,7 @@ import { getAdminArtists, createArtist, deleteArtist, activateArtist, deactivate
 
 interface ArtistForm {
   name: string;
+  nameEn: string;
   slug: string;
   description: string;
   profileImageUrl: string;
@@ -16,7 +17,7 @@ export default function AdminArtistList() {
   const [page, setPage] = useState(0);
   const [loading, setLoading] = useState(true);
   const [createOpen, setCreateOpen] = useState(false);
-  const [form, setForm] = useState<ArtistForm>({ name: '', slug: '', description: '', profileImageUrl: '' });
+  const [form, setForm] = useState<ArtistForm>({ name: '', nameEn: '', slug: '', description: '', profileImageUrl: '' });
   const [submitting, setSubmitting] = useState(false);
   const [formError, setFormError] = useState('');
 
@@ -37,12 +38,13 @@ export default function AdminArtistList() {
     try {
       await createArtist({
         name: form.name.trim(),
+        nameEn: form.nameEn.trim() || undefined,
         slug: form.slug.trim(),
         description: form.description.trim() || undefined,
         profileImageUrl: form.profileImageUrl.trim() || undefined,
       });
       setCreateOpen(false);
-      setForm({ name: '', slug: '', description: '', profileImageUrl: '' });
+      setForm({ name: '', nameEn: '', slug: '', description: '', profileImageUrl: '' });
       load();
     } catch {
       setFormError('생성에 실패했습니다. 슬러그가 중복되었을 수 있습니다.');
@@ -107,7 +109,10 @@ export default function AdminArtistList() {
             <tbody className="divide-y divide-gray-50">
               {artists.map((a: any) => (
                 <tr key={a.artistCode} className="hover:bg-gray-50 transition-colors">
-                  <td className="px-5 py-4 font-medium text-gray-900">{a.name}</td>
+                  <td className="px-5 py-4 font-medium text-gray-900">
+                    {a.name}
+                    {a.nameEn && <span className="ml-2 text-xs font-normal text-gray-400">{a.nameEn}</span>}
+                  </td>
                   <td className="px-5 py-4 font-mono text-xs text-gray-400">{a.artistCode}</td>
                   <td className="px-5 py-4 text-xs text-gray-500">{a.slug}</td>
                   <td className="px-5 py-4">
@@ -163,6 +168,15 @@ export default function AdminArtistList() {
                 />
               </div>
               <div>
+                <label className="block text-xs text-gray-500 mb-1.5">영문 이름 <span className="text-gray-400">(영어 화면용, 선택)</span></label>
+                <input
+                  value={form.nameEn}
+                  onChange={(e) => setForm((f) => ({ ...f, nameEn: e.target.value }))}
+                  className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-black/10"
+                  placeholder="Hong Gildong"
+                />
+              </div>
+              <div>
                 <label className="block text-xs text-gray-500 mb-1.5">슬러그 * <span className="text-gray-400">(영문, 숫자, 하이픈)</span></label>
                 <input
                   value={form.slug}
@@ -193,7 +207,7 @@ export default function AdminArtistList() {
             </div>
             {formError && <p className="text-xs text-red-500 mt-3">{formError}</p>}
             <div className="flex gap-2 mt-5">
-              <button onClick={() => { setCreateOpen(false); setForm({ name: '', slug: '', description: '', profileImageUrl: '' }); setFormError(''); }} className="flex-1 py-2.5 text-sm border border-gray-200 rounded-lg hover:bg-gray-50">취소</button>
+              <button onClick={() => { setCreateOpen(false); setForm({ name: '', nameEn: '', slug: '', description: '', profileImageUrl: '' }); setFormError(''); }} className="flex-1 py-2.5 text-sm border border-gray-200 rounded-lg hover:bg-gray-50">취소</button>
               <button onClick={handleCreate} disabled={submitting} className="flex-1 py-2.5 text-sm bg-koala-navy text-white rounded-lg hover:bg-koala-navy-hover disabled:opacity-50">{submitting ? '생성 중...' : '생성'}</button>
             </div>
           </div>

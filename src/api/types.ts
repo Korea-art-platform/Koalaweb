@@ -175,6 +175,8 @@ export interface ArtistCareer {
 export interface Artist {
   artistCode: string;
   name: string;
+  nameEn?: string | null;
+  nameKo?: string;
   description?: string;
   artistNote?: string;
   specialty?: string;

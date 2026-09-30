@@ -22,9 +22,18 @@ function swap(node: Node) {
       }
     }
   }
+  if (typeof node.artistCode === 'string' && typeof node.skuCode !== 'string'
+      && hasText(node.nameEn) && typeof node.name === 'string') {
+    node.nameKo = node.name;
+    node.name = node.nameEn;
+  }
   if (hasText(node.skuNameEn) && typeof node.skuName === 'string') {
     node.skuNameKo = node.skuName;
     node.skuName = node.skuNameEn;
+  }
+  if (hasText(node.artistNameEn) && typeof node.artistName === 'string') {
+    node.artistNameKo = node.artistName;
+    node.artistName = node.artistNameEn;
   }
 }
 

@@ -30,6 +30,19 @@ describe('localizeNames', () => {
     expect(category.name).toBe('원작');
   });
 
+  it('영어일 때 작가 이름을 영문으로 바꾸고, 상품 안의 작가 코드는 상품명으로 착각하지 않는다', () => {
+    const data = {
+      artists: [{ artistCode: 'P1', name: '박준상', nameEn: 'Park Junsang' }, { artistCode: 'K1', name: '김원근', nameEn: null }],
+      sku: { skuCode: 'A', artistCode: 'P1', name: '버즈', nameEn: 'Birds', artistName: '박준상', artistNameEn: 'Park Junsang' },
+    };
+
+    localizeNames(data, true);
+
+    expect(data.artists[0]).toMatchObject({ name: 'Park Junsang', nameKo: '박준상' });
+    expect(data.artists[1].name).toBe('김원근');
+    expect(data.sku).toMatchObject({ name: 'Birds', artistName: 'Park Junsang', artistNameKo: '박준상' });
+  });
+
   it('영문명이 공백이면 한글명을 유지한다', () => {
     const sku = { skuCode: 'A', name: '해피토마', nameEn: '  ' };
     localizeNames(sku, true);
