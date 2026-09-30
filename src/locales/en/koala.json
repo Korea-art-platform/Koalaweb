@@ -111,7 +111,8 @@
       "artGallery": "3D Gallery",
       "lab": "Artist Lab",
       "store": "Artist Collectibles",
-      "stores": "Stockists"
+      "stores": "Stockists",
+      "about": "About KOALA"
     },
     "subMenus": {
       "notice": "Notices",

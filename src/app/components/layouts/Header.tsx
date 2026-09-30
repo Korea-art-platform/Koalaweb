@@ -17,7 +17,7 @@ import AccountMenu, { useAccountItems } from '@/app/components/layouts/AccountMe
 
 export function Header() {
   const { t, i18n } = useTranslation();
-  const artistLinkShow = i18n.language?.startsWith('en') ? '2xl:inline' : 'xl:inline';
+  const artistLinkShow = i18n.language?.startsWith('en') ? 'min-[1760px]:inline' : 'xl:inline';
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -127,6 +127,7 @@ export function Header() {
     { key: 'lab', path: '/artist-lab' },
     { key: 'store', path: '/store' },
     { key: 'stores', path: '/stores' },
+    { key: 'about', path: '/about' },
   ];
 
   const accountItems = useAccountItems(() => setIsMenuOpen(false));
@@ -153,7 +154,7 @@ export function Header() {
                 className="h-10 min-[360px]:h-12 w-auto max-w-full object-contain object-left transition-opacity duration-200 group-hover:opacity-75"
               />
             </Link>
-            <div className="hidden lg:flex items-center gap-5 xl:gap-8">
+            <div className="hidden lg:flex items-center gap-5 2xl:gap-8">
               {menus.map((menu) => {
                 const active = location.pathname === menu.path;
                 return (
