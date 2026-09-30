@@ -242,10 +242,23 @@ export default function Checkout() {
       return;
     }
 
-    let mobilePhone = form.ordererPhone.replace(/\D/g, '');
-    if (mobilePhone.startsWith('82')) mobilePhone = '0' + mobilePhone.slice(2);
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.ordererEmail.trim())) {
+      alert(t('checkout.errors.email'));
+      return;
+    }
+
+    const localDigits = (v: string) => {
+      const d = v.replace(/\D/g, '');
+      return d.startsWith('82') ? '0' + d.slice(2) : d;
+    };
+    const mobilePhone = localDigits(form.ordererPhone);
     if (mobilePhone.length < 10 || mobilePhone.length > 11) {
       alert(t('checkout.errors.phone'));
+      return;
+    }
+    const recipientDigits = localDigits(form.recipientPhone);
+    if (recipientDigits.length < 9 || recipientDigits.length > 11) {
+      alert(t('checkout.errors.recipientPhone'));
       return;
     }
 

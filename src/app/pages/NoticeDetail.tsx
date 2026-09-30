@@ -4,6 +4,7 @@ import { Helmet } from 'react-helmet-async';
 import { ArrowLeft, Pin } from 'lucide-react';
 import { getNotice, type NoticeItem } from '@/api/notice';
 import { noticeToSafeHtml } from '@/app/lib/html';
+import i18n from '@/locales/i18n';
 import { useTranslation } from 'react-i18next';
 
 export default function NoticeDetail() {
@@ -63,7 +64,7 @@ export default function NoticeDetail() {
                 {notice.title}
               </h1>
               <p className="text-xs text-gray-400">
-                {new Date(notice.createdAt).toLocaleDateString('ko-KR', {
+                {new Date(notice.createdAt).toLocaleDateString(i18n.language, {
                   year: 'numeric',
                   month: 'long',
                   day: 'numeric',

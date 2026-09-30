@@ -15,6 +15,14 @@ const PG_LABELS: Record<PgCode, string> = {
 
 export const PG_DISPLAY_NAME: string = PG_LABELS[ACTIVE_PG] ?? PG_LABELS.TOSS;
 
+const PG_LABELS_EN: Record<PgCode, string> = {
+  TOSS: 'Toss Payments',
+  NICEPAY: 'NICEPAY',
+  PAYPLE: 'Payple',
+};
+
+export const PG_DISPLAY_NAME_EN: string = PG_LABELS_EN[ACTIVE_PG] ?? PG_LABELS_EN.TOSS;
+
 export type PayMethod = 'CARD' | 'TRANSFER' | 'MOBILE_PHONE' | 'TOSSPAY' | 'KAKAOPAY' | 'NAVERPAY';
 
 export interface PayMethodOption {
@@ -47,3 +55,14 @@ const METHODS_BY_PG: Record<PgCode, PayMethodOption[]> = {
 export const PAY_METHODS: PayMethodOption[] = METHODS_BY_PG[ACTIVE_PG] ?? METHODS_BY_PG.TOSS;
 
 export const PAY_METHOD_SENTENCE: string = PAY_METHODS.map((m) => m.label).join(', ');
+
+const METHOD_LABELS_EN: Record<PayMethod, string> = {
+  CARD: 'credit card',
+  TRANSFER: 'bank transfer',
+  MOBILE_PHONE: 'mobile phone billing',
+  TOSSPAY: 'Toss Pay',
+  KAKAOPAY: 'Kakao Pay',
+  NAVERPAY: 'Naver Pay',
+};
+
+export const PAY_METHOD_SENTENCE_EN: string = PAY_METHODS.map((m) => METHOD_LABELS_EN[m.id]).join(', ');

@@ -799,6 +799,12 @@
       "shipping": "Shipping",
       "shippingSummary": "₩{{fee}} (free over ₩{{thresholdAmount}}; extra for Jeju and remote islands)",
       "back": "Back"
+    },
+    "badges": {
+      "authentic": "Certified authentic",
+      "worldwide": "Worldwide shipping",
+      "signed": "Signed by the artist",
+      "care": "Care kit included"
     }
   },
   "search": {
@@ -1139,7 +1145,9 @@
       "phone": "Please enter a valid phone number (e.g. 01012345678).",
       "amount": "We couldn't confirm the payment amount. Please try again shortly.",
       "generic": "Payment error: {{message}}",
-      "failed": "Payment failed."
+      "failed": "Payment failed.",
+      "email": "Please enter a valid email. We use it for your order confirmation and guest order lookup.",
+      "recipientPhone": "Please enter a valid recipient phone number (e.g. 01012345678)."
     }
   },
   "payment": {

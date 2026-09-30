@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router';
-import { PG_DISPLAY_NAME, PAY_METHOD_SENTENCE } from '@/app/lib/pgInfo';
+import { PG_DISPLAY_NAME_EN, PAY_METHOD_SENTENCE_EN } from '@/app/lib/pgInfo';
 import { ArrowLeft } from 'lucide-react';
 import TranslationNotice from '@/app/components/common/TranslationNotice';
 import PageMeta from '@/app/components/common/PageMeta';
@@ -85,12 +85,12 @@ export default function TermsEn() {
           <h2 className="font-semibold text-gray-900">Article 6 (Purchases and payment)</h2>
           <p>
             Members may select items on the Service and buy them using a payment method. Payments
-            are processed through the payment provider {PG_DISPLAY_NAME}, and under Article 17 of the
+            are processed through the payment provider {PG_DISPLAY_NAME_EN}, and under Article 17 of the
             Act on Consumer Protection in Electronic Commerce you may withdraw your purchase within
             7 days of the purchase date.
           </p>
           <ul className="space-y-1 list-disc list-inside text-gray-600 mt-2">
-            <li>Payment methods: {PAY_METHOD_SENTENCE}</li>
+            <li>Payment methods: {PAY_METHOD_SENTENCE_EN}</li>
             <li>Item prices include VAT.</li>
             <li>Shipping is shown separately at checkout.</li>
           </ul>

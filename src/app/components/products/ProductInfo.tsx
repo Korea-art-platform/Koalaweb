@@ -6,6 +6,13 @@ import { useOriginalCategoryCode } from '@/app/hooks/useOriginalCategory';
 import { lowStockCount } from '@/app/lib/lowStock';
 import { sizeText, weightText } from '@/app/lib/skuSpec';
 
+const BADGE_KEYS: Record<string, string> = {
+  '진품 보증': 'product.badges.authentic',
+  '전세계 배송': 'product.badges.worldwide',
+  '아티스트 사인': 'product.badges.signed',
+  '케어 포함': 'product.badges.care',
+};
+
 interface ColorOption {
   name: string;
   hex: string;
@@ -110,7 +117,7 @@ export function ProductInfo({ sku, selectedColor, onColorSelect }: Props) {
                   className="w-1.5 h-1.5 rounded-full bg-gradient-to-br from-koala-navy to-koala-red/70"
                   aria-hidden
                 />
-                {badge.text}
+                {BADGE_KEYS[badge.text.trim()] ? t(BADGE_KEYS[badge.text.trim()]) : badge.text}
               </span>
             ))}
           </div>

@@ -64,7 +64,7 @@ export default function Exhibition() {
     t('exhibition.defaultNote');
 
   return (
-    <main className="bg-[#0d0812] text-white">
+    <main className="overflow-x-clip bg-[#0d0812] text-white">
       <PageMeta title={title} description={t('exhibition.metaDescription', { subtitle })} />
       <Entrance title={title} subtitle={subtitle} cover={intro?.imageUrl} />
       <Preface note={note} />

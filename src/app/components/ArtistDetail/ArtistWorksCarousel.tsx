@@ -18,7 +18,6 @@ interface ArtistWorksCarouselProps {
 
 export function ArtistWorksCarousel({ works, artistId }: ArtistWorksCarouselProps) {
   const { t } = useTranslation();
-  if (!works || works.length === 0) return null;
   const scrollRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
@@ -44,6 +43,8 @@ export function ArtistWorksCarousel({ works, artistId }: ArtistWorksCarouselProp
   const scroll = (dir: 'left' | 'right') => {
     scrollRef.current?.scrollBy({ left: dir === 'right' ? 280 : -280, behavior: 'smooth' });
   };
+
+  if (!works || works.length === 0) return null;
 
   const allWorksUrl = artistId ? `/artist/${artistId}/works` : '#';
 

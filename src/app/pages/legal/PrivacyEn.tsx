@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router';
-import { PG_DISPLAY_NAME } from '@/app/lib/pgInfo';
+import { PG_DISPLAY_NAME_EN } from '@/app/lib/pgInfo';
 import { ArrowLeft } from 'lucide-react';
 import TranslationNotice from '@/app/components/common/TranslationNotice';
 import PageMeta from '@/app/components/common/PageMeta';
@@ -39,7 +39,7 @@ export default function PrivacyEn() {
             <p className="font-medium text-gray-800 mt-2">Collected when you order and pay</p>
             <ul className="space-y-1 list-disc list-inside text-gray-600">
               <li>Delivery details (recipient name, address, contact number)</li>
-              <li>Payment details such as card numbers are handled directly by our payment provider {PG_DISPLAY_NAME} and are not stored by us</li>
+              <li>Payment details such as card numbers are handled directly by our payment provider {PG_DISPLAY_NAME_EN} and are not stored by us</li>
             </ul>
             <p className="font-medium text-gray-800 mt-2">Collected with social sign-in</p>
             <ul className="space-y-1 list-disc list-inside text-gray-600">
@@ -99,7 +99,7 @@ export default function PrivacyEn() {
               </thead>
               <tbody className="divide-y divide-gray-100">
                 <tr>
-                  <td className="px-4 py-2 text-gray-600">{PG_DISPLAY_NAME}</td>
+                  <td className="px-4 py-2 text-gray-600">{PG_DISPLAY_NAME_EN}</td>
                   <td className="px-4 py-2 text-gray-600">Payment processing</td>
                 </tr>
                 <tr>
