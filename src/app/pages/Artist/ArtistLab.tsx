@@ -22,7 +22,7 @@ export default function ArtistLab() {
 
   return (
     <div className="flex-1">
-      <PageMeta title="작가의 연구소" description="한국 현대미술 작가들의 작품 세계와 창작 여정을 소개합니다." />
+      <PageMeta title={t('artistLab.metaTitle')} description={t('artistLab.metaDescription')} />
       <ArtistLabHero />
       <section className="px-6 md:px-8 pb-32">
         <div className="max-w-[1600px] mx-auto space-y-20 md:space-y-32">

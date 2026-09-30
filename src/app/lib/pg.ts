@@ -2,6 +2,7 @@ import { loadTossPayments, ANONYMOUS } from '@tosspayments/tosspayments-sdk';
 import { loadNicePay, requestNicePay, type NicePayMethod } from '@/app/lib/nicepay';
 import { loadPayple, requestPayple } from '@/app/lib/payple';
 import { ACTIVE_PG, type PayMethod } from '@/app/lib/pgInfo';
+import i18n from '@/locales/i18n';
 
 export {
   ACTIVE_PG,
@@ -50,7 +51,7 @@ export async function startPayment(params: StartPaymentParams): Promise<void> {
 
 async function startNicePay(p: StartPaymentParams): Promise<void> {
   if (!NICE_CLIENT_ID) {
-    p.onError('결제 설정이 완료되지 않았습니다. 잠시 후 다시 시도해 주세요.');
+    p.onError(i18n.t('payment.notConfigured'));
     return;
   }
   await loadNicePay();
@@ -73,7 +74,7 @@ async function startNicePay(p: StartPaymentParams): Promise<void> {
 
 async function startPayple(p: StartPaymentParams): Promise<void> {
   if (!PAYPLE_CLIENT_KEY) {
-    p.onError('결제 설정이 완료되지 않았습니다. 잠시 후 다시 시도해 주세요.');
+    p.onError(i18n.t('payment.notConfigured'));
     return;
   }
   await loadPayple(import.meta.env.MODE === 'production');

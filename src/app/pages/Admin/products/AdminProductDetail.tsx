@@ -289,7 +289,7 @@ function InfoTab({ sku, onSaved }: { sku: any; onSaved: () => void }) {
           ))}
 
           <p className="mt-3 text-[11px] leading-relaxed text-gray-400">
-            상품명은 모델 이름으로 만들어집니다. 모델에 종 이름이 없으면 앞에 붙습니다. 영문은 주소를 만드는 데 쓰입니다.
+            상품명은 모델 이름으로 만들어집니다. 모델에 종 이름이 없으면 앞에 붙습니다. 영문은 영어 화면의 상품명으로 쓰이고, 처음 등록할 때 주소를 만드는 데도 쓰였습니다(주소는 바뀌지 않습니다).
           </p>
         </div>
         <div>

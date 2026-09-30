@@ -1,5 +1,6 @@
 import { useRef, useState, useEffect, useCallback, type ReactNode } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 export default function CarouselArrows({
   label,
@@ -10,6 +11,7 @@ export default function CarouselArrows({
   children: ReactNode;
   className?: string;
 }) {
+  const { t } = useTranslation();
   const trackRef = useRef<HTMLDivElement>(null);
   const [atStart, setAtStart] = useState(true);
   const [atEnd, setAtEnd] = useState(true);
@@ -49,7 +51,7 @@ export default function CarouselArrows({
         type="button"
         onClick={() => scrollByCard(-1)}
         disabled={atStart}
-        aria-label={`${label} 이전`}
+        aria-label={t('common.prevOf', { label })}
         className={`${arrow} left-2`}
       >
         <ChevronLeft className="w-5 h-5" />
@@ -58,7 +60,7 @@ export default function CarouselArrows({
         type="button"
         onClick={() => scrollByCard(1)}
         disabled={atEnd}
-        aria-label={`${label} 다음`}
+        aria-label={t('common.nextOf', { label })}
         className={`${arrow} right-2`}
       >
         <ChevronRight className="w-5 h-5" />

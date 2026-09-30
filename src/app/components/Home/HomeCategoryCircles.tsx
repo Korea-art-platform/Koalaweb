@@ -8,6 +8,7 @@ import { toCdnUrl, toThumbUrl } from '@/app/lib/imageUrl';
 import type { Category } from '@/api/category';
 import type { Sku } from '@/api/types';
 import { useTranslation } from 'react-i18next';
+import { categoryName } from '@/app/hooks/useCategories';
 
 interface Props {
   categories: Category[];
@@ -20,7 +21,7 @@ interface Props {
 
 // 분류 + 전체 작품 — 분류 원을 누르면 그 분류 작품만 아래에 나열한다
 export default function HomeCategoryCircles({ categories, skus, genreCounts, originalCode, limitedCode }: Props) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const tintOf = useCategoryTint();
   const { wishlistedCodes, wishlistLoading, handleWishlist } = useWishlistToggle();
   const [selected, setSelected] = useState<string | null>(null);
@@ -71,7 +72,7 @@ export default function HomeCategoryCircles({ categories, skus, genreCounts, ori
         {circles.map(({ category, cover, count }) => (
           <CircleButton
             key={category.id}
-            label={category.name}
+            label={categoryName(category, i18n.language?.startsWith('en') ?? false, t)}
             count={count}
             image={cover.primaryImageUrl}
             active={selected === category.code}

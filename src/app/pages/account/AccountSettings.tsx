@@ -6,8 +6,10 @@ import { withdraw as withdrawApi } from '@/api/auth';
 import { KeyRound, LogOut, Trash2, ChevronRight } from 'lucide-react';
 import { notifyCartUpdated } from '@/app/hooks/useCart';
 import { useLogout } from '@/app/hooks/useLogout';
+import { useTranslation } from 'react-i18next';
 
 export default function AccountSettings() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { setAuthenticated } = useAuth();
@@ -18,19 +20,19 @@ export default function AccountSettings() {
   const handleWithdraw = async () => {
     if (withdrawing) return;
     const ok = window.confirm(
-      '정말 탈퇴하시겠습니까?\n계정과 모든 데이터가 삭제되며 복구할 수 없습니다.',
+      t('account.settings.withdrawConfirm'),
     );
     if (!ok) return;
     setWithdrawing(true);
     try {
       await withdrawApi();
-      window.alert('회원 탈퇴가 완료되었습니다.');
+      window.alert(t('account.settings.withdrawDone'));
       setAuthenticated(false);
       queryClient.clear();
       notifyCartUpdated();
       navigate('/login');
     } catch {
-      window.alert('탈퇴 처리 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
+      window.alert(t('account.settings.withdrawFailed'));
       setWithdrawing(false);
     }
   };
@@ -38,7 +40,7 @@ export default function AccountSettings() {
   return (
     <div className="space-y-6">
       <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-        <h2 className="text-base font-bold text-gray-900 mb-4">보안</h2>
+        <h2 className="text-base font-bold text-gray-900 mb-4">{t('account.settings.security')}</h2>
         <button
           onClick={() => navigate('/forgot-password')}
           className="w-full flex items-center justify-between py-3 px-1 hover:bg-gray-50 rounded-xl transition-colors group"
@@ -46,28 +48,28 @@ export default function AccountSettings() {
           <div className="flex items-center gap-3">
             <KeyRound className="w-4 h-4 text-gray-400" />
             <div className="text-left">
-              <p className="text-sm font-medium text-gray-800">비밀번호 변경</p>
-              <p className="text-xs text-gray-400 mt-0.5">이메일로 비밀번호 재설정 링크를 보내드립니다</p>
+              <p className="text-sm font-medium text-gray-800">{t('account.settings.changePassword')}</p>
+              <p className="text-xs text-gray-400 mt-0.5">{t('account.settings.changePasswordDesc')}</p>
             </div>
           </div>
           <ChevronRight className="w-4 h-4 text-gray-300 group-hover:text-gray-500 transition-colors" />
         </button>
       </div>
       <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-        <h2 className="text-base font-bold text-gray-900 mb-4">세션</h2>
+        <h2 className="text-base font-bold text-gray-900 mb-4">{t('account.settings.session')}</h2>
         <button
           onClick={handleLogout}
           className="w-full flex items-center gap-3 py-3 px-1 hover:bg-gray-50 rounded-xl transition-colors text-left"
         >
           <LogOut className="w-4 h-4 text-gray-400" />
           <div>
-            <p className="text-sm font-medium text-gray-800">로그아웃</p>
-            <p className="text-xs text-gray-400 mt-0.5">현재 기기에서 로그아웃합니다</p>
+            <p className="text-sm font-medium text-gray-800">{t('account.settings.logout')}</p>
+            <p className="text-xs text-gray-400 mt-0.5">{t('account.settings.logoutDesc')}</p>
           </div>
         </button>
       </div>
       <div className="bg-white rounded-2xl p-6 shadow-sm border border-red-50">
-        <h2 className="text-base font-bold text-red-500 mb-4">위험 구역</h2>
+        <h2 className="text-base font-bold text-red-500 mb-4">{t('account.settings.danger')}</h2>
         <button
           onClick={handleWithdraw}
           disabled={withdrawing}
@@ -76,9 +78,9 @@ export default function AccountSettings() {
           <div className="flex items-center gap-3">
             <Trash2 className="w-4 h-4 text-red-400" />
             <div className="text-left">
-              <p className="text-sm font-medium text-gray-800">회원 탈퇴</p>
+              <p className="text-sm font-medium text-gray-800">{t('account.settings.withdraw')}</p>
               <p className="text-xs text-gray-400 mt-0.5">
-                {withdrawing ? '처리 중...' : '계정과 모든 데이터가 삭제됩니다'}
+                {withdrawing ? t('account.settings.processing') : t('account.settings.withdrawDesc')}
               </p>
             </div>
           </div>

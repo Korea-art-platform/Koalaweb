@@ -2,8 +2,10 @@ import { useNavigate } from 'react-router';
 import { useEffect, useState } from 'react';
 import { ArrowLeft, Search } from 'lucide-react';
 import PageMeta from '@/app/components/common/PageMeta';
+import { useTranslation } from 'react-i18next';
 
 export default function NotFound() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [visible, setVisible] = useState(false);
 
@@ -14,7 +16,7 @@ export default function NotFound() {
 
   return (
     <div className="flex-1 bg-koala-navy flex flex-col overflow-hidden relative">
-      <PageMeta title="찾을 수 없는 페이지" description="요청하신 주소의 페이지가 없습니다. KOALA 홈에서 작품을 둘러보세요." />
+      <PageMeta title={t('errorPage.notFoundMeta')} description={t('errorPage.notFoundMetaDesc')} />
       <div
         className="absolute top-[-120px] right-[-80px] w-[340px] h-[340px] rounded-full border border-white/5"
         style={{ transition: 'opacity 1.2s ease', opacity: visible ? 1 : 0 }}
@@ -67,11 +69,11 @@ export default function NotFound() {
           }}
         >
           <h1 className="text-white text-3xl font-bold tracking-tight leading-snug">
-            이 작품은<br />전시되어 있지 않습니다
+            {t('errorPage.notFoundTitle1')}<br />{t('errorPage.notFoundTitle2')}
           </h1>
           <p className="text-white/40 text-sm leading-relaxed">
-            찾으시는 페이지가 사라졌거나,<br />
-            아직 큐레이션 중일 수 있어요.
+            {t('errorPage.notFoundDesc1')}<br />
+            {t('errorPage.notFoundDesc2')}
           </p>
         </div>
         <div
@@ -91,14 +93,14 @@ export default function NotFound() {
             className="flex-1 py-3 bg-white text-black rounded-xl font-semibold text-sm tracking-tight flex items-center justify-center gap-2 hover:bg-gray-100 transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
-            홈으로 돌아가기
+            {t('errorPage.backHome')}
           </button>
           <button
             onClick={() => navigate('/smart-store')}
             className="flex-1 py-3 bg-white/8 text-white rounded-xl font-medium text-sm tracking-tight flex items-center justify-center gap-2 hover:bg-white/12 transition-colors border border-white/10"
           >
             <Search className="w-4 h-4" />
-            작품 둘러보기
+            {t('errorPage.browse')}
           </button>
         </div>
       </div>

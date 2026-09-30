@@ -3,6 +3,7 @@ import { Link } from 'react-router';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { toCdnUrl } from '@/app/lib/imageUrl';
 import type { Artist } from '@/api/types';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
   artists: Artist[];
@@ -30,6 +31,7 @@ const clamp = (v: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, v
  * 카드를 눌러 작가 페이지로 갈 수가 없다.
  */
 export default function ArtistWheel({ artists }: Props) {
+  const { t } = useTranslation();
   const [radius, setRadius] = useState(760);
   // 움직임을 줄여 달라고 했으면 굴러가는 연출 없이 곧바로 자리를 잡는다.
   const [instant, setInstant] = useState(false);
@@ -174,7 +176,7 @@ export default function ArtistWheel({ artists }: Props) {
                     />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center text-gray-300 text-sm">
-                      준비 중
+                      {t('common.comingSoon')}
                     </div>
                   )}
                 </div>
@@ -199,7 +201,7 @@ export default function ArtistWheel({ artists }: Props) {
         <button
           onClick={() => move(-1)}
           disabled={active <= 0}
-          aria-label="이전 작가"
+          aria-label={t('about.prevArtist')}
           className="p-2.5 rounded-full border border-gray-200 text-gray-600 hover:border-koala-purple hover:text-koala-purple disabled:opacity-30 disabled:hover:border-gray-200 disabled:hover:text-gray-600 transition-colors"
         >
           <ChevronLeft className="w-5 h-5" />
@@ -222,7 +224,7 @@ export default function ArtistWheel({ artists }: Props) {
         <button
           onClick={() => move(1)}
           disabled={active >= artists.length - 1}
-          aria-label="다음 작가"
+          aria-label={t('about.nextArtist')}
           className="p-2.5 rounded-full border border-gray-200 text-gray-600 hover:border-koala-purple hover:text-koala-purple disabled:opacity-30 disabled:hover:border-gray-200 disabled:hover:text-gray-600 transition-colors"
         >
           <ChevronRight className="w-5 h-5" />

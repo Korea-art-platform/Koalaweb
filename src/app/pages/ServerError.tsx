@@ -1,13 +1,13 @@
-import { useNavigate } from 'react-router';
 import { useEffect, useState } from 'react';
 import { ArrowLeft, RefreshCw } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
   onReset?: () => void;
 }
 
 export default function ServerError({ onReset }: Props) {
-  const navigate = useNavigate();
+  const { t } = useTranslation();
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
@@ -73,11 +73,11 @@ export default function ServerError({ onReset }: Props) {
           }}
         >
           <h1 className="text-white text-3xl font-bold tracking-tight leading-snug">
-            일시적인 오류가<br />발생했습니다
+            {t('errorPage.serverTitle1')}<br />{t('errorPage.serverTitle2')}
           </h1>
           <p className="text-white/40 text-sm leading-relaxed">
-            서버에 문제가 생겼어요.<br />
-            잠시 후 다시 시도하거나 페이지를 새로고침해 주세요.
+            {t('errorPage.serverDesc1')}<br />
+            {t('errorPage.serverDesc2')}
           </p>
         </div>
         <div
@@ -97,14 +97,14 @@ export default function ServerError({ onReset }: Props) {
             className="flex-1 py-3 bg-white text-black rounded-xl font-semibold text-sm tracking-tight flex items-center justify-center gap-2 hover:bg-gray-100 transition-colors"
           >
             <RefreshCw className="w-4 h-4" />
-            새로고침
+            {t('errorPage.refresh')}
           </button>
           <button
-            onClick={() => navigate('/')}
+            onClick={() => window.location.assign('/')}
             className="flex-1 py-3 bg-white/8 text-white rounded-xl font-medium text-sm tracking-tight flex items-center justify-center gap-2 hover:bg-white/12 transition-colors border border-white/10"
           >
             <ArrowLeft className="w-4 h-4" />
-            홈으로
+            {t('errorPage.home')}
           </button>
         </div>
       </div>

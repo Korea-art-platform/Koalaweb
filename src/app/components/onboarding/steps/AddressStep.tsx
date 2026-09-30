@@ -66,7 +66,7 @@ export default function AddressStep({ address, onChange, onNext, onSkip }: Props
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
         <div className="bg-white rounded-2xl overflow-hidden shadow-2xl w-full max-w-md mx-4">
           <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
-            <span className="font-medium text-gray-900">주소 검색</span>
+            <span className="font-medium text-gray-900">{t('checkout.addressSearch')}</span>
             <button
               onClick={() => setShowPostcode(false)}
               className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors text-gray-400 hover:text-gray-700"
@@ -105,7 +105,7 @@ export default function AddressStep({ address, onChange, onNext, onSkip }: Props
             onClick={handleAddressSearch}
             className="px-4 py-3 bg-koala-navy text-white rounded-xl hover:bg-koala-navy-hover transition-colors font-medium text-sm flex items-center gap-2 whitespace-nowrap"
           >
-            <Search className="w-4 h-4" /> 주소 찾기
+            <Search className="w-4 h-4" /> {t('checkout.find')}
           </button>
         </div>
         <input

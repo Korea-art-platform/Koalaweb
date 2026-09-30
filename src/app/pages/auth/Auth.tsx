@@ -51,7 +51,7 @@ export default function Auth() {
 
   return (
     <div className="flex-1">
-      <PageMeta title="로그인" />
+      <PageMeta title={t(isSignup ? 'auth.tabs.signUp' : 'auth.tabs.signIn')} />
       <div className="lg:flex lg:items-stretch overflow-x-hidden">
         <div
           style={visualStyle}
@@ -96,13 +96,13 @@ export default function Auth() {
               >
                 <h2 className="text-3xl xl:text-4xl font-bold tracking-tight leading-tight break-keep whitespace-pre-line">
                   {banner?.title || (isSignup
-                    ? '예술과 함께하는\n첫 걸음을 시작하세요'
-                    : '예술을 소장하는\n가장 가까운 방법')}
+                    ? t('auth.visual.signupTitle')
+                    : t('auth.visual.loginTitle'))}
                 </h2>
                 <p className="mt-4 text-sm text-white/80 max-w-sm break-keep">
                   {banner?.subtitle || (isSignup
-                    ? 'KOALA 회원이 되어 국내 작가들의 작품을 만나보세요.'
-                    : '엄선된 한국 현대미술 작품을 지금 만나보세요.')}
+                    ? t('auth.visual.signupDesc')
+                    : t('auth.visual.loginDesc'))}
                 </p>
               </motion.div>
             </AnimatePresence>

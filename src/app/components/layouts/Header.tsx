@@ -110,7 +110,7 @@ export function Header() {
     ${onDark ? 'hover:bg-white/15' : 'hover:bg-gray-100'}`;
 
   const navLinkClass = (active: boolean) =>
-    `group relative py-1 text-sm font-medium transition-colors duration-200 ${
+    `group relative whitespace-nowrap py-1 text-sm font-medium transition-colors duration-200 ${
       active
         ? (onDark ? 'text-white' : 'text-black')
         : (onDark ? 'text-white/60 hover:text-white' : 'text-gray-400 hover:text-black')
@@ -152,7 +152,7 @@ export function Header() {
                 className="h-10 min-[360px]:h-12 w-auto max-w-full object-contain object-left transition-opacity duration-200 group-hover:opacity-75"
               />
             </Link>
-            <div className="hidden lg:flex items-center gap-8">
+            <div className="hidden lg:flex items-center gap-5 xl:gap-8">
               {menus.map((menu) => {
                 const active = location.pathname === menu.path;
                 return (
@@ -164,7 +164,7 @@ export function Header() {
               })}
 
               {artists.length > 0 && (
-                <span className={`text-xs ${onDark ? 'text-white/20' : 'text-gray-200'}`}>|</span>
+                <span className={`hidden xl:inline text-xs ${onDark ? 'text-white/20' : 'text-gray-200'}`}>|</span>
               )}
 
               {artists.map((artist) => {
@@ -173,7 +173,7 @@ export function Header() {
                   <Link
                     key={artist.artistCode}
                     to={`/artist/${artist.artistCode}`}
-                    className={navLinkClass(active)}
+                    className={`hidden xl:inline ${navLinkClass(active)}`}
                   >
                     {artist.name}
                     <span className={navUnderlineClass(active)} />

@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form';
 import { X, Search, Check } from 'lucide-react';
 import { createAddress, updateAddress } from '@/api/user';
 import type { UserAddress } from '@/api/types';
+import { useTranslation } from 'react-i18next';
 
 interface AddressModalProps {
   isOpen: boolean;
@@ -23,6 +24,7 @@ type AddressFormData = {
 };
 
 export default function AddressModal({ isOpen, mode, address, onClose, onSuccess }: AddressModalProps) {
+  const { t } = useTranslation();
   const [serverError, setServerError] = useState('');
   const [success, setSuccess] = useState('');
   const [showPostcode, setShowPostcode] = useState(false);
@@ -110,15 +112,15 @@ export default function AddressModal({ isOpen, mode, address, onClose, onSuccess
     try {
       if (mode === 'create') {
         await createAddress(payload);
-        setSuccess('배송지가 추가되었습니다.');
+        setSuccess(t('address.added'));
       } else {
         await updateAddress(address!.id!, payload);
-        setSuccess('배송지가 수정되었습니다.');
+        setSuccess(t('address.updated'));
       }
       setTimeout(() => { onSuccess(); handleClose(); }, 1500);
     } catch (err: unknown) {
       const msg = (err as { response?: { data?: { message?: string } } })?.response?.data?.message;
-      setServerError(msg || `배송지 ${mode === 'create' ? '추가' : '수정'}에 실패했습니다.`);
+      setServerError(msg || (mode === 'create' ? t('address.createFailed') : t('address.updateFailed')));
     }
   };
 
@@ -140,7 +142,7 @@ export default function AddressModal({ isOpen, mode, address, onClose, onSuccess
         <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/60">
           <div className="bg-white rounded-2xl overflow-hidden shadow-2xl w-full max-w-md mx-4">
             <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
-              <span className="font-medium text-gray-900">주소 검색</span>
+              <span className="font-medium text-gray-900">{t('checkout.addressSearch')}</span>
               <button
                 onClick={() => setShowPostcode(false)}
                 className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors text-gray-400 hover:text-gray-700"
@@ -152,7 +154,7 @@ export default function AddressModal({ isOpen, mode, address, onClose, onSuccess
       )}
       <div className="bg-white rounded-3xl max-w-md w-full max-h-[90vh] overflow-y-auto shadow-2xl">
         <div className="sticky top-0 bg-white border-b border-gray-100 p-6 flex items-center justify-between">
-          <h2 className="text-2xl font-medium">{isEditMode ? '배송지 수정' : '배송지 추가'}</h2>
+          <h2 className="text-2xl font-medium">{isEditMode ? t('address.editTitle') : t('address.addTitle')}</h2>
           <button onClick={handleClose} className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
             <X className="w-5 h-5 text-gray-400" />
           </button>
@@ -169,46 +171,46 @@ export default function AddressModal({ isOpen, mode, address, onClose, onSuccess
 
           <div>
             <label htmlFor="addr-label" className="block text-sm font-medium text-gray-700 mb-2">
-              배송지 이름 <span className="text-red-500">*</span>
+              {t('address.label')} <span className="text-red-500">*</span>
             </label>
             <input
               id="addr-label"
               type="text"
-              placeholder="집, 회사 등"
-              {...register('label', { required: '배송지 이름을 입력해주세요.' })}
+              placeholder={t('address.labelPlaceholder')}
+              {...register('label', { required: t('address.labelRequired') })}
               className="w-full px-4 py-3 bg-gray-50 rounded-xl border border-transparent focus:outline-none focus:border-gray-300 transition-colors"
             />
             {errors.label && <p className="mt-1 text-xs text-red-500">{errors.label.message}</p>}
           </div>
           <div>
             <label htmlFor="addr-name" className="block text-sm font-medium text-gray-700 mb-2">
-              수령인 <span className="text-red-500">*</span>
+              {t('checkout.recipient')} <span className="text-red-500">*</span>
             </label>
             <input
               id="addr-name"
               type="text"
-              placeholder="홍길동"
-              {...register('recipientName', { required: '수령인 이름을 입력해주세요.' })}
+              placeholder={t('checkout.namePlaceholder')}
+              {...register('recipientName', { required: t('address.recipientRequired') })}
               className="w-full px-4 py-3 bg-gray-50 rounded-xl border border-transparent focus:outline-none focus:border-gray-300 transition-colors"
             />
             {errors.recipientName && <p className="mt-1 text-xs text-red-500">{errors.recipientName.message}</p>}
           </div>
           <div>
             <label htmlFor="addr-phone" className="block text-sm font-medium text-gray-700 mb-2">
-              전화번호 <span className="text-red-500">*</span>
+              {t('checkout.phone')} <span className="text-red-500">*</span>
             </label>
             <input
               id="addr-phone"
               type="tel"
               placeholder="010-1234-5678"
-              {...register('recipientPhone', { required: '전화번호를 입력해주세요.' })}
+              {...register('recipientPhone', { required: t('address.phoneRequired') })}
               className="w-full px-4 py-3 bg-gray-50 rounded-xl border border-transparent focus:outline-none focus:border-gray-300 transition-colors"
             />
             {errors.recipientPhone && <p className="mt-1 text-xs text-red-500">{errors.recipientPhone.message}</p>}
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              우편번호 <span className="text-red-500">*</span>
+              {t('checkout.zip')} <span className="text-red-500">*</span>
             </label>
             <div className="flex gap-3">
               <input
@@ -223,28 +225,28 @@ export default function AddressModal({ isOpen, mode, address, onClose, onSuccess
                 onClick={handleAddressSearch}
                 className="px-4 py-3 bg-koala-navy text-white rounded-xl hover:bg-koala-navy-hover transition-colors font-medium text-sm flex items-center gap-2 whitespace-nowrap"
               >
-                <Search className="w-4 h-4" /> 찾기
+                <Search className="w-4 h-4" /> {t('checkout.find')}
               </button>
             </div>
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              주소 <span className="text-red-500">*</span>
+              {t('checkout.address')} <span className="text-red-500">*</span>
             </label>
             <input
               type="text"
               readOnly
-              placeholder="서울시 강남구 테헤란로 123"
+              placeholder={t('checkout.addressPlaceholder')}
               {...register('address1', { required: true })}
               className="w-full px-4 py-3 bg-gray-50 rounded-xl border border-transparent text-gray-500 cursor-not-allowed"
             />
           </div>
           <div>
-            <label htmlFor="addr-detail" className="block text-sm font-medium text-gray-700 mb-2">상세 주소</label>
+            <label htmlFor="addr-detail" className="block text-sm font-medium text-gray-700 mb-2">{t('checkout.addressDetail')}</label>
             <input
               id="addr-detail"
               type="text"
-              placeholder="456호"
+              placeholder={t('checkout.addressDetailPlaceholder')}
               {...register('address2')}
               className="w-full px-4 py-3 bg-gray-50 rounded-xl border border-transparent focus:outline-none focus:border-gray-300 transition-colors"
             />
@@ -257,7 +259,7 @@ export default function AddressModal({ isOpen, mode, address, onClose, onSuccess
               className="w-5 h-5 rounded border-gray-300 cursor-pointer"
             />
             <label htmlFor="addr-default" className="text-sm text-gray-700 cursor-pointer">
-              기본 배송지로 설정
+              {t('address.default')}
             </label>
           </div>
           <div className="flex gap-3 pt-6 border-t border-gray-100">
@@ -266,7 +268,7 @@ export default function AddressModal({ isOpen, mode, address, onClose, onSuccess
               onClick={handleClose}
               className="flex-1 px-4 py-3 bg-gray-100 text-gray-900 rounded-xl hover:bg-gray-200 transition-colors font-medium"
             >
-              취소
+              {t('common.cancel')}
             </button>
             <button
               type="submit"
@@ -276,10 +278,10 @@ export default function AddressModal({ isOpen, mode, address, onClose, onSuccess
               {isSubmitting ? (
                 <>
                   <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                  {isEditMode ? '수정 중...' : '추가 중...'}
+                  {isEditMode ? t('address.saving') : t('address.adding')}
                 </>
               ) : (
-                isEditMode ? '배송지 수정' : '배송지 추가'
+                isEditMode ? t('address.editTitle') : t('address.addTitle')
               )}
             </button>
           </div>

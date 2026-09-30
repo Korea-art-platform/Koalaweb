@@ -200,7 +200,7 @@ export default function ProductDetail() {
 
   const pageDescription = sku.description
     ? sku.description.slice(0, 155) + (sku.description.length > 155 ? '…' : '')
-    : `${sku.name} — KOALA에서 만나는 한국 작가의 작품`;
+    : t('product.detail.metaFallback', { name: sku.name });
   const pageImage = sku.primaryImageUrl ?? 'https://koala-art.co.kr/og-image.png';
   const pageUrl = `https://koala-art.co.kr/product/${sku.skuCode}`;
   const productJsonLd: Record<string, unknown> = {

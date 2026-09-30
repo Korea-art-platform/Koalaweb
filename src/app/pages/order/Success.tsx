@@ -43,10 +43,10 @@ export default function CheckoutSuccess() {
               <CheckCircle className="w-12 h-12 text-green-500" />
             </div>
             <h1 className="text-3xl font-bold tracking-tight mb-3 text-gray-900">
-              주문이 완료되었습니다!
+              {t('orderDone.title')}
             </h1>
             <p className="text-gray-400">
-              KOALA와 함께해주셔서 감사합니다. 소중한 작품을 곧 보내드릴게요.
+              {t('orderDone.thanks')}
             </p>
           </div>
           <div className="bg-white rounded-[32px] p-8 shadow-sm border border-gray-100 mb-6">

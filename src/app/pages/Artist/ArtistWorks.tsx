@@ -6,8 +6,10 @@ import { ArtistDetailSkeleton, ArtistNotFound } from '@/app/components/Artist';
 import { displayPrice, formatWon } from '@/app/lib/price';
 import { ImageWithFallback } from '@/app/components/fallback/ImageWithFallback';
 import PageMeta from '@/app/components/common/PageMeta';
+import { useTranslation } from 'react-i18next';
 
 export default function ArtistWorks() {
+  const { t } = useTranslation();
   const { id } = useParams();
   const navigate = useNavigate();
   const { loading: artistLoading, artist } = useArtistDetail(id);
@@ -19,8 +21,8 @@ export default function ArtistWorks() {
   return (
     <div className="flex-1 flex flex-col">
       <PageMeta
-        title={`${artist.name} 작품`}
-        description={`${artist.name} 작가의 작품을 모아 봅니다. KOALA에서 원작과 에디션을 만나보세요.`}
+        title={t('artistPage.worksMeta', { name: artist.name })}
+        description={t('artistPage.worksMetaDesc', { name: artist.name })}
       />
       <main className="flex-1 pt-24 pb-24 px-5 md:px-8 max-w-2xl mx-auto w-full">
         <button
@@ -28,7 +30,7 @@ export default function ArtistWorks() {
           className="inline-flex items-center gap-2 text-sm text-gray-400 hover:text-black transition-colors mb-8 group"
         >
           <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
-          작가 페이지로
+          {t('artistPage.backToArtist')}
         </button>
         <div className="flex items-center gap-4 mb-10 pb-6 border-b border-gray-100">
           <div className="w-14 h-14 rounded-full bg-gray-100 overflow-hidden flex-shrink-0">
@@ -44,7 +46,7 @@ export default function ArtistWorks() {
           </div>
         </div>
         <h2 className="text-xl font-bold mb-6">
-          작가의 작품 - Works
+          {t('artistPage.worksHeading')}
           {!skusLoading && (
             <span className="text-sm font-normal text-gray-400 ml-2">({skus.length})</span>
           )}
@@ -61,7 +63,7 @@ export default function ArtistWorks() {
             ))}
           </div>
         ) : skus.length === 0 ? (
-          <div className="py-20 text-center text-gray-400 text-sm">등록된 작품이 없습니다.</div>
+          <div className="py-20 text-center text-gray-400 text-sm">{t('artistPage.noWorks')}</div>
         ) : (
           <div className="grid grid-cols-2 gap-x-4 gap-y-8">
             {skus.map((sku) => (

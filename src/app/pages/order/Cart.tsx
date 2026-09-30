@@ -26,7 +26,7 @@ export default function Cart() {
 
   return (
     <div className="flex-1">
-      <PageMeta title="장바구니" />
+      <PageMeta title={t('cart.title')} />
       <div className="pt-24 pb-16 px-8">
         <div className="max-w-[1200px] mx-auto">
           <div className="mb-12">

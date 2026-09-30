@@ -2,10 +2,10 @@ import { CreditCard, Plus, Smartphone } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 const paymentOptions = [
-  { id: 'toss', name: '토스페이', icon: '💙', description: '토스 앱 간편 결제', color: 'bg-blue-50 border-blue-100' },
-  { id: 'kakao', name: '카카오페이', icon: '💛', description: '카카오톡 간편 결제', color: 'bg-yellow-50 border-yellow-100' },
-  { id: 'naver', name: '네이버페이', icon: '💚', description: '네이버 포인트 적립', color: 'bg-green-50 border-green-100' },
-  { id: 'card', name: '신용/체크카드', icon: '💳', description: '일반 카드 직접 입력', color: 'bg-gray-50 border-gray-100' },
+  { id: 'toss', icon: '💙', color: 'bg-blue-50 border-blue-100' },
+  { id: 'kakao', icon: '💛', color: 'bg-yellow-50 border-yellow-100' },
+  { id: 'naver', icon: '💚', color: 'bg-green-50 border-green-100' },
+  { id: 'card', icon: '💳', color: 'bg-gray-50 border-gray-100' },
 ];
 
 export default function AccountPaymentMethods() {
@@ -27,8 +27,8 @@ export default function AccountPaymentMethods() {
           >
             <div className="text-4xl">{method.icon}</div>
             <div className="flex-1">
-              <p className="font-bold text-gray-900 mb-0.5">{method.name}</p>
-              <p className="text-xs text-gray-400">{method.description}</p>
+              <p className="font-bold text-gray-900 mb-0.5">{t(`account.payment.options.${method.id}.name`)}</p>
+              <p className="text-xs text-gray-400">{t(`account.payment.options.${method.id}.desc`)}</p>
             </div>
             <div className="px-3 py-1 bg-green-100 text-green-600 text-xs font-bold rounded-full">
               {t('account.payment.supported')}

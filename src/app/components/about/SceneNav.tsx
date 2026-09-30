@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 export interface Scene {
   id: string;
@@ -23,6 +24,7 @@ interface Props {
  * 하나로 정해지고, 페이지 맨 끝에서도 마지막 씬이 켜진 채로 남는다.
  */
 export default function SceneNav({ scenes }: Props) {
+  const { t } = useTranslation();
   const [active, setActive] = useState(scenes[0]?.id);
 
   useEffect(() => {
@@ -55,7 +57,7 @@ export default function SceneNav({ scenes }: Props) {
 
   return (
     <nav
-      aria-label="구간 이동"
+      aria-label={t('about.sceneNav')}
       className="hidden lg:flex fixed right-6 xl:right-10 top-1/2 -translate-y-1/2 z-30 flex-col gap-4"
     >
       {scenes.map((scene) => {

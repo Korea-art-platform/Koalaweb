@@ -19,7 +19,11 @@
       "limited": "Limited",
       "openEdition": "Open edition"
     },
-    "imageN": "Image {{n}}"
+    "imageN": "Image {{n}}",
+    "loading": "Loading...",
+    "prevOf": "Previous {{label}}",
+    "nextOf": "Next {{label}}",
+    "comingSoon": "Coming soon"
   },
   "store": {
     "hero": {
@@ -181,6 +185,17 @@
       "terms": "Terms of Service",
       "youthProtection": "Youth Protection Policy",
       "cookies": "Cookie Policy"
+    },
+    "biz": {
+      "company": "Company",
+      "companyName": "Heron Inc.",
+      "service": "Service",
+      "ceo": "CEO",
+      "bizNo": "Business registration no.",
+      "mailOrder": "Mail-order business no.",
+      "address": "Address",
+      "support": "Customer support",
+      "email": "Email"
     }
   },
   "home": {
@@ -266,7 +281,9 @@
         "notices": "Notices",
         "faq": "FAQ"
       }
-    }
+    },
+    "metaTitle": "Korean art marketplace",
+    "metaDescription": "Originals, limited editions, and open editions by Korean artists — sculpture, art toys, goods, and painting. Collect on KOALA."
   },
   "artistLab": {
     "hero": {
@@ -305,7 +322,9 @@
         "title": "Artist not found.",
         "backToList": "Back to the list"
       }
-    }
+    },
+    "metaTitle": "Artist Lab",
+    "metaDescription": "The worlds and creative journeys of Korean contemporary artists."
   },
   "account": {
     "title": "My page",
@@ -364,6 +383,24 @@
       "security": {
         "title": "Secure payments",
         "desc": "Payment details are encrypted and handled by our payment provider's PCI-DSS certified system. Card numbers are never stored on KOALA and are processed directly by the provider."
+      },
+      "options": {
+        "toss": {
+          "name": "Toss Pay",
+          "desc": "Pay in the Toss app"
+        },
+        "kakao": {
+          "name": "Kakao Pay",
+          "desc": "Pay in KakaoTalk"
+        },
+        "naver": {
+          "name": "Naver Pay",
+          "desc": "Earn Naver points"
+        },
+        "card": {
+          "name": "Credit or debit card",
+          "desc": "Enter card details"
+        }
       }
     },
     "wishlist": {
@@ -373,6 +410,21 @@
       "emptyTitle": "Nothing saved yet",
       "emptyDesc": "Add works you love to your wishlist.",
       "addToCart": "Add"
+    },
+    "settings": {
+      "withdrawConfirm": "Delete your account?\nYour account and all its data will be removed and cannot be restored.",
+      "withdrawDone": "Your account has been deleted.",
+      "withdrawFailed": "Couldn't delete your account. Please try again shortly.",
+      "security": "Security",
+      "changePassword": "Change password",
+      "changePasswordDesc": "We'll email you a reset link",
+      "session": "Session",
+      "logout": "Log out",
+      "logoutDesc": "Sign out on this device",
+      "danger": "Danger zone",
+      "withdraw": "Delete account",
+      "withdrawDesc": "Removes your account and all its data",
+      "processing": "Processing..."
     }
   },
   "order": {
@@ -665,6 +717,12 @@
         "start": "Get started",
         "changeAnytime": "You can change this anytime in your settings."
       }
+    },
+    "visual": {
+      "signupTitle": "Take your first\nstep into art",
+      "loginTitle": "The closest way\nto own art",
+      "signupDesc": "Join KOALA and discover works by Korean artists.",
+      "loginDesc": "Discover curated Korean contemporary art."
     }
   },
   "product": {
@@ -704,7 +762,8 @@
         "addingToCart": "Adding...",
         "addToCart": "Add to cart",
         "buyNow": "Buy now"
-      }
+      },
+      "metaFallback": "{{name}} — a work by a Korean artist on KOALA"
     },
     "card": {
       "material": "Material",
@@ -759,6 +818,15 @@
       "showingAll": "Results for \"{{query}}\"",
       "showingFilter": "{{filter}} results for \"{{query}}\"",
       "noResultsDesc": "Try another keyword, or browse the collection."
+    },
+    "metaTitle": "Search works",
+    "metaDescription": "Search KOALA originals, limited editions, and open editions by artist or title.",
+    "trends": {
+      "t0": "Limited editions",
+      "t1": "Art toys",
+      "t2": "Sculpture",
+      "t3": "Painting",
+      "t4": "Ceramics"
     }
   },
   "ar": {
@@ -823,7 +891,9 @@
     "alerts": {
       "removeConfirm": "Remove this item from your cart?",
       "clearConfirm": "Empty your cart?"
-    }
+    },
+    "decrease": "Decrease quantity",
+    "increase": "Increase quantity"
   },
   "popup": {
     "close": "Close",
@@ -840,6 +910,77 @@
       "moreTitle": "Didn't find your answer?",
       "moreHours": "Our support team is available weekdays 10:00–18:00 KST.",
       "moreCta": "Contact us"
+    },
+    "contact": {
+      "metaTitle": "Customer support",
+      "metaDescription": "How to reach KOALA customer support.",
+      "title": "Contact us",
+      "introBefore": "We are here to help with anything about your works and orders. Before writing in, check the ",
+      "introLink": "FAQ",
+      "introAfter": " for a quick answer.",
+      "emailLabel": "Email",
+      "emailNote": "Include your order number and we can help you faster.",
+      "sendEmail": "Send an email",
+      "hoursLabel": "Hours",
+      "hours": "Weekdays 10:00–18:00 KST",
+      "lunch": "Lunch break: 13:00–14:00",
+      "weekend": "Closed on weekends and Korean public holidays",
+      "afterHours": "Messages sent after hours are answered the next business morning.",
+      "tipsTitle": "Before you write",
+      "tips": {
+        "order": {
+          "title": "Orders and payment",
+          "desc": "Include your order number, payment method, and amount paid."
+        },
+        "delivery": {
+          "title": "Delivery, exchanges, and returns",
+          "desc": "Include your order number, delivery date, and reason. For defects or damage, attach photos."
+        },
+        "account": {
+          "title": "Account and service",
+          "desc": "Tell us the email you signed up with and what went wrong."
+        }
+      },
+      "relatedTitle": "Related pages",
+      "related": {
+        "faq": "FAQ",
+        "shipping": "Shipping",
+        "returns": "Exchanges and returns"
+      },
+      "partnerBefore": "For partnerships and artist collaborations, email ",
+      "partnerAfter": "."
+    },
+    "help": {
+      "metaTitle": "Help",
+      "title": "Customer support",
+      "heading": "How can we help?",
+      "hours": "Weekdays 10:00–18:00 KST, closed 13:00–14:00",
+      "phoneTitle": "Call us",
+      "phoneHours": "Weekdays 10:00–18:00 KST, closed 13:00–14:00",
+      "emailTitle": "Email us",
+      "emailNote": "We reply within one business day.",
+      "sections": {
+        "faq": {
+          "title": "FAQ",
+          "desc": "Common questions about orders, delivery, returns, and accounts.",
+          "cta": "Open"
+        },
+        "shipping": {
+          "title": "Shipping",
+          "desc": "Carriers, delivery times, fees, and how we pack artwork.",
+          "cta": "View shipping policy"
+        },
+        "returns": {
+          "title": "Exchanges and returns",
+          "desc": "How to request an exchange or return, and when refunds arrive.",
+          "cta": "View return policy"
+        },
+        "contact": {
+          "title": "Contact us",
+          "desc": "Didn't find your answer? Write to our support team.",
+          "cta": "Contact"
+        }
+      }
     }
   },
   "art": {
@@ -913,7 +1054,18 @@
     "works": {
       "title": "Works",
       "price": "₩{{price}}"
-    }
+    },
+    "metaFallback": "Discover works by {{name}} on KOALA.",
+    "metaTitle": "{{name}} — KOALA",
+    "breadcrumb": "Artist",
+    "worldView": "{{name}}'s world",
+    "note": "Artist's note",
+    "worksMeta": "Works by {{name}}",
+    "worksMetaDesc": "All works by {{name}}. Find originals and editions on KOALA.",
+    "backToArtist": "Back to artist",
+    "worksHeading": "Works",
+    "noWorks": "No works yet.",
+    "featured": "Featured work"
   },
   "widgets": {
     "quickMenu": {
@@ -929,5 +1081,315 @@
       "copy": "Copy link",
       "copied": "Link copied ✓"
     }
+  },
+  "checkout": {
+    "backToCart": "Back to cart",
+    "title": "Checkout",
+    "orderer": "Your details",
+    "edit": "Edit",
+    "change": "Change",
+    "name": "Name",
+    "email": "Email",
+    "phone": "Phone",
+    "namePlaceholder": "Jane Kim",
+    "shipping": "Shipping",
+    "savedAddress": "Choose a saved address",
+    "recipient": "Recipient",
+    "recipientPhone": "Recipient phone",
+    "zip": "Postcode",
+    "find": "Search",
+    "address": "Address",
+    "addressPlaceholder": "123 Teheran-ro, Gangnam-gu, Seoul",
+    "addressDetail": "Address line 2",
+    "addressDetailPlaceholder": "Unit 456",
+    "request": "Delivery note",
+    "requestPlaceholder": "Leave at the door",
+    "items": "Items ({{count}})",
+    "collapse": "Hide",
+    "show": "Show",
+    "andMore": "{{name}} and {{count}} more",
+    "quantity": "Qty: {{count}}",
+    "method": "Payment method",
+    "chooseMethod": "Choose a payment method",
+    "summary": "Order summary",
+    "subtotal": "Subtotal",
+    "shippingFee": "Shipping",
+    "free": "Free",
+    "total": "Total",
+    "taxExempt": "* Tax-exempt (no VAT)",
+    "taxIncluded": "* VAT included",
+    "agreeAll": "I agree to all of the following",
+    "hideItems": "Hide items",
+    "showItems": "Show each item",
+    "agreePurchase": "I confirm the purchase terms and agree to proceed with payment",
+    "agreePrivacy": "I agree to the collection and use of my personal information",
+    "agreeTerms": "I agree to the Terms of Service",
+    "required": "[Required]",
+    "view": "View",
+    "processing": "Processing payment…",
+    "pay": "Pay",
+    "secure": "Your information is encrypted and protected by a secure payment system.",
+    "agreeShort": "Agree to the purchase terms, privacy policy, and terms of service",
+    "addressSearch": "Address search",
+    "orderFallback": "Order",
+    "errors": {
+      "method": "Please choose a payment method.",
+      "orderer": "Please enter your details.",
+      "shipping": "Please enter a shipping address.",
+      "phone": "Please enter a valid phone number (e.g. 01012345678).",
+      "amount": "We couldn't confirm the payment amount. Please try again shortly.",
+      "generic": "Payment error: {{message}}",
+      "failed": "Payment failed."
+    }
+  },
+  "payment": {
+    "methods": {
+      "CARD": {
+        "label": "Card",
+        "desc": "All Korean cards"
+      },
+      "KAKAOPAY": {
+        "label": "Kakao Pay",
+        "desc": "Pay with Kakao Pay"
+      },
+      "NAVERPAY": {
+        "label": "Naver Pay",
+        "desc": "Pay with Naver Pay"
+      },
+      "TRANSFER": {
+        "label": "Bank transfer",
+        "desc": "Real-time bank transfer"
+      },
+      "MOBILE_PHONE": {
+        "label": "Mobile phone",
+        "desc": "Charge to your mobile bill"
+      },
+      "TOSSPAY": {
+        "label": "Toss Pay",
+        "desc": "Pay with the Toss app"
+      },
+      "VBANK": {
+        "label": "Virtual account",
+        "desc": "Pay by deposit"
+      }
+    },
+    "provider": {
+      "TOSS": "Toss Payments",
+      "NICEPAY": "NICEPAY",
+      "PAYPLE": "Payple"
+    },
+    "errors": {
+      "USER_CANCEL": "You cancelled the payment.",
+      "REJECT_CARD_COMPANY": "Your card issuer declined the payment. Please check your card details.",
+      "INVALID_CARD_EXPIRATION": "The card expiry date is invalid.",
+      "INVALID_STOPPED_CARD": "This card has been suspended.",
+      "EXCEED_MAX_DAILY_PAYMENT_COUNT": "You have exceeded the daily payment limit.",
+      "EXCEED_MAX_PAYMENT_AMOUNT": "The payment exceeds the allowed amount.",
+      "INVALID_CARD_INSTALLMENT_PLAN": "The installment plan is invalid.",
+      "NOT_SUPPORTED_INSTALLMENT_PLAN_CARD_OR_MERCHANT": "This card does not support installments.",
+      "REJECT_CARD_PAYMENT": "Your card issuer refused the payment.",
+      "REJECT_TOSSPAY_INVALID_ACCOUNT": "No account is registered with Toss Pay.",
+      "INVALID_PASSWORD": "The payment password is incorrect. Please try again.",
+      "NOT_AVAILABLE_BANK": "This bank is currently unavailable.",
+      "PAYMENT_AMOUNT_MISMATCH": "The payment amount does not match. Please try again.",
+      "TOSS_ERROR": "Something went wrong with the payment. Please try again shortly."
+    },
+    "failTitle": "Payment failed",
+    "cancelled": "The payment was cancelled.",
+    "retry": "Try again",
+    "orderNo": "Order no.: {{no}}",
+    "back": "← Back",
+    "title": "Payment",
+    "requestFailed": "The payment request failed. Please try again.",
+    "payAmount": "Pay ₩{{amount}}",
+    "approveFailed": "We couldn't approve the payment. Please contact support.",
+    "approveFailTitle": "Payment approval failed",
+    "home": "Home",
+    "approving": "Approving your payment",
+    "wait": "Please wait…",
+    "notConfigured": "Payments aren't set up yet. Please try again shortly.",
+    "loadFailed": "Couldn't load the payment module.",
+    "notReady": "The payment module isn't ready.",
+    "couldNotProceed": "Couldn't proceed with the payment."
+  },
+  "orderDone": {
+    "title": "Your order is complete.",
+    "thanks": "Thank you for choosing KOALA. We'll send your work soon."
+  },
+  "address": {
+    "added": "Address added.",
+    "updated": "Address updated.",
+    "createFailed": "Couldn't add the address.",
+    "updateFailed": "Couldn't update the address.",
+    "editTitle": "Edit address",
+    "addTitle": "Add address",
+    "label": "Address name",
+    "labelPlaceholder": "Home, work, etc.",
+    "labelRequired": "Enter an address name.",
+    "recipientRequired": "Enter the recipient's name.",
+    "phoneRequired": "Enter a phone number.",
+    "default": "Set as default address",
+    "saving": "Saving…",
+    "adding": "Adding…"
+  },
+  "inquiry": {
+    "title": "Inquiries",
+    "new": "New inquiry",
+    "formTitle": "New inquiry",
+    "category": "Type *",
+    "subject": "Subject *",
+    "subjectPlaceholder": "Enter a subject",
+    "content": "Message *",
+    "contentPlaceholder": "Tell us what you need in as much detail as you can.",
+    "orderNo": "Order number",
+    "orderNoHint": "(optional, for order questions)",
+    "orderNoPlaceholder": "e.g. KL-20240115123045-ABCD",
+    "secret": "🔒 Keep this private",
+    "submit": "Submit",
+    "submitting": "Submitting...",
+    "loading": "Loading...",
+    "emptyTitle": "No inquiries yet.",
+    "emptyDesc": "Ask us anything about your orders or our works.",
+    "delete": "Delete",
+    "contentLabel": "Your message",
+    "orderNoLine": "Order number: {{orderNo}}",
+    "answer": "Reply",
+    "pendingNote": "We are preparing a reply. Expect one within 1–3 business days.",
+    "errors": {
+      "subjectRequired": "Enter a subject.",
+      "contentRequired": "Enter a message.",
+      "createFailed": "Couldn't submit your inquiry. Please try again shortly.",
+      "deleteConfirm": "Delete this inquiry?",
+      "deleteFailed": "Couldn't delete the inquiry."
+    },
+    "status": {
+      "PENDING": "Awaiting reply",
+      "ANSWERED": "Answered",
+      "CLOSED": "Closed"
+    },
+    "categories": {
+      "ORDER": "Order",
+      "PRODUCT": "Product",
+      "PAYMENT": "Payment",
+      "DELIVERY": "Delivery",
+      "RETURN": "Return / exchange",
+      "OTHER": "Other"
+    }
+  },
+  "guestOrder": {
+    "title": "Find your order",
+    "intro": "Ordered without an account? Look it up here.",
+    "byOrderNo": "By order number",
+    "byEmail": "By email",
+    "orderNo": "Order number",
+    "email": "Email",
+    "phone": "Mobile number",
+    "searching": "Searching...",
+    "submitOrder": "Find order",
+    "submitList": "Show orders",
+    "emailNote": "Both the email and mobile number must match the ones on your order. Orders from the last 6 months are shown.",
+    "empty": "No orders in the last 6 months.",
+    "andMore": " and {{count}} more",
+    "tracking": "Tracking: {{courier}} {{trackingNo}}",
+    "total": "Total paid",
+    "memberBefore": "Have an account? ",
+    "memberLink": "Sign in",
+    "memberAfter": " to see your orders.",
+    "errors": {
+      "tooMany": "Too many attempts. Please wait a moment and try again.",
+      "loadFailed": "Couldn't load the order.",
+      "mismatch": "The order number or mobile number doesn't match.",
+      "notFound": "We couldn't find that order.",
+      "listFailed": "Couldn't load your orders."
+    }
+  },
+  "about": {
+    "metaTitle": "About — KOALA",
+    "metaDescription": "KOALA-ART, made by Heron, is an art marketplace presenting Korean artists' works as originals, limited editions, and open editions.",
+    "iris1": "What leaves the artist's hands,",
+    "iris2": "as it is.",
+    "why": {
+      "a1": "Korea has many fine artists.",
+      "a2": "Yet living with their work",
+      "a3": "is still hard.",
+      "b1": "Where to buy, whether it is genuine,",
+      "b2": "whether the price is fair —",
+      "b3": "only insiders know.",
+      "c1": "We built KOALA to close that gap."
+    },
+    "tiersHeading": "Not every work by an artist carries the same weight.",
+    "tiersDesc": "We never blur the line. Every work is marked as one of three tiers, right on its photo.",
+    "tiers": {
+      "original": {
+        "name": "Original",
+        "body": "A single piece made by the artist's hand. There will never be another."
+      },
+      "limited": {
+        "name": "Limited",
+        "body": "Made in a fixed run and then stopped. Each one is numbered."
+      },
+      "open": {
+        "name": "Open edition",
+        "body": "Opened up so more people can live with it. A good first piece."
+      }
+    },
+    "artistsHeading": "Artists with KOALA",
+    "artistsHint": "Swipe sideways to turn the wheel.",
+    "sceneNav": "Jump to section",
+    "prevArtist": "Previous artist",
+    "nextArtist": "Next artist"
+  },
+  "stores": {
+    "metaTitle": "Stockists — KOALA",
+    "metaDescription": "Official stores where you can see KOALA works in person.",
+    "title": "Stockists",
+    "intro": "Official stores where you can see KOALA works in person.",
+    "empty": "No stores yet.",
+    "searchPlaceholder": "Search by store name or address",
+    "clearSearch": "Clear search",
+    "all": "All",
+    "other": "Other",
+    "noResults": "No matching stores.",
+    "viewMap": "View on map"
+  },
+  "exhibition": {
+    "defaultTitle": "Artist exhibitions",
+    "defaultNote": "Moments from our artists' exhibitions. Scroll to meet them one by one.",
+    "metaDescription": "{{subtitle}} — browse artist exhibitions presented by KOALA online.",
+    "loading": "Preparing the exhibition...",
+    "empty": "No exhibition photos yet.",
+    "toLab": "Go to the Artist Lab",
+    "viewArtist": "View artist",
+    "dragHint": "Drag to turn",
+    "index": "Catalogue",
+    "thanks": "Thank you for visiting",
+    "viewWorks": "See the works",
+    "lab": "Artist Lab"
+  },
+  "notice": {
+    "metaTitle": "Notices — KOALA",
+    "metaDescription": "News and announcements from KOALA.",
+    "title": "Notices",
+    "empty": "No notices yet.",
+    "backToList": "All notices",
+    "notFound": "This notice doesn't exist.",
+    "returnToList": "Back to the list",
+    "important": "Important"
+  },
+  "errorPage": {
+    "notFoundMeta": "Page not found",
+    "notFoundMetaDesc": "This page doesn't exist. Browse works from the KOALA home page.",
+    "notFoundTitle1": "This work is",
+    "notFoundTitle2": "not on display",
+    "notFoundDesc1": "The page you are looking for has moved,",
+    "notFoundDesc2": "or is still being curated.",
+    "backHome": "Back to home",
+    "browse": "Browse works",
+    "serverTitle1": "Something went",
+    "serverTitle2": "wrong",
+    "serverDesc1": "We hit a problem on our server.",
+    "serverDesc2": "Try again shortly or refresh the page.",
+    "refresh": "Refresh",
+    "home": "Home"
   }
 }

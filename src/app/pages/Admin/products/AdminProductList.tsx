@@ -157,10 +157,10 @@ export default function AdminProductList() {
     for (const [key, label] of NAMES) {
       if (!form[key].trim()) { setFormError(`${label}을(를) 입력해 주세요.`); return; }
     }
-    if (!/^[A-Za-z0-9 \-]+$/.test(
+    if (!/^[A-Za-z0-9 \-'’&.,()]+$/.test(
       `${form.modelEn} ${form.subModelNameEn}`
     )) {
-      setFormError('영문 칸에는 영문·숫자·띄어쓰기만 입력해 주세요. 주소(URL)를 만드는 데 쓰입니다.');
+      setFormError('영문 칸에는 영문·숫자·띄어쓰기와 기본 문장부호만 입력해 주세요.');
       return;
     }
 
@@ -477,7 +477,7 @@ export default function AdminProductList() {
                   상품명은 <b className="text-gray-500">
                     {skuDisplayName(form.model, form.subModelName) || '모델 이름'}
                   </b> 으로 자동으로 만들어집니다.
-                  주소는 영문으로 만들어지며, 한글 주소는 브라우저에서 알아볼 수 없게 바뀝니다.
+                  영문은 영어 화면의 상품명으로 쓰이고 주소(URL)도 영문으로 만들어집니다. 자동으로 채워진 로마자 대신 실제 영문명을 적어 주세요.
                 </p>
               </div>
               <div className="grid grid-cols-2 gap-3">

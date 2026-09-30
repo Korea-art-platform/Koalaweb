@@ -10,6 +10,7 @@ import { ImageLightbox } from '@/app/components/common/ImageLightbox';
 import { useIsDesktop } from '@/app/hooks/useMediaQuery';
 import type { Artist, Banner, PageResponse } from '@/api/types';
 import PageMeta from '@/app/components/common/PageMeta';
+import { useTranslation } from 'react-i18next';
 
 const ROLE = 'EXHIBITION';
 
@@ -19,6 +20,7 @@ interface Room {
 }
 
 export default function Exhibition() {
+  const { t } = useTranslation();
   const [rooms, setRooms] = useState<Room[]>([]);
   const [intro, setIntro] = useState<Banner | null>(null);
   const [loading, setLoading] = useState(true);
@@ -55,25 +57,25 @@ export default function Exhibition() {
     })();
   }, []);
 
-  const title = intro?.title ?? '작가의 전시';
+  const title = intro?.title ?? t('exhibition.defaultTitle');
   const subtitle = intro?.subtitle ?? 'KOALA EXHIBITION';
   const note =
     intro?.description ??
-    '작가들이 걸어온 전시의 순간들을 모았습니다. 스크롤을 따라 한 사람씩 만나 보세요.';
+    t('exhibition.defaultNote');
 
   return (
     <main className="bg-[#0d0812] text-white">
-      <PageMeta title={title} description={`${subtitle} — KOALA가 소개하는 작가의 전시를 온라인으로 둘러보세요.`} />
+      <PageMeta title={title} description={t('exhibition.metaDescription', { subtitle })} />
       <Entrance title={title} subtitle={subtitle} cover={intro?.imageUrl} />
       <Preface note={note} />
 
       {loading ? (
-        <div className="py-40 text-center text-sm text-white/30">전시를 준비하고 있습니다...</div>
+        <div className="py-40 text-center text-sm text-white/30">{t('exhibition.loading')}</div>
       ) : rooms.length === 0 ? (
         <div className="py-40 text-center">
-          <p className="text-sm text-white/40">아직 등록된 전시 사진이 없습니다.</p>
+          <p className="text-sm text-white/40">{t('exhibition.empty')}</p>
           <Link to="/artist-lab" className="mt-6 inline-block text-sm text-koala-gold underline">
-            작가의 연구소로 가기
+            {t('exhibition.toLab')}
           </Link>
         </div>
       ) : (
@@ -143,6 +145,7 @@ function Preface({ note }: { note: string }) {
 }
 
 function ArtistRoom({ room, index }: { room: Room; index: number }) {
+  const { t } = useTranslation();
   const ref = useRef<HTMLElement>(null);
   const reduce = useReducedMotion();
   const isDesktop = useIsDesktop();
@@ -177,7 +180,7 @@ function ArtistRoom({ room, index }: { room: Room; index: number }) {
             className="flex shrink-0 items-center gap-1.5 border-b border-white/25 pb-1 text-xs
               text-white/60 transition-colors hover:border-koala-gold hover:text-koala-gold md:text-sm"
           >
-            작가 보기 <ArrowRight className="h-3.5 w-3.5" />
+            {t('exhibition.viewArtist')} <ArrowRight className="h-3.5 w-3.5" />
           </Link>
         </div>
 
@@ -204,6 +207,7 @@ function Ring({
   room: Room;
   spin: MotionValue<number>;
 }) {
+  const { t } = useTranslation();
   const photos = room.photos.slice(0, 5);
   const step = 360 / photos.length;
   const RADIUS = 36;
@@ -305,7 +309,7 @@ function Ring({
         </motion.div>
       </div>
 
-      <p className="mt-2 text-center text-[11px] text-white/25">끌어서 돌려 보세요</p>
+      <p className="mt-2 text-center text-[11px] text-white/25">{t('exhibition.dragHint')}</p>
     </div>
   );
 }
@@ -430,6 +434,7 @@ function Frame({ src, caption, delay }: { src: string; caption?: string; delay: 
 }
 
 function Index({ rooms }: { rooms: Room[] }) {
+  const { t } = useTranslation();
   const all = rooms.flatMap((r) => r.photos.map((p) => ({ ...p, artist: r.artist })));
 
   return (
@@ -438,7 +443,7 @@ function Index({ rooms }: { rooms: Room[] }) {
         <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.3em] text-koala-gold">
           Index
         </p>
-        <h2 className="mb-10 text-2xl font-bold tracking-tight md:text-4xl md:mb-14">도록</h2>
+        <h2 className="mb-10 text-2xl font-bold tracking-tight md:text-4xl md:mb-14">{t('exhibition.index')}</h2>
 
         <div className="grid grid-cols-2 gap-3 md:grid-cols-4 lg:grid-cols-6 md:gap-4">
           {all.map((item) => (
@@ -465,21 +470,22 @@ function Index({ rooms }: { rooms: Room[] }) {
 }
 
 function Exit() {
+  const { t } = useTranslation();
   return (
     <section className="border-t border-white/5 px-6 py-28 text-center md:py-40">
-      <p className="mb-8 text-sm text-white/40">관람해 주셔서 감사합니다</p>
+      <p className="mb-8 text-sm text-white/40">{t('exhibition.thanks')}</p>
       <div className="flex flex-wrap items-center justify-center gap-3">
         <Link
           to="/store"
           className="inline-flex items-center gap-2 bg-koala-gold px-7 py-3.5 text-sm font-bold text-koala-navy transition hover:brightness-105"
         >
-          작품 보러가기 <ArrowRight className="h-4 w-4" />
+          {t('exhibition.viewWorks')} <ArrowRight className="h-4 w-4" />
         </Link>
         <Link
           to="/artist-lab"
           className="inline-flex items-center gap-2 border border-white/20 px-7 py-3.5 text-sm font-medium text-white/70 transition hover:border-white/50 hover:text-white"
         >
-          작가의 연구소
+          {t('exhibition.lab')}
         </Link>
       </div>
     </section>

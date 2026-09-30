@@ -2,12 +2,14 @@ import { useEffect, useRef, useState } from 'react';
 import { useSearchParams, useNavigate } from 'react-router';
 import { confirmPayment } from '@/api/payment';
 import { getOrder, lookupGuestOrder } from '@/api/order';
-import { PG_DISPLAY_NAME } from '@/app/lib/pg';
+import { PG_PROVIDER_CODE } from '@/app/lib/pg';
 import { notifyCartUpdated } from '@/app/hooks/useCart';
+import { useTranslation } from 'react-i18next';
 
 type Status = 'pending' | 'success' | 'error';
 
 export default function PaymentSuccess() {
+  const { t } = useTranslation();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
 
@@ -59,7 +61,7 @@ export default function PaymentSuccess() {
             address: `[${orderDetail.shipment.zipCode}] ${orderDetail.shipment.address1}`,
             address2: orderDetail.shipment.address2,
           } : null,
-          paymentMethod: PG_DISPLAY_NAME,
+          paymentMethod: t(`payment.provider.${PG_PROVIDER_CODE}`),
         },
         replace: true,
       });
@@ -81,7 +83,7 @@ export default function PaymentSuccess() {
       } catch (e: unknown) {
         const apiMsg = (e as { response?: { data?: { message?: string } } })?.response?.data?.message;
         const errMsg = (e as { message?: string })?.message;
-        setErrorMsg(apiMsg ?? errMsg ?? '결제 승인에 실패했습니다. 고객센터로 문의해 주세요.');
+        setErrorMsg(apiMsg ?? errMsg ?? t('payment.approveFailed'));
         setStatus('error');
       }
     };
@@ -96,20 +98,20 @@ export default function PaymentSuccess() {
           <div className="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-6">
             <span className="text-2xl">✕</span>
           </div>
-          <h2 className="text-xl font-bold mb-2">결제 승인 실패</h2>
+          <h2 className="text-xl font-bold mb-2">{t('payment.approveFailTitle')}</h2>
           <p className="text-sm text-gray-500 mb-8">{errorMsg}</p>
           <div className="space-y-3">
             <button
               onClick={() => navigate('/cart')}
               className="w-full py-3 bg-koala-navy text-white rounded-xl hover:bg-koala-navy-hover transition-colors"
             >
-              장바구니로 돌아가기
+              {t('checkout.backToCart')}
             </button>
             <button
               onClick={() => navigate('/')}
               className="w-full py-3 border border-gray-200 rounded-xl text-sm hover:bg-gray-50 transition-colors"
             >
-              홈으로
+              {t('payment.home')}
             </button>
           </div>
         </div>
@@ -121,8 +123,8 @@ export default function PaymentSuccess() {
     <div className="flex-1 flex items-center justify-center">
       <div className="text-center">
         <div className="w-10 h-10 border-[3px] border-black border-t-transparent rounded-full animate-spin mx-auto mb-5" />
-        <p className="font-medium text-gray-800">결제 승인 처리 중</p>
-        <p className="text-sm text-gray-400 mt-1">잠시만 기다려 주세요...</p>
+        <p className="font-medium text-gray-800">{t('payment.approving')}</p>
+        <p className="text-sm text-gray-400 mt-1">{t('payment.wait')}</p>
       </div>
     </div>
   );

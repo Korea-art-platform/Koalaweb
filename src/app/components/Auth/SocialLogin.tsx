@@ -26,14 +26,14 @@ export default function SocialLogin({ isSignup: _isSignup }: SocialLoginProps) {
           onClick={() => loginWithKakao()}
           className="w-full rounded-xl overflow-hidden hover:opacity-90 active:opacity-75 transition-opacity"
         >
-          <img src={kakaoBtn} alt="카카오로 로그인" className="w-full h-auto block" />
+          <img src={kakaoBtn} alt={t('auth.login.kakao')} className="w-full h-auto block" />
         </button>
         <button
           type="button"
           onClick={() => loginWithNaver()}
           className="w-full rounded-xl overflow-hidden hover:opacity-90 active:opacity-75 transition-opacity"
         >
-          <img src={naverBtn} alt="네이버로 로그인" className="w-full h-auto block" />
+          <img src={naverBtn} alt={t('auth.login.naver')} className="w-full h-auto block" />
         </button>
       </div>
     </>

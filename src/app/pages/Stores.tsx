@@ -5,14 +5,18 @@ import { MapPin, Phone, Mail, Store as StoreIcon, ArrowUpRight, Instagram, Chevr
 import { getStores, type StoreItem } from '@/api/store';
 import CornerBookmark from '@/app/components/common/CornerBookmark';
 import { safeHttpUrl } from '@/app/lib/safeUrl';
+import { useTranslation } from 'react-i18next';
 
-const cityOf = (addr?: string) => (addr?.trim().split(/\s+/)[0]) || '기타';
+const ALL = '__all__';
+const OTHER = '__other__';
+const cityOf = (addr?: string) => (addr?.trim().split(/\s+/)[0]) || OTHER;
 
 export default function Stores() {
+  const { t } = useTranslation();
   const [stores, setStores] = useState<StoreItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState('');
-  const [region, setRegion] = useState('전체');
+  const [region, setRegion] = useState(ALL);
   const [selectedCode, setSelectedCode] = useState('');
   const [sheetOpen, setSheetOpen] = useState(false);
   const reduce = useReducedMotion();
@@ -29,13 +33,13 @@ export default function Stores() {
       const c = cityOf(s.address);
       if (!seen.includes(c)) seen.push(c);
     }
-    return ['전체', ...seen];
+    return [ALL, ...seen];
   }, [stores]);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     return stores.filter((s) => {
-      const inRegion = region === '전체' || cityOf(s.address) === region;
+      const inRegion = region === ALL || cityOf(s.address) === region;
       const inQuery = q === '' || `${s.name} ${s.address} ${s.addressDetail ?? ''}`.toLowerCase().includes(q);
       return inRegion && inQuery;
     });
@@ -60,27 +64,27 @@ export default function Stores() {
   return (
     <div className="flex-1">
       <Helmet>
-        <title>입점 매장 — KOALA</title>
-        <meta name="description" content="KOALA 작품을 직접 만나보실 수 있는 공식 입점 매장 안내." />
+        <title>{t('stores.metaTitle')}</title>
+        <meta name="description" content={t('stores.metaDescription')} />
       </Helmet>
 
       <div className="pt-32 pb-24 px-6 max-w-6xl mx-auto">
         <div className="mb-8">
           <p className="text-xs font-bold text-koala-gold-deep tracking-[0.24em] uppercase mb-2">Stores</p>
-          <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-gray-900">입점 매장</h1>
+          <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-gray-900">{t('stores.title')}</h1>
           <p className="text-sm md:text-base text-gray-500 mt-3 break-keep">
-            KOALA 작품을 직접 만나보실 수 있는 공식 입점 매장입니다.
+            {t('stores.intro')}
           </p>
         </div>
 
         {loading ? (
-          <div className="py-20 text-center text-sm text-gray-400">불러오는 중...</div>
+          <div className="py-20 text-center text-sm text-gray-400">{t('common.loading')}</div>
         ) : stores.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-24 text-center">
             <div className="w-14 h-14 rounded-full bg-gray-100 flex items-center justify-center mb-4">
               <StoreIcon className="w-6 h-6 text-gray-300" />
             </div>
-            <p className="text-gray-400 text-sm">아직 등록된 입점 매장이 없습니다.</p>
+            <p className="text-gray-400 text-sm">{t('stores.empty')}</p>
           </div>
         ) : (
           <>
@@ -91,11 +95,11 @@ export default function Stores() {
                 <input
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
-                  placeholder="매장명 · 주소 검색"
+                  placeholder={t('stores.searchPlaceholder')}
                   className="w-full md:max-w-md pl-10 pr-9 py-2.5 rounded-full border border-gray-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-koala-purple/15 focus:border-koala-purple/40"
                 />
                 {query && (
-                  <button onClick={() => setQuery('')} aria-label="검색어 지우기"
+                  <button onClick={() => setQuery('')} aria-label={t('stores.clearSearch')}
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-300 hover:text-gray-500">
                     <X className="w-4 h-4" />
                   </button>
@@ -116,7 +120,7 @@ export default function Stores() {
                             : 'bg-white text-gray-500 border-gray-200 hover:border-gray-300'
                         }`}
                       >
-                        {r}
+                        {r === ALL ? t('stores.all') : r === OTHER ? t('stores.other') : r}
                       </button>
                     );
                   })}
@@ -170,7 +174,7 @@ export default function Stores() {
 
                 {filtered.length === 0 && (
                   <div className="rounded-xl border border-dashed border-gray-200 py-12 text-center text-sm text-gray-400">
-                    검색 결과가 없습니다.
+                    {t('stores.noResults')}
                   </div>
                 )}
               </motion.div>
@@ -223,7 +227,7 @@ export default function Stores() {
               </div>
               <button
                 onClick={() => setSheetOpen(false)}
-                aria-label="닫기"
+                aria-label={t('common.close')}
                 className="absolute top-3 right-3 z-10 w-8 h-8 rounded-full bg-white/80 border border-gray-200 flex items-center justify-center text-gray-500"
               >
                 <X className="w-4 h-4" />
@@ -240,6 +244,7 @@ export default function Stores() {
 }
 
 function StoreDetail({ store: s, reduce }: { store: StoreItem; reduce: boolean }) {
+  const { t } = useTranslation();
   const dy = reduce ? 0 : 1;
   const item = { hidden: { opacity: 0, y: 10 * dy }, show: { opacity: 1, y: 0 } };
   const snsHref = safeHttpUrl(s.snsUrl);
@@ -291,7 +296,7 @@ function StoreDetail({ store: s, reduce }: { store: StoreItem; reduce: boolean }
                 className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-koala-purple text-white text-xs md:text-sm font-bold hover:bg-koala-purple-hover transition-colors"
               >
                 <MapPin className="w-4 h-4" />
-                위치 보기
+                {t('stores.viewMap')}
                 <ArrowUpRight className="w-3.5 h-3.5" />
               </a>
             )}

@@ -64,7 +64,7 @@ export default function Search() {
 
   return (
     <div className="flex-1">
-      <PageMeta title="작품 검색" description="작가 이름이나 작품명으로 KOALA의 원작·한정판·오픈에디션을 찾아보세요." />
+      <PageMeta title={t('search.metaTitle')} description={t('search.metaDescription')} />
       <div className="pt-24 pb-16 px-8">
         <div className="max-w-[1400px] mx-auto">
           <div className="mb-8">
@@ -141,7 +141,7 @@ export default function Search() {
                       onClick={() => handleSearch(trend)}
                       className="px-4 py-2 bg-white rounded-full text-sm hover:bg-koala-navy hover:text-white transition-colors"
                     >
-                      {trend}
+                      {t(`search.trends.t${index}`, { defaultValue: trend })}
                     </button>
                   ))}
                 </div>

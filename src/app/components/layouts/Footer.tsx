@@ -124,12 +124,12 @@ export default function Footer() {
         <div className="pt-10 border-t border-white/10 space-y-5">
           <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-5 py-4 md:px-6 md:py-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]">
             <p className="text-xs md:text-[13px] text-gray-400 leading-relaxed break-keep">
-              상호명: 헤론 &nbsp;|&nbsp; 서비스명: KOALA-ART &nbsp;|&nbsp; 대표이사: 정동훈 &nbsp;|&nbsp; 사업자등록번호: 203-87-01972
-              &nbsp;|&nbsp; 통신판매업 신고번호: 제2024-서울서초-3956호
+              {t('footer.biz.company')}: {t('footer.biz.companyName')} &nbsp;|&nbsp; {t('footer.biz.service')}: KOALA-ART &nbsp;|&nbsp; {t('footer.biz.ceo')}: 정동훈 &nbsp;|&nbsp; {t('footer.biz.bizNo')}: 203-87-01972
+              &nbsp;|&nbsp; {t('footer.biz.mailOrder')}: 제2024-서울서초-3956호
               <br className="hidden sm:block" />
-              &nbsp;|&nbsp; 주소: 서울특별시 서초구 서운로6길 26, 4층 4482호(지훈빌딩)
-              &nbsp;|&nbsp; 고객센터: <a href="tel:18332817" className="text-gray-300 hover:text-white transition-colors">1833-2817</a>
-              &nbsp;|&nbsp; 이메일: <a href="mailto:koala-art@heron.kr" className="text-gray-300 hover:text-white transition-colors">koala-art@heron.kr</a>
+              &nbsp;|&nbsp; {t('footer.biz.address')}: 서울특별시 서초구 서운로6길 26, 4층 4482호(지훈빌딩)
+              &nbsp;|&nbsp; {t('footer.biz.support')}: <a href="tel:18332817" className="text-gray-300 hover:text-white transition-colors">1833-2817</a>
+              &nbsp;|&nbsp; {t('footer.biz.email')}: <a href="mailto:koala-art@heron.kr" className="text-gray-300 hover:text-white transition-colors">koala-art@heron.kr</a>
             </p>
           </div>
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">

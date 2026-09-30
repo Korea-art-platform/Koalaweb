@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from 'react-router';
 import { Check, ChevronRight } from 'lucide-react';
 import { startPayment, isUserCancel, PAY_METHODS, type PayMethod } from '@/app/lib/pg';
 import { payMethodIcon } from '@/app/components/common/PayMethodIcons';
+import { useTranslation } from 'react-i18next';
 
 export interface PaymentPageState {
   orderId: string;
@@ -17,6 +18,7 @@ export interface PaymentPageState {
 const METHODS = PAY_METHODS;
 
 export default function PaymentPage() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
   const state = location.state as PaymentPageState | null;
@@ -48,7 +50,7 @@ export default function PaymentPage() {
       });
     } catch (e: unknown) {
       if (!isUserCancel(e)) {
-        alert((e as { message?: string })?.message ?? '결제 요청에 실패했습니다. 다시 시도해 주세요.');
+        alert((e as { message?: string })?.message ?? t('payment.requestFailed'));
       }
     } finally {
       setIsProcessing(false);
@@ -65,13 +67,13 @@ export default function PaymentPage() {
             onClick={() => navigate(-1)}
             className="text-sm text-gray-400 hover:text-black transition-colors mb-4 flex items-center gap-1"
           >
-            ← 뒤로가기
+            {t('payment.back')}
           </button>
-          <h1 className="text-2xl font-bold tracking-tight">결제</h1>
+          <h1 className="text-2xl font-bold tracking-tight">{t('payment.title')}</h1>
           <p className="text-sm text-gray-500 mt-1 truncate">{state.orderName}</p>
         </div>
         <div className="bg-white rounded-[24px] border border-gray-100 p-6 mb-4">
-          <h2 className="text-sm font-bold text-gray-500 mb-4">결제 수단</h2>
+          <h2 className="text-sm font-bold text-gray-500 mb-4">{t('checkout.method')}</h2>
           <div className="grid grid-cols-3 gap-3">
             {METHODS.map((m) => (
               <button
@@ -84,7 +86,7 @@ export default function PaymentPage() {
                 }`}
               >
                 {iconFor(m.id, 40)}
-                <span className="text-xs font-bold text-gray-900 text-center leading-tight">{m.label}</span>
+                <span className="text-xs font-bold text-gray-900 text-center leading-tight">{t(`payment.methods.${m.id}.label`)}</span>
                 {selected === m.id && (
                   <div className="absolute top-2 right-2 w-4 h-4 bg-koala-navy rounded-full flex items-center justify-center">
                     <Check className="w-2.5 h-2.5 text-white" />
@@ -99,7 +101,7 @@ export default function PaymentPage() {
         </div>
         <div className="bg-white rounded-[24px] border border-gray-100 px-6 py-5 mb-5">
           <div className="flex items-center justify-between">
-            <span className="text-sm text-gray-500">최종 결제 금액</span>
+            <span className="text-sm text-gray-500">{t('checkout.total')}</span>
             <span className="text-2xl font-black tracking-tight">
               ₩{state.amount.toLocaleString()}
             </span>
@@ -119,17 +121,17 @@ export default function PaymentPage() {
           {isProcessing ? (
             <>
               <span className="w-5 h-5 border-2 border-gray-300 border-t-transparent rounded-full animate-spin" />
-              결제 진행 중...
+              {t('checkout.processing')}
             </>
           ) : (
             <>
-              ₩{state.amount.toLocaleString()} 결제하기
+              {t('payment.payAmount', { amount: state.amount.toLocaleString() })}
               <ChevronRight className="w-4 h-4" />
             </>
           )}
         </button>
         <p className="text-center text-[11px] text-gray-400 mt-4">
-          보안 결제 시스템으로 고객님의 정보는 암호화되어 안전하게 보호됩니다.
+          {t('checkout.secure')}
         </p>
       </div>
     </div>

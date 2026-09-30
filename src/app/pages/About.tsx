@@ -10,6 +10,8 @@ import DriftGallery from '@/app/components/about/DriftGallery';
 import Reveal from '@/app/components/about/Reveal';
 import SceneNav, { type Scene } from '@/app/components/about/SceneNav';
 import ArtistWheel from '@/app/components/about/ArtistWheel';
+import { useIsEnglish } from '@/app/lib/lang';
+import { useTranslation } from 'react-i18next';
 
 const SCENES: Scene[] = [
   { id: 'scene-open', label: 'Opening' },
@@ -19,34 +21,33 @@ const SCENES: Scene[] = [
 ];
 
 const WHY: string[][] = [
-  ['한국에는 좋은 작가가 많습니다.', '그런데 그 작품을 곁에 두는 일은', '아직도 어렵습니다.'],
-  ['어디서 사는지, 진짜가 맞는지,', '이 값이 맞는지 —', '아는 사람만 아는 채로 남아 있습니다.'],
-  ['KOALA는 그 사이를 좁히려고 만들었습니다.'],
+  ['about.why.a1', 'about.why.a2', 'about.why.a3'],
+  ['about.why.b1', 'about.why.b2', 'about.why.b3'],
+  ['about.why.c1'],
 ];
 
 const TIERS = [
   {
     no: '000',
-    name: '원작',
+    key: 'original',
     en: 'Original',
-    body: '작가의 손에서 하나만 나온 작품입니다. 같은 것이 다시 나오지 않습니다.',
   },
   {
     no: '001',
-    name: '한정판',
+    key: 'limited',
     en: 'Limited',
-    body: '정해진 수량만 만들고 멈춘 작품입니다. 몇 번째인지까지 함께 적습니다.',
   },
   {
     no: '002',
-    name: '오픈에디션',
+    key: 'open',
     en: 'Open Edition',
-    body: '더 많은 사람이 곁에 둘 수 있게 연 작품입니다. 처음 사는 분께 권합니다.',
   },
 ];
 
 
 export default function About() {
+  const { t } = useTranslation();
+  const english = useIsEnglish();
   const { data: artworks = [] } = useQuery<Sku[]>({
     queryKey: ['about', 'artworks'],
     queryFn: async () => {
@@ -72,21 +73,21 @@ export default function About() {
   return (
     <main className="bg-background">
       <Helmet>
-        <title>회사 소개 — KOALA</title>
+        <title>{t('about.metaTitle')}</title>
         <meta
           name="description"
-          content="헤론이 만드는 KOALA-ART는 한국 작가의 작품을 원작·한정판·오픈에디션으로 나누어 소개하는 미술품 거래 플랫폼입니다."
+          content={t('about.metaDescription')}
         />
       </Helmet>
 
       <SceneNav scenes={SCENES} />
 
       <section id="scene-open">
-        <IrisOpening lines={['작가의 손에서 나온 것을,', '그대로.']} />
+        <IrisOpening lines={[t('about.iris1'), t('about.iris2')]} />
       </section>
 
       <section id="scene-why">
-        {driftImages.length > 0 && <DriftGallery images={driftImages} paragraphs={WHY} />}
+        {driftImages.length > 0 && <DriftGallery images={driftImages} paragraphs={WHY.map((p) => p.map((k) => t(k)))} />}
       </section>
 
       {/* ── 세 단계 ─────────────────────────────────────────── */}
@@ -97,10 +98,10 @@ export default function About() {
               What we sell
             </p>
             <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-gray-900 break-keep max-w-3xl leading-[1.3]">
-              같은 작가의 작품이라도 무게가 다릅니다.
+              {t('about.tiersHeading')}
             </h2>
             <p className="mt-5 text-sm md:text-lg text-gray-500 break-keep max-w-2xl leading-relaxed">
-              어느 쪽인지 흐리지 않습니다. 세 가지로 나누어 작품 사진 위에 그대로 적습니다.
+              {t('about.tiersDesc')}
             </p>
           </Reveal>
 
@@ -127,13 +128,15 @@ export default function About() {
                     {tier.no}
                   </span>
                   <h3 className="mt-5 text-2xl md:text-3xl font-bold tracking-tight text-gray-900">
-                    {tier.name}
+                    {t(`about.tiers.${tier.key}.name`)}
                   </h3>
+                  {!english && (
                   <p className="mt-1 text-xs font-bold tracking-[0.14em] uppercase text-gray-400">
                     {tier.en}
                   </p>
+                  )}
                   <p className="mt-5 text-sm md:text-base text-gray-600 leading-[1.85] break-keep">
-                    {tier.body}
+                    {t(`about.tiers.${tier.key}.body`)}
                   </p>
                 </div>
               </Reveal>
@@ -152,10 +155,10 @@ export default function About() {
                 Artists
               </p>
               <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-gray-900 break-keep leading-[1.3]">
-                지금 KOALA와 함께하는 작가들
+                {t('about.artistsHeading')}
               </h2>
               <p className="mt-6 text-sm md:text-base text-gray-500">
-                옆으로 밀어 돌려 보세요.
+                {t('about.artistsHint')}
               </p>
             </Reveal>
           </div>

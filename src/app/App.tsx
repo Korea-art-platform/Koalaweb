@@ -9,6 +9,7 @@ import { AuthProvider } from './context/AuthContext';
 import ScrollToTop from './components/common/ScrollToTop';
 import { useEffect } from 'react';
 import TagManager from 'react-gtm-module';
+import i18n from '@/locales/i18n';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -20,6 +21,9 @@ const queryClient = new QueryClient({
 });
 
 attachCartSync(queryClient);
+i18n.on('languageChanged', () => {
+  queryClient.invalidateQueries();
+});
 
 function App() {
   useEffect(() => {

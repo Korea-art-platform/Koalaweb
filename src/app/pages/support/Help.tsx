@@ -2,61 +2,55 @@ import { useNavigate } from 'react-router';
 import { ArrowLeft, MessageSquare, Truck, RotateCcw, HelpCircle, ChevronRight } from 'lucide-react';
 import { Link } from 'react-router';
 import PageMeta from '@/app/components/common/PageMeta';
+import { useTranslation } from 'react-i18next';
 
 const HELP_SECTIONS = [
   {
     icon: HelpCircle,
-    title: '자주 묻는 질문',
-    desc: '주문, 배송, 교환/반품, 계정 관련 자주 묻는 질문을 확인하세요.',
+    key: 'faq',
     path: '/faq',
-    cta: '바로가기',
   },
   {
     icon: Truck,
-    title: '배송 정보',
-    desc: '배송사, 배송 기간, 배송비, 특수 포장 정책을 안내합니다.',
+    key: 'shipping',
     path: '/shipping',
-    cta: '배송 정책 보기',
   },
   {
     icon: RotateCcw,
-    title: '교환 및 반품',
-    desc: '교환·반품 신청 방법과 환불 처리 기간을 확인하세요.',
+    key: 'returns',
     path: '/returns',
-    cta: '교환/반품 정책 보기',
   },
   {
     icon: MessageSquare,
-    title: '1:1 문의',
-    desc: '원하는 답변을 찾지 못하셨나요? 고객센터로 직접 문의해 주세요.',
+    key: 'contact',
     path: '/contact',
-    cta: '문의하기',
   },
 ];
 
 export default function Help() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   return (
     <div className="flex-1 pt-20">
-      <PageMeta title="고객 지원" />
+      <PageMeta title={t('support.help.metaTitle')} />
       <div className="sticky top-20 z-10 bg-white border-b border-gray-100">
         <div className="max-w-3xl mx-auto flex items-center gap-4 px-6 py-4">
           <button onClick={() => navigate(-1)} className="text-gray-700 hover:text-black transition-colors">
             <ArrowLeft className="w-5 h-5" />
           </button>
-          <h1 className="text-base font-semibold tracking-tight text-gray-900">고객센터</h1>
+          <h1 className="text-base font-semibold tracking-tight text-gray-900">{t('support.help.title')}</h1>
         </div>
       </div>
       <div className="max-w-3xl mx-auto px-6 py-8 space-y-8">
         <div className="space-y-1">
-          <p className="text-xl font-bold text-gray-900">무엇을 도와드릴까요?</p>
+          <p className="text-xl font-bold text-gray-900">{t('support.help.heading')}</p>
           <p className="text-sm text-gray-500">
-            평일 10:00 – 18:00 운영 · 점심 13:00–14:00 제외
+            {t('support.help.hours')}
           </p>
         </div>
         <div className="grid gap-4 md:grid-cols-2">
-          {HELP_SECTIONS.map(({ icon: Icon, title, desc, path, cta }) => (
+          {HELP_SECTIONS.map(({ icon: Icon, key, path }) => (
             <Link
               key={path}
               to={path}
@@ -66,11 +60,11 @@ export default function Help() {
                 <Icon className="w-4 h-4 text-gray-500 group-hover:text-white transition-colors" />
               </div>
               <div className="space-y-1">
-                <p className="text-sm font-bold text-gray-900">{title}</p>
-                <p className="text-xs text-gray-500 leading-relaxed">{desc}</p>
+                <p className="text-sm font-bold text-gray-900">{t(`support.help.sections.${key}.title`)}</p>
+                <p className="text-xs text-gray-500 leading-relaxed">{t(`support.help.sections.${key}.desc`)}</p>
               </div>
               <div className="flex items-center gap-1 text-xs font-bold text-gray-400 group-hover:text-black transition-colors">
-                {cta}
+                {t(`support.help.sections.${key}.cta`)}
                 <ChevronRight className="w-3.5 h-3.5" />
               </div>
             </Link>
@@ -78,8 +72,8 @@ export default function Help() {
         </div>
         <div className="bg-gray-50 rounded-2xl p-6 flex flex-col sm:flex-row items-start sm:items-center gap-4 justify-between">
           <div>
-            <p className="text-sm font-bold text-gray-900 mb-0.5">전화로 문의</p>
-            <p className="text-xs text-gray-500">평일 10:00 – 18:00 · 점심 13:00–14:00 제외</p>
+            <p className="text-sm font-bold text-gray-900 mb-0.5">{t('support.help.phoneTitle')}</p>
+            <p className="text-xs text-gray-500">{t('support.help.phoneHours')}</p>
           </div>
           <a
             href="tel:18332817"
@@ -90,8 +84,8 @@ export default function Help() {
         </div>
         <div className="bg-gray-50 rounded-2xl p-6 flex flex-col sm:flex-row items-start sm:items-center gap-4 justify-between">
           <div>
-            <p className="text-sm font-bold text-gray-900 mb-0.5">이메일로 직접 문의</p>
-            <p className="text-xs text-gray-500">영업일 기준 24시간 이내 답변드립니다.</p>
+            <p className="text-sm font-bold text-gray-900 mb-0.5">{t('support.help.emailTitle')}</p>
+            <p className="text-xs text-gray-500">{t('support.help.emailNote')}</p>
           </div>
           <a
             href="mailto:koala-art@heron.kr"

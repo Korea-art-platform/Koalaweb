@@ -43,7 +43,7 @@ export function CartItem({ item, onUpdateQuantity, onRemoveItem }: CartItemProps
             <div className="flex items-center gap-2 bg-gray-50 p-1 rounded-xl">
               <button
                 onClick={() => onUpdateQuantity(item.id, item.quantity, -1)}
-                aria-label="수량 감소"
+                aria-label={t('cart.decrease')}
                 className="w-9 h-9 rounded-lg bg-white shadow-sm flex items-center justify-center hover:bg-gray-100 transition-colors"
               >
                 <Minus className="w-3.5 h-3.5" />
@@ -51,7 +51,7 @@ export function CartItem({ item, onUpdateQuantity, onRemoveItem }: CartItemProps
               <span className="text-sm font-medium w-6 text-center">{item.quantity}</span>
               <button
                 onClick={() => onUpdateQuantity(item.id, item.quantity, 1)}
-                aria-label="수량 증가"
+                aria-label={t('cart.increase')}
                 className="w-9 h-9 rounded-lg bg-white shadow-sm flex items-center justify-center hover:bg-gray-100 transition-colors"
               >
                 <Plus className="w-3.5 h-3.5" />

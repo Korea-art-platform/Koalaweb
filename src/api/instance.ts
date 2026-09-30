@@ -1,4 +1,6 @@
 import axios, { type AxiosRequestConfig } from 'axios';
+import i18n from '@/locales/i18n';
+import { localizeNames } from '@/api/localizeNames';
 
 declare module 'axios' {
   interface AxiosRequestConfig {
@@ -28,7 +30,10 @@ export function markSessionActive() {
 const REFRESH_URL = '/api/v1/auth/refresh';
 
 instance.interceptors.response.use(
-    (response) => response,
+    (response) => {
+        localizeNames(response.data, Boolean(i18n.language?.startsWith('en')));
+        return response;
+    },
     async (error) => {
         const originalRequest = error.config as RetryableRequestConfig;
 

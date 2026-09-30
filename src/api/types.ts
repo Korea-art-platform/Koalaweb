@@ -71,6 +71,8 @@ export interface Sku {
   skuCode: string;
   /** 모델·세부모델명·색상을 이어 붙인 이름. 서버가 만든다. */
   name: string;
+  nameEn?: string | null;
+  nameKo?: string;
   /** 카드 제목으로 쓰는 모델명. 목록 응답에도 담긴다. */
   model?: string;
   modelEn?: string;

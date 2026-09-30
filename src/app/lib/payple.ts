@@ -1,3 +1,4 @@
+import i18n from '@/locales/i18n';
 const TEST_SDK = 'https://democpay.payple.kr/js/v1/payment.js';
 const PROD_SDK = 'https://cpay.payple.kr/js/v1/payment.js';
 
@@ -26,7 +27,7 @@ export function loadPayple(isProduction: boolean): Promise<void> {
     script.onload = () => resolve();
     script.onerror = () => {
       loading = null;
-      reject(new Error('결제 모듈을 불러오지 못했습니다.'));
+      reject(new Error(i18n.t('payment.loadFailed')));
     };
     document.head.appendChild(script);
   });
@@ -58,7 +59,7 @@ export function requestPayple(
   onError: (message: string) => void,
 ): void {
   if (!window.PaypleCpayAuthCheck) {
-    onError('결제 모듈이 준비되지 않았습니다.');
+    onError(i18n.t('payment.notReady'));
     return;
   }
 
@@ -77,7 +78,7 @@ export function requestPayple(
     callbackFunction: (result: { PCD_PAY_RST?: string; PCD_PAY_MSG?: string }) => {
       // 성공은 서버가 처리한다. 여기서는 실패만 사용자에게 알린다.
       if (result?.PCD_PAY_RST !== 'success') {
-        onError(result?.PCD_PAY_MSG ?? '결제를 진행하지 못했습니다.');
+        onError(result?.PCD_PAY_MSG ?? i18n.t('payment.couldNotProceed'));
       }
     },
   });
