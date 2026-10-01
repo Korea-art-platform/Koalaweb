@@ -173,7 +173,7 @@ interface StageProps {
   go: (step: 1 | -1) => void;
 }
 
-// PC — 왼쪽 문구, 가운데 작품(뒤에 큰 작품명), 아래 작품명·가격
+// PC — 왼쪽 문구, 가운데 작품(뒤에 큰 작품명), 오른쪽 가격, 아래 작품명. 양옆은 작품 아랫선에 맞춘다
 function DesktopStage({ slide, total, loading, art, go }: StageProps) {
   const { t } = useTranslation();
   const discounted = slide?.displayPrice != null && slide.displayListPrice != null
@@ -185,7 +185,7 @@ function DesktopStage({ slide, total, loading, art, go }: StageProps) {
         grid-rows-[minmax(0,1fr)_auto] gap-x-10 px-12 pt-28 pb-9 xl:grid-cols-[minmax(0,300px)_minmax(0,1fr)_minmax(0,240px)]"
     >
       {/* 왼쪽 — 넘기기 · 메인 문구 · 서브 문구 · 버튼 */}
-      <div className="relative z-10 flex min-w-0 flex-col justify-center">
+      <div className="relative z-10 flex h-[min(66svh,100%)] min-w-0 flex-col justify-end self-center">
         {total > 1 && (
           <div className="mb-8 flex gap-2">
             <RoundButton label={t('home.hero.prev')} onClick={() => go(-1)}><ArrowLeft className="h-4 w-4" /></RoundButton>
@@ -223,9 +223,23 @@ function DesktopStage({ slide, total, loading, art, go }: StageProps) {
         <div className="relative aspect-square w-[min(100cqw,56svh)]">{art}</div>
       </div>
 
-      <div aria-hidden />
+      <div className="relative z-10 flex h-[min(66svh,100%)] min-w-0 flex-col items-end justify-end self-center text-right">
+        {slide?.displayPrice != null && (
+          <Swap id={slide.id}>
+            <p className="text-[30px] font-medium leading-none tabular-nums text-white xl:text-[44px]">
+              ₩{formatWon(slide.displayPrice)}
+            </p>
+            {discounted && (
+              <p className="mt-3 text-lg tabular-nums text-white/45 line-through xl:text-xl">
+                ₩{formatWon(slide.displayListPrice)}
+              </p>
+            )}
+            {slide.material && <p className="mt-3 text-sm text-white/60 break-keep">{slide.material}</p>}
+          </Swap>
+        )}
+      </div>
 
-      {/* 아래 — 인스타그램 · 작품명 · 가격 */}
+      {/* 아래 — 인스타그램 · 작품명 */}
       <div className="relative z-10 col-span-3 grid grid-cols-[1fr_auto_1fr] items-end">
         <a
           href={INSTAGRAM}
@@ -249,21 +263,7 @@ function DesktopStage({ slide, total, loading, art, go }: StageProps) {
             </Swap>
           )}
         </div>
-        <div className="min-w-0 justify-self-end text-right">
-          {slide?.displayPrice != null && (
-            <Swap id={slide.id}>
-              <p className="text-[26px] font-medium leading-none tabular-nums text-white xl:text-[32px]">
-                ₩{formatWon(slide.displayPrice)}
-              </p>
-              {discounted && (
-                <p className="mt-2 text-base tabular-nums text-white/45 line-through">
-                  ₩{formatWon(slide.displayListPrice)}
-                </p>
-              )}
-              {slide.material && <p className="mt-2 text-sm text-white/60 break-keep">{slide.material}</p>}
-            </Swap>
-          )}
-        </div>
+        <div aria-hidden />
       </div>
     </div>
   );
