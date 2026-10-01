@@ -173,7 +173,7 @@ interface StageProps {
   go: (step: 1 | -1) => void;
 }
 
-// PC — 왼쪽 문구, 가운데 작품(뒤에 큰 작품명), 오른쪽 가격, 아래 작품명·다음 작품
+// PC — 왼쪽 문구, 가운데 작품(뒤에 큰 작품명), 아래 작품명·가격
 function DesktopStage({ slide, total, loading, art, go }: StageProps) {
   const { t } = useTranslation();
   const discounted = slide?.displayPrice != null && slide.displayListPrice != null
@@ -223,24 +223,9 @@ function DesktopStage({ slide, total, loading, art, go }: StageProps) {
         <div className="relative aspect-square w-[min(100cqw,56svh)]">{art}</div>
       </div>
 
-      {/* 오른쪽 — 가격 */}
-      <div className="relative z-10 flex min-w-0 flex-col items-end justify-center text-right">
-        {slide?.displayPrice != null && (
-          <Swap id={slide.id}>
-            <p className="text-[30px] font-medium leading-none tabular-nums text-white xl:text-[44px]">
-              ₩{formatWon(slide.displayPrice)}
-            </p>
-            {discounted && (
-              <p className="mt-3 text-lg tabular-nums text-white/45 line-through xl:text-xl">
-                ₩{formatWon(slide.displayListPrice)}
-              </p>
-            )}
-            {slide.material && <p className="mt-3 text-sm text-white/60 break-keep">{slide.material}</p>}
-          </Swap>
-        )}
-      </div>
+      <div aria-hidden />
 
-      {/* 아래 — 인스타그램 · 작품명 */}
+      {/* 아래 — 인스타그램 · 작품명 · 가격 */}
       <div className="relative z-10 col-span-3 grid grid-cols-[1fr_auto_1fr] items-end">
         <a
           href={INSTAGRAM}
@@ -264,7 +249,21 @@ function DesktopStage({ slide, total, loading, art, go }: StageProps) {
             </Swap>
           )}
         </div>
-        <div aria-hidden />
+        <div className="min-w-0 justify-self-end text-right">
+          {slide?.displayPrice != null && (
+            <Swap id={slide.id}>
+              <p className="text-[26px] font-medium leading-none tabular-nums text-white xl:text-[32px]">
+                ₩{formatWon(slide.displayPrice)}
+              </p>
+              {discounted && (
+                <p className="mt-2 text-base tabular-nums text-white/45 line-through">
+                  ₩{formatWon(slide.displayListPrice)}
+                </p>
+              )}
+              {slide.material && <p className="mt-2 text-sm text-white/60 break-keep">{slide.material}</p>}
+            </Swap>
+          )}
+        </div>
       </div>
     </div>
   );
