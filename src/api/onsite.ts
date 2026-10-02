@@ -15,7 +15,11 @@ export async function getOnSitePayment(payToken: string) {
   const res = await instance.get<{ data: OnSitePublic }>(
     `/api/v1/onsite-payments/${encodeURIComponent(payToken)}`,
   );
-  return res.data.data;
+  const data = res.data?.data;
+  if (!data || typeof data !== 'object' || !data.orderNo) {
+    throw new Error('onsite payment not found');
+  }
+  return data;
 }
 
 export function onSitePayUrl(payToken: string) {
