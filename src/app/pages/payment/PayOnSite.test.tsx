@@ -37,10 +37,10 @@ const base: OnSitePublic = {
   paid: false,
 };
 
-async function render() {
+async function render(path = '/pay/tok123') {
   await act(async () => {
     root.render(
-      <MemoryRouter initialEntries={['/pay/tok123']}>
+      <MemoryRouter initialEntries={[path]}>
         <Routes>
           <Route path="/pay/:token" element={<PayOnSite />} />
         </Routes>
@@ -105,6 +105,13 @@ describe('현장결제 결제 페이지', () => {
 
     expect(text()).toContain(i18n.t('onsite.closedTitle'));
     expect(payButton()).toBeUndefined();
+  });
+
+  it('결제창에서 실패하고 돌아오면 사유를 보여 주고 다시 결제할 수 있게 둔다', async () => {
+    await render(`/pay/tok123?failed=${encodeURIComponent('결제 결과를 받지 못했습니다.')}`);
+
+    expect(container.querySelector('[role="alert"]')?.textContent).toContain('결제 결과를 받지 못했습니다.');
+    expect(payButton()).toBeDefined();
   });
 
   it('없는 링크는 찾을 수 없다고 알린다', async () => {

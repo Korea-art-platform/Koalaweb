@@ -8,6 +8,8 @@ Disallow: /account/
 Disallow: /cart
 Disallow: /order
 Disallow: /payment
+Disallow: /pay/
+Disallow: /onsite
 Disallow: /api/
 Allow: /api/v1/sitemap.xml
 Allow: /api/v1/share/

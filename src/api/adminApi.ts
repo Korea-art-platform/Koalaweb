@@ -948,3 +948,19 @@ export async function getOnSitePayments() {
   const res = await adminInstance.get(`${BASE}/onsite-payments`);
   return res.data.data as OnSitePayment[];
 }
+
+export interface OnSiteSetting {
+  enabled: boolean;
+  pinSet: boolean;
+  updatedAt: string | null;
+}
+
+export async function getOnSiteSetting() {
+  const res = await adminInstance.get(`${BASE}/onsite-settings`);
+  return res.data.data as OnSiteSetting;
+}
+
+export async function updateOnSiteSetting(body: { enabled?: boolean; pin?: string }) {
+  const res = await adminInstance.put(`${BASE}/onsite-settings`, body);
+  return res.data.data as OnSiteSetting;
+}

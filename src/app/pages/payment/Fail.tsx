@@ -17,6 +17,7 @@ const KNOWN_ERRORS = new Set<string>([
   'NOT_AVAILABLE_BANK',
   'PAYMENT_AMOUNT_MISMATCH',
   'TOSS_ERROR',
+  'RETURN_WITHOUT_RESULT',
 ]);
 
 export default function PaymentFail() {

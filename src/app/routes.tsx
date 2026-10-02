@@ -53,6 +53,7 @@ const PaymentPage = lazy(() => import("@/app/pages/payment/PaymentPage"));
 const PaymentSuccess = lazy(() => import("@/app/pages/payment/Success"));
 const PaymentFail = lazy(() => import("@/app/pages/payment/Fail"));
 const PayOnSite = lazy(() => import("@/app/pages/payment/PayOnSite"));
+const OnSiteDesk = lazy(() => import("@/app/pages/onsite/OnSiteDesk"));
 
 const Account = lazy(() => import("@/app/pages/account/index"));
 const AccountOrders = lazy(() => import("@/app/pages/account/AccountOrders"));
@@ -109,6 +110,7 @@ export function AppRoutes() {
             <Route path="/payment/success" element={<PaymentSuccess />} />
             <Route path="/payment/fail" element={<PaymentFail />} />
             <Route path="/pay/:token" element={<PayOnSite />} />
+            <Route path="/onsite" element={<OnSiteDesk />} />
             <Route path="*" element={<NotFound />} />
           </Route>
           <Route path="/" element={<Home />} />

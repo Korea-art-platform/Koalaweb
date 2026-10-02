@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { useParams } from 'react-router';
+import { useParams, useSearchParams } from 'react-router';
 import { Check, ChevronRight } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { startPayment, isUserCancel, PAY_METHODS, type PayMethod } from '@/app/lib/pg';
@@ -12,6 +12,8 @@ type Load = 'loading' | 'ready' | 'missing';
 export default function PayOnSite() {
   const { t } = useTranslation();
   const { token = '' } = useParams();
+  const [searchParams] = useSearchParams();
+  const failed = searchParams.get('failed');
   const [load, setLoad] = useState<Load>('loading');
   const [info, setInfo] = useState<OnSitePublic | null>(null);
   const [selected, setSelected] = useState<PayMethod>(PAY_METHODS[0].id);
@@ -95,6 +97,13 @@ export default function PayOnSite() {
           <>
             <p className="text-xs font-bold uppercase tracking-[0.2em] text-koala-purple-light">{t('onsite.eyebrow')}</p>
             <h1 className="mt-2 text-2xl font-bold tracking-tight text-gray-900">{t('onsite.title')}</h1>
+
+            {failed && (
+              <div role="alert" className="mt-6 rounded-2xl bg-red-50 px-5 py-4 text-sm text-red-700">
+                <p className="font-bold">{t('onsite.failedTitle')}</p>
+                <p className="mt-1 break-keep">{failed}</p>
+              </div>
+            )}
 
             <div className="mt-6 rounded-[24px] border border-gray-100 bg-white p-6">
               <p className="truncate text-sm text-gray-500">{info.artistName}</p>

@@ -1201,7 +1201,8 @@
       "INVALID_PASSWORD": "The payment password is incorrect. Please try again.",
       "NOT_AVAILABLE_BANK": "This bank is currently unavailable.",
       "PAYMENT_AMOUNT_MISMATCH": "The payment amount does not match. Please try again.",
-      "TOSS_ERROR": "Something went wrong with the payment. Please try again shortly."
+      "TOSS_ERROR": "Something went wrong with the payment. Please try again shortly.",
+      "RETURN_WITHOUT_RESULT": "We didn't receive the payment result. Please check your payment history and try again."
     },
     "failTitle": "Payment failed",
     "cancelled": "The payment was cancelled.",
@@ -1411,6 +1412,7 @@
     "closedBody": "It has expired or was already handled. Please ask a staff member for a new payment.",
     "missingTitle": "We couldn't find this payment",
     "missingBody": "Please check the link or ask a staff member.",
-    "retry": "Try again"
+    "retry": "Try again",
+    "failedTitle": "Payment was not completed"
   }
 }
