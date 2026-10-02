@@ -52,6 +52,7 @@ const CheckoutSuccess = lazy(() => import("@/app/pages/order/Success"));
 const PaymentPage = lazy(() => import("@/app/pages/payment/PaymentPage"));
 const PaymentSuccess = lazy(() => import("@/app/pages/payment/Success"));
 const PaymentFail = lazy(() => import("@/app/pages/payment/Fail"));
+const PayOnSite = lazy(() => import("@/app/pages/payment/PayOnSite"));
 
 const Account = lazy(() => import("@/app/pages/account/index"));
 const AccountOrders = lazy(() => import("@/app/pages/account/AccountOrders"));
@@ -90,6 +91,7 @@ const AdminInquiryList = lazy(() => import("@/app/pages/Admin/inquiries/AdminInq
 const AdminInquiryDetail = lazy(() => import("@/app/pages/Admin/inquiries/AdminInquiryDetail"));
 const AdminSettlementList = lazy(() => import("@/app/pages/Admin/settlements/AdminSettlementList"));
 const AdminMaintenance = lazy(() => import("@/app/pages/Admin/maintenance/AdminMaintenance"));
+const AdminOnSitePayment = lazy(() => import("@/app/pages/Admin/onsite/AdminOnSitePayment"));
 
 function RouteFallback() {
   return <div className="min-h-screen" />;
@@ -106,6 +108,7 @@ export function AppRoutes() {
             <Route path="/checkout/success" element={<CheckoutSuccess />} />
             <Route path="/payment/success" element={<PaymentSuccess />} />
             <Route path="/payment/fail" element={<PaymentFail />} />
+            <Route path="/pay/:token" element={<PayOnSite />} />
             <Route path="*" element={<NotFound />} />
           </Route>
           <Route path="/" element={<Home />} />
@@ -188,6 +191,7 @@ export function AppRoutes() {
             <Route path="/admin/inquiries/:inquiryCode" element={<AdminInquiryDetail />} />
             <Route path="/admin/settlements" element={<AdminSettlementList />} />
             <Route path="/admin/maintenance" element={<AdminMaintenance />} />
+            <Route path="/admin/onsite" element={<AdminOnSitePayment />} />
           </Route>
         </Route>
       </Routes>

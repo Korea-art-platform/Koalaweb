@@ -5,6 +5,7 @@ import { getOrder, lookupGuestOrder } from '@/api/order';
 import { PG_PROVIDER_CODE } from '@/app/lib/pg';
 import { notifyCartUpdated } from '@/app/hooks/useCart';
 import { useTranslation } from 'react-i18next';
+import { ONSITE_TOKEN_KEY } from '@/api/onsite';
 
 type Status = 'pending' | 'success' | 'error';
 
@@ -28,6 +29,13 @@ export default function PaymentSuccess() {
 
     const goToCompletion = async (no: string) => {
       notifyCartUpdated();
+
+      const onSiteToken = readOnSiteToken();
+      if (onSiteToken) {
+        setStatus('success');
+        navigate(`/pay/${onSiteToken}`, { replace: true });
+        return;
+      }
 
       // 비회원은 /api/v1/orders/{orderNo} 를 못 부른다(회원 전용). 주문할 때
       // 적은 전화번호를 잠깐 들고 있다가 비회원 조회로 같은 내용을 가져온다.
@@ -128,4 +136,14 @@ export default function PaymentSuccess() {
       </div>
     </div>
   );
+}
+
+function readOnSiteToken(): string | null {
+  try {
+    const token = sessionStorage.getItem(ONSITE_TOKEN_KEY);
+    sessionStorage.removeItem(ONSITE_TOKEN_KEY);
+    return token;
+  } catch {
+    return null;
+  }
 }

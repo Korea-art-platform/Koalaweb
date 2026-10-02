@@ -1400,5 +1400,17 @@
     "serverDesc2": "Try again shortly or refresh the page.",
     "refresh": "Refresh",
     "home": "Home"
+  },
+  "onsite": {
+    "eyebrow": "On-site payment",
+    "title": "Pay for your artwork",
+    "note": "Payment is processed in a secure NICEPAY window. KOALA never stores your card details.",
+    "paidTitle": "Payment complete",
+    "paidBody": "Thank you for your purchase. Your artwork will be handed to you on site.",
+    "closedTitle": "This payment link is closed",
+    "closedBody": "It has expired or was already handled. Please ask a staff member for a new payment.",
+    "missingTitle": "We couldn't find this payment",
+    "missingBody": "Please check the link or ask a staff member.",
+    "retry": "Try again"
   }
 }

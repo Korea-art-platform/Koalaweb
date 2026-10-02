@@ -1,5 +1,6 @@
 import { useSearchParams, useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
+import { ONSITE_TOKEN_KEY } from '@/api/onsite';
 
 const KNOWN_ERRORS = new Set<string>([
   'USER_CANCEL',
@@ -22,6 +23,7 @@ export default function PaymentFail() {
   const { t } = useTranslation();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const onSiteToken = peekOnSiteToken();
 
   const errorCode = searchParams.get('code');
   const rawMessage = searchParams.get('message');
@@ -44,18 +46,29 @@ export default function PaymentFail() {
           <p className="text-gray-300 text-xs mb-8">({errorCode})</p>
         )}
         <div className="space-y-3">
-          <button
-            onClick={() => navigate('/checkout')}
-            className="w-full py-3 bg-koala-navy text-white rounded-xl hover:bg-koala-navy-hover transition-colors"
-          >
-            {t('payment.retry')}
-          </button>
-          <button
-            onClick={() => navigate('/cart')}
-            className="w-full py-3 border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors text-sm"
-          >
-            {t('checkout.backToCart')}
-          </button>
+          {onSiteToken ? (
+            <button
+              onClick={() => navigate(`/pay/${onSiteToken}`)}
+              className="w-full py-3 bg-koala-navy text-white rounded-xl hover:bg-koala-navy-hover transition-colors"
+            >
+              {t('onsite.retry')}
+            </button>
+          ) : (
+            <>
+              <button
+                onClick={() => navigate('/checkout')}
+                className="w-full py-3 bg-koala-navy text-white rounded-xl hover:bg-koala-navy-hover transition-colors"
+              >
+                {t('payment.retry')}
+              </button>
+              <button
+                onClick={() => navigate('/cart')}
+                className="w-full py-3 border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors text-sm"
+              >
+                {t('checkout.backToCart')}
+              </button>
+            </>
+          )}
         </div>
         {orderId && (
           <p className="text-[10px] text-gray-300 mt-4">{t('payment.orderNo', { no: orderId })}</p>
@@ -63,4 +76,12 @@ export default function PaymentFail() {
       </div>
     </div>
   );
+}
+
+function peekOnSiteToken(): string | null {
+  try {
+    return sessionStorage.getItem(ONSITE_TOKEN_KEY);
+  } catch {
+    return null;
+  }
 }

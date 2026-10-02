@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router';
-import { LayoutDashboard, Package, Tags, Users, ShoppingBag, Star, Image as ImageIcon, RotateCcw, Bell, MessageCircle, Wallet, Store, Wrench, Frame, AppWindow } from 'lucide-react';
+import { LayoutDashboard, Package, Tags, Users, ShoppingBag, Star, Image as ImageIcon, RotateCcw, Bell, MessageCircle, Wallet, Store, Wrench, Frame, AppWindow, QrCode } from 'lucide-react';
 
 interface AdminLayoutProps {
   children: React.ReactNode;
@@ -17,6 +17,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
       title: '운영',
       items: [
         { label: '주문', path: '/admin/orders', icon: ShoppingBag },
+        { label: '현장결제', path: '/admin/onsite', icon: QrCode },
         { label: '반품/교환', path: '/admin/returns', icon: RotateCcw },
         { label: '1:1 문의', path: '/admin/inquiries', icon: MessageCircle },
         { label: '리뷰', path: '/admin/reviews', icon: Star },

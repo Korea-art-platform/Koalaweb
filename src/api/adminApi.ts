@@ -915,3 +915,36 @@ export async function uploadPopupImage(file: File): Promise<string> {
   );
   return res.data.data.imageUrl;
 }
+
+export interface OnSitePayment {
+  orderNo: string;
+  payToken: string;
+  itemName: string | null;
+  artistName: string | null;
+  amount: number;
+  orderStatus: string;
+  paymentStatus: string;
+  createdAt: string;
+  paidAt: string | null;
+}
+
+export interface OnSitePaymentInput {
+  itemName: string;
+  artistCode: string;
+  amount: number;
+  taxExempt?: boolean;
+  buyerName?: string;
+  buyerPhone?: string;
+  buyerEmail?: string;
+  memo?: string;
+}
+
+export async function createOnSitePayment(body: OnSitePaymentInput) {
+  const res = await adminInstance.post(`${BASE}/onsite-payments`, body);
+  return res.data.data as OnSitePayment;
+}
+
+export async function getOnSitePayments() {
+  const res = await adminInstance.get(`${BASE}/onsite-payments`);
+  return res.data.data as OnSitePayment[];
+}
