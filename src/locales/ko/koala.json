@@ -7,6 +7,9 @@
     "close": "닫기",
     "prev": "이전",
     "next": "다음",
+    "zoomIn": "확대",
+    "zoomOut": "축소",
+    "zoomReset": "원래 크기로",
     "video": {
       "defaultTitle": "스튜디오 인터뷰 영상",
       "clickToPlay": "클릭하여 재생"

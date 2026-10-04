@@ -7,6 +7,9 @@
     "close": "Close",
     "prev": "Previous",
     "next": "Next",
+    "zoomIn": "Zoom in",
+    "zoomOut": "Zoom out",
+    "zoomReset": "Reset zoom",
     "video": {
       "defaultTitle": "Studio interview",
       "clickToPlay": "Click to play"

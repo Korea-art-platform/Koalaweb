@@ -12,6 +12,7 @@ import { useTranslation } from 'react-i18next';
 import { addCartItem } from '@/api/cart';
 import { getSku } from '@/api/sku';
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from '@/app/components/ui/accordion';
+import { ImageLightbox } from '@/app/components/common/ImageLightbox';
 import { toCdnUrl } from '@/app/lib/imageUrl';
 import type { Sku } from '@/api/types';
 import { notifyCartUpdated } from '@/app/hooks/useCart';
@@ -85,6 +86,8 @@ export default function ProductCard({
   const [detail, setDetail] = useState<Sku | null>(null);
 
   const [imgIndex, setImgIndex] = useState(0);
+  // 팝업 사진을 누르면 전체 화면에서 확대해 본다
+  const [zoomOpen, setZoomOpen] = useState(false);
   const touchStartX = useRef<number | null>(null);
 
   useEffect(() => {
@@ -657,7 +660,8 @@ export default function ProductCard({
                       key={i}
                       src={src}
                       alt={`${sku.name} ${i + 1}`}
-                      className="h-full w-full shrink-0 object-contain select-none"
+                      onClick={() => setZoomOpen(true)}
+                      className="h-full w-full shrink-0 cursor-zoom-in object-contain select-none"
                       draggable={false}
                     />
                   ))}
@@ -804,6 +808,18 @@ export default function ProductCard({
               </div>
             </motion.div>
           </div>
+        )}
+      </AnimatePresence>
+
+      {/* 팝업 위에 뜬다 — 닫으면 팝업이 그대로 남는다 */}
+      <AnimatePresence>
+        {zoomOpen && (
+          <ImageLightbox
+            images={images.filter((u): u is string => Boolean(u))}
+            initialIndex={imgIndex}
+            title={title}
+            onClose={() => setZoomOpen(false)}
+          />
         )}
       </AnimatePresence>
     </>
