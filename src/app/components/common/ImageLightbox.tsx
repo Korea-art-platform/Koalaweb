@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { X, ChevronLeft, ChevronRight, ZoomIn, ZoomOut, RotateCcw } from 'lucide-react';
-import { motion, AnimatePresence, useMotionValue } from 'framer-motion';
+import { motion, AnimatePresence, useMotionValue, useTransform } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 
 interface ImageLightboxProps {
@@ -31,6 +31,8 @@ export function ImageLightbox({ images, initialIndex = 0, title = '', onClose }:
   const scaleRef = useRef(1);
   const x = useMotionValue(0);
   const y = useMotionValue(0);
+  // 아래로 내리는 동안 흐려진다 — 닫히는 중이라는 표시
+  const dragOpacity = useTransform(y, [0, 260], [1, 0.45], { clamp: true });
 
   const zoomed = scale > 1;
   const multi = images.length > 1;
@@ -122,12 +124,17 @@ export function ImageLightbox({ images, initialIndex = 0, title = '', onClose }:
       exit={{ opacity: 0 }}
       transition={{ duration: 0.2 }}
     >
+      {/* 닫기 — 사진 위에서도 바로 보이게 또렷하게 둔다. 휴대폰 노치 아래로 내린다 */}
       <button
-        className="absolute top-4 right-4 z-20 bg-white/10 hover:bg-white/20 rounded-full p-2.5 transition-colors"
+        className="absolute right-4 z-30 flex items-center gap-1.5 rounded-full border border-white/25 bg-black/60 py-2 pl-3 pr-3.5
+          text-white shadow-lg backdrop-blur-sm transition-colors hover:bg-black/80
+          focus-visible:outline-2 focus-visible:outline-white md:pr-4"
+        style={{ top: 'max(1rem, env(safe-area-inset-top))' }}
         onClick={onClose}
         aria-label={t('common.close')}
       >
-        <X className="w-5 h-5 text-white" />
+        <X className="h-6 w-6" />
+        <span className="text-sm font-semibold">{t('common.close')}</span>
       </button>
 
       {multi && (
@@ -178,19 +185,25 @@ export function ImageLightbox({ images, initialIndex = 0, title = '', onClose }:
             <motion.img
               src={images[index]}
               alt={title ? `${title} ${index + 1}` : t('common.imageN', { n: index + 1 })}
-              className={`max-w-full max-h-full object-contain select-none
-                ${zoomed ? 'cursor-grab active:cursor-grabbing touch-none' : 'cursor-zoom-in touch-pan-y'}`}
+              className={`max-w-full max-h-full object-contain select-none touch-none
+                ${zoomed ? 'cursor-grab active:cursor-grabbing' : 'cursor-zoom-in'}`}
               draggable={false}
-              style={{ x, y }}
+              style={{ x, y, opacity: zoomed ? 1 : dragOpacity }}
               animate={{ scale }}
               transition={{ type: 'spring', stiffness: 260, damping: 28 }}
               onDoubleClick={() => zoomTo(zoomed ? MIN_SCALE : 2.5)}
-              drag={zoomed || multi}
+              drag
               dragConstraints={zoomed ? stageRef : { left: 0, right: 0, top: 0, bottom: 0 }}
               dragElastic={zoomed ? 0.05 : 0.6}
               onDragEnd={(_e, { offset, velocity }) => {
-                // 확대 중 끌기는 사진 안을 움직이는 것이다 — 넘기지 않는다
-                if (zoomed || !multi) return;
+                // 확대 중 끌기는 사진 안을 움직이는 것이다 — 닫지도 넘기지도 않는다
+                if (zoomed) return;
+                // 아래로 충분히 내렸으면 닫는다
+                if (Math.abs(offset.y) > Math.abs(offset.x) && (offset.y > 120 || velocity.y > 700)) {
+                  onClose();
+                  return;
+                }
+                if (!multi) return;
                 const swipe = offset.x * 0.5 + velocity.x * 0.05;
                 if (swipe < -60) paginate(1);
                 else if (swipe > 60) paginate(-1);
