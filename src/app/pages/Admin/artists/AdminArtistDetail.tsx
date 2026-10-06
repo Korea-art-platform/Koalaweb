@@ -442,7 +442,7 @@ function SectionCard({
                   <p className="text-xs text-gray-500 mb-0.5">현재 등록된 영상</p>
                   <p className="text-xs text-gray-700 truncate font-mono">{current.fileUrl}</p>
                 </div>
-                <div className="w-28 h-16 flex-shrink-0 rounded overflow-hidden bg-gray-200">
+                <div className="w-28 h-16 flex-shrink-0 rounded-none overflow-hidden bg-gray-200">
                   <iframe
                     src={current.fileUrl}
                     className="w-full h-full pointer-events-none"
@@ -465,7 +465,7 @@ function SectionCard({
 
             {current && (
               <div className="flex items-center gap-3 p-3 bg-white rounded-lg border border-gray-200">
-                <div className="w-28 h-16 flex-shrink-0 rounded overflow-hidden bg-gray-100 flex items-center justify-center">
+                <div className="w-28 h-16 flex-shrink-0 rounded-none overflow-hidden bg-gray-100 flex items-center justify-center">
                   {current.thumbnailUrl ? (
                     <img src={current.thumbnailUrl} alt="썸네일" className="w-full h-full object-cover" />
                   ) : (
@@ -557,19 +557,19 @@ function SectionCard({
                     <div className="aspect-square rounded-lg overflow-hidden bg-gray-100 border border-gray-200">
                       <img src={m.fileUrl} alt="" className="w-full h-full object-cover" />
                     </div>
-                    <span className="absolute top-1 left-1 bg-black/60 text-white text-[10px] px-1.5 py-0.5 rounded font-mono">
+                    <span className="absolute top-1 left-1 bg-black/60 text-white text-[10px] px-1.5 py-0.5 rounded-none font-mono">
                       {idx + 1}
                     </span>
                     <div className="absolute inset-x-0 bottom-0 flex gap-1 p-1 opacity-0 group-hover:opacity-100 transition-opacity">
                       <button
                         onClick={() => triggerReplace(m.id)}
                         disabled={uploading}
-                        className="flex-1 py-1 text-[10px] bg-white/90 text-gray-700 rounded font-medium border border-gray-200 hover:bg-white"
+                        className="flex-1 py-1 text-[10px] bg-white/90 text-gray-700 rounded-none font-medium border border-gray-200 hover:bg-white"
                       >수정</button>
                       <button
                         onClick={() => handleDelete(m.id)}
                         disabled={deleting === m.id}
-                        className="px-2 py-1 bg-red-500/90 text-white rounded hover:bg-red-600 disabled:opacity-40"
+                        className="px-2 py-1 bg-red-500/90 text-white rounded-none hover:bg-red-600 disabled:opacity-40"
                       ><Trash2 className="w-3 h-3" /></button>
                     </div>
                   </div>
@@ -770,7 +770,7 @@ function CareerTab({
                     <select
                       value={editForm.category}
                       onChange={(e) => setEditForm((f) => ({ ...f, category: e.target.value }))}
-                      className="text-xs border border-gray-200 rounded px-2 py-1 focus:outline-none"
+                      className="text-xs border border-gray-200 rounded-none px-2 py-1 focus:outline-none"
                     >
                       {CAREER_CATEGORIES.map((cat) => <option key={cat} value={cat}>{cat}</option>)}
                     </select>
@@ -780,18 +780,18 @@ function CareerTab({
                       min={1900} max={2100}
                       placeholder="미공개"
                       onChange={(e) => setEditForm((f) => ({ ...f, year: e.target.value === '' ? null : Number(e.target.value) }))}
-                      className="text-xs border border-gray-200 rounded px-2 py-1 focus:outline-none w-20"
+                      className="text-xs border border-gray-200 rounded-none px-2 py-1 focus:outline-none w-20"
                     />
                     <input
                       value={editForm.content}
                       onChange={(e) => setEditForm((f) => ({ ...f, content: e.target.value }))}
-                      className="flex-1 text-xs border border-gray-200 rounded px-2 py-1 focus:outline-none min-w-[200px]"
+                      className="flex-1 text-xs border border-gray-200 rounded-none px-2 py-1 focus:outline-none min-w-[200px]"
                     />
                     <input
                       value={editForm.contentEn}
                       onChange={(e) => setEditForm((f) => ({ ...f, contentEn: e.target.value }))}
                       placeholder="영문 (선택)"
-                      className="basis-full text-xs border border-gray-200 rounded px-2 py-1 focus:outline-none"
+                      className="basis-full text-xs border border-gray-200 rounded-none px-2 py-1 focus:outline-none"
                     />
                     <button
                       onClick={() => handleEditSave(c.id)}

@@ -34,7 +34,7 @@ export default function HomePlatformIntro({ banner }: HomePlatformIntroProps) {
           </div>
         </div>
         <div className="order-1 lg:order-2">
-          <div className="aspect-[3/2] md:aspect-[4/5] rounded-2xl md:rounded-[3rem] overflow-hidden shadow-2xl md:rotate-2 hover:rotate-0 transition-transform bg-gray-200">
+          <div className="aspect-[3/2] md:aspect-[4/5] rounded-2xl md:rounded-none overflow-hidden shadow-2xl md:rotate-2 hover:rotate-0 transition-transform bg-gray-200">
             {imageUrl ? (
               <img
                 src={imageUrl}

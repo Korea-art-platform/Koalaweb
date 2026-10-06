@@ -65,7 +65,7 @@ export default function AccountAddresses() {
 
       {loading ? (
         <div className="bg-white rounded-3xl p-16 text-center border border-gray-100 animate-pulse">
-          <div className="h-8 bg-gray-100 rounded w-1/3 mx-auto mb-4" />
+          <div className="h-8 bg-gray-100 rounded-none w-1/3 mx-auto mb-4" />
         </div>
       ) : addresses.length === 0 ? (
         <div className="bg-white rounded-3xl p-12 md:p-16 text-center border border-dashed border-gray-200">

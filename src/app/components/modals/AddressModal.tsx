@@ -256,7 +256,7 @@ export default function AddressModal({ isOpen, mode, address, onClose, onSuccess
               id="addr-default"
               type="checkbox"
               {...register('isDefault')}
-              className="w-5 h-5 rounded border-gray-300 cursor-pointer"
+              className="w-5 h-5 rounded-none border-gray-300 cursor-pointer"
             />
             <label htmlFor="addr-default" className="text-sm text-gray-700 cursor-pointer">
               {t('address.default')}

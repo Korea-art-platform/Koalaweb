@@ -47,7 +47,7 @@ function MiniBarChart({ data }: { data: DailyRevenue[] }) {
             className="w-full bg-koala-navy rounded-sm transition-all"
             style={{ height: `${(Number(d.revenue) / max) * 72}px`, minHeight: 2 }}
           />
-          <div className="absolute bottom-full mb-1 left-1/2 -translate-x-1/2 bg-gray-900 text-white text-[10px] rounded px-1.5 py-0.5 whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
+          <div className="absolute bottom-full mb-1 left-1/2 -translate-x-1/2 bg-gray-900 text-white text-[10px] rounded-none px-1.5 py-0.5 whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
             {d.date.slice(5)}<br />{fmtMoney(Number(d.revenue))}
           </div>
         </div>

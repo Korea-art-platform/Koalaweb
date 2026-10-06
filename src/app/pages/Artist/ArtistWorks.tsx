@@ -56,9 +56,9 @@ export default function ArtistWorks() {
           <div className="grid grid-cols-2 gap-4">
             {Array.from({ length: 4 }).map((_, i) => (
               <div key={i} className="animate-pulse">
-                <div className="aspect-square bg-gray-100 rounded mb-2" />
-                <div className="h-4 bg-gray-100 rounded w-3/4 mb-1" />
-                <div className="h-3 bg-gray-100 rounded w-1/2" />
+                <div className="aspect-square bg-gray-100 rounded-none mb-2" />
+                <div className="h-4 bg-gray-100 rounded-none w-3/4 mb-1" />
+                <div className="h-3 bg-gray-100 rounded-none w-1/2" />
               </div>
             ))}
           </div>

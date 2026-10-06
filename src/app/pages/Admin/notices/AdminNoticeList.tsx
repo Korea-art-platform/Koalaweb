@@ -203,7 +203,7 @@ export default function AdminNoticeList() {
                   type="checkbox"
                   checked={form.isPinned}
                   onChange={(e) => setForm((f) => ({ ...f, isPinned: e.target.checked }))}
-                  className="w-4 h-4 rounded"
+                  className="w-4 h-4 rounded-none"
                 />
                 <span className="text-sm text-gray-700 flex items-center gap-1.5">
                   <Pin className="w-3.5 h-3.5 text-orange-400" />

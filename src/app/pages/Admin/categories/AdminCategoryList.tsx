@@ -269,7 +269,7 @@ export default function AdminCategoryList() {
                                 if (e.key === 'Enter') handleRename(c);
                                 if (e.key === 'Escape') setEditingId(null);
                               }}
-                              className="px-2 py-1 text-sm border border-koala-navy rounded focus:outline-none"
+                              className="px-2 py-1 text-sm border border-koala-navy rounded-none focus:outline-none"
                               autoFocus
                             />
                           ) : (

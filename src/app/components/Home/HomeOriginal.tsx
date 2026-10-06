@@ -27,7 +27,7 @@ export default function HomeOriginal({ skus, loading, categoryCode }: Props) {
   return (
     <section
       // 히어로 위로 올라오는 판의 맨 위 — 판의 둥근 윗모서리를 같이 쓴다
-      className="md:rounded-t-[2.25rem]"
+      className="md:rounded-t-none"
       style={{ background: 'radial-gradient(80% 60% at 28% 38%, rgba(90,53,128,0.45) 0%, rgba(29,18,38,0) 70%), #1D1226' }}
     >
       {/* 모바일은 한 화면에 담기게 위아래를 줄인다 */}

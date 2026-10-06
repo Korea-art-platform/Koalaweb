@@ -61,7 +61,7 @@ export default function StoreFilterSheet({ open, onClose, categories, value, onA
               // 100px 넘게 내렸거나 빠르게 튕기면 닫는다
               if (info.offset.y > 100 || info.velocity.y > 500) onClose();
             }}
-            className="absolute inset-x-0 bottom-0 max-h-[85svh] overflow-y-auto rounded-t-[20px] bg-white px-5 pb-[max(20px,env(safe-area-inset-bottom))]"
+            className="absolute inset-x-0 bottom-0 max-h-[85svh] overflow-y-auto rounded-t-none bg-white px-5 pb-[max(20px,env(safe-area-inset-bottom))]"
           >
             <div
               onPointerDown={(e) => dragControls.start(e)}

@@ -56,7 +56,7 @@
   --chart-3: oklch(0.398 0.07 227.392);
   --chart-4: oklch(0.828 0.189 84.429);
   --chart-5: oklch(0.769 0.188 70.08);
-  --radius: 0.75rem;
+  --radius: 0px;
   --sidebar: #FFFFFF;
   --sidebar-foreground: oklch(0.145 0 0);
   --sidebar-primary: #000000;
@@ -166,10 +166,14 @@
   --color-chart-3: var(--chart-3);
   --color-chart-4: var(--chart-4);
   --color-chart-5: var(--chart-5);
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
+  --radius-xs: 0px;
+  --radius-sm: 0px;
+  --radius-md: 0px;
+  --radius-lg: 0px;
+  --radius-xl: 0px;
+  --radius-2xl: 0px;
+  --radius-3xl: 0px;
+  --radius-4xl: 0px;
   --color-sidebar: var(--sidebar);
   --color-sidebar-foreground: var(--sidebar-foreground);
   --color-sidebar-primary: var(--sidebar-primary);
@@ -291,14 +295,14 @@
 .koala-prose a { color: var(--koala-purple); text-decoration: underline; }
 .koala-prose strong, .koala-prose b { font-weight: 700; color: #1f2937; }
 .koala-prose em, .koala-prose i { font-style: italic; }
-.koala-prose img { max-width: 100%; height: auto; border-radius: .6rem; margin: .9em 0; }
+.koala-prose img { max-width: 100%; height: auto; border-radius: 0; margin: .9em 0; }
 .koala-prose blockquote { border-left: 3px solid var(--koala-gold); padding: .1em 0 .1em 1em; color: #6b7280; margin: .9em 0; }
 .koala-prose hr { border: 0; border-top: 1px solid #e5e7eb; margin: 1.4em 0; }
-.koala-prose pre { background: #f4f4f5; border-radius: .5rem; padding: .8em 1em; overflow-x: auto; font-size: .85em; margin: .8em 0; }
-.koala-prose code { background: #f4f4f5; border-radius: .3rem; padding: .1em .35em; font-size: .88em; }
+.koala-prose pre { background: #f4f4f5; border-radius: 0; padding: .8em 1em; overflow-x: auto; font-size: .85em; margin: .8em 0; }
+.koala-prose code { background: #f4f4f5; border-radius: 0; padding: .1em .35em; font-size: .88em; }
 .koala-prose pre code { background: none; padding: 0; }
 .koala-prose:focus { outline: none; }
-.koala-prose .ProseMirror-selectednode { outline: 2px solid var(--koala-gold); border-radius: .6rem; }
+.koala-prose .ProseMirror-selectednode { outline: 2px solid var(--koala-gold); border-radius: 0; }
 
 @keyframes koala-marquee-y {
   from { transform: translateY(0); }

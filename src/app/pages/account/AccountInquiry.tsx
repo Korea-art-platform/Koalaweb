@@ -155,7 +155,7 @@ export default function AccountInquiry() {
                 type="checkbox"
                 checked={!!form.isSecret}
                 onChange={(e) => setForm((f) => ({ ...f, isSecret: e.target.checked }))}
-                className="w-4 h-4 rounded"
+                className="w-4 h-4 rounded-none"
               />
               <span className="text-sm text-gray-700">{t('inquiry.secret')}</span>
             </label>

@@ -76,7 +76,7 @@ export function ShareButton({ title, description, imageUrl, url }: ShareButtonPr
             onClick={shareKakao}
             className="w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors text-sm"
           >
-            <div className="w-5 h-5 rounded bg-[#FEE500] flex items-center justify-center flex-shrink-0">
+            <div className="w-5 h-5 rounded-none bg-[#FEE500] flex items-center justify-center flex-shrink-0">
               <span className="text-[#3C1E1E] text-[9px] font-black">K</span>
             </div>
             {t('widgets.share.kakao')}
@@ -85,7 +85,7 @@ export function ShareButton({ title, description, imageUrl, url }: ShareButtonPr
             onClick={shareX}
             className="w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors text-sm border-t border-gray-50"
           >
-            <div className="w-5 h-5 bg-koala-navy rounded flex items-center justify-center flex-shrink-0">
+            <div className="w-5 h-5 bg-koala-navy rounded-none flex items-center justify-center flex-shrink-0">
               <span className="text-white text-[9px] font-black">X</span>
             </div>
             X (Twitter)

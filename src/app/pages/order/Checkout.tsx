@@ -330,13 +330,13 @@ export default function Checkout() {
     return (
       <div className="flex-1">
         <div className="pt-32 px-8 animate-pulse max-w-[1300px] mx-auto">
-          <div className="h-10 bg-gray-100 rounded w-1/4 mb-8" />
+          <div className="h-10 bg-gray-100 rounded-none w-1/4 mb-8" />
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
             <div className="lg:col-span-2 space-y-6">
-              <div className="h-64 bg-white rounded-[32px]" />
-              <div className="h-48 bg-white rounded-[32px]" />
+              <div className="h-64 bg-white rounded-none" />
+              <div className="h-48 bg-white rounded-none" />
             </div>
-            <div className="h-80 bg-white rounded-[32px]" />
+            <div className="h-80 bg-white rounded-none" />
           </div>
         </div>
       </div>
@@ -357,7 +357,7 @@ export default function Checkout() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 sm:gap-10">
             <div className="lg:col-span-2 space-y-4 sm:space-y-8">
               <h1 className="text-2xl sm:text-3xl font-medium tracking-tight">{t('checkout.title')}</h1>
-              <section className="bg-white rounded-3xl sm:rounded-[32px] p-5 sm:p-8 shadow-sm border border-gray-100">
+              <section className="bg-white rounded-3xl sm:rounded-none p-5 sm:p-8 shadow-sm border border-gray-100">
                 <div className="flex items-center justify-between gap-3 mb-4 sm:mb-6">
                   <h2 className="text-lg sm:text-xl font-medium flex items-center gap-2 shrink-0">
                     <MapPin className="w-5 h-5 text-gray-400" /> {t('checkout.orderer')}
@@ -395,7 +395,7 @@ export default function Checkout() {
                 </div>
                 )}
               </section>
-              <section className="bg-white rounded-3xl sm:rounded-[32px] p-5 sm:p-8 shadow-sm border border-gray-100">
+              <section className="bg-white rounded-3xl sm:rounded-none p-5 sm:p-8 shadow-sm border border-gray-100">
                 <div className="flex items-center justify-between gap-3 mb-4 sm:mb-6">
                   <h2 className="text-lg sm:text-xl font-medium flex items-center gap-2 shrink-0">
                     <MapPin className="w-5 h-5 text-gray-400" /> {t('checkout.shipping')}
@@ -509,7 +509,7 @@ export default function Checkout() {
                 </div>
                 )}
               </section>
-              <section className="bg-white rounded-3xl sm:rounded-[32px] p-5 sm:p-8 shadow-sm border border-gray-100">
+              <section className="bg-white rounded-3xl sm:rounded-none p-5 sm:p-8 shadow-sm border border-gray-100">
                 <div className="flex items-center justify-between gap-3 mb-4 sm:mb-6">
                   <h2 className="text-lg sm:text-xl font-medium flex items-center gap-2 shrink-0">
                     <Package className="w-5 h-5 text-gray-400" /> {t('checkout.items', { count: cartItems.length })}
@@ -548,7 +548,7 @@ export default function Checkout() {
                 </div>
                 )}
               </section>
-              <section className="bg-white rounded-3xl sm:rounded-[32px] p-5 sm:p-8 shadow-sm border border-gray-100">
+              <section className="bg-white rounded-3xl sm:rounded-none p-5 sm:p-8 shadow-sm border border-gray-100">
                 <div className="flex items-center justify-between gap-3 mb-4 sm:mb-6">
                   <h2 className="text-lg sm:text-xl font-medium flex items-center gap-2 shrink-0">
                     <CreditCard className="w-5 h-5 text-gray-400" /> {t('checkout.method')}
@@ -605,7 +605,7 @@ export default function Checkout() {
               </section>
             </div>
             <div className="lg:col-span-1">
-              <div className="bg-white rounded-3xl sm:rounded-[32px] p-5 sm:p-8 shadow-sm border border-gray-100 lg:sticky lg:top-28">
+              <div className="bg-white rounded-3xl sm:rounded-none p-5 sm:p-8 shadow-sm border border-gray-100 lg:sticky lg:top-28">
                 <h2 className="text-lg sm:text-xl font-medium mb-5 sm:mb-8">{t('checkout.summary')}</h2>
                 <div className="space-y-3 sm:space-y-4 mb-5 sm:mb-8">
                   <div className="flex justify-between text-sm">
@@ -636,7 +636,7 @@ export default function Checkout() {
                     onClick={toggleAll}
                     className="w-full flex items-center gap-3 px-5 py-4 bg-gray-50 hover:bg-gray-100 transition-colors text-left"
                   >
-                    <span className={`w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 transition-colors ${allAgreed ? 'bg-koala-navy border-black' : 'border-gray-300'}`}>
+                    <span className={`w-5 h-5 rounded-none border-2 flex items-center justify-center flex-shrink-0 transition-colors ${allAgreed ? 'bg-koala-navy border-black' : 'border-gray-300'}`}>
                       {allAgreed && <Check className="w-3 h-3 text-white" />}
                     </span>
                     <span className="text-sm font-bold text-gray-900">{t('checkout.agreeAll')}</span>
@@ -658,7 +658,7 @@ export default function Checkout() {
                         <button
                           type="button"
                           onClick={() => setAgreed((prev) => ({ ...prev, [key]: !prev[key] }))}
-                          className={`w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 transition-colors ${agreed[key] ? 'bg-koala-navy border-black' : 'border-gray-300'}`}
+                          className={`w-5 h-5 rounded-none border-2 flex items-center justify-center flex-shrink-0 transition-colors ${agreed[key] ? 'bg-koala-navy border-black' : 'border-gray-300'}`}
                         >
                           {agreed[key] && <Check className="w-3 h-3 text-white" />}
                         </button>
@@ -737,7 +737,7 @@ export default function Checkout() {
             type="button"
             onClick={toggleAll}
             aria-pressed={allAgreed}
-            className={`flex h-5 w-5 shrink-0 items-center justify-center rounded border-2 transition-colors ${
+            className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-none border-2 transition-colors ${
               allAgreed ? 'bg-koala-navy border-black' : 'border-gray-300'
             }`}
           >

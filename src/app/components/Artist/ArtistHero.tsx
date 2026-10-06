@@ -26,7 +26,7 @@ export function ArtistHero({ artist }: ArtistHeroProps) {
         </button>
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 md:gap-16 lg:gap-24 mb-20 md:mb-32">
-        <div className="relative overflow-hidden rounded-[2rem] md:rounded-[3rem] bg-gray-50 aspect-[3/4] shadow-xl">
+        <div className="relative overflow-hidden rounded-none md:rounded-none bg-gray-50 aspect-[3/4] shadow-xl">
           <ImageWithFallback
             src={artist.profileImageUrl ?? '/placeholder.svg'}
             alt={artist.name}

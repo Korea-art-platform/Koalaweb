@@ -240,7 +240,7 @@ export default function AdminOrderDetail() {
                     type="checkbox"
                     checked={isPartial}
                     onChange={(e) => { setIsPartial(e.target.checked); setCancelAmount(''); }}
-                    className="w-4 h-4 rounded"
+                    className="w-4 h-4 rounded-none"
                   />
                   <span className="text-sm text-gray-700">부분 환불</span>
                   <span className="text-xs text-gray-400">(체크 안 하면 전액 환불)</span>

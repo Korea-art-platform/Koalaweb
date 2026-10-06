@@ -40,8 +40,8 @@ export default function StoreProductGrid({
         <Columns columns={columns} items={SKELETON_HEIGHTS} render={(h, i) => (
           <div key={i} className="animate-pulse">
             <div className={`${h} bg-gray-100`} />
-            <div className="mt-3 h-4 w-1/2 rounded bg-gray-100" />
-            <div className="mt-2 h-3 w-3/4 rounded bg-gray-100" />
+            <div className="mt-3 h-4 w-1/2 rounded-none bg-gray-100" />
+            <div className="mt-2 h-3 w-3/4 rounded-none bg-gray-100" />
           </div>
         )} />
       </section>

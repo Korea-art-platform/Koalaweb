@@ -203,8 +203,8 @@ function DesktopStage({ slide, total, loading, art, go }: StageProps) {
           </Swap>
         ) : loading ? (
           <div className="space-y-3">
-            <div className="h-10 w-56 animate-pulse rounded bg-white/[0.06]" />
-            <div className="h-10 w-40 animate-pulse rounded bg-white/[0.06]" />
+            <div className="h-10 w-56 animate-pulse rounded-none bg-white/[0.06]" />
+            <div className="h-10 w-40 animate-pulse rounded-none bg-white/[0.06]" />
           </div>
         ) : (
           <h1 className="font-serif-ko text-[34px] font-bold leading-[1.2] text-white break-keep xl:text-[42px]">
@@ -304,8 +304,8 @@ function MobileStage({ slide, total, loading, art, go }: StageProps) {
             </Swap>
           ) : loading ? (
             <>
-              <div className="h-7 w-40 animate-pulse rounded bg-white/[0.06]" />
-              <div className="mt-2 h-4 w-20 animate-pulse rounded bg-white/[0.06]" />
+              <div className="h-7 w-40 animate-pulse rounded-none bg-white/[0.06]" />
+              <div className="mt-2 h-4 w-20 animate-pulse rounded-none bg-white/[0.06]" />
             </>
           ) : (
             <>

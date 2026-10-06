@@ -39,7 +39,7 @@ export default function CheckoutSuccess() {
       <div className="pt-24 pb-20 px-8">
         <div className="max-w-2xl mx-auto">
           <div className="text-center mb-12">
-            <div className="inline-flex items-center justify-center w-24 h-24 bg-green-50 rounded-[32px] mb-6">
+            <div className="inline-flex items-center justify-center w-24 h-24 bg-green-50 rounded-none mb-6">
               <CheckCircle className="w-12 h-12 text-green-500" />
             </div>
             <h1 className="text-3xl font-bold tracking-tight mb-3 text-gray-900">
@@ -49,7 +49,7 @@ export default function CheckoutSuccess() {
               {t('orderDone.thanks')}
             </p>
           </div>
-          <div className="bg-white rounded-[32px] p-8 shadow-sm border border-gray-100 mb-6">
+          <div className="bg-white rounded-none p-8 shadow-sm border border-gray-100 mb-6">
             <div className="grid grid-cols-2 gap-8 pb-8 border-b border-gray-100">
               <div>
                 <p className="text-[10px] text-gray-400 uppercase tracking-widest mb-1 font-bold">
@@ -100,7 +100,7 @@ export default function CheckoutSuccess() {
               </div>
             </div>
           </div>
-          <div className="bg-white rounded-[32px] p-8 shadow-sm border border-gray-100 mb-10">
+          <div className="bg-white rounded-none p-8 shadow-sm border border-gray-100 mb-10">
             <h2 className="text-sm font-bold text-gray-400 uppercase tracking-widest mb-6">
               {t('order.detail.orderItems')}
             </h2>
@@ -146,13 +146,13 @@ export default function CheckoutSuccess() {
           <div className="flex flex-col sm:flex-row gap-4">
             <Link
               to="/account/orders"
-              className="flex-1 py-5 bg-koala-navy text-white rounded-[24px] font-bold flex items-center justify-center gap-2 hover:bg-koala-navy-hover transition-all active:scale-[0.98]"
+              className="flex-1 py-5 bg-koala-navy text-white rounded-none font-bold flex items-center justify-center gap-2 hover:bg-koala-navy-hover transition-all active:scale-[0.98]"
             >
               {t('order.history.viewDetail')} <ChevronRight className="w-4 h-4" />
             </Link>
             <Link
               to="/store"
-              className="flex-1 py-5 bg-white border border-gray-200 text-gray-600 rounded-[24px] font-bold flex items-center justify-center gap-2 hover:bg-gray-50 transition-all"
+              className="flex-1 py-5 bg-white border border-gray-200 text-gray-600 rounded-none font-bold flex items-center justify-center gap-2 hover:bg-gray-50 transition-all"
             >
               <Home className="w-4 h-4" /> {t('order.detail.continueShopping')}
             </Link>

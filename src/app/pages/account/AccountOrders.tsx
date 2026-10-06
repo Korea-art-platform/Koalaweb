@@ -104,7 +104,7 @@ export default function AccountOrders() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <h4 className="font-bold text-gray-900 text-sm md:text-base truncate">{order.firstSkuName}</h4>
-                    {order.itemCount > 1 && <span className="text-[10px] text-gray-500 bg-gray-100 px-1.5 py-0.5 rounded font-bold">{t('order.detail.otherItems', { count: order.itemCount - 1 })}</span>}
+                    {order.itemCount > 1 && <span className="text-[10px] text-gray-500 bg-gray-100 px-1.5 py-0.5 rounded-none font-bold">{t('order.detail.otherItems', { count: order.itemCount - 1 })}</span>}
                   </div>
                   <div className="text-right font-black text-gray-900">₩{order.totalAmount.toLocaleString()}</div>
                 </div>

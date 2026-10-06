@@ -204,7 +204,7 @@ function SelectBox({ label, value, onChange, options }: {
       <select
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="appearance-none rounded-[10px] border border-gray-200 bg-white py-1.5 pl-3 pr-8 text-[13px] text-gray-900
+        className="appearance-none rounded-none border border-gray-200 bg-white py-1.5 pl-3 pr-8 text-[13px] text-gray-900
           focus-visible:outline-2 focus-visible:outline-koala-purple"
       >
         {options.map((o) => <option key={o.key} value={o.key}>{o.label}</option>)}

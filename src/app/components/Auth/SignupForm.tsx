@@ -140,7 +140,7 @@ export default function SignupForm({ onSuccess }: SignupFormProps) {
           id="agree-terms"
           type="checkbox"
           {...register('agreed', { required: t('auth.validation.termsRequired') })}
-          className="w-4 h-4 mt-0.5 rounded border-gray-300 cursor-pointer"
+          className="w-4 h-4 mt-0.5 rounded-none border-gray-300 cursor-pointer"
         />
         <label htmlFor="agree-terms" className="text-xs text-gray-600 leading-relaxed cursor-pointer select-none">
           {t('auth.common.termsAgree')}{' '}

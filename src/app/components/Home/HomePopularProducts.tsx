@@ -20,7 +20,7 @@ export default function HomePopularProducts({ skus, loading }: HomePopularProduc
           {[...Array(6)].map((_, i) => (
             <div key={i} className="animate-pulse">
               <div className="aspect-square bg-gray-100 rounded-3xl mb-4" />
-              <div className="h-4 bg-gray-100 rounded mb-2 w-3/4" />
+              <div className="h-4 bg-gray-100 rounded-none mb-2 w-3/4" />
             </div>
           ))}
         </div>

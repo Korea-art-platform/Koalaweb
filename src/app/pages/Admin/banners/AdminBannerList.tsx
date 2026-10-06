@@ -321,7 +321,7 @@ export default function AdminBannerList() {
               </button>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-0.5">
-                  <span className="text-xs font-medium text-gray-400 bg-gray-100 px-1.5 py-0.5 rounded">{b.bannerType}</span>
+                  <span className="text-xs font-medium text-gray-400 bg-gray-100 px-1.5 py-0.5 rounded-none">{b.bannerType}</span>
                   <span className="font-medium text-gray-900 text-sm">{b.title}</span>
                 </div>
                 {b.bannerType === 'MAIN' && (

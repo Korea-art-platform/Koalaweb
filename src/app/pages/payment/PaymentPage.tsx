@@ -72,7 +72,7 @@ export default function PaymentPage() {
           <h1 className="text-2xl font-bold tracking-tight">{t('payment.title')}</h1>
           <p className="text-sm text-gray-500 mt-1 truncate">{state.orderName}</p>
         </div>
-        <div className="bg-white rounded-[24px] border border-gray-100 p-6 mb-4">
+        <div className="bg-white rounded-none border border-gray-100 p-6 mb-4">
           <h2 className="text-sm font-bold text-gray-500 mb-4">{t('checkout.method')}</h2>
           <div className="grid grid-cols-3 gap-3">
             {METHODS.map((m) => (
@@ -99,7 +99,7 @@ export default function PaymentPage() {
             {METHODS.find((m) => m.id === selected)?.desc}
           </p>
         </div>
-        <div className="bg-white rounded-[24px] border border-gray-100 px-6 py-5 mb-5">
+        <div className="bg-white rounded-none border border-gray-100 px-6 py-5 mb-5">
           <div className="flex items-center justify-between">
             <span className="text-sm text-gray-500">{t('checkout.total')}</span>
             <span className="text-2xl font-black tracking-tight">

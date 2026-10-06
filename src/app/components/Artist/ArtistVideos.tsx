@@ -14,7 +14,7 @@ function VideoPlayer({ url, thumbnail, title }: { url: string; thumbnail?: strin
   if (!playSrc) return null;
 
   return (
-    <div className="relative overflow-hidden rounded-[2rem] bg-gray-900 aspect-video group shadow-2xl">
+    <div className="relative overflow-hidden rounded-none bg-gray-900 aspect-video group shadow-2xl">
       {playing ? (
         isDirectVideo ? (
           <video src={playSrc} controls autoPlay className="w-full h-full object-cover" />

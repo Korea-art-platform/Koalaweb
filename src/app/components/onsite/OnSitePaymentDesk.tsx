@@ -240,7 +240,7 @@ export default function OnSitePaymentDesk({ create, loadRecent: fetchRecent, onS
           </div>
           <label className="flex cursor-pointer items-center gap-2.5 text-sm text-gray-700 select-none">
             <input type="checkbox" checked={form.taxExempt} onChange={(e) => set({ taxExempt: e.target.checked })}
-              className="h-4 w-4 rounded" />
+              className="h-4 w-4 rounded-none" />
             면세 품목 (원작 등 부가세 없음)
           </label>
 

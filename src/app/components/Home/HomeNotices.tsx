@@ -51,7 +51,7 @@ export default function HomeNotices({ notices }: Props) {
                     </span>
                     <span className="flex items-center gap-2 min-w-0">
                       {n.isPinned && (
-                        <span className="shrink-0 px-1.5 py-0.5 rounded bg-koala-purple text-white text-[9px] font-bold">
+                        <span className="shrink-0 px-1.5 py-0.5 rounded-none bg-koala-purple text-white text-[9px] font-bold">
                           {t('common.pinned')}
                         </span>
                       )}

@@ -63,8 +63,8 @@ export default function AccountWishlist() {
                     {[...Array(6)].map((_, i) => (
                         <div key={i}>
                             <div className="aspect-square bg-gray-100 rounded-2xl mb-3" />
-                            <div className="h-4 bg-gray-100 rounded w-3/4 mb-2" />
-                            <div className="h-3 bg-gray-100 rounded w-1/2" />
+                            <div className="h-4 bg-gray-100 rounded-none w-3/4 mb-2" />
+                            <div className="h-3 bg-gray-100 rounded-none w-1/2" />
                         </div>
                     ))}
                 </div>

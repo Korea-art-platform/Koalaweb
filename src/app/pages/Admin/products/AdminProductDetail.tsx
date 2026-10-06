@@ -699,7 +699,7 @@ function ImagesTab({ skuCode, onChanged }: { skuCode: string; onChanged: () => v
 function SectionLabel({ badge, desc }: { badge: string; desc: string }) {
   return (
     <div className="flex items-center gap-2 mb-3">
-      <span className="text-[10px] font-semibold bg-gray-900 text-white px-2 py-0.5 rounded">
+      <span className="text-[10px] font-semibold bg-gray-900 text-white px-2 py-0.5 rounded-none">
         {badge}
       </span>
       <p className="text-xs text-gray-400">{desc}</p>
@@ -766,13 +766,13 @@ function VisualSlot({
       )}
 
       {isVideo && (
-        <span className="absolute top-2 right-2 bg-black/70 text-white text-[10px] font-bold px-1.5 py-0.5 rounded">
+        <span className="absolute top-2 right-2 bg-black/70 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-none">
           영상
         </span>
       )}
 
       {index !== undefined && (
-        <span className="absolute top-2 left-2 bg-black/60 text-white text-[10px] font-mono px-1.5 py-0.5 rounded">
+        <span className="absolute top-2 left-2 bg-black/60 text-white text-[10px] font-mono px-1.5 py-0.5 rounded-none">
           {index}
         </span>
       )}

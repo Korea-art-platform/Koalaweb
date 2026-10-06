@@ -145,7 +145,7 @@ export default function AdminOrderList() {
                     <td className="px-4 py-3 font-mono text-xs text-gray-500 whitespace-nowrap">
                       {o.orderNo}
                       {o.orderChannel === 'ON_SITE' && (
-                        <span className="ml-1.5 rounded bg-koala-purple/10 px-1.5 py-0.5 font-sans text-[10px] font-bold text-koala-purple">현장</span>
+                        <span className="ml-1.5 rounded-none bg-koala-purple/10 px-1.5 py-0.5 font-sans text-[10px] font-bold text-koala-purple">현장</span>
                       )}
                     </td>
                     <td className="px-4 py-3 font-medium text-gray-800 whitespace-nowrap">

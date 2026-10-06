@@ -4,11 +4,11 @@ export function ArtistDetailSkeleton() {
     <div className="flex-1">
       <div className="pt-32 pb-32 px-6 animate-pulse">
         <div className="max-w-[1600px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16">
-          <div className="aspect-[3/4] bg-gray-100 rounded-[3rem]" />
+          <div className="aspect-[3/4] bg-gray-100 rounded-none" />
           <div className="space-y-6 pt-8">
-            <div className="h-8 bg-gray-100 rounded w-1/4" />
-            <div className="h-16 bg-gray-100 rounded w-3/4" />
-            <div className="h-24 bg-gray-100 rounded" />
+            <div className="h-8 bg-gray-100 rounded-none w-1/4" />
+            <div className="h-16 bg-gray-100 rounded-none w-3/4" />
+            <div className="h-24 bg-gray-100 rounded-none" />
           </div>
         </div>
       </div>
