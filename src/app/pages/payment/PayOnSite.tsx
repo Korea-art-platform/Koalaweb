@@ -2,7 +2,8 @@ import { useCallback, useEffect, useState } from 'react';
 import { useParams, useSearchParams } from 'react-router';
 import { Check, ChevronRight } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { startPayment, isUserCancel, PAY_METHODS, type PayMethod } from '@/app/lib/pg';
+import { startPayment, isUserCancel, PAY_METHODS, PG_PROVIDER_CODE, type PayMethod } from '@/app/lib/pg';
+import { preparePayment } from '@/api/payment';
 import { payMethodIcon } from '@/app/components/common/PayMethodIcons';
 import PageMeta from '@/app/components/common/PageMeta';
 import { getOnSitePayment, ONSITE_TOKEN_KEY, type OnSitePublic } from '@/api/onsite';
@@ -38,10 +39,15 @@ export default function PayOnSite() {
     setProcessing(true);
     rememberToken(token);
     try {
+      const prepared = await preparePayment(info.orderNo, PG_PROVIDER_CODE, selected);
+      const chargeAmount = Number(prepared.data?.data?.amount);
+      if (!Number.isFinite(chargeAmount) || chargeAmount <= 0) {
+        throw new Error(t('checkout.errors.amount'));
+      }
       await startPayment({
         method: selected,
         orderNo: info.orderNo,
-        amount: info.amount,
+        amount: chargeAmount,
         orderName: info.itemName ?? 'KOALA',
         onError: (message) => {
           setProcessing(false);
@@ -50,7 +56,8 @@ export default function PayOnSite() {
       });
     } catch (e: unknown) {
       if (!isUserCancel(e)) {
-        alert((e as { message?: string })?.message ?? t('payment.requestFailed'));
+        const data = (e as { response?: { data?: { message?: string; error?: { message?: string } } } })?.response?.data;
+        alert(data?.error?.message ?? data?.message ?? (e as { message?: string })?.message ?? t('payment.requestFailed'));
       }
       fetchInfo();
     } finally {

@@ -23,6 +23,11 @@ vi.mock('@/app/lib/pg', async (importOriginal) => ({
 
 vi.mock('@/app/components/common/PageMeta', () => ({ default: () => null }));
 
+const preparePayment = vi.fn(async (orderNo: string) => ({ data: { data: { orderNo, amount: 1100000 } } }));
+vi.mock('@/api/payment', () => ({
+  preparePayment: (orderNo: string) => preparePayment(orderNo),
+}));
+
 import PayOnSite from './PayOnSite';
 
 let container: HTMLDivElement;
@@ -63,6 +68,7 @@ describe('현장결제 결제 페이지', () => {
     info.value = { ...base };
     info.fail = false;
     startPayment.mockClear();
+    preparePayment.mockClear();
     sessionStorage.clear();
     container = document.createElement('div');
     document.body.appendChild(container);
@@ -82,6 +88,8 @@ describe('현장결제 결제 페이지', () => {
 
     await act(async () => { payButton()!.click(); });
 
+    expect(preparePayment).toHaveBeenCalledWith(base.orderNo);
+    expect(preparePayment.mock.invocationCallOrder[0]).toBeLessThan(startPayment.mock.invocationCallOrder[0]);
     expect(startPayment).toHaveBeenCalledTimes(1);
     expect(startPayment.mock.calls[0][0]).toMatchObject({
       orderNo: base.orderNo,
