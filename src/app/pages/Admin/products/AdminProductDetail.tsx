@@ -14,6 +14,7 @@ import {
   deleteSkuMedia,
   type SkuMediaItem,
 } from '@/api/adminApi';
+import FreeShippingToggle from '@/app/components/admin/FreeShippingToggle';
 import adminInstance from '@/api/adminInstance';
 import { getCategories, type CategoryGroups } from '@/api/category';
 import { downscaleImage } from '@/utils/downscaleImage';
@@ -160,6 +161,7 @@ function InfoTab({ sku, onSaved }: { sku: any; onSaved: () => void }) {
     weightG: sku.weightG ? String(sku.weightG)
       : sku.weightKg ? String(Math.round(Number(sku.weightKg) * 1000)) : '',
     badges: parsedBadges as BadgeItem[],
+    freeShipping: Boolean(sku.freeShipping),
   });
   // 이미 저장된 영문명은 사람이 정한 값이다. 한국어를 고쳐도 덮어쓰지 않는다.
   const [enTouched, setEnTouched] = useState<Record<string, boolean>>(() => ({
@@ -239,6 +241,7 @@ function InfoTab({ sku, onSaved }: { sku: any; onSaved: () => void }) {
         depthCm: Number(form.depthCm) / 10,
         weightG: Number(form.weightG),
         badges: form.badges.length > 0 ? JSON.stringify(form.badges) : undefined,
+        freeShipping: form.freeShipping,
       });
       setSuccess(true);
       setTimeout(() => setSuccess(false), 2000);
@@ -317,6 +320,7 @@ function InfoTab({ sku, onSaved }: { sku: any; onSaved: () => void }) {
             })}
           </div>
         </div>
+        <FreeShippingToggle checked={form.freeShipping} onChange={(freeShipping) => setF({ freeShipping })} />
         <div className="grid grid-cols-2 gap-3">
           <div>
             <label className="block text-xs text-gray-500 mb-1.5">

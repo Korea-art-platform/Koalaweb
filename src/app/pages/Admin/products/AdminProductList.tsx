@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { romanize } from '@/utils/romanize';
 import { useNavigate } from 'react-router';
 import { getAdminSkus, createSku, addSkuMedia, publishSku, discontinueSku, deleteSku, adjustStock, getAdminArtists } from '@/api/adminApi';
+import FreeShippingToggle from '@/app/components/admin/FreeShippingToggle';
 import { getCategories, type CategoryGroups } from '@/api/category';
 import { downscaleImage } from '@/utils/downscaleImage';
 import { Package, ImagePlus, X, FileSpreadsheet } from 'lucide-react';
@@ -49,6 +50,7 @@ interface CreateForm {
   heightCm: string;
   depthCm: string;
   weightG: string;
+  freeShipping: boolean;
 }
 
 const NAME_ROWS = [
@@ -65,6 +67,7 @@ const EMPTY_FORM: CreateForm = {
   editionSize: '', editionNumber: '',
   badges: [],
   widthCm: '', heightCm: '', depthCm: '', weightG: '',
+  freeShipping: false,
 };
 
 const BADGE_COLORS: Record<string, string> = {
@@ -214,6 +217,7 @@ export default function AdminProductList() {
         heightCm: Number(form.heightCm) / 10,
         depthCm: Number(form.depthCm) / 10,
         weightG: Number(form.weightG),
+        freeShipping: form.freeShipping,
       });
       createdSkuCode = created?.skuCode ?? null;
     } catch (err: any) {
@@ -595,6 +599,7 @@ export default function AdminProductList() {
                   })}
                 </div>
               </div>
+              <FreeShippingToggle checked={form.freeShipping} onChange={(freeShipping) => setF({ freeShipping })} />
               <div>
                 <label className="block text-xs text-gray-500 mb-1.5">
                   작품 설명 <span className="text-red-500">*</span>

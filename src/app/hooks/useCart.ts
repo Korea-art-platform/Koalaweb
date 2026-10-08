@@ -84,7 +84,8 @@ export function useCart() {
 
   const cartItems = cart?.items ?? [];
   const subtotal = cart?.subtotalAmount ?? 0;
-  const shipping = calcShipping(subtotal, cartItems.length);
+  const allFreeShipping = cartItems.length > 0 && cartItems.every((i) => i.freeShipping);
+  const shipping = calcShipping(subtotal, cartItems.length, allFreeShipping);
   const total = subtotal + shipping;
 
   return {

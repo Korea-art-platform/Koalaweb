@@ -104,6 +104,8 @@ export interface Sku {
   displayListPrice?: number;
   /** 면세 상품인가 — 원작에는 부가세가 붙지 않는다 */
   taxExempt?: boolean;
+  /** 배송비 면제 상품인가 — 주문의 모든 상품이 면제여야 배송비가 0원이다 */
+  freeShipping?: boolean;
 
   status: SkuStatus;
   isLimitedEdition: boolean;
@@ -145,6 +147,7 @@ export interface CartItem {
   unitPrice: number;
   lineAmount: number;
   quantity: number;
+  freeShipping?: boolean;
 }
 
 export interface Cart {

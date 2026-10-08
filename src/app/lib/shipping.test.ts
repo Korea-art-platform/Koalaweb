@@ -34,6 +34,11 @@ describe('배송비', () => {
     expect(calcShipping(FREE_SHIPPING_THRESHOLD - 1, 0)).toBe(0);
   });
 
+  it('담긴 상품이 모두 배송비 면제면 기준 아래라도 무료다', () => {
+    expect(calcShipping(FREE_SHIPPING_THRESHOLD - 1, 1, true)).toBe(0);
+    expect(calcShipping(FREE_SHIPPING_THRESHOLD - 1, 1, false)).toBe(SHIPPING_FEE);
+  });
+
   it('화면에 적힌 무료 기준이 실제 계산과 같다', () => {
     const pattern = /([\d,]+원|\d+만원)\s*이상[^.。]{0,12}무료|무료[^.。]{0,12}?([\d,]+원|\d+만원)\s*이상/g;
 
