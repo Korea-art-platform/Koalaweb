@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router';
-import { ArrowLeft, MapPin, CreditCard, Package, Check, ChevronRight, Search } from 'lucide-react';
+import { ArrowLeft, MapPin, CreditCard, Package, Check, ChevronRight, Search, Plus } from 'lucide-react';
 import { createOrder, createGuestOrder } from '@/api/order';
 import { getCart } from '@/api/cart';
 import { getSku } from '@/api/sku';
@@ -19,6 +19,9 @@ function iconFor(id: PayMethod) {
 }
 
 const paymentMethods = PAY_METHODS;
+
+const labelCls = 'block text-xs text-gray-500 mb-1';
+const inputCls = 'w-full px-3.5 py-2.5 bg-gray-50 rounded-xl border border-transparent focus:outline-none focus:border-gray-300 transition-colors text-sm';
 
 /** 상품 화면에서 "구매하기"로 넘어올 때 실어 보내는 값 */
 interface BuyNowState {
@@ -57,6 +60,8 @@ export default function Checkout() {
   const [showItems, setShowItems] = useState(false);
   const [showMethodSheet, setShowMethodSheet] = useState(false);
   const [isNarrow, setIsNarrow] = useState(false);
+  const [sameAsOrderer, setSameAsOrderer] = useState(true);
+  const [showRequest, setShowRequest] = useState(false);
 
   useEffect(() => {
     if (typeof window === 'undefined' || !window.matchMedia) return;
@@ -117,6 +122,7 @@ export default function Checkout() {
 
         const defaultAddress = userAddresses.find((addr) => addr?.isDefault);
         if (defaultAddress) {
+          setSameAsOrderer(false);
           setForm((prev) => ({
             ...prev,
             recipientName: defaultAddress?.recipientName || '',
@@ -165,6 +171,7 @@ export default function Checkout() {
             quantity: buyNow.quantity ?? 1,
             unitPrice: displayPrice(directSku) ?? 0,
             lineAmount: (displayPrice(directSku) ?? 0) * (buyNow.quantity ?? 1),
+            freeShipping: directSku.freeShipping,
           }]
         : [])
     : (cart?.items ?? []);
@@ -177,11 +184,14 @@ export default function Checkout() {
   const allTaxExempt = buyNow
     ? Boolean(directSku?.taxExempt)
     : (cart?.taxAmount != null && cart.taxAmount === 0 && cartItems.length > 0);
-  const shipping = calcShipping(subtotal, cartItems.length);
+  const allFreeShipping = cartItems.length > 0 && cartItems.every((i) => i.freeShipping);
+  const shipping = calcShipping(subtotal, cartItems.length, allFreeShipping);
   const total = subtotal + shipping;
   const canPay = cartItems.length > 0 && !!selectedMethod && allAgreed && !isProcessing;
   const ordererFilled = !!(form.ordererName && form.ordererEmail && form.ordererPhone);
-  const shippingFilled = !!(form.recipientName && form.recipientPhone && form.zipCode && form.address1);
+  const recipientName = sameAsOrderer ? form.ordererName : form.recipientName;
+  const recipientPhone = sameAsOrderer ? form.ordererPhone : form.recipientPhone;
+  const shippingFilled = !!(recipientName && recipientPhone && form.zipCode && form.address1);
   const foldOrderer = isNarrow && ordererFilled && !editOrderer;
   const foldShipping = isNarrow && shippingFilled && !editShipping;
   const foldItems = isNarrow && !showItems && cartItems.length > 0;
@@ -237,7 +247,7 @@ export default function Checkout() {
       alert(t('checkout.errors.orderer'));
       return;
     }
-    if (!form.recipientName || !form.recipientPhone || !form.zipCode || !form.address1) {
+    if (!recipientName || !recipientPhone || !form.zipCode || !form.address1) {
       alert(t('checkout.errors.shipping'));
       return;
     }
@@ -256,7 +266,7 @@ export default function Checkout() {
       alert(t('checkout.errors.phone'));
       return;
     }
-    const recipientDigits = localDigits(form.recipientPhone);
+    const recipientDigits = localDigits(recipientPhone);
     if (recipientDigits.length < 9 || recipientDigits.length > 11) {
       alert(t('checkout.errors.recipientPhone'));
       return;
@@ -276,8 +286,8 @@ export default function Checkout() {
         ordererEmail: form.ordererEmail,
         ordererPhone: form.ordererPhone,
         shipment: {
-          recipientName: form.recipientName,
-          recipientPhone: form.recipientPhone,
+          recipientName,
+          recipientPhone,
           zipCode: form.zipCode,
           address1: form.address1,
           address2: form.address2,
@@ -349,17 +359,17 @@ export default function Checkout() {
         <div className="max-w-[1300px] mx-auto">
           <button
             onClick={() => navigate('/cart')}
-            className="flex items-center gap-2 text-sm text-gray-400 hover:text-black mb-8 transition-colors group"
+            className="flex items-center gap-2 text-sm text-gray-400 hover:text-black mb-4 sm:mb-8 transition-colors group"
           >
             <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
             {t('checkout.backToCart')}
           </button>
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 sm:gap-10">
-            <div className="lg:col-span-2 space-y-4 sm:space-y-8">
+            <div className="lg:col-span-2 space-y-3 sm:space-y-8">
               <h1 className="text-2xl sm:text-3xl font-medium tracking-tight">{t('checkout.title')}</h1>
-              <section className="bg-white rounded-3xl sm:rounded-none p-5 sm:p-8 shadow-sm border border-gray-100">
-                <div className="flex items-center justify-between gap-3 mb-4 sm:mb-6">
-                  <h2 className="text-lg sm:text-xl font-medium flex items-center gap-2 shrink-0">
+              <section className="bg-white rounded-3xl sm:rounded-none p-4 sm:p-8 shadow-sm border border-gray-100">
+                <div className="flex items-center justify-between gap-3 mb-3 sm:mb-6">
+                  <h2 className="text-base sm:text-xl font-medium flex items-center gap-2 shrink-0">
                     <MapPin className="w-5 h-5 text-gray-400" /> {t('checkout.orderer')}
                   </h2>
                   {foldOrderer && (
@@ -375,29 +385,31 @@ export default function Checkout() {
                     <p className="truncate">{form.ordererEmail}</p>
                   </div>
                 ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
+                <div className="grid grid-cols-2 gap-2.5 sm:gap-4">
                   {[
-                    { name: 'ordererName', label: t('checkout.name'), placeholder: t('checkout.namePlaceholder') },
-                    { name: 'ordererEmail', label: t('checkout.email'), placeholder: 'your@email.com' },
-                    { name: 'ordererPhone', label: t('checkout.phone'), placeholder: '01012345678' },
+                    { name: 'ordererName', label: t('checkout.name'), placeholder: t('checkout.namePlaceholder'), type: 'text' },
+                    { name: 'ordererPhone', label: t('checkout.phone'), placeholder: '01012345678', type: 'tel' },
+                    { name: 'ordererEmail', label: t('checkout.email'), placeholder: 'your@email.com', type: 'email' },
                   ].map((field) => (
-                    <div key={field.name} className={field.name === 'ordererEmail' ? 'md:col-span-2' : ''}>
-                      <label className="block text-sm text-gray-500 mb-1.5">{field.label}</label>
+                    <div key={field.name} className={field.name === 'ordererEmail' ? 'col-span-2' : ''}>
+                      <label className={labelCls}>{field.label}</label>
                       <input
                         name={field.name}
+                        type={field.type}
+                        inputMode={field.type === 'tel' ? 'numeric' : undefined}
                         value={(form as any)[field.name]}
                         onChange={handleFormChange}
                         placeholder={field.placeholder}
-                        className="w-full px-4 py-3 bg-gray-50 rounded-xl border border-transparent focus:outline-none focus:border-gray-300 transition-colors text-sm"
+                        className={inputCls}
                       />
                     </div>
                   ))}
                 </div>
                 )}
               </section>
-              <section className="bg-white rounded-3xl sm:rounded-none p-5 sm:p-8 shadow-sm border border-gray-100">
-                <div className="flex items-center justify-between gap-3 mb-4 sm:mb-6">
-                  <h2 className="text-lg sm:text-xl font-medium flex items-center gap-2 shrink-0">
+              <section className="bg-white rounded-3xl sm:rounded-none p-4 sm:p-8 shadow-sm border border-gray-100">
+                <div className="flex items-center justify-between gap-3 mb-3 sm:mb-6">
+                  <h2 className="text-base sm:text-xl font-medium flex items-center gap-2 shrink-0">
                     <MapPin className="w-5 h-5 text-gray-400" /> {t('checkout.shipping')}
                   </h2>
                   {foldShipping && (
@@ -410,6 +422,7 @@ export default function Checkout() {
                       onChange={(e) => {
                         const selected = addresses.find((addr: any) => addr.id === Number(e.target.value));
                         if (selected) {
+                          setSameAsOrderer(false);
                           setForm((prev) => ({
                             ...prev,
                             recipientName: selected.recipientName || '',
@@ -433,85 +446,105 @@ export default function Checkout() {
                 </div>
                 {foldShipping ? (
                   <div className="space-y-1 text-sm text-gray-500">
-                    <p className="font-medium text-gray-900">{form.recipientName} · {form.recipientPhone}</p>
+                    <p className="font-medium text-gray-900">{recipientName} · {recipientPhone}</p>
                     <p className="break-keep">({form.zipCode}) {form.address1} {form.address2}</p>
                     {form.deliveryRequest && <p className="text-gray-400">{form.deliveryRequest}</p>}
                   </div>
                 ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
-                  {[
-                    { name: 'recipientName', label: t('checkout.recipient'), placeholder: t('checkout.namePlaceholder') },
-                    { name: 'recipientPhone', label: t('checkout.recipientPhone'), placeholder: '01012345678' },
-                  ].map((field: any) => (
-                    <div key={field.name} className={field.colSpan ? 'md:col-span-2' : ''}>
-                      <label className="block text-sm text-gray-500 mb-1.5">{field.label}</label>
-                      <input
-                        name={field.name}
-                        value={(form as any)[field.name]}
-                        onChange={handleFormChange}
-                        placeholder={field.placeholder}
-                        className="w-full px-4 py-3 bg-gray-50 rounded-xl border border-transparent focus:outline-none focus:border-gray-300 transition-colors text-sm"
-                      />
-                    </div>
-                  ))}
+                <div className="space-y-2.5 sm:space-y-4">
+                  <button
+                    type="button"
+                    onClick={() => setSameAsOrderer((prev) => !prev)}
+                    aria-pressed={sameAsOrderer}
+                    className="flex items-center gap-2.5 text-left"
+                  >
+                    <span className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-none border-2 transition-colors ${
+                      sameAsOrderer ? 'bg-koala-navy border-black' : 'border-gray-300'
+                    }`}>
+                      {sameAsOrderer && <Check className="w-3 h-3 text-white" />}
+                    </span>
+                    <span className="text-sm text-gray-700">{t('checkout.sameAsOrderer')}</span>
+                  </button>
 
-                  <div className="md:col-span-2">
-                    <label className="block text-sm text-gray-500 mb-1.5">{t('checkout.zip')}</label>
-                    <div className="flex gap-3">
-                      <input
-                        name="zipCode"
-                        value={form.zipCode}
-                        onChange={handleFormChange}
-                        placeholder="06234"
-                        readOnly
-                        className="min-w-0 flex-1 px-4 py-3 bg-gray-50 rounded-xl border border-transparent text-sm text-gray-500"
-                      />
-                      <button
-                        type="button"
-                        onClick={handleAddressSearch}
-                        className="shrink-0 px-4 sm:px-5 py-3 bg-koala-navy text-white rounded-xl hover:bg-koala-navy-hover transition-colors font-medium text-sm flex items-center gap-2 whitespace-nowrap"
-                      >
-                        <Search className="w-4 h-4" /> {t('checkout.find')}
-                      </button>
+                  {!sameAsOrderer && (
+                    <div className="grid grid-cols-2 gap-2.5 sm:gap-4">
+                      {[
+                        { name: 'recipientName', label: t('checkout.recipient'), placeholder: t('checkout.namePlaceholder'), type: 'text' },
+                        { name: 'recipientPhone', label: t('checkout.recipientPhone'), placeholder: '01012345678', type: 'tel' },
+                      ].map((field) => (
+                        <div key={field.name}>
+                          <label className={labelCls}>{field.label}</label>
+                          <input
+                            name={field.name}
+                            type={field.type}
+                            inputMode={field.type === 'tel' ? 'numeric' : undefined}
+                            value={(form as any)[field.name]}
+                            onChange={handleFormChange}
+                            placeholder={field.placeholder}
+                            className={inputCls}
+                          />
+                        </div>
+                      ))}
                     </div>
-                  </div>
-                  <div className="md:col-span-2">
-                    <label className="block text-sm text-gray-500 mb-1.5">{t('checkout.address')}</label>
-                    <input
-                      name="address1"
-                      value={form.address1}
-                      onChange={handleFormChange}
-                      placeholder={t('checkout.addressPlaceholder')}
-                      readOnly
-                      className="w-full px-4 py-3 bg-gray-50 rounded-xl border border-transparent text-sm text-gray-500"
-                    />
-                  </div>
-                  <div className="md:col-span-2">
-                    <label className="block text-sm text-gray-500 mb-1.5">{t('checkout.addressDetail')}</label>
-                    <input
-                      name="address2"
-                      value={form.address2}
-                      onChange={handleFormChange}
-                      placeholder={t('checkout.addressDetailPlaceholder')}
-                      className="w-full px-4 py-3 bg-gray-50 rounded-xl border border-transparent focus:outline-none focus:border-gray-300 transition-colors text-sm"
-                    />
-                  </div>
-                  <div className="md:col-span-2">
-                    <label className="block text-sm text-gray-500 mb-1.5">{t('checkout.request')}</label>
-                    <input
-                      name="deliveryRequest"
-                      value={form.deliveryRequest}
-                      onChange={handleFormChange}
-                      placeholder={t('checkout.requestPlaceholder')}
-                      className="w-full px-4 py-3 bg-gray-50 rounded-xl border border-transparent focus:outline-none focus:border-gray-300 transition-colors text-sm"
-                    />
-                  </div>
+                  )}
+
+                  {form.zipCode ? (
+                    <>
+                      <div className="flex items-start justify-between gap-3 rounded-xl bg-gray-50 px-3.5 py-2.5">
+                        <div className="min-w-0 text-sm">
+                          <p className="text-xs text-gray-400">({form.zipCode})</p>
+                          <p className="text-gray-900 break-keep">{form.address1}</p>
+                        </div>
+                        <button type="button" onClick={handleAddressSearch} className="shrink-0 text-xs font-medium text-koala-navy">
+                          {t('checkout.researchAddress')}
+                        </button>
+                      </div>
+                      <input
+                        name="address2"
+                        value={form.address2}
+                        onChange={handleFormChange}
+                        placeholder={`${t('checkout.addressDetail')} (${t('checkout.addressDetailPlaceholder')})`}
+                        aria-label={t('checkout.addressDetail')}
+                        className={inputCls}
+                      />
+                    </>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={handleAddressSearch}
+                      className="flex w-full items-center justify-center gap-2 rounded-xl border-2 border-dashed border-gray-200 py-3 text-sm font-bold text-gray-600 transition-colors hover:border-gray-400 hover:text-gray-900"
+                    >
+                      <Search className="w-4 h-4" /> {t('checkout.findAddress')}
+                    </button>
+                  )}
+
+                  {showRequest || form.deliveryRequest ? (
+                    <div>
+                      <label className={labelCls}>{t('checkout.request')}</label>
+                      <input
+                        name="deliveryRequest"
+                        value={form.deliveryRequest}
+                        onChange={handleFormChange}
+                        placeholder={t('checkout.requestPlaceholder')}
+                        className={inputCls}
+                        autoFocus={showRequest && !form.deliveryRequest}
+                      />
+                    </div>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => setShowRequest(true)}
+                      className="flex items-center gap-1 text-xs text-gray-500 hover:text-gray-900"
+                    >
+                      <Plus className="w-3.5 h-3.5" /> {t('checkout.addRequest')}
+                    </button>
+                  )}
                 </div>
                 )}
               </section>
-              <section className="bg-white rounded-3xl sm:rounded-none p-5 sm:p-8 shadow-sm border border-gray-100">
-                <div className="flex items-center justify-between gap-3 mb-4 sm:mb-6">
-                  <h2 className="text-lg sm:text-xl font-medium flex items-center gap-2 shrink-0">
+              <section className="bg-white rounded-3xl sm:rounded-none p-4 sm:p-8 shadow-sm border border-gray-100">
+                <div className="flex items-center justify-between gap-3 mb-3 sm:mb-6">
+                  <h2 className="text-base sm:text-xl font-medium flex items-center gap-2 shrink-0">
                     <Package className="w-5 h-5 text-gray-400" /> {t('checkout.items', { count: cartItems.length })}
                   </h2>
                   {isNarrow && cartItems.length > 0 && (
@@ -548,9 +581,9 @@ export default function Checkout() {
                 </div>
                 )}
               </section>
-              <section className="bg-white rounded-3xl sm:rounded-none p-5 sm:p-8 shadow-sm border border-gray-100">
-                <div className="flex items-center justify-between gap-3 mb-4 sm:mb-6">
-                  <h2 className="text-lg sm:text-xl font-medium flex items-center gap-2 shrink-0">
+              <section className="bg-white rounded-3xl sm:rounded-none p-4 sm:p-8 shadow-sm border border-gray-100">
+                <div className="flex items-center justify-between gap-3 mb-3 sm:mb-6">
+                  <h2 className="text-base sm:text-xl font-medium flex items-center gap-2 shrink-0">
                     <CreditCard className="w-5 h-5 text-gray-400" /> {t('checkout.method')}
                   </h2>
                   {isNarrow && selectedMethod && (
@@ -605,7 +638,7 @@ export default function Checkout() {
               </section>
             </div>
             <div className="lg:col-span-1">
-              <div className="bg-white rounded-3xl sm:rounded-none p-5 sm:p-8 shadow-sm border border-gray-100 lg:sticky lg:top-28">
+              <div className="bg-white rounded-3xl sm:rounded-none p-4 sm:p-8 shadow-sm border border-gray-100 lg:sticky lg:top-28">
                 <h2 className="text-lg sm:text-xl font-medium mb-5 sm:mb-8">{t('checkout.summary')}</h2>
                 <div className="space-y-3 sm:space-y-4 mb-5 sm:mb-8">
                   <div className="flex justify-between text-sm">
