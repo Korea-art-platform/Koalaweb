@@ -10,8 +10,14 @@ Disallow: /order
 Disallow: /payment
 Disallow: /pay/
 Disallow: /onsite
-Disallow: /api/
-Allow: /api/v1/sitemap.xml
-Allow: /api/v1/share/
+Disallow: /api/v1/auth
+Disallow: /api/v1/users
+Disallow: /api/v1/orders
+Disallow: /api/v1/cart
+Disallow: /api/v1/wishlist
+Disallow: /api/v1/payments
+Disallow: /api/v1/returns
+Disallow: /api/v1/inquiries
+Disallow: /api/v1/onsite
 
 Sitemap: https://koala-art.co.kr/api/v1/sitemap.xml
