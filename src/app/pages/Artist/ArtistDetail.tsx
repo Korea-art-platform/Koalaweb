@@ -37,7 +37,7 @@ export default function ArtistDetail() {
     ? artist.description.slice(0, 155) + (artist.description.length > 155 ? '…' : '')
     : t('artistPage.metaFallback', { name: artist.name });
   const artistImage = artist.profileImageUrl ?? 'https://koala-art.co.kr/og-image.png';
-  const artistUrl = `https://koala-art.co.kr/artists/${artist.artistCode}`;
+  const artistUrl = `https://koala-art.co.kr/artist/${artist.artistCode}`;
 
   return (
     <div className="flex-1">
