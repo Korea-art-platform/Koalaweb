@@ -58,7 +58,6 @@
       "position": "Artist {{n}} of {{total}}",
       "artistPhoto": "{{name}}",
       "workBy": "{{name}} by {{artist}}",
-      "onlyThisArtist": "See only {{name}}'s works",
       "viewArtist": "View {{name}}",
       "prev": "Previous artist",
       "next": "Next artist"

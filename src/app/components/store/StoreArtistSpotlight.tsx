@@ -15,11 +15,10 @@ interface Props {
   artists: Artist[];
   /** 지금까지 불러온 작품 — 작가마다 세 점을 여기서 고른다 */
   skus: Sku[];
-  onPickArtist: (code: string) => void;
 }
 
 // 목록 사이 작가 조명 — PC 는 4초마다 넘기고, 모바일은 손으로 민다
-export default function StoreArtistSpotlight({ artists, skus, onPickArtist }: Props) {
+export default function StoreArtistSpotlight({ artists, skus }: Props) {
   const { t } = useTranslation();
   const reduce = useReducedMotion();
   const isDesktop = useIsDesktop();
@@ -104,13 +103,13 @@ export default function StoreArtistSpotlight({ artists, skus, onPickArtist }: Pr
                 ))}
               </div>
             )}
-            <button
-              type="button"
-              onClick={() => onPickArtist(artist.artistCode)}
-              className="mt-4 border-b border-gray-400 pb-0.5 text-[13px] text-gray-900 transition-colors hover:border-koala-purple hover:text-koala-purple"
+            {/* 이미 이 작가만 보고 있으니, 더 보려면 작가 페이지로 보낸다 */}
+            <Link
+              to={`/artist/${artist.artistCode}`}
+              className="mt-4 inline-block border-b border-gray-400 pb-0.5 text-[13px] text-gray-900 transition-colors hover:border-koala-purple hover:text-koala-purple"
             >
-              {t('store.spotlight.onlyThisArtist', { name: artist.name })}
-            </button>
+              {t('store.spotlight.viewArtist', { name: artist.name })}
+            </Link>
           </div>
         </motion.div>
       </AnimatePresence>

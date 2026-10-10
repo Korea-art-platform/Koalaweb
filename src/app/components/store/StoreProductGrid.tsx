@@ -1,11 +1,8 @@
 import ProductCard from '@/app/components/products/ProductCard';
-import StoreArtistSpotlight from './StoreArtistSpotlight';
 import { useIsDesktop, useIsWide } from '@/app/hooks/useMediaQuery';
-import type { Artist, Sku } from '@/api/types';
+import type { Sku } from '@/api/types';
 import { useTranslation } from 'react-i18next';
 
-/** 작가 조명을 끼울 자리 — 여덟 점 뒤. 작품이 그보다 적으면 맨 끝 */
-const SPOT_AFTER = 8;
 /** 불러오는 동안 칸 높이 — 사진 비율을 모르니 몇 가지로 엇갈려 둔다 */
 const SKELETON_HEIGHTS = ['h-64', 'h-80', 'h-56', 'h-72', 'h-60', 'h-80', 'h-64', 'h-56'];
 
@@ -16,18 +13,16 @@ interface StoreProductGridProps {
   hasMore: boolean;
   loadingMore: boolean;
   onLoadMore: () => void;
-  artists: Artist[];
-  onPickArtist: (code: string) => void;
   onReset: () => void;
   wishlistedCodes: Set<string>;
   wishlistLoading: Set<string>;
   onWishlistClick: (e: React.MouseEvent, skuCode: string) => void;
 }
 
-// 사진을 제 비율대로 엇갈려 쌓는다. PC 4줄 · 태블릿 3줄 · 모바일 2줄. 여덟 점 뒤에 작가 조명, 끝에 "더 보기"
+// 사진을 제 비율대로 엇갈려 쌓는다. PC 4줄 · 태블릿 3줄 · 모바일 2줄. 끝에 "더 보기"
 export default function StoreProductGrid({
   loading, skus, total, hasMore, loadingMore, onLoadMore,
-  artists, onPickArtist, onReset, wishlistedCodes, wishlistLoading, onWishlistClick,
+  onReset, wishlistedCodes, wishlistLoading, onWishlistClick,
 }: StoreProductGridProps) {
   const { t } = useTranslation();
   const isDesktop = useIsDesktop();
@@ -78,19 +73,9 @@ export default function StoreProductGrid({
     />
   );
 
-  // 작가 조명은 줄을 가로질러야 해서 앞뒤 두 덩어리로 나눠 쌓는다
-  const head = skus.slice(0, SPOT_AFTER);
-  const tail = skus.slice(SPOT_AFTER);
-
   return (
     <section className="mx-auto max-w-[1320px] px-5 pt-8 pb-24 md:px-10 md:pt-10">
-      <Columns columns={columns} items={head} render={card} />
-      {artists.length > 0 && (
-        <div className="my-12 md:my-16">
-          <StoreArtistSpotlight artists={artists} skus={skus} onPickArtist={onPickArtist} />
-        </div>
-      )}
-      {tail.length > 0 && <Columns columns={columns} items={tail} render={card} />}
+      <Columns columns={columns} items={skus} render={card} />
 
       <div className="mt-14 flex flex-col items-center gap-3">
         <div className="relative h-0.5 w-44 bg-gray-200" aria-hidden>

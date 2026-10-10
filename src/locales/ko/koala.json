@@ -58,7 +58,6 @@
       "position": "작가 소개 {{n}} / {{total}}",
       "artistPhoto": "{{name}} 작가",
       "workBy": "{{artist}} 작 {{name}}",
-      "onlyThisArtist": "{{name}} 작품만 보기",
       "viewArtist": "{{name}} 작가 보기",
       "prev": "이전 작가",
       "next": "다음 작가"

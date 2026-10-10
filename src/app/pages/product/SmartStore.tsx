@@ -6,6 +6,7 @@ import StoreFilter from '@/app/components/store/StoreFilter';
 import StoreFilterSheet, { type SheetValue } from '@/app/components/store/StoreFilterSheet';
 import StoreProductGrid from '@/app/components/store/StoreProductGrid';
 import StoreOriginalShowcase from '@/app/components/store/StoreOriginalShowcase';
+import StoreArtistSpotlight from '@/app/components/store/StoreArtistSpotlight';
 import { ALL, isOrder, priceRangeOf } from '@/app/components/store/storeOptions';
 import { getSkus, getGenreCounts, getMainCategoryCounts, type SkuFilter } from '@/api/sku';
 import { getArtists } from '@/api/artist';
@@ -40,11 +41,6 @@ export default function SmartStore() {
       else next.set(key, value);
     });
     setSearchParams(next, { replace: true });
-  };
-
-  const pickArtist = (code: string) => {
-    update({ artist: code });
-    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const { data: genreCounts = {} } = useQuery<Record<string, number>>({
@@ -108,6 +104,10 @@ export default function SmartStore() {
     getNextPageParam: (last, pages) => (pages.length < last.totalPages ? pages.length : undefined),
   });
   const skus = useMemo(() => data?.pages.flatMap((p) => p.content) ?? [], [data]);
+  // 맨 아래 작가 소개 — 작가를 고르지 않았으면(전체) 내보내지 않는다
+  const pickedArtist = selectedArtist === ALL
+    ? null
+    : artists.find((a) => a.artistCode === selectedArtist) ?? null;
   const total = data?.pages[0]?.totalElements ?? 0;
 
   // 목록 위 원작 줄 — 추천순이고 다른 조건을 안 걸었을 때만(에디션은 전체·원작)
@@ -163,13 +163,17 @@ export default function SmartStore() {
         hasMore={Boolean(hasNextPage)}
         loadingMore={isFetchingNextPage}
         onLoadMore={() => fetchNextPage()}
-        artists={artists}
-        onPickArtist={pickArtist}
         onReset={() => setSearchParams(new URLSearchParams(), { replace: true })}
         wishlistedCodes={wishlistedCodes}
         wishlistLoading={wishlistLoading}
         onWishlistClick={handleWishlist}
       />
+      {/* 작가 소개는 맨 아래 — 작가를 고른 경우에만 그 작가만 보여 준다 */}
+      {pickedArtist && (
+        <div className="mx-auto max-w-[1320px] px-5 pb-24 md:px-10">
+          <StoreArtistSpotlight artists={[pickedArtist]} skus={skus} />
+        </div>
+      )}
       <StoreFilterSheet
         open={sheetOpen}
         onClose={() => setSheetOpen(false)}
