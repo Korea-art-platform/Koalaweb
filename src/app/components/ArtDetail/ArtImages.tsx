@@ -36,23 +36,23 @@ export function ArtImages({ images, title: titleProp }: ArtImagesProps) {
 
         {images.length >= 2 && (
           <>
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-2">
               <div
                 className="aspect-[3/4] bg-gray-100 overflow-hidden"
                 onClick={() => setLightboxIndex(0)}
               >
                 <ImageWithFallback src={first} alt={`${title} 1`} className={imgClass} />
               </div>
-              <div className="flex flex-col gap-2">
+              <div className="flex flex-col">
                 <div
-                  className="flex-1 min-h-0 bg-gray-100 overflow-hidden"
+                  className={`${third ? 'aspect-[3/2]' : 'aspect-[3/4]'} bg-gray-100 overflow-hidden`}
                   onClick={() => setLightboxIndex(1)}
                 >
                   <ImageWithFallback src={second} alt={`${title} 2`} className={imgClass} />
                 </div>
                 {third && (
                   <div
-                    className="flex-1 min-h-0 bg-gray-100 overflow-hidden"
+                    className="aspect-[3/2] bg-gray-100 overflow-hidden"
                     onClick={() => setLightboxIndex(2)}
                   >
                     <ImageWithFallback src={third} alt={`${title} 3`} className={imgClass} />
@@ -64,7 +64,7 @@ export function ArtImages({ images, title: titleProp }: ArtImagesProps) {
             {rest.map((src, idx) => (
               <div
                 key={idx}
-                className="w-full aspect-square bg-gray-100 overflow-hidden mt-2"
+                className="w-full aspect-square bg-gray-100 overflow-hidden"
                 onClick={() => setLightboxIndex(idx + 3)}
               >
                 <ImageWithFallback src={src} alt={`${title} ${idx + 4}`} className={imgClass} />
