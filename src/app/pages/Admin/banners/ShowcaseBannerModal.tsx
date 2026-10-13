@@ -26,6 +26,8 @@ const SLOT_LABELS = [
   '구성 이미지 2 · 오른쪽 아래 (선택)',
   '구성 이미지 3 · 왼쪽 아래 (선택)',
   '작품명 이미지 · 뒤에 크게 깔림 (선택)',
+  '',
+  '배경 이미지 · 화면 전체에 깔림 (선택 · 1920×1080 JPG 권장, 비우면 배경색만)',
 ];
 
 // 완성 이미지로 걸 때 쓰는 칸. 조립할 때 쓰는 칸과 번호가 겹치지 않게 뒤에 둔다
@@ -40,7 +42,8 @@ const IMAGE_SLOT_LABELS: Record<number, string> = {
   5: '배너 이미지 · 모바일 (세로 1080×1920, 9:16 · 비우면 PC 이미지를 잘라 씁니다)',
 };
 
-const COMPOSED_SLOTS = [0, 1, 2, 3, 4];
+const COMPOSED_SLOTS = [0, 1, 2, 3, 4, 6];
+const BACKGROUND_SLOT = 6;
 const FULL_SLOTS = [0, 5];
 
 type LayoutMode = 'COMPOSED' | 'FULL' | 'IMAGE';
@@ -62,7 +65,7 @@ export default function ShowcaseBannerModal({ target, typeOptions, onSwitchType,
   const [description, setDescription] = useState(target?.description ?? '');
   const [slots, setSlots] = useState<Slot[]>(() =>
     [target?.imageUrl, target?.effectImageUrl1, target?.effectImageUrl2, target?.effectImageUrl3,
-     target?.titleImageUrl, target?.mobileImageUrl]
+     target?.titleImageUrl, target?.mobileImageUrl, target?.backgroundImageUrl]
       .map((url) => ({ file: null, preview: url ?? '', url: url ?? '' })),
   );
   const [layoutMode, setLayoutMode] = useState<LayoutMode>(
@@ -154,6 +157,7 @@ export default function ShowcaseBannerModal({ target, typeOptions, onSwitchType,
           effectImageUrl2: full ? null : urls[2] || null,
           effectImageUrl3: full ? null : urls[3] || null,
           titleImageUrl: full ? null : urls[4] || null,
+          backgroundImageUrl: full ? null : urls[BACKGROUND_SLOT] || null,
           layoutMode,
           linkUrl: imageOnly ? link || null : target.linkUrl ?? null,
           linkTarget: target.linkTarget ?? null,
@@ -176,6 +180,7 @@ export default function ShowcaseBannerModal({ target, typeOptions, onSwitchType,
           effectImageUrl2: full ? undefined : urls[2] || undefined,
           effectImageUrl3: full ? undefined : urls[3] || undefined,
           titleImageUrl: full ? undefined : urls[4] || undefined,
+          backgroundImageUrl: full ? undefined : urls[BACKGROUND_SLOT] || undefined,
           layoutMode,
           bgColor,
           sortOrder: sort,
@@ -317,7 +322,7 @@ export default function ShowcaseBannerModal({ target, typeOptions, onSwitchType,
                 <input
                   ref={(el) => { inputRefs.current[i] = el; }}
                   type="file"
-                  accept={layoutMode === 'COMPOSED' ? 'image/png,image/webp' : 'image/png,image/webp,image/jpeg'}
+                  accept={layoutMode === 'COMPOSED' && i !== BACKGROUND_SLOT ? 'image/png,image/webp' : 'image/png,image/webp,image/jpeg'}
                   className="hidden"
                   onChange={(e) => pickFile(i, e.target.files?.[0] ?? null)}
                 />
@@ -346,7 +351,7 @@ export default function ShowcaseBannerModal({ target, typeOptions, onSwitchType,
                     className="flex items-center gap-2 w-full justify-center py-3 text-xs border-2 border-dashed border-gray-200 rounded-lg text-gray-400 hover:border-gray-400 hover:text-gray-600 transition-colors"
                   >
                     <Upload className="w-4 h-4" />
-                    {layoutMode === 'COMPOSED' ? 'PNG 파일 선택' : '이미지 파일 선택 (JPG·PNG·WebP)'}
+                    {layoutMode === 'COMPOSED' && i !== BACKGROUND_SLOT ? 'PNG 파일 선택' : '이미지 파일 선택 (JPG·PNG·WebP)'}
                   </button>
                 )}
               </div>
@@ -409,6 +414,9 @@ export default function ShowcaseBannerModal({ target, typeOptions, onSwitchType,
           <div className="md:sticky md:top-0 md:self-start">
             <p className="text-xs text-gray-500 mb-1.5">미리보기</p>
             <div className="relative overflow-hidden rounded-xl" style={{ backgroundColor: bgColor }}>
+              {slots[BACKGROUND_SLOT].preview && (
+                <img src={slots[BACKGROUND_SLOT].preview} alt="" aria-hidden className="absolute inset-0 h-full w-full object-cover" />
+              )}
               <div aria-hidden className="absolute inset-0" style={{ background: STAGE_LIGHT }} />
               <div className="relative p-3">
                 {slots[0].preview ? (

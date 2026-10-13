@@ -64,7 +64,7 @@ export default function HomeHero({ banners, loading = false }: HomeHeroProps) {
   // 다음 작품 이미지 미리 받기
   useEffect(() => {
     if (!next) return;
-    [next.imageUrl, next.mobileImageUrl, ...effectsOf(next)].forEach((u) => {
+    [next.imageUrl, next.mobileImageUrl, next.backgroundImageUrl, ...effectsOf(next)].forEach((u) => {
       const src = toCdnUrl(u);
       if (src) new Image().src = src;
     });
@@ -152,6 +152,22 @@ export default function HomeHero({ banners, loading = false }: HomeHeroProps) {
         animate={{ backgroundColor: stageColor(slide?.bgColor) }}
         transition={{ duration: reduce ? 0 : 0.8, ease: EASE }}
       />
+      {/* 배경 이미지 — 조립 방식에서만. 비우면 배경색만 보인다 */}
+      <AnimatePresence initial={false}>
+        {slide && (slide.layoutMode ?? 'COMPOSED') === 'COMPOSED' && slide.backgroundImageUrl && (
+          <motion.img
+            key={`bg-${slide.id}`}
+            src={toCdnUrl(slide.backgroundImageUrl) ?? ''}
+            alt=""
+            aria-hidden
+            className="pointer-events-none absolute inset-0 h-full w-full object-cover"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: reduce ? 0 : 0.8, ease: EASE }}
+          />
+        )}
+      </AnimatePresence>
       <div aria-hidden className="pointer-events-none absolute inset-0" style={{ background: STAGE_LIGHT }} />
 
       {slide?.layoutMode === 'IMAGE' ? (

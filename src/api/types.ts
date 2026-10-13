@@ -269,6 +269,7 @@ export interface Banner {
   titleImageUrl?: string | null;
   layoutMode?: string | null;
   mobileImageUrl?: string | null;
+  backgroundImageUrl?: string | null;
   bgColor?: string;
 }
 
