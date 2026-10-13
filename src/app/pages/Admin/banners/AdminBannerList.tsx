@@ -305,7 +305,7 @@ export default function AdminBannerList() {
                   <img
                     src={b.imageUrl}
                     alt={b.title}
-                    className={b.bannerType === 'MAIN'
+                    className={b.bannerType === 'MAIN' && b.layoutMode !== 'IMAGE'
                       ? 'w-full h-full object-contain rounded-lg'
                       : 'w-full h-full object-cover rounded-lg bg-gray-100'}
                     style={b.bannerType === 'MAIN' ? { backgroundColor: stageColor(b.bgColor) } : undefined}
@@ -326,7 +326,9 @@ export default function AdminBannerList() {
                 </div>
                 {b.bannerType === 'MAIN' && (
                   <p className="text-xs text-gray-500 truncate">
-                    {b.skuCode ? `${b.artistName} · ${b.skuName}` : '연결된 작품이 없습니다 — 수정에서 작품을 골라 주세요'}
+                    {b.layoutMode === 'IMAGE'
+                      ? `한 장의 이미지${b.skuCode ? ` · ${b.artistName} · ${b.skuName}` : ''}`
+                      : b.skuCode ? `${b.artistName} · ${b.skuName}` : '연결된 작품이 없습니다 — 수정에서 작품을 골라 주세요'}
                   </p>
                 )}
                 {b.subtitle && <p className="text-xs text-gray-400 truncate">{b.subtitle}</p>}

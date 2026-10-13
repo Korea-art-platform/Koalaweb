@@ -33,8 +33,8 @@ export default function HomeHero({ banners, loading = false }: HomeHeroProps) {
   const reduce = useReducedMotion();
   const isDesktop = useIsDesktop();
 
-  // 작품이 연결된 배너만 건다
-  const slides = banners.filter((b) => b.skuCode && b.imageUrl);
+  // 작품이 연결된 배너만 건다. 한 장의 이미지 배너는 작품 없이도 건다
+  const slides = banners.filter((b) => b.imageUrl && (b.layoutMode === 'IMAGE' || b.skuCode));
   const total = slides.length;
 
   const [current, setCurrent] = useState(0);
@@ -64,7 +64,7 @@ export default function HomeHero({ banners, loading = false }: HomeHeroProps) {
   // 다음 작품 이미지 미리 받기
   useEffect(() => {
     if (!next) return;
-    [next.imageUrl, ...effectsOf(next)].forEach((u) => {
+    [next.imageUrl, next.mobileImageUrl, ...effectsOf(next)].forEach((u) => {
       const src = toCdnUrl(u);
       if (src) new Image().src = src;
     });
@@ -154,7 +154,9 @@ export default function HomeHero({ banners, loading = false }: HomeHeroProps) {
       />
       <div aria-hidden className="pointer-events-none absolute inset-0" style={{ background: STAGE_LIGHT }} />
 
-      {slide?.layoutMode === 'FULL' ? (
+      {slide?.layoutMode === 'IMAGE' ? (
+        <ImageStage slide={slide} total={total} go={go} isDesktop={isDesktop} dir={dir} reduce={Boolean(reduce)} />
+      ) : slide?.layoutMode === 'FULL' ? (
         <FullStage slide={slide} total={total} go={go} isDesktop={isDesktop} />
       ) : isDesktop ? (
         <DesktopStage slide={slide} total={total} loading={loading} go={go} art={renderArt(2.6, 1.35, 1)} />
@@ -400,6 +402,61 @@ function FullStage({ slide, total, go, isDesktop }: {
         )}
         <HeroButtons slide={slide} />
       </div>
+    </div>
+  );
+}
+
+/**
+ * 이미지 한 장이 히어로 전체를 덮는 자리. 글자·가격·버튼을 얹지 않는다.
+ *
+ * 머리글 글자가 밝은 사진 위에서도 읽히게 위쪽만 살짝 어둡게 깐다. 누르면 정해 둔
+ * 주소로, 없으면 연결된 작품으로 간다.
+ */
+function ImageStage({ slide, total, go, isDesktop, dir, reduce }: {
+  slide: Banner; total: number; go: (step: 1 | -1) => void; isDesktop: boolean; dir: number; reduce: boolean;
+}) {
+  const { t } = useTranslation();
+  const source = !isDesktop && slide.mobileImageUrl ? slide.mobileImageUrl : slide.imageUrl;
+  const href = slide.linkUrl || (slide.skuCode ? `/product/${slide.skuCode}` : '');
+  const label = slide.title || fullNameOf(slide);
+
+  const image = (
+    <img
+      src={toCdnUrl(source) ?? ''}
+      alt={label}
+      className="absolute inset-0 h-full w-full object-cover"
+      fetchPriority="high"
+      draggable={false}
+    />
+  );
+
+  return (
+    <div className="absolute inset-0">
+      <AnimatePresence initial={false} custom={dir}>
+        <motion.div
+          key={slide.id}
+          className="absolute inset-0"
+          initial={reduce ? false : { opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: reduce ? 0 : 0.7, ease: EASE }}
+        >
+          {href.startsWith('http') ? (
+            <a href={href} target="_blank" rel="noopener noreferrer" aria-label={label} className="absolute inset-0">{image}</a>
+          ) : href ? (
+            <Link to={href} aria-label={label} className="absolute inset-0">{image}</Link>
+          ) : image}
+        </motion.div>
+      </AnimatePresence>
+
+      <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-black/35 to-transparent" />
+
+      {total > 1 && (
+        <div className="absolute bottom-8 left-6 z-10 flex gap-2 md:bottom-9 md:left-12">
+          <RoundButton label={t('home.hero.prev')} onClick={() => go(-1)}><ArrowLeft className="h-4 w-4" /></RoundButton>
+          <RoundButton label={t('home.hero.next')} onClick={() => go(1)}><ArrowRight className="h-4 w-4" /></RoundButton>
+        </div>
+      )}
     </div>
   );
 }
