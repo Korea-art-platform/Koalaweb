@@ -7,6 +7,7 @@ import { AppRoutes } from './routes.tsx';
 import { ViewModeProvider } from './context/ViewModeContext';
 import { AuthProvider } from './context/AuthContext';
 import ScrollToTop from './components/common/ScrollToTop';
+import RouteTracker from './components/common/RouteTracker';
 import { useEffect } from 'react';
 import TagManager from 'react-gtm-module';
 import i18n from '@/locales/i18n';
@@ -36,6 +37,7 @@ function App() {
       <QueryClientProvider client={queryClient}>
         <BrowserRouter>
           <ScrollToTop />
+          <RouteTracker />
           <AuthProvider>
             <ViewModeProvider>
               <AppRoutes />

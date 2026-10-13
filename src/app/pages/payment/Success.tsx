@@ -6,6 +6,7 @@ import { PG_PROVIDER_CODE } from '@/app/lib/pg';
 import { notifyCartUpdated } from '@/app/hooks/useCart';
 import { useTranslation } from 'react-i18next';
 import { ONSITE_TOKEN_KEY } from '@/api/onsite';
+import { trackPurchase } from '@/app/lib/analytics';
 
 type Status = 'pending' | 'success' | 'error';
 
@@ -53,6 +54,27 @@ export default function PaymentSuccess() {
       }
 
       setStatus('success');
+
+      if (orderDetail) {
+        const items = (orderDetail.orderItems ?? orderDetail.items ?? []) as Array<Record<string, any>>;
+        trackPurchase({
+          orderNo: no,
+          total: Number(orderDetail.totalAmount ?? 0),
+          shipping: Number(orderDetail.shippingAmount ?? 0),
+          tax: Number(orderDetail.taxAmount ?? 0),
+          items: items.map((i) => {
+            const quantity = Number(i.quantity ?? 1);
+            const line = Number(i.lineTotalAmount ?? i.lineAmount ?? 0);
+            return {
+              item_id: String(i.skuCode ?? i.skuCodeSnapshot ?? ''),
+              item_name: String(i.skuName ?? i.skuNameSnapshot ?? ''),
+              item_brand: i.artistName ?? i.artistNameSnapshot,
+              price: quantity ? line / quantity : Number(i.unitPrice ?? 0),
+              quantity,
+            };
+          }),
+        });
+      }
 
       navigate('/checkout/success', {
         state: {

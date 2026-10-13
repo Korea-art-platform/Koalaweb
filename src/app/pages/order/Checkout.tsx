@@ -12,6 +12,7 @@ import { startPayment, isUserCancel, PAY_METHODS, PG_PROVIDER_CODE, type PayMeth
 import { payMethodIcon } from '@/app/components/common/PayMethodIcons';
 import type { Cart, Sku, UserAddress } from '@/api/types';
 import { calcShipping } from '@/app/lib/shipping';
+import { trackBeginCheckout } from '@/app/lib/analytics';
 import { useTranslation } from 'react-i18next';
 
 function iconFor(id: PayMethod) {
@@ -196,6 +197,18 @@ export default function Checkout() {
   const foldShipping = isNarrow && shippingFilled && !editShipping;
   const foldItems = isNarrow && !showItems && cartItems.length > 0;
   const selectedMethodLabel = selectedMethod ? t(`payment.methods.${selectedMethod}.label`) : '';
+
+  const checkoutTracked = useRef(false);
+  useEffect(() => {
+    if (loading || checkoutTracked.current || cartItems.length === 0) return;
+    checkoutTracked.current = true;
+    trackBeginCheckout(cartItems.map((i) => ({
+      item_id: i.skuCode,
+      item_name: i.skuName,
+      price: i.quantity ? i.lineAmount / i.quantity : i.unitPrice,
+      quantity: i.quantity,
+    })));
+  }, [loading, cartItems]);
 
   const handleFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));

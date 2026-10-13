@@ -16,6 +16,7 @@ import { ImageLightbox } from '@/app/components/common/ImageLightbox';
 import { toCdnUrl } from '@/app/lib/imageUrl';
 import type { Sku } from '@/api/types';
 import { notifyCartUpdated } from '@/app/hooks/useCart';
+import { trackAddToCart, trackViewItem } from '@/app/lib/analytics';
 
 import { useCategories } from '@/app/hooks/useCategories';
 import { sizeText, weightText } from '@/app/lib/skuSpec';
@@ -91,6 +92,10 @@ export default function ProductCard({
   const touchStartX = useRef<number | null>(null);
 
   useEffect(() => {
+    if (isOpen) trackViewItem(sku);
+  }, [isOpen, sku]);
+
+  useEffect(() => {
     document.body.style.overflow = isOpen ? 'hidden' : '';
     if (!isOpen) setImgIndex(0);
     return () => { document.body.style.overflow = ''; };
@@ -142,6 +147,7 @@ export default function ProductCard({
         addCartItem(sku.skuCode, 1),
         new Promise((r) => setTimeout(r, 500)),
       ]);
+      trackAddToCart(sku);
       notifyCartUpdated();
       setAdded(true);
       setTimeout(() => setAdded(false), 1600);

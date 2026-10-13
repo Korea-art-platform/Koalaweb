@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
+import { trackAddToCart } from '@/app/lib/analytics';
 import { displayPrice, displayListPrice, hasDiscount, formatWon } from '@/app/lib/price';
 import { useParams, Link, useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
@@ -133,6 +134,7 @@ export default function Product360View() {
     setCartLoading(true);
     try {
       await addCartItem(sku!.skuCode, 1);
+      trackAddToCart(sku!);
       notifyCartUpdated();
       setShowToast(true);
       setTimeout(() => setShowToast(false), 3000);

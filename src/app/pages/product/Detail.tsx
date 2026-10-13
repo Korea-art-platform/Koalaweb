@@ -23,6 +23,7 @@ import {
 import ProductDetailPage from '@/app/components/products/ProductDetailPage';
 import { ArtImages, ArtMaterial, ArtPackaging, ArtArtist, ArtInfo, ArtQnA } from '@/app/components/ArtDetail';
 import { FREE_SHIPPING_THRESHOLD_AMOUNT_TEXT, SHIPPING_FEE_AMOUNT_TEXT } from '@/app/lib/shipping';
+import { trackAddToCart, trackViewItem } from '@/app/lib/analytics';
 import TrendingArtists from '@/app/components/Artist/TrendingArtists';
 import { sizeText, weightText } from '@/app/lib/skuSpec';
 
@@ -65,6 +66,7 @@ export default function ProductDetail() {
         const res = await getSku(id!);
         const skuData: Sku = res.data.data;
         setSku(skuData);
+        trackViewItem(skuData);
 
         if ((skuData as any).artistCode) {
           try {
@@ -94,6 +96,7 @@ export default function ProductDetail() {
     setCartLoading(true);
     try {
       await addCartItem(sku.skuCode, 1);
+      trackAddToCart(sku);
       notifyCartUpdated();
       showToastMessage(t('product.detail.toast.cartAdded'), true);
     } catch (e: unknown) {
