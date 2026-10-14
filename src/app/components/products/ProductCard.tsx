@@ -116,8 +116,9 @@ export default function ProductCard({
         && m.mediaRole !== 'AR_PREVIEW'
         && m.mediaRole !== 'AR_MODEL')
       .map((m) => toCdnUrl(m.fileUrl));
-    return [imageUrl, ...extra.filter((u) => u && u !== imageUrl)].slice(0, 8);
-  }, [detail, imageUrl]);
+    const original = toCdnUrl(sku.primaryImageUrl) ?? imageUrl;
+    return [original, ...extra.filter((u) => u && u !== original)].slice(0, 8);
+  }, [detail, imageUrl, sku.primaryImageUrl]);
 
   const paginate = (dir: number) =>
     setImgIndex((i) => (i + dir + images.length) % images.length);
