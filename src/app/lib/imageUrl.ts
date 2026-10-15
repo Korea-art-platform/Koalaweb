@@ -82,3 +82,19 @@ export function fallBackToOriginal(original: string | undefined) {
     if (original && img.src !== original) img.src = original
   }
 }
+
+export function screenSrcSet(url: string | undefined | null, originalWidth = 1920): string | undefined {
+  const original = toCdnUrl(url)
+  const screen = toScreenUrl(url)
+  if (!original || !screen || screen === original) return undefined
+  return `${screen} 1200w, ${original} ${originalWidth}w`
+}
+
+export function dropToOriginal(original: string | undefined) {
+  return (e: { currentTarget: HTMLImageElement }) => {
+    const img = e.currentTarget
+    if (!original) return
+    if (img.srcset) img.srcset = ''
+    if (img.src !== original) img.src = original
+  }
+}

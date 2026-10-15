@@ -7,7 +7,7 @@ import type { Banner } from '@/api/types';
 import ShowcaseArt, { STAGE_LIGHT, stageColor } from '@/app/components/Home/ShowcaseArt';
 import { useCoveredByPanel } from '@/app/components/layouts/RisingPanel';
 import { useIsDesktop } from '@/app/hooks/useMediaQuery';
-import { toCdnUrl } from '@/app/lib/imageUrl';
+import { dropToOriginal, screenSrcSet, toCdnUrl, toScreenUrl } from '@/app/lib/imageUrl';
 import { formatWon } from '@/app/lib/price';
 
 interface HomeHeroProps {
@@ -157,7 +157,10 @@ export default function HomeHero({ banners, loading = false }: HomeHeroProps) {
         {slide && (slide.layoutMode ?? 'COMPOSED') === 'COMPOSED' && slide.backgroundImageUrl && (
           <motion.img
             key={`bg-${slide.id}`}
-            src={toCdnUrl(slide.backgroundImageUrl) ?? ''}
+            src={toScreenUrl(slide.backgroundImageUrl) ?? ''}
+            srcSet={screenSrcSet(slide.backgroundImageUrl)}
+            sizes="100vw"
+            onError={dropToOriginal(toCdnUrl(slide.backgroundImageUrl))}
             alt=""
             aria-hidden
             className="pointer-events-none absolute inset-0 h-full w-full object-cover"
@@ -390,7 +393,10 @@ function FullStage({ slide, total, go, isDesktop }: {
   return (
     <div className="relative h-full w-full">
       <img
-        src={toCdnUrl(source) ?? ''}
+        src={toScreenUrl(source) ?? ''}
+        srcSet={screenSrcSet(source)}
+        sizes="100vw"
+        onError={dropToOriginal(toCdnUrl(source))}
         alt={slide.title || fullNameOf(slide)}
         className="absolute inset-0 h-full w-full object-cover"
         fetchPriority="high"
@@ -438,7 +444,10 @@ function ImageStage({ slide, total, go, isDesktop, dir, reduce }: {
 
   const image = (
     <img
-      src={toCdnUrl(source) ?? ''}
+      src={toScreenUrl(source) ?? ''}
+      srcSet={screenSrcSet(source)}
+      sizes="100vw"
+      onError={dropToOriginal(toCdnUrl(source))}
       alt={label}
       className="absolute inset-0 h-full w-full object-cover"
       fetchPriority="high"

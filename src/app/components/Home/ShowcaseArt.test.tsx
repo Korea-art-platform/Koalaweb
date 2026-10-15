@@ -46,7 +46,7 @@ describe('히어로 작품명', () => {
     await render({ imageUrl: 'https://cdn.test/art.png', name: '버즈 아기갈매기' });
 
     expect(titleText()).toBe('버즈 아기갈매기');
-    expect(images().some((i) => i.getAttribute('src') === 'https://cdn.test/art.png')).toBe(true);
+    expect(images().some((i) => i.getAttribute('src') === 'https://cdn.test/art_w1200.png')).toBe(true);
   });
 
   it('작품명 이미지를 올리면 글자 대신 그 이미지를 깐다', async () => {
@@ -57,13 +57,13 @@ describe('히어로 작품명', () => {
     });
 
     expect(titleText()).toBeNull();
-    expect(images().some((i) => i.getAttribute('src') === 'https://cdn.test/title.png')).toBe(true);
+    expect(images().some((i) => i.getAttribute('src') === 'https://cdn.test/title_w1200.png')).toBe(true);
   });
 
   it('작품명 이미지는 읽어 주지 않는다', async () => {
     await render({ name: '버즈', titleImageUrl: 'https://cdn.test/title.png' });
 
-    const title = images().find((i) => i.getAttribute('src') === 'https://cdn.test/title.png');
+    const title = images().find((i) => i.getAttribute('src') === 'https://cdn.test/title_w1200.png');
     expect(title?.getAttribute('alt')).toBe('');
     expect(title?.getAttribute('aria-hidden')).toBe('true');
   });

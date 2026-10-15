@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { motion, type Variants } from 'framer-motion';
-import { toCdnUrl, toThumbUrl } from '@/app/lib/imageUrl';
+import { dropToOriginal, toCdnUrl, toScreenUrl, toThumbUrl } from '@/app/lib/imageUrl';
 
 // 무대 조명 — 배경색 위에 얹는다. 히어로와 어드민 미리보기가 같이 쓴다
 export const STAGE_LIGHT =
@@ -90,12 +90,14 @@ export default function ShowcaseArt({
 }: ShowcaseArtProps) {
   const main = toCdnUrl(imageUrl);
   const mainThumb = toThumbUrl(imageUrl);
+  const mainScreen = toScreenUrl(imageUrl);
   const moves = useMemo(() => ({
     main: travel(50 * reach, 26 * reach, 0),
     slots: SLOTS.map((s) => travel(s.x * reach, s.y * reach, s.delay)),
   }), [reach]);
   const move = (variants: Variants) => (animate ? { variants, custom: dir } : {});
   const titleImage = toCdnUrl(titleImageUrl);
+  const titleScreen = toScreenUrl(titleImageUrl);
   const fit = !titleImage && name ? fitName(name, nameWidth, nameLines === 2) : null;
 
   return (
@@ -103,7 +105,8 @@ export default function ShowcaseArt({
       {titleImage && (
         <motion.img
           aria-hidden
-          src={titleImage}
+          src={titleScreen ?? titleImage}
+          onError={dropToOriginal(titleImage)}
           alt=""
           draggable={false}
           decoding="async"
@@ -128,8 +131,12 @@ export default function ShowcaseArt({
           {/* 바닥 그림자 */}
           <div aria-hidden className="absolute inset-x-[20%] bottom-[-2%] h-[8%] rounded-[50%] bg-[rgba(13,9,18,0.38)] blur-[12px]" />
           <img
-            src={main}
-            srcSet={mainThumb && mainThumb !== main ? `${mainThumb} 480w, ${main} 1600w` : undefined}
+            src={mainScreen ?? main}
+            srcSet={[
+              mainThumb && mainThumb !== main ? `${mainThumb} 480w` : null,
+              mainScreen && mainScreen !== main ? `${mainScreen} 1200w` : `${main} 1600w`,
+            ].filter(Boolean).join(', ') || undefined}
+            onError={dropToOriginal(main)}
             sizes="(max-width: 767px) 60vw, 40vw"
             alt={alt}
             draggable={false}

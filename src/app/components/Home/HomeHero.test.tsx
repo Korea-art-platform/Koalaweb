@@ -72,14 +72,14 @@ describe('메인 히어로', () => {
     await render({ ...base, layoutMode: 'COMPOSED' });
 
     expect(bigName()).toBe('청자 오브제');
-    expect(images()).toContain('https://cdn.test/full.png');
+    expect(images()).toContain('https://cdn.test/full_w1200.png');
   });
 
   it('전체 이미지 방식이면 배너 한 장만 걸고 글자는 덧그리지 않는다', async () => {
     await render({ ...base, layoutMode: 'FULL' });
 
     expect(bigName()).toBeNull();
-    expect(images()).toEqual(['https://cdn.test/full.png']);
+    expect(images()).toEqual(['https://cdn.test/full_w1200.png']);
   });
 
   it('전체 이미지 방식에서도 가격과 쇼핑 버튼은 남는다', async () => {
