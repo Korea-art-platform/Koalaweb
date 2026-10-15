@@ -44,4 +44,15 @@ describe('축소본 주소', () => {
     const { toThumbUrl } = await load('true');
     expect(toThumbUrl(null)).toBeUndefined();
   });
+
+  it('화면용 사본은 확장자 앞에 _w1200 을 붙이고, 파생본에는 다시 붙이지 않는다', async () => {
+    vi.stubEnv('VITE_IMAGE_SCREEN', 'true');
+    const { toScreenUrl, toThumbUrl } = await load('true');
+    expect(toScreenUrl('https://cdn.example.com/skus/A/main/abc.png'))
+      .toBe('https://cdn.example.com/skus/A/main/abc_w1200.png');
+    expect(toScreenUrl('https://cdn.example.com/skus/A/main/abc_t480.png'))
+      .toBe('https://cdn.example.com/skus/A/main/abc_t480.png');
+    expect(toThumbUrl('https://cdn.example.com/skus/A/main/abc_w1200.png'))
+      .toBe('https://cdn.example.com/skus/A/main/abc_w1200.png');
+  });
 });

@@ -30,7 +30,7 @@ export function ArtImages({ images, title: titleProp }: ArtImagesProps) {
             className="w-full aspect-square bg-gray-100 overflow-hidden"
             onClick={() => setLightboxIndex(0)}
           >
-            <ImageWithFallback src={first} alt={title} className={imgClass} />
+            <ImageWithFallback screen src={first} alt={title} className={imgClass} />
           </div>
         )}
 
@@ -41,21 +41,21 @@ export function ArtImages({ images, title: titleProp }: ArtImagesProps) {
                 className="aspect-[3/4] bg-gray-100 overflow-hidden"
                 onClick={() => setLightboxIndex(0)}
               >
-                <ImageWithFallback src={first} alt={`${title} 1`} className={imgClass} />
+                <ImageWithFallback screen src={first} alt={`${title} 1`} className={imgClass} />
               </div>
               <div className="flex flex-col">
                 <div
                   className={`${third ? 'aspect-[3/2]' : 'aspect-[3/4]'} bg-gray-100 overflow-hidden`}
                   onClick={() => setLightboxIndex(1)}
                 >
-                  <ImageWithFallback src={second} alt={`${title} 2`} className={imgClass} />
+                  <ImageWithFallback screen src={second} alt={`${title} 2`} className={imgClass} />
                 </div>
                 {third && (
                   <div
                     className="aspect-[3/2] bg-gray-100 overflow-hidden"
                     onClick={() => setLightboxIndex(2)}
                   >
-                    <ImageWithFallback src={third} alt={`${title} 3`} className={imgClass} />
+                    <ImageWithFallback screen src={third} alt={`${title} 3`} className={imgClass} />
                   </div>
                 )}
               </div>
@@ -67,7 +67,7 @@ export function ArtImages({ images, title: titleProp }: ArtImagesProps) {
                 className="w-full aspect-square bg-gray-100 overflow-hidden"
                 onClick={() => setLightboxIndex(idx + 3)}
               >
-                <ImageWithFallback src={src} alt={`${title} ${idx + 4}`} className={imgClass} />
+                <ImageWithFallback screen src={src} alt={`${title} ${idx + 4}`} className={imgClass} />
               </div>
             ))}
           </>

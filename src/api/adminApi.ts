@@ -836,6 +836,7 @@ export async function changeCommissionRate(artistId: number, commissionRate: num
 export interface ImageBackfillResult {
   scanned: number;
   thumbsCreated: number;
+  screenCopiesCreated?: number;
   headersFixed: number;
   skipped: number;
   failed: number;

@@ -46,8 +46,39 @@ export function toThumbUrl(url: string | undefined | null): string | undefined {
   const dot = path.lastIndexOf('.')
   const slash = path.lastIndexOf('/')
   if (dot <= slash) return resolved
-  if (path.slice(0, dot).endsWith(THUMB_SUFFIX)) return resolved
+  if (isDerivedBase(path.slice(0, dot))) return resolved
 
   const thumb = path.slice(0, dot) + THUMB_SUFFIX + path.slice(dot)
   return query ? `${thumb}?${query}` : thumb
+}
+
+const SCREEN_SUFFIX = '_w1200'
+
+const SCREEN_ENABLED = (import.meta.env.VITE_IMAGE_SCREEN as string | undefined) !== 'false'
+
+function isDerivedBase(base: string) {
+  return base.endsWith(THUMB_SUFFIX) || base.endsWith(SCREEN_SUFFIX)
+}
+
+export function toScreenUrl(url: string | undefined | null): string | undefined {
+  const resolved = toCdnUrl(url)
+  if (!resolved) return undefined
+  if (!SCREEN_ENABLED) return resolved
+  if (!/\.(jpe?g|png)(\?|$)/i.test(resolved)) return resolved
+
+  const [path, query] = resolved.split('?')
+  const dot = path.lastIndexOf('.')
+  const slash = path.lastIndexOf('/')
+  if (dot <= slash) return resolved
+  if (isDerivedBase(path.slice(0, dot))) return resolved
+
+  const screen = path.slice(0, dot) + SCREEN_SUFFIX + path.slice(dot)
+  return query ? `${screen}?${query}` : screen
+}
+
+export function fallBackToOriginal(original: string | undefined) {
+  return (e: { currentTarget: HTMLImageElement }) => {
+    const img = e.currentTarget
+    if (original && img.src !== original) img.src = original
+  }
 }

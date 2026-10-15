@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { getSku } from '@/api/sku';
 import { useTranslation } from 'react-i18next';
+import { fallBackToOriginal, toCdnUrl, toScreenUrl } from '@/app/lib/imageUrl';
 
 interface Props {
   skuCode: string;
@@ -33,7 +34,10 @@ export default function ProductDetailPage({ skuCode }: Props) {
     return(
         <div className="w-full">
             <img
-             src={detailImage}
+             src={toScreenUrl(detailImage) ?? detailImage}
+             onError={fallBackToOriginal(toCdnUrl(detailImage) ?? detailImage)}
+             loading="lazy"
+             decoding="async"
              alt={t('product.card.detailImage')}
              className="w-full object-contain" />
         </div>

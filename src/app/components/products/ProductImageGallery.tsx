@@ -28,6 +28,8 @@ export function ProductImageGallery({ sku, images, selectedImage, setSelectedIma
               }`}
             >
               <ImageWithFallback
+                thumb
+                sizes="68px"
                 src={image}
                 alt={`${sku.name} ${index + 1}`}
                 className="w-full h-full object-cover"
@@ -40,6 +42,8 @@ export function ProductImageGallery({ sku, images, selectedImage, setSelectedIma
           onClick={() => setLightboxIndex(selectedImage)}
         >
           <ImageWithFallback
+            screen
+            loading="eager"
             src={images[selectedImage]}
             alt={sku.name}
             className="w-full h-full object-cover transition-opacity duration-200"

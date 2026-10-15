@@ -13,7 +13,7 @@ import { addCartItem } from '@/api/cart';
 import { getSku } from '@/api/sku';
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from '@/app/components/ui/accordion';
 import { ImageLightbox } from '@/app/components/common/ImageLightbox';
-import { toCdnUrl } from '@/app/lib/imageUrl';
+import { fallBackToOriginal, toCdnUrl, toScreenUrl } from '@/app/lib/imageUrl';
 import type { Sku } from '@/api/types';
 import { notifyCartUpdated } from '@/app/hooks/useCart';
 import { trackAddToCart, trackViewItem } from '@/app/lib/analytics';
@@ -665,7 +665,8 @@ export default function ProductCard({
                   {images.map((src, i) => (
                     <img
                       key={i}
-                      src={src}
+                      src={toScreenUrl(src) ?? src}
+                      onError={fallBackToOriginal(src)}
                       alt={`${sku.name} ${i + 1}`}
                       onClick={() => setZoomOpen(true)}
                       className="h-full w-full shrink-0 cursor-zoom-in object-contain select-none"

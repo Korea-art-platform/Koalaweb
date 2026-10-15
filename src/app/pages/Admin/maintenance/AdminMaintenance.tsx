@@ -7,12 +7,13 @@ const BATCH = 40;
 interface Totals {
   scanned: number;
   thumbsCreated: number;
+  screenCopiesCreated: number;
   headersFixed: number;
   skipped: number;
   failed: number;
 }
 
-const ZERO: Totals = { scanned: 0, thumbsCreated: 0, headersFixed: 0, skipped: 0, failed: 0 };
+const ZERO: Totals = { scanned: 0, thumbsCreated: 0, screenCopiesCreated: 0, headersFixed: 0, skipped: 0, failed: 0 };
 
 export default function AdminMaintenance() {
   const [prefix, setPrefix] = useState('');
@@ -38,6 +39,7 @@ export default function AdminMaintenance() {
         setTotals((t) => ({
           scanned: t.scanned + r.scanned,
           thumbsCreated: t.thumbsCreated + r.thumbsCreated,
+          screenCopiesCreated: t.screenCopiesCreated + (r.screenCopiesCreated ?? 0),
           headersFixed: t.headersFixed + r.headersFixed,
           skipped: t.skipped + r.skipped,
           failed: t.failed + r.failed,
@@ -58,7 +60,8 @@ export default function AdminMaintenance() {
 
   const rows: [string, number, string][] = [
     ['훑어본 파일', totals.scanned, 'text-gray-900'],
-    ['축소본 생성', totals.thumbsCreated, 'text-koala-purple'],
+    ['축소본 생성 (목록용 480px)', totals.thumbsCreated, 'text-koala-purple'],
+    ['화면용 사본 생성 (상세용 1200px)', totals.screenCopiesCreated, 'text-koala-purple'],
     ['캐시 헤더 보정', totals.headersFixed, 'text-koala-purple'],
     ['건너뜀 (이미 처리됨)', totals.skipped, 'text-gray-400'],
     ['실패', totals.failed, totals.failed > 0 ? 'text-red-500' : 'text-gray-400'],
@@ -70,12 +73,11 @@ export default function AdminMaintenance() {
       <p className="text-sm text-gray-500 mb-8">평상시에는 쓰지 않는 일회성 작업입니다.</p>
 
       <section className="border border-gray-200 rounded-2xl p-6">
-        <h2 className="font-bold mb-1">이미지 축소본 · 캐시 헤더 생성</h2>
+        <h2 className="font-bold mb-1">이미지 가볍게 만들기 (축소본 · 화면용 사본)</h2>
         <p className="text-sm text-gray-500 leading-relaxed mb-5 break-keep">
-          목록과 카드에서 쓸 축소본을 만들고, 이미지에 장기 캐시 헤더를 붙입니다.
-          이미 처리된 파일은 건너뛰므로 여러 번 실행해도 안전합니다.
-          <br />
-          작업이 끝난 뒤에 배포 설정의 <b>VITE_IMAGE_THUMBS</b> 를 true 로 바꿔야 실제로 적용됩니다.
+          이미 올라간 사진마다 목록용 축소본(480px)과 상세 화면용 사본(가로 1200px)을 만들고
+          장기 캐시 헤더를 붙입니다. 원본은 그대로 두고 사본만 만들므로 다시 올릴 필요가 없습니다.
+          이미 처리된 파일은 건너뛰므로 여러 번 실행해도 안전합니다. 새로 올리는 사진은 자동으로 만들어집니다.
         </p>
 
         <label className="block text-xs text-gray-500 mb-1.5">대상 경로 (비우면 전체)</label>
