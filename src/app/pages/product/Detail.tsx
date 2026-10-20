@@ -22,7 +22,9 @@ import {
 
 import ProductDetailPage from '@/app/components/products/ProductDetailPage';
 import { ArtImages, ArtMaterial, ArtPackaging, ArtArtist, ArtInfo, ArtQnA } from '@/app/components/ArtDetail';
-import { FREE_SHIPPING_THRESHOLD_AMOUNT_TEXT, SHIPPING_FEE_AMOUNT_TEXT } from '@/app/lib/shipping';
+import { FREE_SHIPPING_THRESHOLD, FREE_SHIPPING_THRESHOLD_AMOUNT_TEXT, SHIPPING_FEE, SHIPPING_FEE_AMOUNT_TEXT } from '@/app/lib/shipping';
+import { displayPrice } from '@/app/lib/price';
+import { toCdnUrl } from '@/app/lib/imageUrl';
 import { trackAddToCart, trackViewItem } from '@/app/lib/analytics';
 import TrendingArtists from '@/app/components/Artist/TrendingArtists';
 import { sizeText, weightText } from '@/app/lib/skuSpec';
@@ -206,25 +208,50 @@ export default function ProductDetail() {
     : t('product.detail.metaFallback', { name: sku.name });
   const pageImage = sku.primaryImageUrl ?? 'https://koala-art.co.kr/og-image.png';
   const pageUrl = `https://koala-art.co.kr/product/${sku.skuCode}`;
+  const offerPrice = displayPrice(sku);
   const productJsonLd: Record<string, unknown> = {
     '@context': 'https://schema.org',
     '@type': 'Product',
     name: sku.name,
     url: pageUrl,
     sku: sku.skuCode,
-    image: pageImage,
+    image: images.length > 0 ? images.map((u) => toCdnUrl(u) ?? u) : pageImage,
     description: pageDescription,
     ...(sku.artistName ? { brand: { '@type': 'Brand', name: sku.artistName } } : {}),
-    ...(sku.salePrice != null ? {
+    ...(offerPrice != null ? {
       offers: {
         '@type': 'Offer',
         priceCurrency: 'KRW',
-        price: String(sku.salePrice),
+        price: String(offerPrice),
+        itemCondition: 'https://schema.org/NewCondition',
         availability: sku.status === 'ACTIVE'
           ? 'https://schema.org/InStock'
           : 'https://schema.org/OutOfStock',
         url: pageUrl,
         seller: { '@type': 'Organization', name: '주식회사 헤론' },
+        shippingDetails: {
+          '@type': 'OfferShippingDetails',
+          shippingRate: {
+            '@type': 'MonetaryAmount',
+            value: offerPrice >= FREE_SHIPPING_THRESHOLD || sku.freeShipping ? 0 : SHIPPING_FEE,
+            currency: 'KRW',
+          },
+          shippingDestination: { '@type': 'DefinedRegion', addressCountry: 'KR' },
+          deliveryTime: {
+            '@type': 'ShippingDeliveryTime',
+            handlingTime: { '@type': 'QuantitativeValue', minValue: 1, maxValue: 3, unitCode: 'DAY' },
+            transitTime: { '@type': 'QuantitativeValue', minValue: 1, maxValue: 3, unitCode: 'DAY' },
+          },
+        },
+        hasMerchantReturnPolicy: {
+          '@type': 'MerchantReturnPolicy',
+          applicableCountry: 'KR',
+          returnPolicyCategory: 'https://schema.org/MerchantReturnFiniteReturnWindow',
+          merchantReturnDays: 7,
+          returnMethod: 'https://schema.org/ReturnByMail',
+          returnFees: 'https://schema.org/ReturnShippingFees',
+          returnShippingFeesAmount: { '@type': 'MonetaryAmount', value: 6000, currency: 'KRW' },
+        },
       },
     } : {}),
   };
